@@ -1,0 +1,45 @@
+spring:
+  devtools:
+    restart:
+      enabled: true
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+
+  swagger-ui:
+    path: /swagger-ui.html
+    url: /openapi/openapi.yaml
+
+
+logbook:
+  format:
+    style: http
+
+  filter:
+    enabled: true
+
+  obfuscate:
+    headers:
+      - Authorization
+      - X-Moodle-Token
+      - Cookie
+    parameters:
+      - password
+      - token
+
+  include:
+    - /api/**
+  exclude:
+    - /actuator/**
+    - /v3/api-docs/**
+    - /swagger-ui/**
+    - /swagger-ui.html
+
+  write:
+    level: INFO

@@ -1,0 +1,23 @@
+post:
+  tags: [ Auth ]
+  operationId: Register
+  summary: Register and create database
+  description: |
+    Receives host, username, and password. A JWT token is returned to be used in subsequent Moodle API calls. This endpoint is essential for authenticating users and establishing a secure session with the Moodle instance. The token can be used in the Authorization header of future requests to access protected resources and perform actions on behalf of the authenticated user.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../components/schemas/auth/register/request.yaml#/AuthRegisterRequest'
+
+  security: [ ]
+  responses:
+    '201':
+      description: JWT token retrieved successfully
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/auth/register/response.yaml#/RegisterAuthResponse"
+    '409':
+      $ref: '../../components/responses/conflict_409.yaml'

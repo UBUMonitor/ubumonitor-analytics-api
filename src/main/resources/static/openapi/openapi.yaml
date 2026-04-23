@@ -1,0 +1,30 @@
+openapi: 3.0.3
+info:
+  title: Moodle Adapter API
+  version: "1.0.0"
+  description: Adapter for Moodle REST API to standard REST endpoints.
+
+servers:
+  - url: http://localhost:9090/api
+    description: Local development server
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - bearerAuth: []
+
+paths:
+  /public/auth/credentials:
+    $ref: './paths/auth/credentials.yaml'
+  /public/auth/token:
+    $ref: './paths/auth/token.yaml'
+  /public/auth/offline:
+    $ref: './paths/auth/offline.yaml'
+  /private/auth/logout:
+    $ref: './paths/auth/logout.yaml'
+  /private/sync/site:
+    $ref: './paths/sync/site.yaml'

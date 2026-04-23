@@ -1,0 +1,15 @@
+post:
+  tags:
+    - Synchronize
+  summary: Synchronize site information
+  operationId: SynchronizeSiteInfo
+  description: Synchronize site information from the Moodle instance. This endpoint retrieves basic information about the Moodle site, such as the site name, version, and other relevant details. This information can be used to ensure that the integration is properly connected to the correct Moodle instance and to gather necessary metadata for further interactions with the Moodle API.
+  responses:
+    '200':
+      description: Site information
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/sync/site/response.yaml'
+    '401':
+      $ref: '../../components/responses/unauthorized_401.yaml'

@@ -1,0 +1,41 @@
+spring:
+  config:
+    import: classpath:application-moodlerules.yml
+  web:
+    resources:
+      add-mappings: false
+  devtools:
+    restart:
+      enabled: false
+  main:
+    allow-bean-definition-overriding: true
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    open-in-view: false
+  h2:
+    console:
+      enabled: false
+server:
+  port: 9090
+
+springdoc:
+  api-docs:
+    enabled: false
+
+jwt:
+  expiration-time-in-seconds: 7200 # 2 hour in seconds
+
+moodle:
+  api:
+    base-url: ${MOODLE_ADAPTER_API_BASE_URL:http://localhost:8080}
+    connect-timeout: 5000 # in milliseconds
+    read-timeout: 30000 # in milliseconds
+  db:
+    base-path: ./moodle_dbs
