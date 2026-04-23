@@ -1,7 +1,6 @@
 # === Compilados ===
 target/
 build/
-out/
 
 # === Logs ===
 *.log
