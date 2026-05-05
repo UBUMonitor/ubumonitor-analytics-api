@@ -18,6 +18,6 @@ post:
       content:
         application/json:
           schema:
-            $ref: "../../components/schemas/auth/offline/response.yaml#/AuthOfflineResponse"
+            $ref: "../../components/schemas/auth/response.yaml#/AuthResponse"
     '401':
-      $ref: '../../components/responses/unauthorized_401.yaml'
+      $ref: '../../openapi.yaml#/components/responses/unauthorized_401'

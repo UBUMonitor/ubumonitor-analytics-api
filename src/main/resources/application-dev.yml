@@ -16,6 +16,8 @@ springdoc:
     path: /swagger-ui.html
     url: /openapi/openapi.yaml
 
+jwt:
+  secret: 3f8d9c7a1b2e4f6d8a0c9e1b3d5f7a9c6e2d4b8f0a1c3e5d7f9b2a4c6e8d0f1
 
 logbook:
   format:

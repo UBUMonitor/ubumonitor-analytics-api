@@ -7,4 +7,4 @@ post:
     '204':
       description: Logout successful. No content is returned.
     '401':
-      $ref: '../../components/responses/unauthorized_401.yaml'
+      $ref: '../../openapi.yaml#/components/responses/unauthorized_401'

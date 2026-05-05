@@ -1,0 +1,67 @@
+CourseEnrollmentsResponse:
+  type: object
+  properties:
+    users:
+      type: array
+      description: List of users and their course enrollment information
+      items:
+        title: UserEnrollmentInfo
+        type: object
+        properties:
+          id:
+            type: integer
+            description: The unique identifier of the user.
+          fullName:
+            type: string
+            description: The full name of the user.
+          email:
+            type: string
+            description: The email address of the user.
+          firstAccess:
+            type: string
+            format: date-time
+            description: The timestamp of the user's first access to the site.
+          lastAccess:
+            type: string
+            format: date-time
+            description: The timestamp of the user's last access to the site.
+          lastCourseAccess:
+            type: string
+            format: date-time
+            description: The timestamp of the user's last access to the course.
+          roles:
+            type: array
+            description: List of roles the user has in the course.
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: The unique identifier of the role.
+                name:
+                  type: string
+                  description: Role name
+          groups:
+            type: array
+            description: List of groups the user is enrolled in for the course.
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: The unique identifier of the group.
+                name:
+                  type: string
+                  description: Group name
+          courses:
+            type: array
+            description: List of courses the user is enrolled in.
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: The unique identifier of the course.
+                fullName:
+                  type: string
+                  description: The full name of the course.

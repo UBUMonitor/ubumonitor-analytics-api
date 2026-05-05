@@ -1,8 +1,9 @@
 openapi: 3.0.3
 info:
-  title: Moodle Adapter API
+  title: Moodle Analytics
   version: "1.0.0"
-  description: Adapter for Moodle REST API to standard REST endpoints.
+  description: |
+    Moodle Analytics API provides endpoints for authenticating users, synchronizing course and enrollment information, and retrieving details about courses and enrollments. It allows clients to interact with the Moodle site to manage user sessions, access course data, and keep enrollment information up-to-date. The API is designed to facilitate integration with Moodle and enable efficient management of user authentication and course-related data.
 
 servers:
   - url: http://localhost:9090/api
@@ -13,6 +14,49 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
+  responses:
+    unauthorized_401:
+      description: Unauthorized - token missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: './components/schemas/common/error_response.yaml#/ErrorResponse'
+          example:
+            code: UNAUTHORIZED
+            message: Invalid token - token not found
+            timestamp: "2026-03-19T01:05:54.8306311+01:00"
+            traceId: "56e89575-dc49-4a83-b84c-0d5bff268ea7"
+            errors:
+              - field: exception
+                message: '401 UNAUTHORIZED "Invalid token - token not found"'
+    conflict_409:
+      description: Conflict - resource already exists or request conflicts with current state
+      content:
+        application/json:
+          schema:
+            $ref: './components/schemas/common/error_response.yaml#/ErrorResponse'
+          example:
+            code: CONFLICT
+            message: Resource already exists or conflicts with current state
+            timestamp: "2026-03-19T01:05:54.8306311+01:00"
+            traceId: "56e89575-dc49-4a83-b84c-0d5bff268ea7"
+            errors:
+              - field: exception
+                message: '409 CONFLICT "Resource already exists or conflicts with current state"'
+    bad_request_400:
+      description: Bad Request - invalid field or missing data
+      content:
+        application/json:
+          schema:
+            $ref: './components/schemas/common/error_response.yaml#/ErrorResponse'
+          example:
+            code: BAD_REQUEST
+            message: "Missing required header: X-Moodle-Host"
+            timestamp: "2026-04-05T02:41:49.5759267+02:00"
+            traceId: 4a253e64-5203-477a-8f4c-db25fd11a067
+            errors:
+              - field: exception
+                message: '400 BAD_REQUEST "Missing required header: X-Moodle-Host"'
 
 security:
   - bearerAuth: []
@@ -20,11 +64,30 @@ security:
 paths:
   /public/auth/credentials:
     $ref: './paths/auth/credentials.yaml'
+
   /public/auth/token:
     $ref: './paths/auth/token.yaml'
+
   /public/auth/offline:
     $ref: './paths/auth/offline.yaml'
-  /private/auth/logout:
+
+  /auth/logout:
     $ref: './paths/auth/logout.yaml'
-  /private/sync/site:
-    $ref: './paths/sync/site.yaml'
+
+  /sites/sync:
+    $ref: './paths/sites/sync.yaml'
+
+  /sites/info:
+    $ref: './paths/sites/info.yaml'
+
+  /enrollments/sync:
+    $ref: './paths/enrollments/sync.yaml'
+
+  /enrollments/info:
+    $ref: './paths/enrollments/info.yaml'
+
+  /courses/{courseId}/enrollments/info:
+    $ref: './paths/courses/enrollments/info.yaml'
+
+  /courses/{courseId}/enrollments/sync:
+    $ref: './paths/courses/enrollments/sync.yaml'

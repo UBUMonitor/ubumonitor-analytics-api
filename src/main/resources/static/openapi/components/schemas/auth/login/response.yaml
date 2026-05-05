@@ -1,8 +1,0 @@
-AuthLoginResponse:
-  type: object
-  properties:
-    accessToken:
-      type: string
-    tokenType:
-      type: string
-      example: Bearer

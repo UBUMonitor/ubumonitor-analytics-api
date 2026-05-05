@@ -9,16 +9,27 @@ spring:
       enabled: false
   main:
     allow-bean-definition-overriding: true
+  datasource:
+    url: jdbc:h2:file:./moodle_dbs/bootstrap;DB_CLOSE_DELAY=-1;AUTO_SERVER=TRUE
+    username: sa
+    password: ""
 
   jpa:
+
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
     show-sql: true
+    open-in-view: false
     properties:
       hibernate:
         format_sql: true
-    open-in-view: false
+        multiTenancy: DATABASE
+
+    flyway:
+      enabled: false
   h2:
     console:
       enabled: false

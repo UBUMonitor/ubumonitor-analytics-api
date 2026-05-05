@@ -44,7 +44,10 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-security</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>org.springframework.data</groupId>
+      <artifactId>spring-data-envers</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-devtools</artifactId>
@@ -221,8 +224,8 @@
 
               <library>spring-boot</library>
 
-              <apiPackage>es.ubu.lsi.moodleanalytics.api.generated.api</apiPackage>
-              <modelPackage>es.ubu.lsi.moodleanalytics.api.generated.model</modelPackage>
+              <apiPackage>es.ubu.lsi.ubumonitoranalytics.api.generated.api</apiPackage>
+              <modelPackage>es.ubu.lsi.ubumonitoranalytics.api.generated.model</modelPackage>
 
               <output>${project.build.directory}/generated-sources/openapi</output>
 
@@ -240,7 +243,7 @@
                 <reactive>false</reactive>
                 <delegatePattern>true</delegatePattern>
                 <useJakartaEe>true</useJakartaEe>
-                <useResponseEntity>true</useResponseEntity>
+                <useResponseEntity>false</useResponseEntity>
                 <useBeanValidation>true</useBeanValidation>
                 <useTags>true</useTags>
                 <jackson>true</jackson>
@@ -259,7 +262,7 @@
 
             <configuration>
               <inputSpec>
-                ${project.basedir}/src/main/resources/static/openapi/spec/openapi_moodle_adapter.yaml
+                ${project.basedir}/src/main/resources/static/openapi/consumer/openapi_moodle_adapter.yaml
               </inputSpec>
 
               <generatorName>java</generatorName>
