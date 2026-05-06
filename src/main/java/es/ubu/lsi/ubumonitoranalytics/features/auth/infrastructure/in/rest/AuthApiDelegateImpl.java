@@ -10,6 +10,7 @@ import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.JwtToken;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.auth.AuthInput;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,24 +22,24 @@ public class AuthApiDelegateImpl implements AuthApiDelegate {
 
 
     @Override
-    public AuthResponseDto authLogin(AuthLoginRequestDto loginAuthRequestDto) {
+    public ResponseEntity<AuthResponseDto> authLogin(AuthLoginRequestDto loginAuthRequestDto) {
         AuthInput authInput = authMapper.toDomain(loginAuthRequestDto);
         JwtToken jwtToken = authUseCase.loginByCredentials(authInput);
-        return authMapper.toAuthResponse(jwtToken);
+        return ResponseEntity.ok(authMapper.toAuthResponse(jwtToken));
     }
 
     @Override
-    public AuthResponseDto authToken(AuthTokenRequestDto authTokenRequestDto) {
+    public ResponseEntity<AuthResponseDto> authToken(AuthTokenRequestDto authTokenRequestDto) {
         AuthInput authInput = authMapper.toDomain(authTokenRequestDto);
         JwtToken jwtToken = authUseCase.loginByToken(authInput);
-        return authMapper.toAuthResponse(jwtToken);
+        return ResponseEntity.ok(authMapper.toAuthResponse(jwtToken));
     }
 
     @Override
-    public AuthResponseDto authOffline(AuthOfflineRequestDto authOfflineRequestDto) {
+    public ResponseEntity<AuthResponseDto> authOffline(AuthOfflineRequestDto authOfflineRequestDto) {
         AuthInput authInput = authMapper.toDomain(authOfflineRequestDto);
         JwtToken jwtToken = authUseCase.loginOffline(authInput);
-        return authMapper.toAuthResponse(jwtToken);
+        return ResponseEntity.ok(authMapper.toAuthResponse(jwtToken));
     }
 
 

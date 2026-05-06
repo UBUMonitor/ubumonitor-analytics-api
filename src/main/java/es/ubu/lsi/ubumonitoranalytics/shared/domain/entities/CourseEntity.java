@@ -13,7 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,11 +33,11 @@ public class CourseEntity extends AuditableEntity {
     private Boolean showGrades;
     private Boolean enableCompletion;
 
-    private Instant startDate;
-    private Instant endDate;
+    private OffsetDateTime startDate;
+    private OffsetDateTime endDate;
 
-    private Instant timeModified;
+    private OffsetDateTime timeModified;
 
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     private List<UserCourseEntity> userCourses = new ArrayList<>();
 }

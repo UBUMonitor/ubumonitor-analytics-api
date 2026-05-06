@@ -8,6 +8,7 @@ import es.ubu.lsi.ubumonitoranalytics.api.generated.model.SiteInfoResponseDto;
 import es.ubu.lsi.ubumonitoranalytics.features.sites.application.port.in.GetSiteInfoUseCase;
 import es.ubu.lsi.ubumonitoranalytics.features.sites.application.port.in.SyncSiteInfoUseCase;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,13 +20,13 @@ public class SitesApiDelegateImpl implements SitesApiDelegate {
     private final SiteInfoMapper siteInfoMapper;
 
     @Override
-    public SiteInfoResponseDto syncSiteInfo() {
-        return siteInfoMapper.toDto(syncSiteInfoUseCase.syncSiteInfo());
+    public ResponseEntity<SiteInfoResponseDto> syncSiteInfo() {
+        return ResponseEntity.ok(siteInfoMapper.toDto(syncSiteInfoUseCase.syncSiteInfo()));
     }
 
     @Override
-    public SiteInfoResponseDto getSiteInfo() {
-        return siteInfoMapper.toDto(getSiteInfoUseCase.getIteInfo());
+    public ResponseEntity<SiteInfoResponseDto> getSiteInfo() {
+        return ResponseEntity.ok(siteInfoMapper.toDto(getSiteInfoUseCase.getIteInfo()));
     }
 
 

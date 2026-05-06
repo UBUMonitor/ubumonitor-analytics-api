@@ -15,34 +15,6 @@ components:
       scheme: bearer
       bearerFormat: JWT
   responses:
-    unauthorized_401:
-      description: Unauthorized - token missing or invalid
-      content:
-        application/json:
-          schema:
-            $ref: './components/schemas/common/error_response.yaml#/ErrorResponse'
-          example:
-            code: UNAUTHORIZED
-            message: Invalid token - token not found
-            timestamp: "2026-03-19T01:05:54.8306311+01:00"
-            traceId: "56e89575-dc49-4a83-b84c-0d5bff268ea7"
-            errors:
-              - field: exception
-                message: '401 UNAUTHORIZED "Invalid token - token not found"'
-    conflict_409:
-      description: Conflict - resource already exists or request conflicts with current state
-      content:
-        application/json:
-          schema:
-            $ref: './components/schemas/common/error_response.yaml#/ErrorResponse'
-          example:
-            code: CONFLICT
-            message: Resource already exists or conflicts with current state
-            timestamp: "2026-03-19T01:05:54.8306311+01:00"
-            traceId: "56e89575-dc49-4a83-b84c-0d5bff268ea7"
-            errors:
-              - field: exception
-                message: '409 CONFLICT "Resource already exists or conflicts with current state"'
     bad_request_400:
       description: Bad Request - invalid field or missing data
       content:
@@ -57,6 +29,49 @@ components:
             errors:
               - field: exception
                 message: '400 BAD_REQUEST "Missing required header: X-Moodle-Host"'
+    unauthorized_401:
+      description: Unauthorized - token missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: './components/schemas/common/error_response.yaml#/ErrorResponse'
+          example:
+            code: UNAUTHORIZED
+            message: Invalid token - token not found
+            timestamp: "2026-03-19T01:05:54.8306311+01:00"
+            traceId: "56e89575-dc49-4a83-b84c-0d5bff268ea7"
+            errors:
+              - field: exception
+                message: '401 UNAUTHORIZED "Invalid token - token not found"'
+    not_found_404:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: './components/schemas/common/error_response.yaml#/ErrorResponse'
+          example:
+            code: NOT_FOUND
+            message: Invalid token - token not found
+            timestamp: "2026-03-19T01:05:54.8306311+01:00"
+            traceId: "56e89575-dc49-4a83-b84c-0d5bff268ea7"
+            errors:
+              - field: exception
+                message: '404 NOT FOUND'
+    conflict_409:
+      description: Conflict - resource already exists or request conflicts with current state
+      content:
+        application/json:
+          schema:
+            $ref: './components/schemas/common/error_response.yaml#/ErrorResponse'
+          example:
+            code: CONFLICT
+            message: Resource already exists or conflicts with current state
+            timestamp: "2026-03-19T01:05:54.8306311+01:00"
+            traceId: "56e89575-dc49-4a83-b84c-0d5bff268ea7"
+            errors:
+              - field: exception
+                message: '409 CONFLICT "Resource already exists or conflicts with current state"'
+
 
 security:
   - bearerAuth: []
@@ -91,3 +106,6 @@ paths:
 
   /courses/{courseId}/enrollments/sync:
     $ref: './paths/courses/enrollments/sync.yaml'
+
+  /users/{userId}/images/profile:
+    $ref: "./paths/users/images/profile.yaml"

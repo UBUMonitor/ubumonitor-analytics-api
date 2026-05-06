@@ -5,5 +5,6 @@ import es.ubu.lsi.ubumonitoranalytics.features.enrollmentcourse.domain.model.Cou
 
 public interface EnrollmentFetchPort {
 
-    CourseEnrollment fetchCourseEnrolledUsers(Integer courseId);
+
+    CourseEnrollment fetchCourseEnrolledUsers(Integer courseId, String token);
 }

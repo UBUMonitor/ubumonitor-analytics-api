@@ -55,7 +55,7 @@ public class DatabaseUtil {
         // toString() de Path suele ser suficiente, pero esto es más robusto:
         String normalizedPath = fullPath.replace("\\", "/");
 
-        return String.format("jdbc:h2:file:%s;CIPHER=AES;DB_CLOSE_ON_EXIT=FALSE", normalizedPath);
+        return String.format("jdbc:h2:file:%s;CIPHER=AES;DB_CLOSE_ON_EXIT=FALSE;DATABASE_TO_UPPER=false", normalizedPath);
     }
 
 

@@ -1,0 +1,37 @@
+get:
+  tags:
+    - Users
+  summary: Get user profile image
+  operationId: GetUserImagesProfile
+  description: Get user profile image
+  parameters:
+    - name: If-None-Match
+      in: header
+      description: hash to check if has changes
+      required: false
+      schema:
+        type: string
+    - name: userId
+      in: path
+      description: The user id
+      required: true
+      schema:
+        type: integer
+  responses:
+    '200':
+      description: Image of the user
+      headers:
+        ETag:
+          schema:
+            type: string
+      content:
+        image/png:
+          schema:
+            type: string
+            format: binary
+    '304':
+      description: Not Modified
+    '401':
+      $ref: '../../../openapi.yaml#/components/responses/unauthorized_401'
+    '404':
+      description: Not found

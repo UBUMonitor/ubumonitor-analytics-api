@@ -2,7 +2,7 @@ package es.ubu.lsi.ubumonitoranalytics.features.enrollmentcourse.domain.model;
 
 import lombok.Data;
 
-import java.time.Instant;
+import java.time.OffsetDateTime;
 
 @Data
 public class Enrollment {
@@ -10,6 +10,6 @@ public class Enrollment {
     private Course course;
 
 
-    private Instant lastCourseAccess;
+    private OffsetDateTime lastCourseAccess;
 
 }

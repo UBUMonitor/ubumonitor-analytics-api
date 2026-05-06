@@ -2,7 +2,7 @@ package es.ubu.lsi.ubumonitoranalytics.features.enrollmentuser.domain.model;
 
 import lombok.Data;
 
-import java.time.Instant;
+import java.time.OffsetDateTime;
 
 @Data
 public class Course {
@@ -12,7 +12,7 @@ public class Course {
     private String shortName;
     private Boolean showGrades;
     private Boolean enableCompletion;
-    private Instant startDate;
-    private Instant endDate;
-    private Instant timeModified;
+    private OffsetDateTime startDate;
+    private OffsetDateTime endDate;
+    private OffsetDateTime timeModified;
 }

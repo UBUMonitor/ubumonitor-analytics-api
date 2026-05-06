@@ -6,6 +6,7 @@ import es.ubu.lsi.ubumonitoranalytics.features.enrollmentcourse.application.port
 import es.ubu.lsi.ubumonitoranalytics.features.enrollmentcourse.application.port.in.SyncCourseEnrollmentsUseCase;
 import es.ubu.lsi.ubumonitoranalytics.features.enrollmentcourse.domain.model.CourseEnrollment;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -20,16 +21,16 @@ public class CourseEnrollmentsApiDelegateImpl implements CourseEnrollmentsApiDel
 
 
     @Override
-    public CourseEnrollmentsResponseDto syncCourseUsersEnrollments(Integer courseId) {
+    public ResponseEntity<CourseEnrollmentsResponseDto> syncCourseUsersEnrollments(Integer courseId) {
         CourseEnrollment enrollments = syncCourseEnrollmentsUseCase.syncCourseEnrollments(courseId);
 
-        return courseEnrollmentsMapper.toDto(enrollments);
+        return ResponseEntity.ok(courseEnrollmentsMapper.toDto(enrollments));
     }
 
     @Override
-    public CourseEnrollmentsResponseDto getCourseUsersEnrollmentsInfo(Integer courseId) {
+    public ResponseEntity<CourseEnrollmentsResponseDto> getCourseUsersEnrollmentsInfo(Integer courseId) {
         CourseEnrollment enrollments = getCourseEnrollmentsUseCase.getCourseEnrollment(courseId);
-        return courseEnrollmentsMapper.toDto(enrollments);
+        return ResponseEntity.ok(courseEnrollmentsMapper.toDto(enrollments));
     }
 
 }

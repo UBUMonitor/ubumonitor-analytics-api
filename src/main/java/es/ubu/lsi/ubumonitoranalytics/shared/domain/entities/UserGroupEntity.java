@@ -18,7 +18,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "user_group")
+@Table(name = "users_groups")
 public class UserGroupEntity extends AuditableEntity {
     @EmbeddedId
     private UserGroupId id;

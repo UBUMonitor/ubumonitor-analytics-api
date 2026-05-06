@@ -56,3 +56,6 @@ coverage/
 *.zip
 *.tar
 *.gz
+
+
+moodle_dbs/

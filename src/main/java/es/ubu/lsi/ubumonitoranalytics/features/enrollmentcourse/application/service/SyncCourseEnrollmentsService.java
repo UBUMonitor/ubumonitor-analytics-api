@@ -4,6 +4,7 @@ import es.ubu.lsi.ubumonitoranalytics.features.enrollmentcourse.application.port
 import es.ubu.lsi.ubumonitoranalytics.features.enrollmentcourse.application.port.out.EnrollmentFetchPort;
 import es.ubu.lsi.ubumonitoranalytics.features.enrollmentcourse.application.port.out.EnrollmentSavePersistencePort;
 import es.ubu.lsi.ubumonitoranalytics.features.enrollmentcourse.domain.model.CourseEnrollment;
+import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,11 +15,12 @@ public class SyncCourseEnrollmentsService implements SyncCourseEnrollmentsUseCas
 
     private final EnrollmentFetchPort enrollmentFetchPort;
     private final EnrollmentSavePersistencePort enrollmentSavePersistencePort;
+    private final CurrentSessionContext currentSessionContext;
 
     @Override
     @Transactional
     public CourseEnrollment syncCourseEnrollments(Integer courseId) {
-        CourseEnrollment courseEnrollment = enrollmentFetchPort.fetchCourseEnrolledUsers(courseId);
+        CourseEnrollment courseEnrollment = enrollmentFetchPort.fetchCourseEnrolledUsers(courseId, currentSessionContext.getSessionData().getMoodleToken());
 
         enrollmentSavePersistencePort.saveEnrollments(courseEnrollment);
 

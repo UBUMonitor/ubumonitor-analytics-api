@@ -28,14 +28,15 @@ public interface UserCourseMapper {
 
     @Mapping(target = "id.userId", source = "user.id")
     @Mapping(target = "id.courseId", source = "course.id")
-    @Mapping(target = "user.id", source = "user.id")
-    @Mapping(target = "course.id", source = "course.id")
+
     @Mapping(target = "active", expression = "java(active)")
-    @Mapping(target = "user", ignore = true)
-    @Mapping(target = "course", ignore = true)
+    @Mapping(target = "user", source = "user")
+    @Mapping(target = "course", source = "course")
+    @Mapping(target = "lastCourseAccess",source = "lastCourseAccess")
     UserCourseEntity toUserCourseEntity(Enrollment enrollment, @Context Boolean active);
 
 
+    @Mapping(target = "id", source = "id")
     @Mapping(target = "userCourses", ignore = true)
     @Mapping(target = "timeModified", ignore = true)
     @Mapping(target = "startDate", ignore = true)
@@ -44,10 +45,10 @@ public interface UserCourseMapper {
     @Mapping(target = "enableCompletion", ignore = true)
     CourseEntity toCourseEntity(Course course);
 
+    @Mapping(target = "id", source = "id")
     @Mapping(target = "userRoles", ignore = true)
     @Mapping(target = "userGroups", ignore = true)
     @Mapping(target = "userCourses", ignore = true)
-    @Mapping(target = "imageData", ignore = true)
     @Mapping(target = "image", ignore = true)
     UserEntity toUserEntity(User user);
 

@@ -190,25 +190,35 @@ public class EnrollmentSavePersistenceAdapter implements EnrollmentSavePersisten
 
     public void syncUserCourses(List<Integer> usersIds, CourseEnrollment courseEnrollment) {
 
-
+        // 1. Desactivar relaciones actuales
         userCourseRepository.deactivateByUserIds(usersIds);
-        // Iterar sobre los usuarios y sus cursos para construir pares user-course
-        // y luego mapearlos a UserCourseEntity usando el mapper existente.
-        List<Enrollment> userCourseEnrollments = courseEnrollment.getEnrollments().stream()
-            .map(Enrollment::getUser)
-            .distinct()
-            .flatMap(user -> user.getCourses().stream()
-                .map(course -> {
-                    Enrollment e = new Enrollment();
-                    e.setUser(user);
-                    e.setCourse(course);
-                    return e;
-                })
-            )
-            .toList();
 
-        List<UserCourseEntity> userCourseEntities = userCourseMapper.toUserCoursesEntities(userCourseEnrollments, true);
+        // 2. Usar directamente los enrollments que YA contienen lastCourseAccess
+        List<Enrollment> enrollments = courseEnrollment.getEnrollments();
 
+        // 3. Mapear a entidades (asegúrate de que el mapper copie lastCourseAccess)
+        List<UserCourseEntity> userCourseEntities =
+            userCourseMapper.toUserCoursesEntities(enrollments, true);
+
+        for (Enrollment enrollment : enrollments) {
+            User user =  enrollment.getUser();
+            List<Course> courses = user.getCourses();
+
+            for (Course course : courses) {
+                if (course.getId().equals(courseEnrollment.getCourseId())) {
+                    continue;
+                }
+                Enrollment enrollment1 = new Enrollment();
+                enrollment1.setCourse(course);
+                enrollment1.setUser(user);
+                UserCourseEntity userCourseEntity = userCourseMapper.toUserCourseEntity(enrollment1, true);
+                userCourseEntities.add(userCourseEntity);
+            }
+
+
+        }
+
+        // 4. Guardar
         userCourseRepository.saveAll(userCourseEntities);
     }
 

@@ -5,6 +5,6 @@ package es.ubu.lsi.ubumonitoranalytics.features.enrollmentuser.application.port.
 import es.ubu.lsi.ubumonitoranalytics.features.enrollmentuser.domain.model.UserCourses;
 
 
-public interface UserCoursesUseCase {
+public interface SyncUserCoursesUseCase {
     UserCourses syncActualUserEnrollments();
 }

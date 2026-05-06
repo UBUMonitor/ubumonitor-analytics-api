@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.net.URI;
 
 @Component
 @RequiredArgsConstructor
@@ -33,9 +32,9 @@ public class SiteInfoPersistenceAdapter implements SiteInfoPersistencePort {
 
     @Override
     @Transactional(readOnly = true)
-    public SiteInfo fetchSiteInfo(URI host, String userName) {
-        return siteRepository.findByHostAndUserName(host, userName)
+    public SiteInfo fetchSiteInfo(String userName) {
+        return siteRepository.findByUserName(userName)
             .map(sitePersistenceAdapterMapper::toDomain)
-            .orElseThrow(() -> new EntityNotFoundException("Site not found for host: " + host));
+            .orElseThrow(() -> new EntityNotFoundException("Site not found for userName: " + userName));
     }
 }

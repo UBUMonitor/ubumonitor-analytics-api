@@ -15,4 +15,5 @@ import java.net.URI;
 public class UserPicture {
     private URI url;
     private byte[] data;
+    private String hexHash;
 }

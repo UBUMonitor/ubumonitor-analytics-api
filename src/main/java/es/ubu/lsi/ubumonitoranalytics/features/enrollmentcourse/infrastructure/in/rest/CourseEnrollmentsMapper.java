@@ -18,6 +18,8 @@ public interface CourseEnrollmentsMapper {
     @Mapping(target = "users", source = "enrollments")
     CourseEnrollmentsResponseDto toDto(CourseEnrollment enrollments);
 
+    @Mapping(target = "lastAccess", source = "user.lastAccess")
+    @Mapping(target = "firstAccess", source = "user.firstAccess")
     @Mapping(target = "id", source = "user.id")
     @Mapping(target = "roles", source = "user.roles")
     @Mapping(target = "groups", source = "user.groups")

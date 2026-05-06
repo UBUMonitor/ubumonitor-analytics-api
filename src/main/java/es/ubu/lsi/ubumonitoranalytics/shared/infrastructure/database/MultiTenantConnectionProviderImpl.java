@@ -161,7 +161,7 @@ public class MultiTenantConnectionProviderImpl implements MultiTenantConnectionP
         String basePath = moodleConfig.getDb().getBasePath();
 
         String jdbcUrl = String.format(
-            "jdbc:h2:file:%s/bootstrap;DB_CLOSE_DELAY=-1;AUTO_SERVER=TRUE;DB_CLOSE_ON_EXIT=FALSE",
+            "jdbc:h2:file:%s/bootstrap;DB_CLOSE_DELAY=-1;AUTO_SERVER=TRUE;DATABASE_TO_UPPER=false",
             basePath.replace("\\", "/")
         );
 

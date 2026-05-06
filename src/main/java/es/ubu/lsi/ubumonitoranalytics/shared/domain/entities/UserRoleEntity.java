@@ -18,7 +18,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "user_role")
+@Table(name = "users_roles")
 public class UserRoleEntity extends AuditableEntity {
 
     @EmbeddedId

@@ -33,7 +33,6 @@ public interface CourseUsersMapper {
     Enrollment toDomain(MoodleAdapterEnrolledUserDto dto, @Context Integer courseId);
 
 
-    @Mapping(target = "userName", source = "username")
     @Mapping(target = "firstName", source = "firstname")
     @Mapping(target = "lastName", source = "lastname")
     @Mapping(target = "id", source = "id")

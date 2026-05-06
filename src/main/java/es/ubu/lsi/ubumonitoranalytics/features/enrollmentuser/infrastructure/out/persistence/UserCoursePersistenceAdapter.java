@@ -5,6 +5,7 @@ import es.ubu.lsi.ubumonitoranalytics.features.enrollmentuser.domain.model.Cours
 import es.ubu.lsi.ubumonitoranalytics.features.enrollmentuser.domain.model.UserCourses;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.entities.CourseEntity;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.entities.UserCourseEntity;
+import es.ubu.lsi.ubumonitoranalytics.shared.domain.entities.UserCourseId;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.entities.UserEntity;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.persistence.repository.CourseRepository;
 
@@ -13,8 +14,10 @@ import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.persistence.reposito
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -30,52 +33,63 @@ public class UserCoursePersistenceAdapter implements UserCoursePersistencePort {
     @Override
     public void saveCourses(UserCourses userCourses) {
 
-        // 1. Obtener o crear usuario
         UserEntity user = userRepository.findById(userCourses.getUserId())
-            .orElseGet(() -> {
-                UserEntity newUser = new UserEntity();
-                newUser.setId(userCourses.getUserId());
-                return userRepository.save(newUser);
+            .orElseGet(()-> {
+                UserEntity userEntity = new UserEntity();
+                userEntity.setId(userCourses.getUserId());
+                return userEntity;
             });
 
-        // 2. Limpiar relaciones actuales (orphanRemoval = true se encarga de deletes)
-        user.getUserCourses().clear();
+        if (user.getUserCourses() == null) {
+            user.setUserCourses(new  ArrayList<>());
+        }
 
-        // 3. MAPEAR Y PERSISTIR COURSES PRIMERO (CRÍTICO)
+        Map<Integer, UserCourseEntity> existing = user.getUserCourses().stream()
+            .collect(Collectors.toMap(
+                uc -> uc.getCourse().getId(),
+                uc -> uc
+            ));
+
+        Set<Integer> incomingIds = userCourses.getCourses().stream()
+            .map(Course::getId)
+            .collect(Collectors.toSet());
+
+        // 1. DESACTIVAR LOS QUE YA NO VIENEN
+        user.getUserCourses().forEach(uc -> {
+            if (!incomingIds.contains(uc.getCourse().getId())) {
+                uc.setActive(false);
+            }
+        });
+
+        // 2. ACTIVAR O CREAR LOS NUEVOS
         List<CourseEntity> courses =
             userCoursePersistenceAdapterMapper.toCourseEntity(userCourses.getCourses());
 
         courses = courseRepository.saveAll(courses);
 
-        // 4. Indexar cursos por ID para reutilizar entidades gestionadas
         Map<Integer, CourseEntity> courseMap = courses.stream()
             .collect(Collectors.toMap(CourseEntity::getId, c -> c));
 
-        // 5. Crear relaciones user-course
-        List<UserCourseEntity> userCourseEntities =
-            userCoursePersistenceAdapterMapper.toUserCourseEntities(userCourses, true);
+        for (Course course : userCourses.getCourses()) {
 
-        userCourseEntities.forEach(uc -> {
+            UserCourseEntity uc = existing.get(course.getId());
 
-            uc.setUser(user);
-            if (uc.getCourse() != null && uc.getCourse().getId() != null) {
-                CourseEntity managedCourse = courseMap.get(uc.getCourse().getId());
+            if (uc == null) {
+                uc = new UserCourseEntity();
+                uc.setId(new UserCourseId(user.getId(), course.getId()));
+                uc.setUser(user);
+                uc.setCourse(courseMap.get(course.getId()));
+                uc.setActive(true);
 
-                if (managedCourse == null) {
-                    throw new IllegalStateException(
-                        "Course not found in current tenant: " + uc.getCourse().getId()
-                    );
-                }
+                user.getUserCourses().add(uc);
 
-                uc.setCourse(managedCourse);
+            } else {
+                uc.setActive(true); // reactivar si ya existía
             }
-        });
-
-        user.getUserCourses().addAll(userCourseEntities);
+        }
 
         userRepository.save(user);
     }
-
     @Override
     public List<Course> getUserCourses(Integer userId) {
         return userCoursePersistenceAdapterMapper.toDomain(courseRepository.findAll());

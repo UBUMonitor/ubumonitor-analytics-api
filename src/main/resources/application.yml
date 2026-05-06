@@ -1,6 +1,9 @@
 spring:
   config:
     import: classpath:application-moodlerules.yml
+  threads:
+    virtual:
+      enabled: true
   web:
     resources:
       add-mappings: false
@@ -14,6 +17,10 @@ spring:
     username: sa
     password: ""
 
+
+  hikari:
+    data-source-properties:
+      ApplicationName:
   jpa:
 
     database-platform: org.hibernate.dialect.H2Dialect

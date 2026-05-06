@@ -13,10 +13,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.Instant;
+import java.time.OffsetDateTime;
 
 @Entity
-@Table(name = "user_course")
+@Table(name = "users_courses")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -36,6 +36,6 @@ public class UserCourseEntity extends AuditableEntity {
     @JoinColumn(name = "course_id", nullable = false)
     private CourseEntity course;
 
-    private Instant lastCourseAccess;
+    private OffsetDateTime lastCourseAccess;
     private Boolean active;
 }

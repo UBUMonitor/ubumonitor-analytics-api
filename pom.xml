@@ -243,7 +243,7 @@
                 <reactive>false</reactive>
                 <delegatePattern>true</delegatePattern>
                 <useJakartaEe>true</useJakartaEe>
-                <useResponseEntity>false</useResponseEntity>
+                <useResponseEntity>true</useResponseEntity>
                 <useBeanValidation>true</useBeanValidation>
                 <useTags>true</useTags>
                 <jackson>true</jackson>

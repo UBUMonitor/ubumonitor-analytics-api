@@ -5,7 +5,6 @@ import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.persistence.reposito
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.net.URI;
 
 @Component
 @RequiredArgsConstructor
@@ -13,7 +12,7 @@ public class SitePersistenceAdapter implements SitePersistencePort {
     private final SiteRepository siteRepository;
 
     @Override
-    public Integer getActualUserId(URI host, String username) {
-        return siteRepository.findUserIdByHostAndUserName(host, username);
+    public Integer getActualUserId(String userName) {
+        return siteRepository.findUserIdByUserName(userName);
     }
 }

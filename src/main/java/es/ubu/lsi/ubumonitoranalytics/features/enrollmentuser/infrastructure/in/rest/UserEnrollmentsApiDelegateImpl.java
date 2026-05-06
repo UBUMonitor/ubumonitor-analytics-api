@@ -2,27 +2,28 @@ package es.ubu.lsi.ubumonitoranalytics.features.enrollmentuser.infrastructure.in
 
 import es.ubu.lsi.ubumonitoranalytics.api.generated.api.UserEnrollmentsApiDelegate;
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.EnrollmentsResponseDto;
-import es.ubu.lsi.ubumonitoranalytics.features.enrollmentuser.application.port.in.UserCoursesUseCase;
+import es.ubu.lsi.ubumonitoranalytics.features.enrollmentuser.application.port.in.SyncUserCoursesUseCase;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class UserEnrollmentsApiDelegateImpl implements UserEnrollmentsApiDelegate {
 
-    private final UserCoursesUseCase userCoursesUseCase;
+    private final SyncUserCoursesUseCase syncUserCoursesUseCase;
     private final SyncEnrollmentsMapper syncEnrollmentsMapper;
 
 
 
     @Override
-    public EnrollmentsResponseDto syncUserEnrollments() {
-        return syncEnrollmentsMapper.toDto(userCoursesUseCase.syncActualUserEnrollments());
+    public ResponseEntity<EnrollmentsResponseDto> syncUserEnrollments() {
+        return ResponseEntity.ok(syncEnrollmentsMapper.toDto(syncUserCoursesUseCase.syncActualUserEnrollments()));
     }
 
     @Override
-    public EnrollmentsResponseDto getActualUserEnrollments() {
-        return null;
+    public ResponseEntity<EnrollmentsResponseDto> getActualUserEnrollments() {
+        return ResponseEntity.ok(null);
     }
 
 
