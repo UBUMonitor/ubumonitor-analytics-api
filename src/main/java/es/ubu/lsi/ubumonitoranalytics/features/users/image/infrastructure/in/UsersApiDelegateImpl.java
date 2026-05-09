@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -21,16 +20,8 @@ public class UsersApiDelegateImpl implements UsersApiDelegate {
     @Override
     public ResponseEntity<Resource> getUserImagesProfile(Integer userId, String ifNoneMatch) {
 
-        Optional<UserImage> result =
-            getUserImageUseCase.getUserImage(userId, ifNoneMatch);
+        UserImage userImage = getUserImageUseCase.getUserImage(userId, ifNoneMatch);
 
-        if (result.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        UserImage userImage = result.get();
-
-        // 304: match de ETag
         if (!userImage.isModified()) {
             return ResponseEntity.status(HttpStatus.NOT_MODIFIED)
                 .eTag(userImage.getHexHash())

@@ -17,7 +17,7 @@ import lombok.Setter;
 @Table(name = "users_images")
 @Getter
 @Setter
-public class UserImageEntity {
+public class UserImageEntity extends AuditableEntity{
 
     @Id
     private Integer userId;

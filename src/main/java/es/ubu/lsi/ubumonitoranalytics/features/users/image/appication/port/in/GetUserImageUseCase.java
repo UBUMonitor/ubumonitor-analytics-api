@@ -6,5 +6,5 @@ import java.util.Optional;
 
 public interface GetUserImageUseCase {
 
-    Optional<UserImage> getUserImage(Integer userId, String ifNoneMatch);
+    UserImage getUserImage(Integer userId, String ifNoneMatch);
 }
