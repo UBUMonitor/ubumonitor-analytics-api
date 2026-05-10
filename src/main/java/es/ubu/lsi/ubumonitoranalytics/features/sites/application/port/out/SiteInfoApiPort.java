@@ -6,3 +6,4 @@ public interface SiteInfoApiPort {
 
     SiteInfo fetchSiteInfo();
 }
+

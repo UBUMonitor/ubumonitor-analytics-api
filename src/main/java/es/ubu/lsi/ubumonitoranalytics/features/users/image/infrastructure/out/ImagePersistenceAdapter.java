@@ -22,3 +22,4 @@ public class ImagePersistenceAdapter implements ImagePersistencePort {
         return userImageRepository.findImageDataByUserId(userId);
     }
 }
+

@@ -11,3 +11,4 @@ public class UserImage {
     private String hexHash;
     private boolean isModified;
 }
+

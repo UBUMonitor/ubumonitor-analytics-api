@@ -1,0 +1,22 @@
+get:
+  tags:
+    - CourseContent
+  summary: Get course users has been enrolled information
+  operationId: GetCourseUsersContentInfo
+  description: Get course Users Content sections and modules
+  parameters:
+    - name: courseId
+      in: path
+      description: The unique identifier of the course for which to retrieve contents.
+      required: true
+      schema:
+        type: integer
+  responses:
+    '200':
+      description: Get course sections and modules
+      content:
+        application/json:
+          schema:
+            $ref: '../../../components/schemas/courses/content/info/response.yaml#/CourseContentResponse'
+    '401':
+      $ref: '../../../openapi.yaml#/components/responses/unauthorized_401'

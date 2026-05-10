@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserCourseRepository extends JpaRepository<UserCourseEntity, UserCourseId> {
 
@@ -18,13 +19,16 @@ public interface UserCourseRepository extends JpaRepository<UserCourseEntity, Us
         """)
     List<CourseEntity> findCoursesByUserId(Integer userId);
 
+
+    List<UserCourseEntity> findByCourseId(Integer courseId);
+
     @Query("""
         SELECT uc FROM UserCourseEntity uc
         JOIN FETCH uc.user
         JOIN FETCH uc.course
-        WHERE uc.course.id = :courseId
+        WHERE uc.user.id = :userId
         """)
-    List<UserCourseEntity> findByCourseId(Integer courseId);
+    Optional<List<UserCourseEntity>> findByUserId(Integer userId);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("""
@@ -44,4 +48,5 @@ public interface UserCourseRepository extends JpaRepository<UserCourseEntity, Us
 
 
 
+    List<UserCourseEntity> findByUserIdAndActiveTrue(Integer userId);
 }

@@ -24,3 +24,4 @@ public class MoodleApiAdapter implements MoodleApiPort {
         return mapper.toDomain(responseDto);
     }
 }
+

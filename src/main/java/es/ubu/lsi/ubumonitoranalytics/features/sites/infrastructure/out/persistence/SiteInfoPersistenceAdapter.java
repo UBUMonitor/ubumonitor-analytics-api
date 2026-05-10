@@ -38,3 +38,4 @@ public class SiteInfoPersistenceAdapter implements SiteInfoPersistencePort {
             .orElseThrow(() -> new EntityNotFoundException("Site not found for userName: " + userName));
     }
 }
+

@@ -23,3 +23,4 @@ public class GetSiteInfoService implements GetSiteInfoUseCase {
         return siteInfoPersistencePort.fetchSiteInfo(sessionData.getUserName());
     }
 }
+

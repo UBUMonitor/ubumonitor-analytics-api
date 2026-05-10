@@ -74,6 +74,7 @@ CREATE TABLE users_courses
   user_id            INT       NOT NULL,
   course_id          INT       NOT NULL,
   last_course_access TIMESTAMP WITH TIME ZONE,
+  is_favourite       BOOLEAN,
   active             BOOLEAN,
   created_at         TIMESTAMP NOT NULL,
   updated_at         TIMESTAMP NOT NULL,
@@ -146,19 +147,16 @@ CREATE TABLE sections
 CREATE TABLE modules
 (
   id          INT PRIMARY KEY,
-  section_id  INT,
-  course_id   INT       NOT NULL,
+  section_id  INT NOT NULL,
   name        VARCHAR(255),
   mod_name    VARCHAR(50),
   url         VARCHAR(2048),
   description CLOB,
   visible     BOOLEAN,
-  active     BOOLEAN,
+  active      BOOLEAN,
   created_at  TIMESTAMP NOT NULL,
   updated_at  TIMESTAMP NOT NULL,
-  CONSTRAINT fk_modules_section FOREIGN KEY (section_id) REFERENCES sections (id),
-
-  CONSTRAINT fk_modules_course FOREIGN KEY (course_id) REFERENCES courses (id)
+  CONSTRAINT fk_modules_section FOREIGN KEY (section_id) REFERENCES sections (id)
 );
 
 -- =========================
@@ -208,7 +206,7 @@ CREATE TABLE logs
   course_id    INT     NOT NULL,
   component_id TINYINT NOT NULL,
   event_id     TINYINT NOT NULL,
-  moduleId     INT,
+  module_id    INT,
 
   CONSTRAINT fk_log_user FOREIGN KEY (user_id) REFERENCES users (id),
   CONSTRAINT fk_log_course FOREIGN KEY (course_id) REFERENCES courses (id),
@@ -220,11 +218,13 @@ CREATE TABLE logs
 -- INDEXES
 -- =========================
 
+-- users_courses indexes
 CREATE INDEX idx_user_course_user_id ON users_courses (user_id);
 CREATE INDEX idx_user_course_course_id ON users_courses (course_id);
 
+-- logs indexes
 CREATE INDEX idx_logs_user_id ON logs (user_id);
 CREATE INDEX idx_logs_course_id ON logs (course_id);
-CREATE INDEX idx_logs_course_module_id ON logs (course_module_id);
+CREATE INDEX idx_logs_course_module_id ON logs (module_id);
 CREATE INDEX idx_logs_timestamp ON logs (timestamp);
 CREATE INDEX idx_logs_user_timestamp ON logs (user_id, timestamp);

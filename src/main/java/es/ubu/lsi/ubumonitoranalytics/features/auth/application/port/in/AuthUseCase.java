@@ -9,3 +9,4 @@ public interface AuthUseCase {
     JwtToken loginByCredentials(AuthInput authInput);
     JwtToken loginOffline(AuthInput offlineAuthInput);
 }
+

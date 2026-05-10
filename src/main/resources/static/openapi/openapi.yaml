@@ -107,5 +107,11 @@ paths:
   /courses/{courseId}/enrollments/sync:
     $ref: './paths/courses/enrollments/sync.yaml'
 
+  /courses/{courseId}/content/info:
+    $ref: './paths/courses/content/info.yaml'
+
+  /courses/{courseId}/content/sync:
+    $ref: './paths/courses/content/sync.yaml'
+
   /users/{userId}/images/profile:
     $ref: "./paths/users/images/profile.yaml"

@@ -1,42 +1,46 @@
 package es.ubu.lsi.ubumonitoranalytics.shared.domain.entities;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
-@Table(name = "modules")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class ModuleEntity extends AuditableEntity {
+import java.net.URI;
 
-    @Id
-    private Integer id;
+    @Entity
+    @Table(name = "modules")
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public class ModuleEntity extends AuditableEntity {
 
-    private Integer courseId;
+        @Id
+        private Integer id;
 
-    private String name;
 
-    private String modName;
+        private String name;
 
-    @Lob
-    private String url;
+        private String modName;
 
-    @Lob
-    private String description;
+        private URI url;
 
-    private Boolean visible;
+        @Lob
+        private String description;
 
-    @ManyToOne
-    @JoinColumn(name = "section_id")
-    private SectionEntity section;
-}
+        private Boolean visible;
+
+        private Boolean active;
+
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "section_id", nullable = false)
+        private SectionEntity section;
+    }

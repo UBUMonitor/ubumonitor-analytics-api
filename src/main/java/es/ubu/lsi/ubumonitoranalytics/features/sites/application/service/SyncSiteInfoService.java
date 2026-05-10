@@ -22,3 +22,4 @@ public class SyncSiteInfoService implements SyncSiteInfoUseCase {
         return siteInfo;
     }
 }
+

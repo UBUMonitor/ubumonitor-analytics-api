@@ -25,3 +25,4 @@ public class SiteInfoApiAdapter implements SiteInfoApiPort {
 
     }
 }
+

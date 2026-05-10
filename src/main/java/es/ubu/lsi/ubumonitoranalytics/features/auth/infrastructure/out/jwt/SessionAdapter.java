@@ -84,3 +84,4 @@ public class SessionAdapter implements SessionPort {
         return DatabaseUtil.exists(moodleConfig.getDb().getBasePath(), authInput.getHost(), authInput.getUserName());
     }
 }
+

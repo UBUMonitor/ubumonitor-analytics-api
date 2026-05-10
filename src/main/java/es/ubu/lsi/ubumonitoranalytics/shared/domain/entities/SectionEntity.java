@@ -1,9 +1,14 @@
 package es.ubu.lsi.ubumonitoranalytics.shared.domain.entities;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -11,6 +16,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,8 +30,9 @@ public class SectionEntity extends AuditableEntity {
     @Id
     private Integer id;
 
-    @Column(name = "course_id", nullable = false)
-    private Integer courseId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "course_id", nullable = false)
+    private CourseEntity course;
 
     private String name;
 
@@ -36,8 +43,13 @@ public class SectionEntity extends AuditableEntity {
 
     private Boolean visible;
 
-    @OneToMany(mappedBy = "section")
-    private List<ModuleEntity> modules;
+    @OneToMany(mappedBy = "section", cascade = CascadeType.ALL)
+    private List<ModuleEntity> modules = new ArrayList<>();
 
     private Boolean active;
+
+    public void addModule(ModuleEntity module) {
+        modules.add(module);
+        module.setSection(this);
+    }
 }

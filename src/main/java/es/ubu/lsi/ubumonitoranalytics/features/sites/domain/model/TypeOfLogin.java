@@ -6,3 +6,4 @@ public enum TypeOfLogin {
     BROWSER;
 
 }
+

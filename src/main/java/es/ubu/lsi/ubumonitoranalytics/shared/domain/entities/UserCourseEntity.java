@@ -37,5 +37,7 @@ public class UserCourseEntity extends AuditableEntity {
     private CourseEntity course;
 
     private OffsetDateTime lastCourseAccess;
+    private Boolean isFavourite;
     private Boolean active;
+
 }

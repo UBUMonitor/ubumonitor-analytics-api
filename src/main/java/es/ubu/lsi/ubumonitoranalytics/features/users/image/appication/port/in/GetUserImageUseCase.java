@@ -8,3 +8,4 @@ public interface GetUserImageUseCase {
 
     UserImage getUserImage(Integer userId, String ifNoneMatch);
 }
+

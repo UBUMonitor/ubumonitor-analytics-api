@@ -6,3 +6,4 @@ public interface ImagePersistencePort {
     String getImageHash(Integer userId);
     byte[] fetchUserImage(Integer userId);
 }
+

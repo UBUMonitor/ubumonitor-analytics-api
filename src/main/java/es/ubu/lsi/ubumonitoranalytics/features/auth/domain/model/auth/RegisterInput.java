@@ -15,3 +15,4 @@ public class RegisterInput {
     private String hostName;
     private String dbPassword;
 }
+

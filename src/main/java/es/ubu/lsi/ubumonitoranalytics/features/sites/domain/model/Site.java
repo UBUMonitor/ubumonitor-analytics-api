@@ -14,3 +14,4 @@ public class Site {
 
     private URI launchUrl;
 }
+

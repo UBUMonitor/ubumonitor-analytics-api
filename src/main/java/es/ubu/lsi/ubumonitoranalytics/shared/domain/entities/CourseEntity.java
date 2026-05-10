@@ -15,7 +15,9 @@ import lombok.Setter;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "courses")
@@ -40,4 +42,7 @@ public class CourseEntity extends AuditableEntity {
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     private List<UserCourseEntity> userCourses = new ArrayList<>();
+
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
+    private Set<SectionEntity> sections = new HashSet<>();
 }

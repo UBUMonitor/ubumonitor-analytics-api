@@ -17,3 +17,4 @@ public class AuthInput {
     private String moodleToken;
 
 }
+

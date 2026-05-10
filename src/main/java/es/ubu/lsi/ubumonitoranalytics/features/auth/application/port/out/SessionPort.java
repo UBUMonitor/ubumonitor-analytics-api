@@ -8,3 +8,4 @@ public interface SessionPort {
     JwtToken generateSession(AuthInput authInput);
     boolean existDataBase(AuthInput authInput);
 }
+

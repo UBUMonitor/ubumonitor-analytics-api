@@ -8,3 +8,4 @@ public interface SiteInfoPersistencePort {
     SiteInfo fetchSiteInfo(String userName);
     void save(SiteInfo site);
 }
+

@@ -33,3 +33,4 @@ public class UsersApiDelegateImpl implements UsersApiDelegate {
             .body(new ByteArrayResource(userImage.getImage()));
     }
 }
+

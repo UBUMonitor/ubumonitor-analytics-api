@@ -15,3 +15,4 @@ public class SiteInfo {
     private Site site;
     private LoggedUser loggedUser;
 }
+

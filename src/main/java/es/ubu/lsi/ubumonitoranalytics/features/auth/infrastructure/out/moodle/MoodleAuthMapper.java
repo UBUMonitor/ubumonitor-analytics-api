@@ -23,3 +23,4 @@ public interface MoodleAuthMapper {
     @Mapping(target = "moodleToken", source = "token")
     LoginAuthResult toDomain(MoodleAdapterLoginTokenResponseDto moodleAdapterLoginTokenResponseDto);
 }
+

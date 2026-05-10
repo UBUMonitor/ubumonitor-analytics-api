@@ -8,3 +8,4 @@ public interface MoodleApiPort {
     LoginAuthResult login(AuthInput authInput);
 
 }
+
