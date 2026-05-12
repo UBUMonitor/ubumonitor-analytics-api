@@ -9,12 +9,13 @@ import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.moodle.config.Moodle
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security.JwtUtils;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
 import es.ubu.lsi.ubumonitoranalytics.util.DatabaseUtil;
-import io.jsonwebtoken.Claims;
+import org.springframework.security.oauth2.jwt.Jwt;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
-
+import java.time.Duration;
+import java.time.Instant;
 
 
 @Component
@@ -64,18 +65,12 @@ public class SessionAdapter implements SessionPort {
     }
 
     private JwtToken toJwtToken(String jwt) {
-        Claims claims = jwtUtils.parse(jwt);
-        long expiration = claims.getExpiration().getTime() - System.currentTimeMillis();
+        Jwt claims = jwtUtils.parse(jwt);
+        long expiration = Duration.between(Instant.now(), claims.getExpiresAt()).getSeconds();
         return JwtToken.builder()
             .token(jwt)
-            .expiresIn(expiration / 1000)
+            .expiresIn(expiration)
             .build();
-    }
-
-    private boolean isSameSession(SessionData session, String userName, String dbPassword) {
-        return session != null
-            && userName.equals(session.getUserName())
-            && dbPassword.equals(session.getDbPassword());
     }
 
 

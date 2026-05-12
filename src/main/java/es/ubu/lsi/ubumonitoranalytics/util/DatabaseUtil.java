@@ -11,7 +11,6 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
@@ -71,7 +70,8 @@ public class DatabaseUtil {
                 host,
                 userName
             );
-            log.info("ABS PATH DB: {}", Path.of(basePath).toAbsolutePath());
+
+            log.info("ABS PATH DB: {}", dir.toAbsolutePath());
             log.info("FINAL FILE: {}", jdbcUrl);
             log.info("FILE EXISTS: {}", Files.exists(getFile(basePath, host, userName)));
             log.info("Ensuring database exists for {} / {}", host, userName);

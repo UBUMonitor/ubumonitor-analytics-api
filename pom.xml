@@ -27,7 +27,6 @@
     <mapstruct.version>1.6.3</mapstruct.version>
     <lombok.version>1.18.42</lombok.version>
     <logbook.version>3.12.3</logbook.version>
-    <jsonwebtoken.version>0.13.0</jsonwebtoken.version>
   </properties>
 
   <dependencies>
@@ -71,21 +70,8 @@
       <version>${logbook.version}</version>
     </dependency>
     <dependency>
-      <groupId>io.jsonwebtoken</groupId>
-      <artifactId>jjwt-api</artifactId>
-      <version>${jsonwebtoken.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>io.jsonwebtoken</groupId>
-      <artifactId>jjwt-impl</artifactId>
-      <version>${jsonwebtoken.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>io.jsonwebtoken</groupId>
-      <artifactId>jjwt-jackson</artifactId>
-      <version>${jsonwebtoken.version}</version>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
     </dependency>
     <dependency>
       <groupId>com.github.ben-manes.caffeine</groupId>
@@ -324,59 +310,9 @@
 
         </executions>
       </plugin>
-      <plugin>
-        <groupId>org.graalvm.buildtools</groupId>
-        <artifactId>native-maven-plugin</artifactId>
 
-        <extensions>true</extensions>
-
-        <executions>
-          <execution>
-            <goals>
-              <goal>compile-no-fork</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <mainClass>
-            es.ubu.lsi.ubumonitoranalytics.Application
-          </mainClass>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
 
-  <profiles>
-    <profile>
-      <id>native</id>
 
-      <build>
-        <plugins>
-
-
-          <plugin>
-            <groupId>org.graalvm.buildtools</groupId>
-            <artifactId>native-maven-plugin</artifactId>
-
-            <extensions>true</extensions>
-
-            <executions>
-              <execution>
-                <goals>
-                  <goal>compile-no-fork</goal>
-                </goals>
-              </execution>
-            </executions>
-
-            <configuration>
-              <mainClass>
-                es.ubu.lsi.ubumonitoranalytics.Application
-              </mainClass>
-            </configuration>
-          </plugin>
-
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 </project>

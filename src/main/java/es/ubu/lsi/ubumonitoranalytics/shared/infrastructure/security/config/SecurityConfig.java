@@ -1,6 +1,7 @@
 package es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security.config;
 
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security.JwtAuthFilter;
+import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security.CurrentSessionClearFilter;
+import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security.SessionAwareJwtAuthenticationConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +18,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Profile("!dev")
 public class SecurityConfig {
 
-    private final JwtAuthFilter jwtFilter;
+    private final SessionAwareJwtAuthenticationConverter sessionConverter;
+    private final CurrentSessionClearFilter currentSessionClearFilter;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -33,7 +35,10 @@ public class SecurityConfig {
             .sessionManagement(sm ->
                 sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
-            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+            .oauth2ResourceServer(oauth2 -> oauth2
+                .jwt(jwt -> jwt.jwtAuthenticationConverter(sessionConverter))
+            )
+            .addFilterAfter(currentSessionClearFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 }
