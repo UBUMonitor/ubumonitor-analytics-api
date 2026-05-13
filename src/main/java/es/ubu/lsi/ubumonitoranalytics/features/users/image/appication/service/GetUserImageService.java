@@ -4,10 +4,8 @@ package es.ubu.lsi.ubumonitoranalytics.features.users.image.appication.service;
 import es.ubu.lsi.ubumonitoranalytics.features.users.image.appication.port.in.GetUserImageUseCase;
 import es.ubu.lsi.ubumonitoranalytics.features.users.image.appication.port.out.ImagePersistencePort;
 import es.ubu.lsi.ubumonitoranalytics.features.users.image.domain.model.UserImage;
-import es.ubu.lsi.ubumonitoranalytics.util.HashUtil;
+import es.ubu.lsi.ubumonitoranalytics.util.ImageUtil;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,8 +17,6 @@ public class GetUserImageService implements GetUserImageUseCase {
 
     private final ImagePersistencePort imagePersistencePort;
 
-    private static final byte[] PLACEHOLDER = loadPlaceholder();
-    private static final String PLACEHOLDER_ETAG = HashUtil.imageHash(PLACEHOLDER);
 
     @Override
     public UserImage getUserImage(Integer userId, String ifNoneMatch) {
@@ -31,12 +27,12 @@ public class GetUserImageService implements GetUserImageUseCase {
 
         // Usuario sin imagen -> placeholder
         if (imageHash == null) {
-
-            boolean modified = !PLACEHOLDER_ETAG.equals(normalized);
+            String etag = ImageUtil.getPlaceholderEtag();
+            boolean modified = !etag.equals(normalized);
 
             return UserImage.builder()
-                .hexHash(PLACEHOLDER_ETAG)
-                .image(modified ? PLACEHOLDER : null)
+                .hexHash(etag)
+                .image(modified ? ImageUtil.getPlaceholder() : null)
                 .isModified(modified)
                 .build();
         }
@@ -69,13 +65,7 @@ public class GetUserImageService implements GetUserImageUseCase {
         return ifNoneMatch.replace("\"", "");
     }
 
-    @SneakyThrows
-    private static byte[] loadPlaceholder() {
 
-        return new ClassPathResource("images/user_placeholder.png")
-            .getInputStream()
-            .readAllBytes();
-    }
 
 }
 

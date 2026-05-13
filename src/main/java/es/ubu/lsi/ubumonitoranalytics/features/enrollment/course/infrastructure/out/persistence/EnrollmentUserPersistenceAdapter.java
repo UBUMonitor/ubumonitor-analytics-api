@@ -41,8 +41,7 @@ public class EnrollmentUserPersistenceAdapter implements UserPersistencePort {
 
         for (User user : users) {
 
-            UserEntity entity =
-                existing.getOrDefault(user.getId(), new UserEntity());
+            UserEntity entity = existing.getOrDefault(user.getId(), new UserEntity());
 
             userMapper.toEntity(user, entity);
 

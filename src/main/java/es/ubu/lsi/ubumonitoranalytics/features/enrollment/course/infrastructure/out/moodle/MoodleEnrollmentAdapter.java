@@ -11,10 +11,12 @@ import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.moodle.MoodleD
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.UserPicture;
 import es.ubu.lsi.ubumonitoranalytics.util.HashUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -52,10 +54,15 @@ public class MoodleEnrollmentAdapter implements EnrollmentFetchPort {
     }
 
     public UserPicture fetchUserImage(UserPicture userPicture, String token) {
-        byte[] image = moodleDownloaderPort.downloadUserImage(userPicture.getUrl(), token);
-        userPicture.setData(image);
-        String hexHash = HashUtil.imageHash(image);
-        userPicture.setHexHash(hexHash);
+        ResponseEntity<byte[]> image = moodleDownloaderPort.downloadUserImage(userPicture.getUrl(), token);
+        if (image.getStatusCode().is2xxSuccessful()) {
+            byte[] body = image.getBody();
+            userPicture.setData(body);
+            userPicture.setContentType(Optional.ofNullable(image.getHeaders().getContentType()).map(Object::toString).orElse("image/png"));
+            String hexHash = HashUtil.imageHash(body);
+            userPicture.setHexHash(hexHash);
+        }
+
         return userPicture;
     }
 

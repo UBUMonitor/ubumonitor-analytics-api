@@ -19,6 +19,7 @@ public interface UserMapper {
     @Mapping(target = "userCourses", ignore = true)
     @Mapping(target = "image.imageHash", source = "userPicture.hexHash")
     @Mapping(target = "image.imageData", source = "userPicture.data")
+    @Mapping(target = "image.contentType", source = "userPicture.contentType")
     @Mapping(target = "firstName", source = "firstName")
     @Mapping(target = "fullName", source = "fullName")
     @Mapping(target = "id", source = "id")

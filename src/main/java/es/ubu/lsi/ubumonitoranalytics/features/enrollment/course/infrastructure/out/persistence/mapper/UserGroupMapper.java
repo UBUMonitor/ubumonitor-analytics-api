@@ -23,8 +23,8 @@ public interface UserGroupMapper {
             .toList();
     }
 
-    @Mapping(target = "course", ignore = true)
-    @Mapping(target = "user", ignore = true)
+    @Mapping(target = "course.id", source = "courseId")
+    @Mapping(target = "user.id", source = "user.id")
     @Mapping(target = "id.userId", source = "user.id")
     @Mapping(target = "id.courseId", source = "courseId")
     UserGroupEntity toUserRoleEntity(User user, Group group, Integer courseId, boolean active);

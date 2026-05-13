@@ -33,4 +33,6 @@ public class UserImageEntity extends AuditableEntity{
 
     private String imageHash;
 
+    private String contentType;
+
 }
