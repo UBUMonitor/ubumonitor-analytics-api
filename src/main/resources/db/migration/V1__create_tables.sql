@@ -40,7 +40,7 @@ CREATE TABLE courses
 (
   id                INT PRIMARY KEY,
   full_name         VARCHAR(255),
-  short_name        VARCHAR(100),
+  short_name        VARCHAR(255),
   show_grades       BOOLEAN,
   enable_completion BOOLEAN,
   start_date        TIMESTAMP WITH TIME ZONE,

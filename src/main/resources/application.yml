@@ -37,11 +37,18 @@ spring:
 
     flyway:
       enabled: false
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
   h2:
     console:
       enabled: false
 server:
   port: 9090
+  tomcat:
+    max-swallow-size: -1
+    max-http-form-post-size: 100MB
 
 springdoc:
   api-docs:

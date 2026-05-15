@@ -9,7 +9,7 @@ echo   UBUMonitor Analytics
 echo =====================================
 
 REM ================================
-REM  Liberar puerto APP
+REM  LIBERAR PUERTO APP
 REM ================================
 echo Buscando procesos en puerto %PORT%...
 
@@ -18,10 +18,21 @@ for /f "tokens=5" %%a in ('netstat -ano ^| findstr :%PORT% ^| findstr LISTENING'
     taskkill /F /PID %%a >nul 2>&1
 )
 
+REM ================================
+REM  SIEMPRE COMPILAR MAVEN
+REM ================================
+echo.
+echo Ejecutando Maven build SIEMPRE...
+mvn clean install
 
+if errorlevel 1 (
+    echo ERROR: Fallo el build de Maven
+    pause
+    exit /b 1
+)
 
 REM ================================
-REM  Buscar JAR automaticamente
+REM  BUSCAR JAR AUTOMATICAMENTE
 REM ================================
 for %%f in (target\*.jar) do (
     set JAR=%%f
@@ -30,31 +41,16 @@ for %%f in (target\*.jar) do (
 
 :jar_found
 if "%JAR%"=="" (
-    echo.
-    echo No se encontro ningun JAR en target\
-    echo Ejecutando Maven build...
-
-    mvn clean install
-
-    if errorlevel 1 (
-        echo ERROR: Fallo el build de Maven
-        pause
-        exit /b 1
-    )
-
-    for %%f in (target\*.jar) do (
-        set JAR=%%f
-        goto :jar_found_after_build
-    )
+    echo ERROR: No se encontro ningun JAR en target\
+    pause
+    exit /b 1
 )
-
-:jar_found_after_build
 
 echo.
 echo Usando JAR: %JAR%
 
 REM ================================
-REM  Ejecutar Spring Boot (DEV)
+REM  EJECUTAR SPRING BOOT
 REM ================================
 echo.
 echo =====================================
@@ -69,12 +65,9 @@ echo =====================================
 echo SPRING BOOT LANZADO EN OTRA VENTANA
 echo =====================================
 echo.
-echo Las URLs de DBeaver quedan visibles aqui.
-echo.
-
 
 REM ================================
-REM  Mostrar BDs H2 disponibles
+REM  MOSTRAR BDs H2
 REM ================================
 echo.
 echo =====================================
@@ -92,11 +85,10 @@ for /r %%f in (*.mv.db) do (
     echo %%f
     echo.
     echo URL DBeaver:
-    call echo jdbc:h2:tcp://localhost:9092/%%DB%%;CIPHER=AES
+    call echo jdbc:h2:tcp://localhost:9092/%%DB%%;CIPHER=AES;DATABASE_TO_UPPER=false;
     echo.
     echo -------------------------------------
-
 )
-echo IMPORTANTE Por como funciona de carga bases de datos en tiempo de ejecucion se debe ejecutar primero alguna peticion a la API que use la BBDD antes de conectar en DBeaver
-echo Si hay cambios en codigo se debe ejecutar primero el mvn clean o borrar la carpeta target
+
+echo IMPORTANTE: si hay cambios en codigo se ejecuta siempre mvn clean install automaticamente
 pause
