@@ -2,10 +2,6 @@
 target/
 build/
 
-# === Logs ===
-*.log
-logs/
-
 # === Archivos de sistema ===
 .DS_Store
 Thumbs.db
