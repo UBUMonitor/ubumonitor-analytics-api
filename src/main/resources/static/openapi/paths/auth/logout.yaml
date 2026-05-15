@@ -1,0 +1,10 @@
+post:
+  tags: [ Auth ]
+  operationId: AuthLogout
+  summary: Logout session
+  description: Logout session. The token must be included in the Authorization header as a Bearer token.
+  responses:
+    '204':
+      description: Logout successful. No content is returned.
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/unauthorized_401'

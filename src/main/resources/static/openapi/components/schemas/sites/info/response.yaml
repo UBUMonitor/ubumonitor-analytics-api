@@ -1,0 +1,50 @@
+SiteInfoResponse:
+  type: object
+  properties:
+    site:
+      title: Site Information
+      type: object
+      description: Basic information about the Moodle site.
+      properties:
+        siteName:
+          type: string
+          description: The name of the Moodle site.
+        siteVersion:
+          type: string
+          description: The version of the Moodle site.
+        siteUrl:
+          type: string
+          format: uri
+          description: The URL of the Moodle site.
+        typeOfLogin:
+          type: string
+          description: The type of login method used by the Moodle site (e.g., APP, EMBEDDED, BROWSER).
+          enum:
+            - APP
+            - EMBEDDED
+            - BROWSER
+        launchUrl:
+          type: string
+          format: uri
+          description: The SSO login launch URL for the Moodle site, if applicable.
+          nullable: true
+    user:
+      title: User Information
+      type: object
+      description: Information about the authenticated user.
+      properties:
+        id:
+          type: integer
+          description: The unique identifier of the user.
+        userName:
+          type: string
+          description: The username of the user.
+        fullName:
+          type: string
+          description: The full name of the user.
+        firstName:
+          type: string
+          description: The first name of the user.
+        lastName:
+          type: string
+          description: The last name of the user.

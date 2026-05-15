@@ -1,0 +1,66 @@
+spring:
+  config:
+    import: classpath:application-moodlerules.yml
+  threads:
+    virtual:
+      enabled: true
+  web:
+    resources:
+      add-mappings: false
+  devtools:
+    restart:
+      enabled: false
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    url: jdbc:h2:file:./moodle_dbs/bootstrap;DB_CLOSE_DELAY=-1;AUTO_SERVER=TRUE
+    username: sa
+    password: ""
+
+
+  hikari:
+    data-source-properties:
+      ApplicationName:
+  jpa:
+
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+    show-sql: true
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+        multiTenancy: DATABASE
+
+    flyway:
+      enabled: false
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+  h2:
+    console:
+      enabled: false
+server:
+  port: 9090
+  tomcat:
+    max-swallow-size: -1
+    max-http-form-post-size: 100MB
+
+springdoc:
+  api-docs:
+    enabled: false
+
+jwt:
+  expiration-time-in-seconds: 7200 # 2 hour in seconds
+
+moodle:
+  api:
+    base-url: ${MOODLE_ADAPTER_API_BASE_URL:http://localhost:8080}
+    connect-timeout: 5000 # in milliseconds
+    read-timeout: 30000 # in milliseconds
+  db:
+    base-path: ./moodle_dbs

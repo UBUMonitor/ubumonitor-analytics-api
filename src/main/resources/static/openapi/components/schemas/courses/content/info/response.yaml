@@ -1,0 +1,79 @@
+CourseContentResponse:
+  type: object
+  properties:
+    sections:
+      type: array
+      items:
+        $ref: "#/CourseContentSection"
+
+
+
+CourseContentSection:
+  type: object
+  properties:
+    id:
+      type: integer
+      description: Section ID
+
+    name:
+      type: string
+      description: Section name
+
+    visible:
+      type: boolean
+      description: Is the section visible
+
+    summary:
+      type: string
+      description: Section description
+
+    position:
+      type: integer
+      description: Section number inside the course
+
+    modules:
+      type: array
+      description: List of modules in the section
+      items:
+        $ref: "#/CourseContentModule"
+
+  required:
+    - id
+    - name
+    - summary
+    - summaryformat
+    - modules
+
+
+CourseContentModule:
+  type: object
+  properties:
+    id:
+      type: integer
+      description: Module ID
+
+    name:
+      type: string
+      description: Module name
+
+    modName:
+      type: string
+      description: Module technical name
+
+    url:
+      type: string
+      format: uri
+      description: Module URL
+
+    description:
+      type: string
+      description: Module description
+
+    visible:
+      type: boolean
+      description: Is module visible
+
+
+  required:
+    - id
+    - name

@@ -1,0 +1,22 @@
+get:
+  tags:
+    - CourseEnrollments
+  summary: Get course users has been enrolled information
+  operationId: GetCourseUsersEnrollmentsInfo
+  description: Retrieves the enrollment information for users enrolled in a specific course. This endpoint provides details about the users enrolled in the course, including their roles and enrollment status. It allows clients to access up-to-date enrollment information for a particular course on the Moodle site.
+  parameters:
+    - name: courseId
+      in: path
+      description: The unique identifier of the course for which to retrieve enrollments.
+      required: true
+      schema:
+        type: integer
+  responses:
+    '200':
+      description: Successful retrieval of enrollments. The response includes the enrollment information for users enrolled in the specified course.
+      content:
+        application/json:
+          schema:
+            $ref: '../../../components/schemas/courses/enrollments/info/response.yaml#/CourseEnrollmentsResponse'
+    '401':
+      $ref: '../../../openapi.yaml#/components/responses/unauthorized_401'

@@ -1,0 +1,13 @@
+description: Conflict - resource already exists or request conflicts with current state
+content:
+  application/json:
+    schema:
+      $ref: '../schemas/common/error_response.yaml#/ErrorResponse'
+    example:
+      code: CONFLICT
+      message: Resource already exists or conflicts with current state
+      timestamp: "2026-03-19T01:05:54.8306311+01:00"
+      traceId: "56e89575-dc49-4a83-b84c-0d5bff268ea7"
+      errors:
+        - field: exception
+          message: 409 CONFLICT "Resource already exists or conflicts with current state"

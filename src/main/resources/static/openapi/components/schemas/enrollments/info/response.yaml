@@ -1,0 +1,34 @@
+EnrollmentsResponse:
+  type: object
+  properties:
+    courses:
+      type: array
+      description: List of courses the user is enrolled in, with updated enrollment information.
+      items:
+        title: Course Information
+        type: object
+        properties:
+          id:
+            type: integer
+            description: The unique identifier of the course.
+          fullName:
+            type: string
+            description: The name of the course.
+          showGrades:
+            type: boolean
+            description: Indicates whether the user can view grades for the course.
+          enableCompletion:
+            type: boolean
+            description: Indicates whether course completion tracking is enabled for the user.
+          startDate:
+            type: string
+            format: date-time
+            description: The date and time when the user's enrollment in the course starts.
+          endDate:
+            type: string
+            format: date-time
+            description: The date and time when the user's enrollment in the course ends.
+          timeModified:
+            type: string
+            format: date-time
+            description: The date and time when the enrollment information was last modified.

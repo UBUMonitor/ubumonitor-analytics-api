@@ -1,0 +1,27 @@
+AuthLoginRequest:
+  type: object
+  required:
+    - host
+    - userName
+    - password
+    - dbPassword
+  properties:
+    host:
+      type: string
+      format: uri
+      description: Moodle site URL
+      example: https://school.moodledemo.net
+    userName:
+      type: string
+      description: Moodle username
+      example: teacher
+    password:
+      type: string
+      format: password
+      description: Moodle password
+      example: moodle25
+    dbPassword:
+      type: string
+      format: password
+      description: Database password encrypted with AES-256. This is used to securely store the database password in the system, ensuring that sensitive information is protected while allowing the application to access the database when needed.
+      example: U2FsdGVkX1+5sQ9v3y
