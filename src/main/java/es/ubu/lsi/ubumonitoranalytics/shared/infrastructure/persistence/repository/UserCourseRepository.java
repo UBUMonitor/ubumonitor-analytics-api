@@ -20,7 +20,17 @@ public interface UserCourseRepository extends JpaRepository<UserCourseEntity, Us
     List<CourseEntity> findCoursesByUserId(Integer userId);
 
 
-    List<UserCourseEntity> findByCourseId(Integer courseId);
+    @Query("""
+        SELECT DISTINCT uc
+        FROM UserCourseEntity uc
+        JOIN FETCH uc.user u
+
+        LEFT JOIN u.userGroups g WITH g.course.id = :courseId
+        LEFT JOIN u.userRoles r WITH r.course.id = :courseId
+
+        WHERE uc.course.id = :courseId
+        """)
+    List<UserCourseEntity> findByCourseWithRelations(Integer courseId);
 
     @Query("""
         SELECT uc FROM UserCourseEntity uc
@@ -47,6 +57,7 @@ public interface UserCourseRepository extends JpaRepository<UserCourseEntity, Us
     void deactivateByUserIds(Iterable<Integer> userIds);
 
 
-
     List<UserCourseEntity> findByUserIdAndActiveTrue(Integer userId);
+
+    List<UserCourseEntity> findByUserIdInAndCourseId(List<Integer> userIds, Integer courseId);
 }

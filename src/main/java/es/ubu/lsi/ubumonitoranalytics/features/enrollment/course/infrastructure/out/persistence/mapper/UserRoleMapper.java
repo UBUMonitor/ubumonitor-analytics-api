@@ -7,21 +7,11 @@ import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.GlobalMapperC
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import java.util.List;
 
 @Mapper(config = GlobalMapperConfig.class)
 public interface UserRoleMapper {
 
 
-
-    default List<UserRoleEntity> toEntities(User user, List<Role> roles, Integer courseId, boolean active) {
-        if (roles == null) {
-            return List.of();
-        }
-        return roles.stream()
-            .map( role -> toUserRoleEntity(user, role, courseId, active))
-            .toList();
-    }
 
     @Mapping(target = "course.id", source = "courseId")
     @Mapping(target = "user.id", source = "user.id")
@@ -29,6 +19,6 @@ public interface UserRoleMapper {
     @Mapping(target = "id.roleId", source = "role.id")
     @Mapping(target = "id.userId", source = "user.id")
     @Mapping(target = "id.courseId", source = "courseId")
-    UserRoleEntity toUserRoleEntity(User user, Role role, Integer courseId, boolean active);
+    UserRoleEntity toEntity(User user, Role role, Integer courseId, boolean active);
 }
 

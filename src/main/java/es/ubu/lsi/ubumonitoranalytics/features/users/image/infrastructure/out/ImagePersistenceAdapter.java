@@ -2,6 +2,7 @@ package es.ubu.lsi.ubumonitoranalytics.features.users.image.infrastructure.out;
 
 
 import es.ubu.lsi.ubumonitoranalytics.features.users.image.appication.port.out.ImagePersistencePort;
+import es.ubu.lsi.ubumonitoranalytics.features.users.image.domain.model.UserImage;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.persistence.repository.UserImageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ImagePersistenceAdapter implements ImagePersistencePort {
     private final UserImageRepository userImageRepository;
-
+    private final UserImageMapper userImageMapper;
 
     @Override
     public String getImageHash(Integer userId) {
@@ -18,8 +19,8 @@ public class ImagePersistenceAdapter implements ImagePersistencePort {
     }
 
     @Override
-    public byte[] fetchUserImage(Integer userId) {
-        return userImageRepository.findImageDataByUserId(userId);
+    public UserImage fetchUserImage(Integer userId) {
+        return userImageMapper.toDomain(userImageRepository.findById(userId).orElse(null));
     }
 }
 

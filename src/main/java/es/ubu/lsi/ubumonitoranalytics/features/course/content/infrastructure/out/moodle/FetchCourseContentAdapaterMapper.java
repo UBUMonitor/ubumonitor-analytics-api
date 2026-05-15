@@ -11,10 +11,7 @@ import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.GlobalMapperC
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @Mapper(config = GlobalMapperConfig.class)
 public interface FetchCourseContentAdapaterMapper {
@@ -41,11 +38,10 @@ public interface FetchCourseContentAdapaterMapper {
     // MODULE
     // -----------------------------
     @Mapping(target = "id", source = "id")
- // se asigna en flatten
     @Mapping(target = "name", source = "name")
     @Mapping(target = "modName", source = "modname")
     @Mapping(target = "url", source = "url")
-    @Mapping(target = "description", source = "description")
+    @Mapping(target = "description", source = "descriptiontext")
     @Mapping(target = "visible", source = "visible")
     CourseModule toDomain(MoodleAdapterModuleDto dto);
 

@@ -27,6 +27,7 @@ public interface CoursePersistenceMapper {
     // =========================
     // MODULE
     // =========================
+    @Mapping(target = "position", ignore = true)
     @Mapping(target = "active", constant = "true")
     @Mapping(target = "section", ignore = true)
     ModuleEntity toEntity(CourseModule module);
@@ -36,6 +37,7 @@ public interface CoursePersistenceMapper {
     @Mapping(target = "active", constant = "true")
     void updateSectionFields(Section section, @MappingTarget SectionEntity sectionEntity);
 
+    @Mapping(target = "position", ignore = true)
     @Mapping(target = "section", ignore = true)
     @Mapping(target = "active", constant = "true")
     void updateModuleFields(CourseModule courseModule, @MappingTarget ModuleEntity moduleEntity);

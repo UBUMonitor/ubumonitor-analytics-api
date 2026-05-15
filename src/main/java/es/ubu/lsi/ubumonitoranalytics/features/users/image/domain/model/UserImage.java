@@ -10,5 +10,6 @@ public class UserImage {
     private byte[] image;
     private String hexHash;
     private boolean isModified;
+    private String contentType;
 }
 

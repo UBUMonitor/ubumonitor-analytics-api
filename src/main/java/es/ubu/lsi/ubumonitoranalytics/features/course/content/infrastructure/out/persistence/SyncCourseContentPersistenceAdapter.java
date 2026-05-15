@@ -86,7 +86,7 @@ public class SyncCourseContentPersistenceAdapter implements CourseContentPersist
             .collect(Collectors.toMap(ModuleEntity::getId, Function.identity()));
 
         Set<Integer> incomingIds = new HashSet<>();
-
+        int position = 0;
         for (CourseModule dto : incomingModules) {
 
             ModuleEntity module = null;
@@ -106,22 +106,17 @@ public class SyncCourseContentPersistenceAdapter implements CourseContentPersist
             if (module == null) {
 
                 module = mapper.toEntity(dto);
-
-                module.setSection(section);
-                module.setActive(true);
-
                 section.addModule(module);
-
             } else {
-
                 mapper.updateModuleFields(dto, module);
 
-                // asegurar relación correcta
-                module.setSection(section);
-
-                module.setActive(true);
             }
 
+            module.setPosition(position);
+            module.setSection(section);
+            module.setActive(true);
+
+            position++;
             incomingIds.add(module.getId());
         }
 

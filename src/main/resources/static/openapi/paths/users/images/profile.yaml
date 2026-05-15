@@ -25,7 +25,28 @@ get:
           schema:
             type: string
       content:
+        image/jpeg:
+
+          schema:
+            type: string
+            format: binary
         image/png:
+          schema:
+            type: string
+            format: binary
+        image/gif:
+          schema:
+            type: string
+            format: binary
+        image/webp:
+          schema:
+            type: string
+            format: binary
+        image/bmp:
+          schema:
+            type: string
+            format: binary
+        image/tiff:
           schema:
             type: string
             format: binary
@@ -33,5 +54,3 @@ get:
       description: Not Modified
     '401':
       $ref: '../../../openapi.yaml#/components/responses/unauthorized_401'
-    '404':
-      description: Not found

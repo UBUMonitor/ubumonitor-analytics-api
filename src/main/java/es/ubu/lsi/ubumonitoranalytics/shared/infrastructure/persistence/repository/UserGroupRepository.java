@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
+
 public interface UserGroupRepository extends JpaRepository<UserGroupEntity, UserGroupId>  {
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("""
@@ -16,4 +18,5 @@ public interface UserGroupRepository extends JpaRepository<UserGroupEntity, User
         """)
     void deactivateByUserIds(Iterable<Integer> userIds);
 
+    List<UserGroupEntity> findByUserIdInAndCourseId(List<Integer> userIds, Integer courseId);
 }

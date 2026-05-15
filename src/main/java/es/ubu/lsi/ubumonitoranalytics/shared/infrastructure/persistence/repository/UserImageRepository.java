@@ -13,6 +13,5 @@ public interface UserImageRepository extends JpaRepository<UserImageEntity, Inte
     String findImageHashByUserId(Integer userId);
 
 
-    @Query("SELECT u.imageData FROM UserImageEntity u WHERE u.userId = :userId")
-    byte[] findImageDataByUserId(Integer userId);
+
 }

@@ -153,6 +153,7 @@ CREATE TABLE modules
   url         VARCHAR(2048),
   description CLOB,
   visible     BOOLEAN,
+  position    INT,
   active      BOOLEAN,
   created_at  TIMESTAMP NOT NULL,
   updated_at  TIMESTAMP NOT NULL,

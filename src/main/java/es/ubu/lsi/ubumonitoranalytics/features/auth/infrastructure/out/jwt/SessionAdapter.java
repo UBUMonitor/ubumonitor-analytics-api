@@ -35,6 +35,7 @@ public class SessionAdapter implements SessionPort {
 
         if (sessionStore.hasSession(hostUri, userName)) {
             SessionData existingSession = sessionStore.getSession(hostUri, userName);
+            existingSession.setMoodleToken(moodleToken);
             return toJwtToken(existingSession.getJwt());
         }
 

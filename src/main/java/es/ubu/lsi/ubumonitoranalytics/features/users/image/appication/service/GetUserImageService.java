@@ -47,13 +47,10 @@ public class GetUserImageService implements GetUserImageUseCase {
                 .build();
         }
 
-        byte[] imageData = imagePersistencePort.fetchUserImage(userId);
+        UserImage userImage = imagePersistencePort.fetchUserImage(userId);
+        userImage.setModified(true);
 
-        return UserImage.builder()
-            .hexHash(imageHash)
-            .image(imageData)
-            .isModified(true)
-            .build();
+        return userImage;
     }
 
     private String normalize(String ifNoneMatch) {

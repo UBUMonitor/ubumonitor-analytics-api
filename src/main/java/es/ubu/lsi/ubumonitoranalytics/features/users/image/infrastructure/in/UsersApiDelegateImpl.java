@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
@@ -30,6 +31,7 @@ public class UsersApiDelegateImpl implements UsersApiDelegate {
 
         return ResponseEntity.ok()
             .eTag(userImage.getHexHash())
+            .contentType(MediaType.parseMediaType(userImage.getContentType()))
             .body(new ByteArrayResource(userImage.getImage()));
     }
 }

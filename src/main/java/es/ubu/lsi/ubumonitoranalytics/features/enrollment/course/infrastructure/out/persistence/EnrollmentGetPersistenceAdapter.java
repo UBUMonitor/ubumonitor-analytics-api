@@ -19,7 +19,7 @@ public class EnrollmentGetPersistenceAdapter implements EnrollmentGetPersistence
 
     @Override
     public CourseEnrollment getCourseEnrollment(Integer courseId) {
-        List<UserCourseEntity> userCourseEntities =  userCourseRepository.findByCourseId(courseId);
+        List<UserCourseEntity> userCourseEntities =  userCourseRepository.findByCourseWithRelations(courseId);
 
         return enrollmentCourseEnrollmentsMapper.toDomain(courseId, userCourseEntities);
     }

@@ -6,7 +6,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -39,6 +38,8 @@ import java.net.URI;
         private Boolean visible;
 
         private Boolean active;
+
+        private Integer position;
 
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "section_id", nullable = false)
