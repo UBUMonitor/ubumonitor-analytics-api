@@ -186,7 +186,7 @@ public class MultiTenantConnectionProviderImpl
 
         String jdbcUrl = String.format(
             "jdbc:h2:file:%s/bootstrap;DB_CLOSE_DELAY=-1;AUTO_SERVER=TRUE;DATABASE_TO_UPPER=false",
-            moodleConfig.getDb().getBasePath().replace("\\", "/")
+            moodleConfig.getDb().getBasePath()
         );
 
         ds.setJdbcUrl(jdbcUrl);

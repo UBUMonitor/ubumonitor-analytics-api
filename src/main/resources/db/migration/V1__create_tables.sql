@@ -241,8 +241,4 @@ CREATE INDEX idx_user_course_user_id ON users_courses (user_id);
 CREATE INDEX idx_user_course_course_id ON users_courses (course_id);
 
 -- logs indexes
-CREATE INDEX idx_logs_user_id ON logs (user_id);
-CREATE INDEX idx_logs_course_id ON logs (course_id);
-CREATE INDEX idx_logs_course_module_id ON logs (module_id);
-CREATE INDEX idx_logs_timestamp ON logs (timestamp);
-CREATE INDEX idx_logs_user_timestamp ON logs (user_id, timestamp);
+CREATE INDEX idx_logs_course_timestamp ON logs(course_id, user_id, timestamp);
