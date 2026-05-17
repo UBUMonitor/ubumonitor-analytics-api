@@ -14,7 +14,7 @@
   </parent>
 
   <groupId>es.ubu.lsi</groupId>
-  <artifactId>ubumonitor-analytics</artifactId>
+  <artifactId>ubumonitoranalytics</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>ubumonitor-analytics</name>
 
@@ -27,6 +27,7 @@
     <mapstruct.version>1.6.3</mapstruct.version>
     <lombok.version>1.18.42</lombok.version>
     <logbook.version>3.12.3</logbook.version>
+    <start-class>es.ubu.lsi.ubumonitoranalytics.Application</start-class>
   </properties>
 
   <dependencies>
@@ -37,22 +38,13 @@
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-data-jpa</artifactId>
+      <artifactId>spring-boot-starter-jooq</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-security</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.springframework.data</groupId>
-      <artifactId>spring-data-envers</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-devtools</artifactId>
-      <scope>runtime</scope>
-      <optional>true</optional>
-    </dependency>
+
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-logging</artifactId>
@@ -77,6 +69,7 @@
       <groupId>com.github.ben-manes.caffeine</groupId>
       <artifactId>caffeine</artifactId>
     </dependency>
+
     <!-- Lombok -->
     <dependency>
       <groupId>org.projectlombok</groupId>
@@ -320,12 +313,159 @@
               </sources>
             </configuration>
           </execution>
-
+          <execution>
+            <id>add-jooq-sources</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${project.build.directory}/generated-sources/jooq</source>
+              </sources>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.flywaydb</groupId>
+        <artifactId>flyway-maven-plugin</artifactId>
+        <version>12.6.1</version>
 
+        <configuration>
+          <url>jdbc:h2:file:${project.build.directory}/moodle_dbs/bootstrap</url>
+          <user>sa</user>
+          <password>sa</password>
+        </configuration>
+
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>migrate</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.jooq</groupId>
+        <artifactId>jooq-codegen-maven</artifactId>
+
+        <executions>
+          <execution>
+            <id>jooq-codegen</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+
+            <configuration>
+
+              <jdbc>
+                <driver>org.h2.Driver</driver>
+                <url>jdbc:h2:file:${project.build.directory}/moodle_dbs/bootstrap</url>
+                <user>sa</user>
+                <password>sa</password>
+              </jdbc>
+
+              <generator>
+
+                <database>
+                  <name>org.jooq.meta.h2.H2Database</name>
+                  <inputSchema>PUBLIC</inputSchema>
+
+                  <includes>.*</includes>
+                </database>
+
+                <generate>
+                  <pojos>false</pojos>
+                  <daos>false</daos>
+
+                  <keys>false</keys>
+                  <relations>false</relations>
+                  <indexes>false</indexes>
+
+                  <globalKeyReferences>false</globalKeyReferences>
+                  <globalIndexReferences>false</globalIndexReferences>
+                  <globalTableReferences>false</globalTableReferences>
+                  <records>true</records>
+                  <interfaces>false</interfaces>
+                  <immutablePojos>false</immutablePojos>
+                </generate>
+
+                <target>
+                  <packageName>${project.groupId}.${project.artifactId}.jooq</packageName>
+                  <directory>${project.build.directory}/generated-sources/jooq</directory>
+                </target>
+
+              </generator>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
-  </build>
 
+
+  </build>
+  <profiles>
+
+    <profile>
+      <id>native</id>
+
+      <properties>
+        <native.build.args>
+          --no-fallback
+          -H:+ReportExceptionStackTraces
+          -H:Name=${project.artifactId}
+        </native.build.args>
+      </properties>
+
+      <build>
+        <resources>
+          <resource>
+            <directory>src/main/resources</directory>
+            <includes>
+              <include>**/*</include>
+            </includes>
+          </resource>
+        </resources>
+        <plugins>
+
+          <plugin>
+            <groupId>org.graalvm.buildtools</groupId>
+            <artifactId>native-maven-plugin</artifactId>
+            <version>1.1.0</version>
+
+            <configuration>
+              <imageName>${project.artifactId}</imageName>
+              <mainClass>${start-class}</mainClass>
+
+              <buildArgs>
+                <buildArg>--no-fallback</buildArg>
+                <buildArg>-H:+ReportExceptionStackTraces</buildArg>
+                <buildArg>-H:IncludeResources=patterns/.*</buildArg>
+                <buildArg>--initialize-at-run-time=com.github.benmanes.caffeine.cache</buildArg>
+
+              </buildArgs>
+
+              <outputDirectory>${project.build.directory}</outputDirectory>
+            </configuration>
+
+            <executions>
+              <execution>
+                <id>native-compile</id>
+                <goals>
+                  <goal>compile</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+        </plugins>
+      </build>
+
+    </profile>
+
+  </profiles>
 
 </project>

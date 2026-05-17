@@ -6,7 +6,7 @@ import java.time.OffsetDateTime;
 
 @Data
 public class Enrollment {
-    private final Course course;
-    private final OffsetDateTime lastCourseAccess;
+    private Course course;
+    private OffsetDateTime lastCourseAccess;
     private Boolean isFavourite;
 }

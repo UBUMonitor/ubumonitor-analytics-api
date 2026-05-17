@@ -1,10 +1,7 @@
 package es.ubu.lsi.ubumonitoranalytics.features.sites.infrastructure.in.rest;
 
 import es.ubu.lsi.ubumonitoranalytics.api.generated.api.SitesApiDelegate;
-
-
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.SiteInfoResponseDto;
-
 import es.ubu.lsi.ubumonitoranalytics.features.sites.application.port.in.GetSiteInfoUseCase;
 import es.ubu.lsi.ubumonitoranalytics.features.sites.application.port.in.SyncSiteInfoUseCase;
 import lombok.RequiredArgsConstructor;

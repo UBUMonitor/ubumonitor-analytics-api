@@ -1,134 +1,129 @@
 package es.ubu.lsi.ubumonitoranalytics.features.course.content.infrastructure.out.persistence;
 
+
 import es.ubu.lsi.ubumonitoranalytics.features.course.content.application.port.out.CourseContentPersistencePort;
 import es.ubu.lsi.ubumonitoranalytics.features.course.content.domain.model.CourseContent;
 import es.ubu.lsi.ubumonitoranalytics.features.course.content.domain.model.CourseModule;
 import es.ubu.lsi.ubumonitoranalytics.features.course.content.domain.model.Section;
-import es.ubu.lsi.ubumonitoranalytics.shared.domain.entities.ModuleEntity;
-import es.ubu.lsi.ubumonitoranalytics.shared.domain.entities.SectionEntity;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.persistence.repository.CourseRepository;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.persistence.repository.ModuleRepository;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.persistence.repository.SectionRepository;
+import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.ModulesRecord;
+import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.SectionsRecord;
+import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
 import lombok.RequiredArgsConstructor;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+
+import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Courses.COURSES;
+import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Modules.MODULES;
+import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Sections.SECTIONS;
+
 
 @Component
 @RequiredArgsConstructor
 public class SyncCourseContentPersistenceAdapter implements CourseContentPersistencePort {
 
-    private final CoursePersistenceMapper mapper;
-    private final SectionRepository sectionRepository;
-    private final CourseRepository courseRepository;
-    private final ModuleRepository moduleRepository;
+    private final Jooq jooq;
+    private final CourseContentPersistenceMapper mapper;
 
     @Override
     public void save(CourseContent content) {
 
         Integer courseId = content.getCourseId();
+        LocalDateTime now = LocalDateTime.now();
+        upsertCourse(courseId);
+        deactivateExisting(courseId);
 
-        // 1. cargar estado actual desde BD
-        List<SectionEntity> existingSections = sectionRepository.findByCourseIdWithModules(courseId);
-
-        Map<Integer, SectionEntity> sectionDbMap = existingSections.stream()
-            .filter(s -> s.getId() != null)
-            .collect(Collectors.toMap(SectionEntity::getId, Function.identity()));
-
-        Set<Integer> incomingSectionIds = new HashSet<>();
-
-        // 2. sync sections
-        List<SectionEntity> result = new ArrayList<>();
-
-        for (Section sectionDomain : content.getSections()) {
-
-            SectionEntity section = sectionDbMap.get(sectionDomain.getId());
-
-            if (section == null) {
-                section = mapper.toEntity(sectionDomain, courseId);
-                section.setCourse(courseRepository.getReferenceById(courseId));
-            } else {
-                mapper.updateSectionFields(sectionDomain, section);
-            }
-
-            incomingSectionIds.add(section.getId());
-
-            syncModules(section, sectionDomain.getModules());
-            result.add(section);
-        }
-
-        // 3. desactivar secciones que ya no vienen
-        for (SectionEntity dbSection : existingSections) {
-            if (!incomingSectionIds.contains(dbSection.getId())) {
-                dbSection.setActive(false);
-                dbSection.getModules().forEach(m -> m.setActive(false));
-                result.add(dbSection);
-            }
-        }
-
-        sectionRepository.saveAll(result);
+        upsertSections(content, now);
+        upsertModules(content, now);
     }
 
-    private void syncModules(SectionEntity section, List<CourseModule> incomingModules) {
 
-        if (incomingModules == null) {
+    private void upsertSections(CourseContent content, LocalDateTime now) {
+        if (content.getSections() == null || content.getSections().isEmpty()) {
             return;
         }
 
-        Map<Integer, ModuleEntity> dbMap = section.getModules().stream()
-            .filter(m -> m.getId() != null)
-            .collect(Collectors.toMap(ModuleEntity::getId, Function.identity()));
+        List<SectionsRecord> records = new ArrayList<>();
 
-        Set<Integer> incomingIds = new HashSet<>();
-        int position = 0;
-        for (CourseModule dto : incomingModules) {
+        for (Section section : content.getSections()) {
 
-            ModuleEntity module = null;
+            SectionsRecord r = jooq.dsl().newRecord(SECTIONS);
 
-            // 1. primero buscar en la sección actual
-            if (dto.getId() != null) {
-                module = dbMap.get(dto.getId());
-            }
+            mapper.toRecord(section, r);
 
-            // 2. si no está, buscar en BD
-            if (module == null && dto.getId() != null) {
-                module = moduleRepository.findById(dto.getId())
-                    .orElse(null);
-            }
+            r.setCourseId(content.getCourseId());
+            r.setActive(true);
+            r.setUpdatedAt(now);
 
-            // 3. crear nuevo si realmente no existe
-            if (module == null) {
-
-                module = mapper.toEntity(dto);
-                section.addModule(module);
-            } else {
-                mapper.updateModuleFields(dto, module);
-
-            }
-
-            module.setPosition(position);
-            module.setSection(section);
-            module.setActive(true);
-
-            position++;
-            incomingIds.add(module.getId());
+            records.add(r);
         }
 
-        // soft delete
-        for (ModuleEntity dbModule : section.getModules()) {
-
-            if (dbModule.getId() != null &&
-                !incomingIds.contains(dbModule.getId())) {
-
-                dbModule.setActive(false);
-            }
-        }
+        jooq.dsl().batchMerge(records).execute();
     }
 
+
+    private void upsertModules(CourseContent content, LocalDateTime now) {
+
+
+        List<ModulesRecord> records = new ArrayList<>();
+
+        for (Section section : content.getSections()) {
+
+            if (section.getModules() == null){
+                continue;
+            }
+
+            int position = 0;
+
+            for (CourseModule module : section.getModules()) {
+
+                ModulesRecord mr = jooq.dsl().newRecord(MODULES);
+
+                mapper.toRecord(module, mr);
+
+                mr.setSectionId(section.getId());
+                mr.setActive(true);
+                mr.setUpdatedAt(now);
+                mr.setPosition(position++);
+
+                records.add(mr);
+            }
+        }
+
+        jooq.dsl().batchMerge(records).execute();
+    }
+
+    private void upsertCourse(Integer courseId) {
+        jooq.dsl().insertInto(COURSES)
+            .set(COURSES.ID, courseId)
+            .onConflict(COURSES.ID)
+            .doNothing()
+            .execute();
+    }
+
+
+    private void deactivateExisting(Integer courseId) {
+
+        jooq.dsl().update(MODULES)
+            .set(MODULES.ACTIVE, false)
+            .set(MODULES.UPDATED_AT, DSL.currentLocalDateTime())
+            .where(MODULES.ACTIVE.eq(true))
+            .andExists(
+                jooq.dsl().selectOne()
+                    .from(SECTIONS)
+                    .where(SECTIONS.ID.eq(MODULES.SECTION_ID))
+                    .and(SECTIONS.COURSE_ID.eq(courseId))
+            )
+            .execute();
+
+        jooq.dsl().update(SECTIONS)
+            .set(SECTIONS.ACTIVE, false)
+            .set(SECTIONS.UPDATED_AT, DSL.currentLocalDateTime())
+            .where(SECTIONS.COURSE_ID.eq(courseId))
+            .and(SECTIONS.ACTIVE.eq(true))
+            .execute();
+    }
 }

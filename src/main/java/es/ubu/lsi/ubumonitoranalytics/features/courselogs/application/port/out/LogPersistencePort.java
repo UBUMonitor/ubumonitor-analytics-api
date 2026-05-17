@@ -12,6 +12,8 @@ public interface LogPersistencePort {
 
     Map<String, Short> getLogEvents();
 
+    Map<String, Byte> getLogOrigins();
+
     void saveBatch(List<LogLine> batch);
 
     LocalDateTime getLastDateTime(Integer courseId);

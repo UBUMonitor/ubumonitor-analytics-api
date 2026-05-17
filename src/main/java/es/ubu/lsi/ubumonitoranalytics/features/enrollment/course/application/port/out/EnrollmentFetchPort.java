@@ -1,11 +1,11 @@
 package es.ubu.lsi.ubumonitoranalytics.features.enrollment.course.application.port.out;
 
-import es.ubu.lsi.ubumonitoranalytics.features.enrollment.course.domain.model.CourseEnrollment;
 
+import es.ubu.lsi.ubumonitoranalytics.features.enrollment.course.domain.model.UsersResponse;
 
 public interface EnrollmentFetchPort {
 
 
-    CourseEnrollment fetchCourseEnrolledUsers(Integer courseId, String token);
+    UsersResponse fetchCourseEnrolledUsers(Integer courseId, String token);
 }
 

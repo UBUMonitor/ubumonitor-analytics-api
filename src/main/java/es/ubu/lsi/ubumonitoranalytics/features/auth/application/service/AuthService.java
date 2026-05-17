@@ -1,12 +1,11 @@
 package es.ubu.lsi.ubumonitoranalytics.features.auth.application.service;
 
 import es.ubu.lsi.ubumonitoranalytics.features.auth.application.port.in.AuthUseCase;
-import es.ubu.lsi.ubumonitoranalytics.features.auth.application.port.out.SessionPort;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.application.port.out.MoodleApiPort;
+import es.ubu.lsi.ubumonitoranalytics.features.auth.application.port.out.SessionPort;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.JwtToken;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.auth.AuthInput;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.auth.LoginAuthResult;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

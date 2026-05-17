@@ -1,20 +1,18 @@
 package es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security;
 
-import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.DatabaseCreationException;
-import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.SessionNotFoundException;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security.config.JwtProperties;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.jwt.JwtClaimsSet;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import javax.crypto.SecretKey;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSSigner;
 import com.nimbusds.jose.crypto.MACSigner;
-import com.nimbusds.jwt.SignedJWT;
 import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
+import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.SessionNotFoundException;
+import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security.config.JwtProperties;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
 import java.net.URI;
 import java.time.Instant;
 import java.util.UUID;

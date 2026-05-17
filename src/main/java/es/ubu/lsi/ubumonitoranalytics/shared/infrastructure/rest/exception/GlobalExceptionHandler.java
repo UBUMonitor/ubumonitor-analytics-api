@@ -3,7 +3,6 @@ package es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.rest.exception;
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.ErrorDetailDto;
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.ErrorResponseDto;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.exception.NotFoundException;
-
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -2,13 +2,12 @@ package es.ubu.lsi.ubumonitoranalytics.features.enrollment.user.infrastructure.i
 
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.CourseInformationDto;
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.EnrollmentsResponseDto;
-
 import es.ubu.lsi.ubumonitoranalytics.features.enrollment.user.domain.model.Course;
 import es.ubu.lsi.ubumonitoranalytics.features.enrollment.user.domain.model.Enrollment;
 import es.ubu.lsi.ubumonitoranalytics.features.enrollment.user.domain.model.UserEnrolledCourses;
+import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.GlobalMapperConfig;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.GlobalMapperConfig;
 
 @Mapper(config = GlobalMapperConfig.class)
 public interface UserCoursesEnrollmentsMapper {

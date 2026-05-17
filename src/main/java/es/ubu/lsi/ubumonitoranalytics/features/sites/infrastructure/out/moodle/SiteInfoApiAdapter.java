@@ -3,9 +3,8 @@ package es.ubu.lsi.ubumonitoranalytics.features.sites.infrastructure.out.moodle;
 
 import es.ubu.lsi.moodleadapter.api.generated.api.SiteApi;
 import es.ubu.lsi.moodleadapter.api.generated.model.MoodleAdapterSiteInfoResponseDto;
-import es.ubu.lsi.ubumonitoranalytics.features.sites.application.port.out.SiteInfoApiPort;
 import es.ubu.lsi.ubumonitoranalytics.features.sites.application.dto.SiteInfo;
-
+import es.ubu.lsi.ubumonitoranalytics.features.sites.application.port.out.SiteInfoApiPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

@@ -1,244 +1,222 @@
--- 1. Primero tablas sin FK (users, courses, roles)
--- 2. Luego dependientes directas (groups, sections, modules)
--- 3. Luego tablas intermedias (many-to-many)
--- 4. Luego tablas finales (logs, images)
--- 5. Índices siempre al final
-
-
--- 1. Primero tablas sin FK (users, courses, roles)
+-- 1. Primero tablas sin FK (USERS, COURSES, ROLES)
 -- =========================
--- USERS
--- =========================
-CREATE TABLE users
+
+CREATE TABLE USERS
 (
-  id           INT PRIMARY KEY,
-  full_name    VARCHAR(255),
-  first_name   VARCHAR(255),
-  last_name    VARCHAR(255),
-  email        VARCHAR(255),
-  first_access TIMESTAMP WITH TIME ZONE,
-  last_access  TIMESTAMP WITH TIME ZONE,
-  created_at   TIMESTAMP NOT NULL,
-  updated_at   TIMESTAMP NOT NULL
+  ID           INT PRIMARY KEY,
+  FULL_NAME    VARCHAR(255),
+  FIRST_NAME   VARCHAR(255),
+  LAST_NAME    VARCHAR(255),
+  EMAIL        VARCHAR(255),
+  FIRST_ACCESS TIMESTAMP WITH TIME ZONE,
+  LAST_ACCESS  TIMESTAMP WITH TIME ZONE,
+  CREATED_AT   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UPDATED_AT   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- =========================
--- ROLES
--- =========================
-CREATE TABLE roles
+CREATE TABLE ROLES
 (
-  id         INT PRIMARY KEY,
-  name       VARCHAR(255),
-  created_at TIMESTAMP NOT NULL,
-  updated_at TIMESTAMP NOT NULL
+  ID         INT PRIMARY KEY,
+  NAME       VARCHAR(255),
+  CREATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UPDATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- =========================
--- COURSES
--- =========================
-CREATE TABLE courses
+CREATE TABLE COURSES
 (
-  id                INT PRIMARY KEY,
-  full_name         VARCHAR(255),
-  short_name        VARCHAR(255),
-  show_grades       BOOLEAN,
-  enable_completion BOOLEAN,
-  start_date        TIMESTAMP WITH TIME ZONE,
-  end_date          TIMESTAMP WITH TIME ZONE,
-  time_modified     TIMESTAMP WITH TIME ZONE,
-  created_at        TIMESTAMP NOT NULL,
-  updated_at        TIMESTAMP NOT NULL
-);
--- 2. Luego dependientes directas (groups, sections, modules)
--- =========================
--- GROUPS
--- =========================
-CREATE TABLE groups
-(
-  id          INT PRIMARY KEY,
-  name        VARCHAR(255),
-  description CLOB,
-  created_at  TIMESTAMP NOT NULL,
-  updated_at  TIMESTAMP NOT NULL
-
+  ID                INT PRIMARY KEY,
+  FULL_NAME         VARCHAR(255),
+  SHORT_NAME        VARCHAR(255),
+  SHOW_GRADES       BOOLEAN,
+  ENABLE_COMPLETION  BOOLEAN,
+  START_DATE        TIMESTAMP WITH TIME ZONE,
+  END_DATE          TIMESTAMP WITH TIME ZONE,
+  TIME_MODIFIED     TIMESTAMP WITH TIME ZONE,
+  CREATED_AT        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UPDATED_AT        TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 3. Luego tablas intermedias (many-to-many)
+-- 2. Dependientes directas
+-- =========================
 
--- =========================
--- USERS_COURSES
--- =========================
-CREATE TABLE users_courses
+CREATE TABLE GROUPS
 (
-  user_id            INT       NOT NULL,
-  course_id          INT       NOT NULL,
-  last_course_access TIMESTAMP WITH TIME ZONE,
-  is_favourite       BOOLEAN,
-  active             BOOLEAN,
-  created_at         TIMESTAMP NOT NULL,
-  updated_at         TIMESTAMP NOT NULL,
-
-  PRIMARY KEY (user_id, course_id),
-
-  CONSTRAINT fk_user_course_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
-  CONSTRAINT fk_user_course_course FOREIGN KEY (course_id) REFERENCES courses (id) ON DELETE CASCADE
+  ID          INT PRIMARY KEY,
+  NAME        VARCHAR(255),
+  DESCRIPTION CLOB,
+  CREATED_AT  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UPDATED_AT  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- 3. Tablas intermedias (many-to-many)
+-- =========================
 
--- =========================
--- USERS_GROUPS
--- =========================
-CREATE TABLE users_groups
+CREATE TABLE USERS_COURSES
 (
-  user_id    INT       NOT NULL,
-  group_id   INT       NOT NULL,
-  course_id  INT       NOT NULL,
-  active     BOOLEAN,
-  created_at TIMESTAMP NOT NULL,
-  updated_at TIMESTAMP NOT NULL,
+  USER_ID            INT NOT NULL,
+  COURSE_ID          INT NOT NULL,
+  LAST_COURSE_ACCESS TIMESTAMP WITH TIME ZONE,
+  IS_FAVOURITE       BOOLEAN,
+  ACTIVE             BOOLEAN,
+  CREATED_AT         TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UPDATED_AT         TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-  PRIMARY KEY (user_id, group_id, course_id),
+  PRIMARY KEY (USER_ID, COURSE_ID),
 
-  CONSTRAINT fk_users_groups_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
-  CONSTRAINT fk_users_groups_group FOREIGN KEY (group_id) REFERENCES groups (id) ON DELETE CASCADE,
-  CONSTRAINT fk_users_groups_course FOREIGN KEY (course_id) REFERENCES courses (id) ON DELETE CASCADE
+  CONSTRAINT FK_UC_USER FOREIGN KEY (USER_ID) REFERENCES USERS (ID) ON DELETE CASCADE,
+  CONSTRAINT FK_UC_COURSE FOREIGN KEY (COURSE_ID) REFERENCES COURSES (ID) ON DELETE CASCADE
 );
 
--- =========================
--- USERS_ROLES
--- =========================
-CREATE TABLE users_roles
+CREATE TABLE USERS_GROUPS
 (
-  role_id    INT       NOT NULL,
-  user_id    INT       NOT NULL,
-  course_id  INT       NOT NULL,
-  active     BOOLEAN,
-  created_at TIMESTAMP NOT NULL,
-  updated_at TIMESTAMP NOT NULL,
+  USER_ID    INT NOT NULL,
+  GROUP_ID   INT NOT NULL,
+  COURSE_ID  INT NOT NULL,
+  ACTIVE     BOOLEAN,
+  CREATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UPDATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-  PRIMARY KEY (user_id, role_id, course_id),
+  PRIMARY KEY (USER_ID, GROUP_ID, COURSE_ID),
 
-  CONSTRAINT fk_users_roles_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
-  CONSTRAINT fk_users_roles_role FOREIGN KEY (role_id) REFERENCES roles (id) ON DELETE CASCADE,
-  CONSTRAINT fk_users_roles_course FOREIGN KEY (course_id) REFERENCES courses (id) ON DELETE CASCADE
+  CONSTRAINT FK_UG_USER FOREIGN KEY (USER_ID) REFERENCES USERS (ID) ON DELETE CASCADE,
+  CONSTRAINT FK_UG_GROUP FOREIGN KEY (GROUP_ID) REFERENCES GROUPS (ID) ON DELETE CASCADE,
+  CONSTRAINT FK_UG_COURSE FOREIGN KEY (COURSE_ID) REFERENCES COURSES (ID) ON DELETE CASCADE
 );
 
-
--- =========================
--- SECTIONS
--- =========================
-CREATE TABLE sections
+CREATE TABLE USERS_ROLES
 (
-  id         INT PRIMARY KEY,
-  course_id  INT       NOT NULL,
-  name       VARCHAR(255),
-  summary    CLOB,
-  position   INT,
-  visible    BOOLEAN,
-  active     BOOLEAN,
-  created_at TIMESTAMP NOT NULL,
-  updated_at TIMESTAMP NOT NULL,
-  CONSTRAINT fk_sections_course FOREIGN KEY (course_id) REFERENCES courses (id)
+  ROLE_ID    INT NOT NULL,
+  USER_ID    INT NOT NULL,
+  COURSE_ID  INT NOT NULL,
+  ACTIVE     BOOLEAN,
+  CREATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UPDATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+  PRIMARY KEY (USER_ID, ROLE_ID, COURSE_ID),
+
+  CONSTRAINT FK_UR_USER FOREIGN KEY (USER_ID) REFERENCES USERS (ID) ON DELETE CASCADE,
+  CONSTRAINT FK_UR_ROLE FOREIGN KEY (ROLE_ID) REFERENCES ROLES (ID) ON DELETE CASCADE,
+  CONSTRAINT FK_UR_COURSE FOREIGN KEY (COURSE_ID) REFERENCES COURSES (ID) ON DELETE CASCADE
 );
 
+-- 4. Estructura jerárquica
 -- =========================
--- MODULES
--- =========================
-CREATE TABLE modules
+
+CREATE TABLE SECTIONS
 (
-  id          INT PRIMARY KEY,
-  section_id  INT       NOT NULL,
-  name        VARCHAR(255),
-  mod_name    VARCHAR(50),
-  url         VARCHAR(2048),
-  description CLOB,
-  visible     BOOLEAN,
-  position    INT,
-  active      BOOLEAN,
-  created_at  TIMESTAMP NOT NULL,
-  updated_at  TIMESTAMP NOT NULL,
-  CONSTRAINT fk_modules_section FOREIGN KEY (section_id) REFERENCES sections (id)
+  ID         INT PRIMARY KEY,
+  COURSE_ID  INT NOT NULL,
+  NAME       VARCHAR(255),
+  SUMMARY    CLOB,
+  POSITION   INT,
+  VISIBLE    BOOLEAN,
+  ACTIVE     BOOLEAN,
+  CREATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UPDATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+  CONSTRAINT FK_SECTIONS_COURSE FOREIGN KEY (COURSE_ID) REFERENCES COURSES (ID)
 );
 
--- =========================
--- SITES
--- =========================
-CREATE TABLE sites
+CREATE TABLE MODULES
 (
-  id             INT PRIMARY KEY,
-  host           VARCHAR(2048),
-  site_name      VARCHAR(255),
-  version_number VARCHAR(100),
-  type_of_login  VARCHAR(100),
-  launch_url     VARCHAR(2048),
-  user_id        INT,
-  user_name      VARCHAR(255),
-  full_name      VARCHAR(255),
-  first_name     VARCHAR(255),
-  last_name      VARCHAR(255),
-  user_image_url VARCHAR(2048),
-  created_at     TIMESTAMP NOT NULL,
-  updated_at     TIMESTAMP NOT NULL
+  ID          INT PRIMARY KEY,
+  SECTION_ID  INT NOT NULL,
+  NAME        VARCHAR(255),
+  MOD_NAME    VARCHAR(50),
+  URL         VARCHAR(2048),
+  DESCRIPTION CLOB,
+  VISIBLE     BOOLEAN,
+  POSITION    INT,
+  ACTIVE      BOOLEAN,
+  CREATED_AT  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UPDATED_AT  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+  CONSTRAINT FK_MODULES_SECTION FOREIGN KEY (SECTION_ID) REFERENCES SECTIONS (ID)
 );
 
--- 4. Luego tablas finales (logs, images)
-
+-- 5. SITES
 -- =========================
--- USERS_IMAGES
+
+CREATE TABLE SITES
+(
+  ID             INT PRIMARY KEY,
+  HOST           VARCHAR(2048),
+  SITE_NAME      VARCHAR(255),
+  VERSION_NUMBER VARCHAR(100),
+  TYPE_OF_LOGIN  VARCHAR(100),
+  LAUNCH_URL     VARCHAR(2048),
+  USER_ID        INT,
+  USER_NAME      VARCHAR(255),
+  FULL_NAME      VARCHAR(255),
+  FIRST_NAME     VARCHAR(255),
+  LAST_NAME      VARCHAR(255),
+  USER_IMAGE_URL VARCHAR(2048),
+  CREATED_AT     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UPDATED_AT     TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 6. Tablas finales
 -- =========================
-CREATE TABLE users_images
+
+CREATE TABLE USERS_IMAGES
 (
-  user_id      INT PRIMARY KEY,
-  image_data   BLOB         NOT NULL,
-  image_hash   VARCHAR(64)  NOT NULL,
-  content_type VARCHAR(100) NOT NULL,
-  created_at   TIMESTAMP    NOT NULL,
-  updated_at   TIMESTAMP    NOT NULL,
-  CONSTRAINT fk_user_images_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+  USER_ID      INT PRIMARY KEY,
+  IMAGE_DATA   BLOB NOT NULL,
+  IMAGE_HASH   VARCHAR(64) NOT NULL,
+  CONTENT_TYPE VARCHAR(100) NOT NULL,
+  CREATED_AT   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UPDATED_AT   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+  CONSTRAINT FK_UI_USER FOREIGN KEY (USER_ID) REFERENCES USERS (ID) ON DELETE CASCADE
 );
 
-CREATE TABLE logs_components
+CREATE TABLE LOGS_COMPONENTS
 (
-  id   TINYINT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(255) UNIQUE NOT NULL,
-  CONSTRAINT uq_component UNIQUE (name)
+  ID   TINYINT AUTO_INCREMENT PRIMARY KEY,
+  NAME VARCHAR(255) UNIQUE NOT NULL
 );
 
-CREATE TABLE logs_events
+CREATE TABLE LOGS_EVENTS
 (
-  id   SMALLINT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(255) NOT NULL,
-
-  CONSTRAINT uq_event UNIQUE (name)
+  ID   SMALLINT AUTO_INCREMENT PRIMARY KEY,
+  NAME VARCHAR(255) NOT NULL,
+  CONSTRAINT UQ_EVENT UNIQUE (NAME)
 );
+
+CREATE TABLE LOGS_ORIGINS
+(
+  ID   TINYINT AUTO_INCREMENT PRIMARY KEY,
+  NAME VARCHAR(20) UNIQUE NOT NULL
+);
+
 -- =========================
 -- LOGS
 -- =========================
 
-CREATE SEQUENCE logs_seq START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE LOGS_SEQ START WITH 1 INCREMENT BY 1;
 
-CREATE TABLE logs
+CREATE TABLE LOGS
 (
-  id           INT DEFAULT NEXT VALUE FOR logs_seq PRIMARY KEY,
-  timestamp    TIMESTAMP NOT NULL,
-  user_id      INT NULL,
-  course_id    INT       NOT NULL,
-  component_id TINYINT   NOT NULL,
-  event_id     SMALLINT  NOT NULL,
-  module_id    INT NULL,
+  ID           INT DEFAULT NEXT VALUE FOR LOGS_SEQ PRIMARY KEY,
+  TIMESTAMP    TIMESTAMP NOT NULL,
+  USER_ID      INT NULL,
+  COURSE_ID    INT NOT NULL,
+  COMPONENT_ID TINYINT NOT NULL,
+  EVENT_ID     SMALLINT NOT NULL,
+  MODULE_ID    INT NULL,
+  ORIGIN_ID    TINYINT NOT NULL,
+  IP_ADDRESS   VARCHAR(45),
 
-  CONSTRAINT fk_log_course FOREIGN KEY (course_id) REFERENCES courses (id),
-  CONSTRAINT fk_log_component FOREIGN KEY (component_id) REFERENCES logs_components (id),
-  CONSTRAINT fk_log_event FOREIGN KEY (event_id) REFERENCES logs_events (id)
+  CONSTRAINT FK_LOG_COURSE FOREIGN KEY (COURSE_ID) REFERENCES COURSES (ID),
+  CONSTRAINT FK_LOG_COMPONENT FOREIGN KEY (COMPONENT_ID) REFERENCES LOGS_COMPONENTS (ID),
+  CONSTRAINT FK_LOG_EVENT FOREIGN KEY (EVENT_ID) REFERENCES LOGS_EVENTS (ID),
+  CONSTRAINT FK_LOG_ORIGIN FOREIGN KEY (ORIGIN_ID) REFERENCES LOGS_ORIGINS (ID)
 );
--- 5. Índices siempre al final
--- =========================
--- INDEXES
+
+-- 7. INDEXES
 -- =========================
 
--- users_courses indexes
-CREATE INDEX idx_user_course_user_id ON users_courses (user_id);
-CREATE INDEX idx_user_course_course_id ON users_courses (course_id);
+CREATE INDEX IDX_USER_COURSE_USER_ID ON USERS_COURSES (USER_ID);
+CREATE INDEX IDX_USER_COURSE_COURSE_ID ON USERS_COURSES (COURSE_ID);
 
--- logs indexes
-CREATE INDEX idx_logs_course_timestamp ON logs(course_id, user_id, timestamp);
+CREATE INDEX IDX_LOGS_COURSE_TIMESTAMP ON LOGS (COURSE_ID, USER_ID, TIMESTAMP);

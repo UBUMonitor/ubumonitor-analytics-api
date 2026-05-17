@@ -3,7 +3,6 @@ package es.ubu.lsi.ubumonitoranalytics.features.course.content.application.servi
 import es.ubu.lsi.ubumonitoranalytics.features.course.content.application.port.in.GetCourseContentUseCase;
 import es.ubu.lsi.ubumonitoranalytics.features.course.content.application.port.out.GetCourseContentPersistenceUseCase;
 import es.ubu.lsi.ubumonitoranalytics.features.course.content.domain.model.CourseContent;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.persistence.repository.CourseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

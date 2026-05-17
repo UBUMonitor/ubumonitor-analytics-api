@@ -1,5 +1,13 @@
--- Components: 42
-INSERT INTO logs_components (name)
+INSERT INTO LOGS_ORIGINS (name)
+values('web'),
+      ('cli'),
+      ('ws'),
+      ('scheduled'),
+      ('restore'),
+      ('backup');
+
+
+INSERT INTO LOGS_COMPONENTS (name)
 VALUES ('Activity report'),
        ('Assignment'),
        ('BigBlueButton'),
@@ -44,7 +52,7 @@ VALUES ('Activity report'),
        ('Workshop');
 
 -- Events: 157
-INSERT INTO logs_events (name)
+INSERT INTO LOGS_EVENTS (name)
 VALUES ('A file has been uploaded.'),
        ('A submission has been submitted.'),
        ('All the submissions are being downloaded.'),

@@ -4,7 +4,7 @@ import es.ubu.lsi.ubumonitoranalytics.api.generated.api.CourseEnrollmentsApiDele
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.CourseEnrollmentsResponseDto;
 import es.ubu.lsi.ubumonitoranalytics.features.enrollment.course.application.port.in.GetCourseEnrollmentsUseCase;
 import es.ubu.lsi.ubumonitoranalytics.features.enrollment.course.application.port.in.SyncCourseEnrollmentsUseCase;
-import es.ubu.lsi.ubumonitoranalytics.features.enrollment.course.domain.model.CourseEnrollment;
+import es.ubu.lsi.ubumonitoranalytics.features.enrollment.course.domain.model.UsersResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -22,15 +22,15 @@ public class CourseEnrollmentsApiDelegateImpl implements CourseEnrollmentsApiDel
 
     @Override
     public ResponseEntity<CourseEnrollmentsResponseDto> syncCourseUsersEnrollments(Integer courseId) {
-        CourseEnrollment enrollments = syncCourseEnrollmentsUseCase.syncCourseEnrollments(courseId);
+        UsersResponse usersResponse = syncCourseEnrollmentsUseCase.syncCourseEnrollments(courseId);
 
-        return ResponseEntity.ok(courseEnrollmentsApiDelegateMapper.toDto(enrollments));
+        return ResponseEntity.ok(courseEnrollmentsApiDelegateMapper.toDto(usersResponse, courseId));
     }
 
     @Override
     public ResponseEntity<CourseEnrollmentsResponseDto> getCourseUsersEnrollmentsInfo(Integer courseId) {
-        CourseEnrollment enrollments = getCourseEnrollmentsUseCase.getCourseEnrollment(courseId);
-        return ResponseEntity.ok(courseEnrollmentsApiDelegateMapper.toDto(enrollments));
+        UsersResponse usersResponse = getCourseEnrollmentsUseCase.getCourseEnrollment(courseId);
+        return ResponseEntity.ok(courseEnrollmentsApiDelegateMapper.toDto(usersResponse, courseId));
     }
 
 }

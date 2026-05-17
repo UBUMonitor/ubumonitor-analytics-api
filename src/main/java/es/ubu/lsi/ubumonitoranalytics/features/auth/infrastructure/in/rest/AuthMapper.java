@@ -6,9 +6,8 @@ import es.ubu.lsi.ubumonitoranalytics.api.generated.model.AuthResponseDto;
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.AuthTokenRequestDto;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.JwtToken;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.auth.AuthInput;
-
-import org.mapstruct.Mapper;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.GlobalMapperConfig;
+import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(config = GlobalMapperConfig.class)

@@ -25,15 +25,19 @@ public class LogParserService {
 
     private final MoodleRulesConfig moodleRulesConfig;
 
-    public LogLine processRow(Integer courseId, CSVRecord row, Map<String, Byte> componentIds, Map<String, Short> eventIds) {
+    public LogLine processRow(Integer courseId, CSVRecord row, Map<String, Byte> componentIds, Map<String, Short> eventIds, Map<String, Byte> logOrigins) {
 
         String component = row.get("Component");
         String event = row.get("Event name");
+        String origin = row.get("Origin");
+
         Byte componentId = componentIds.get(component);
         Short eventId = eventIds.get(event);
-        if (componentId == null || eventId == null) {
+        Byte originId = logOrigins.get(origin);
 
-            log.warn("Not found in database component='[{}]', eventName='[{}]' and description='[{}]'", component, event, row.get("Description"));
+        if (componentId == null || eventId == null || originId == null) {
+
+            log.warn("Not found in database component='[{}]', eventName='[{}]', origin='[{}]' and description='[{}]'", component, event, origin, row.get("Description"));
             return null;
         }
 
@@ -42,6 +46,8 @@ public class LogParserService {
         logLine.setCourseId(courseId);
         logLine.setComponentId(componentId);
         logLine.setEventId(eventId);
+        logLine.setOriginId(originId);
+        logLine.setIpAddress(row.get("IP address"));
         additionalData(component, event, row.get("Description"), logLine);
         return logLine;
     }

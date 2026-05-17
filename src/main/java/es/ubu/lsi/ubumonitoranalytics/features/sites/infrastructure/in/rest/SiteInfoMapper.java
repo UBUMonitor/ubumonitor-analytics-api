@@ -5,11 +5,11 @@ package es.ubu.lsi.ubumonitoranalytics.features.sites.infrastructure.in.rest;
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.SiteInfoResponseDto;
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.SiteInformationDto;
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.UserInformationDto;
+import es.ubu.lsi.ubumonitoranalytics.features.sites.application.dto.SiteInfo;
 import es.ubu.lsi.ubumonitoranalytics.features.sites.domain.model.LoggedUser;
 import es.ubu.lsi.ubumonitoranalytics.features.sites.domain.model.Site;
-import es.ubu.lsi.ubumonitoranalytics.features.sites.application.dto.SiteInfo;
-import org.mapstruct.Mapper;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.GlobalMapperConfig;
+import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(config = GlobalMapperConfig.class)

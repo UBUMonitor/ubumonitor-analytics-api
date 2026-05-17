@@ -12,7 +12,6 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.io.input.BOMInputStream;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
@@ -29,17 +28,18 @@ import java.util.Map;
 @Slf4j
 public class ImportCourseLogsService implements ImportCourseLogsUseCase {
 
+    private static final int BATCH_SIZE = 10_000;
+
     private final LogParserService logParserService;
     private final LogPersistencePort logPersistencePort;
-    private static final int BATCH_SIZE = 1000;
 
     @Override
     @SneakyThrows
-    @Transactional
     public ProcessLogsResult process(Integer courseId, MultipartFile file) {
 
         Map<String, Byte> logComponents = logPersistencePort.getLogComponents();
         Map<String, Short> logEvents = logPersistencePort.getLogEvents();
+        Map<String, Byte> logOrigins = logPersistencePort.getLogOrigins();
 
         LocalDateTime lastLogDateTime = logPersistencePort.getLastDateTime(courseId);
 
@@ -53,32 +53,34 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
             CSVParser parser = buildCsvParser(reader)
         ) {
 
-            for (CSVRecord record : parser) {
+            for (CSVRecord csvRecord : parser) {
                 LogLine logLine;
                 try {
                      logLine = logParserService.processRow(
                         courseId,
-                        record,
+                        csvRecord,
                         logComponents,
-                        logEvents
+                        logEvents,
+                         logOrigins
                     );
                 } catch (Exception e) {
-                    log.warn("Error while processing log line: {}", record, e);
+                    log.warn("Error while processing log line: {}", csvRecord, e);
                     failed++;
                     continue;
                 }
 
 
-                if (!isValidLog(logLine, lastLogDateTime)) {
+                if (isValidLog(logLine, lastLogDateTime)) {
+                    batch.add(logLine);
+
+                    if (batch.size() >= BATCH_SIZE) {
+                        saved += persistBatch(batch);
+                    }
+                } else {
                     ignored++;
-                    continue;
                 }
 
-                batch.add(logLine);
 
-                if (batch.size() >= BATCH_SIZE) {
-                    saved += persistBatch(batch);
-                }
             }
 
             saved += persistBatch(batch);
@@ -86,7 +88,6 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
 
         return new ProcessLogsResult(saved, ignored, failed);
     }
-
     private int persistBatch(List<LogLine> batch) {
 
         if (batch.isEmpty()) {

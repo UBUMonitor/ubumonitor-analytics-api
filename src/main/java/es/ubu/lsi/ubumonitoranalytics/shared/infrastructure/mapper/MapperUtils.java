@@ -1,9 +1,11 @@
 package es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Named;
 
 import java.net.URI;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
@@ -29,5 +31,9 @@ public interface MapperUtils {
         return uri == null ? null : uri.toString();
     }
 
+    @Named("current")
+    default LocalDateTime mapCurrent(Object ignored) {
+        return LocalDateTime.now();
+    }
 
 }

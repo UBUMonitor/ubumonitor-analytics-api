@@ -5,9 +5,8 @@ import es.ubu.lsi.moodleadapter.api.generated.model.MoodleAdapterUserCoursesResp
 import es.ubu.lsi.ubumonitoranalytics.features.enrollment.user.domain.model.Course;
 import es.ubu.lsi.ubumonitoranalytics.features.enrollment.user.domain.model.Enrollment;
 import es.ubu.lsi.ubumonitoranalytics.features.enrollment.user.domain.model.UserEnrolledCourses;
-// MapperUtils provided by GlobalMapperConfig
-import org.mapstruct.Mapper;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.GlobalMapperConfig;
+import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(config = GlobalMapperConfig.class)

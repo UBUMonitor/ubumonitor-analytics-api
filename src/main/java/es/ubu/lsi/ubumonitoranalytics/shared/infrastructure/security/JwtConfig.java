@@ -1,13 +1,13 @@
 package es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security;
 
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security.config.JwtProperties;
 import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.KeyUse;
 import com.nimbusds.jose.jwk.OctetSequenceKey;
-import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security.config.JwtProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -18,8 +18,8 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
-import java.util.Optional;
 import java.security.SecureRandom;
+import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 

@@ -5,12 +5,11 @@ package es.ubu.lsi.ubumonitoranalytics.features.sites.infrastructure.out.moodle;
 
 import es.ubu.lsi.moodleadapter.api.generated.model.MoodleAdapterSiteInfoDto;
 import es.ubu.lsi.moodleadapter.api.generated.model.MoodleAdapterSiteInfoResponseDto;
+import es.ubu.lsi.ubumonitoranalytics.features.sites.application.dto.SiteInfo;
 import es.ubu.lsi.ubumonitoranalytics.features.sites.domain.model.LoggedUser;
 import es.ubu.lsi.ubumonitoranalytics.features.sites.domain.model.Site;
-import es.ubu.lsi.ubumonitoranalytics.features.sites.application.dto.SiteInfo;
-
-import org.mapstruct.Mapper;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.GlobalMapperConfig;
+import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(config = GlobalMapperConfig.class)

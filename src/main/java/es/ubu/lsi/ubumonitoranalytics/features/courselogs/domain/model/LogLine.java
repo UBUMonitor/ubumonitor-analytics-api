@@ -7,9 +7,11 @@ import java.time.LocalDateTime;
 @Data
 public class LogLine {
     private LocalDateTime time;
-    private byte componentId;
-    private short eventId;
-    private int courseId;
+    private Byte componentId;
+    private Short eventId;
+    private Integer courseId;
     private Integer userId;
     private Integer moduleId;
+    private Byte originId;
+    private String ipAddress;
 }

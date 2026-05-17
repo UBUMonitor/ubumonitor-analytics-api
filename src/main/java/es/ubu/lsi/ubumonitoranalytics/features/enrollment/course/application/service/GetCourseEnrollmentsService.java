@@ -2,7 +2,7 @@ package es.ubu.lsi.ubumonitoranalytics.features.enrollment.course.application.se
 
 import es.ubu.lsi.ubumonitoranalytics.features.enrollment.course.application.port.in.GetCourseEnrollmentsUseCase;
 import es.ubu.lsi.ubumonitoranalytics.features.enrollment.course.application.port.out.EnrollmentGetPersistencePort;
-import es.ubu.lsi.ubumonitoranalytics.features.enrollment.course.domain.model.CourseEnrollment;
+import es.ubu.lsi.ubumonitoranalytics.features.enrollment.course.domain.model.UsersResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +15,7 @@ public class GetCourseEnrollmentsService implements GetCourseEnrollmentsUseCase 
 
     @Override
     @Transactional(readOnly = true)
-    public CourseEnrollment getCourseEnrollment(Integer courseId) {
+    public UsersResponse getCourseEnrollment(Integer courseId) {
         return enrollmentGetPersistencePort.getCourseEnrollment(courseId);
     }
 }

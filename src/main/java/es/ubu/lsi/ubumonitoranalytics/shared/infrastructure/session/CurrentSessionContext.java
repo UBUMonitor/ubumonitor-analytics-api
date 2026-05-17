@@ -1,7 +1,6 @@
 package es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session;
 
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
-
 import org.springframework.stereotype.Component;
 
 @Component

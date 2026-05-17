@@ -18,7 +18,7 @@ public class User {
     private UserPicture userPicture;
     private List<Role> roles;
     private List<Group> groups;
-    private List<Course> courses;
+    private List<UserCourse> courses;
 
 }
 
