@@ -13,10 +13,8 @@ public class Application {
 
     /**
      * Application entry point.
-     *
      * This method is automatically called by the JVM when the application starts.
      * It initializes the Spring Boot application context and starts the embedded Tomcat server.
-     *
      * Usage example:
      * {@code
      * java -jar target/moodle-openapi-adapter-0.0.1-SNAPSHOT.jar
@@ -28,7 +26,7 @@ public class Application {
      *             - {@code --server.port=9090} to change server port
      *             - {@code --logging.level.root=DEBUG} to enable debug logging
      */
-    public static void main(String[] args) {
+     static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
 }

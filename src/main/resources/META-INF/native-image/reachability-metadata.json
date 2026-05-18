@@ -19,6 +19,15 @@
       "type": "ch.qos.logback.classic.LoggerContext"
     },
     {
+      "type": "ch.qos.logback.classic.encoder.PatternLayoutEncoder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "ch.qos.logback.classic.spi.LogbackServiceProvider"
     },
     {
@@ -29,6 +38,54 @@
           "parameterTypes": []
         }
       ]
+    },
+    {
+      "type": "ch.qos.logback.core.ConsoleAppender",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "ch.qos.logback.core.OutputStreamAppender",
+      "methods": [
+        {
+          "name": "setEncoder",
+          "parameterTypes": [
+            "ch.qos.logback.core.encoder.Encoder"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "ch.qos.logback.core.encoder.Encoder"
+    },
+    {
+      "type": "ch.qos.logback.core.encoder.LayoutWrappingEncoder",
+      "methods": [
+        {
+          "name": "setParent",
+          "parameterTypes": [
+            "ch.qos.logback.core.spi.ContextAware"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "ch.qos.logback.core.pattern.PatternLayoutEncoderBase",
+      "methods": [
+        {
+          "name": "setPattern",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "ch.qos.logback.core.spi.ContextAware"
     },
     {
       "type": "co.elastic.clients.elasticsearch.ElasticsearchClient"
@@ -2363,7 +2420,16 @@
       "type": "es.ubu.lsi.ubumonitoranalytics.api.generated.api.CourseEnrollmentsApiDelegate"
     },
     {
-      "type": "es.ubu.lsi.ubumonitoranalytics.api.generated.api.CourseLogsApi"
+      "type": "es.ubu.lsi.ubumonitoranalytics.api.generated.api.CourseLogsApi",
+      "methods": [
+        {
+          "name": "importCourseLogs",
+          "parameterTypes": [
+            "java.lang.Integer",
+            "org.springframework.web.multipart.MultipartFile"
+          ]
+        }
+      ]
     },
     {
       "type": "es.ubu.lsi.ubumonitoranalytics.api.generated.api.CourseLogsApiController",
@@ -2683,6 +2749,23 @@
       "methods": [
         {
           "name": "getCourses",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "es.ubu.lsi.ubumonitoranalytics.api.generated.model.ImportCourseLogsResponseDto",
+      "methods": [
+        {
+          "name": "getFailed",
+          "parameterTypes": []
+        },
+        {
+          "name": "getIgnored",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSaved",
           "parameterTypes": []
         }
       ]
@@ -3678,6 +3761,15 @@
       ]
     },
     {
+      "type": "es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.LogsRecord",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.ModulesRecord",
       "methods": [
         {
@@ -3754,6 +3846,63 @@
     },
     {
       "type": "es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.SessionStorePort"
+    },
+    {
+      "type": "es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.config.H2ServerConfig",
+      "methods": [
+        {
+          "name": "h2TcpServer",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.config.H2ServerConfig$$SpringCGLIB$$0",
+      "fields": [
+        {
+          "name": "$$beanFactory"
+        },
+        {
+          "name": "CGLIB$CALLBACK_FILTER"
+        },
+        {
+          "name": "CGLIB$FACTORY_DATA"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "CGLIB$SET_STATIC_CALLBACKS",
+          "parameterTypes": [
+            "org.springframework.cglib.proxy.Callback[]"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.config.H2ServerConfig$$SpringCGLIB$$FastClass$$0",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.config.H2ServerConfig$$SpringCGLIB$$FastClass$$1",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        }
+      ]
     },
     {
       "type": "es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.config.OpenApiConfig",
@@ -4211,22 +4360,7 @@
       ]
     },
     {
-      "type": "es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security.config.JwtProperties",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "setExpirationTimeInSeconds",
-          "parameterTypes": [
-            "java.lang.Integer"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security.config.SecurityConfig",
+      "type": "es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security.config.DevSecurityConfig",
       "methods": [
         {
           "name": "filterChain",
@@ -4237,7 +4371,7 @@
       ]
     },
     {
-      "type": "es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security.config.SecurityConfig$$SpringCGLIB$$0",
+      "type": "es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security.config.DevSecurityConfig$$SpringCGLIB$$0",
       "fields": [
         {
           "name": "$$beanFactory"
@@ -4266,7 +4400,7 @@
       ]
     },
     {
-      "type": "es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security.config.SecurityConfig$$SpringCGLIB$$FastClass$$0",
+      "type": "es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security.config.DevSecurityConfig$$SpringCGLIB$$FastClass$$0",
       "methods": [
         {
           "name": "<init>",
@@ -4277,12 +4411,33 @@
       ]
     },
     {
-      "type": "es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security.config.SecurityConfig$$SpringCGLIB$$FastClass$$1",
+      "type": "es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security.config.DevSecurityConfig$$SpringCGLIB$$FastClass$$1",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": [
             "java.lang.Class"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security.config.JwtProperties",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "setExpirationTimeInSeconds",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "setSecret",
+          "parameterTypes": [
+            "java.lang.String"
           ]
         }
       ]
@@ -4363,7 +4518,27 @@
       "type": "io.smallrye.mutiny.Multi"
     },
     {
+      "type": "io.swagger.v3.core.converter.ModelConverter"
+    },
+    {
+      "type": "io.swagger.v3.core.converter.ModelConverters",
+      "fields": [
+        {
+          "name": "converters"
+        }
+      ]
+    },
+    {
+      "type": "io.swagger.v3.core.filter.SpecFilter"
+    },
+    {
+      "type": "io.swagger.v3.core.util.ObjectMapperFactory"
+    },
+    {
       "type": "io.swagger.v3.oas.annotations.ExternalDocumentation"
+    },
+    {
+      "type": "io.swagger.v3.oas.annotations.Hidden"
     },
     {
       "type": "io.swagger.v3.oas.annotations.OpenAPI31"
@@ -4665,6 +4840,9 @@
       "type": "java.lang.CloneNotSupportedException"
     },
     {
+      "type": "java.lang.Cloneable"
+    },
+    {
       "type": "java.lang.Comparable"
     },
     {
@@ -4716,6 +4894,9 @@
       "type": "java.lang.Record"
     },
     {
+      "type": "java.lang.Runnable"
+    },
+    {
       "type": "java.lang.RuntimeException"
     },
     {
@@ -4730,6 +4911,10 @@
     {
       "type": "java.lang.Thread",
       "methods": [
+        {
+          "name": "isVirtual",
+          "parameterTypes": []
+        },
         {
           "name": "ofVirtual",
           "parameterTypes": []
@@ -4932,6 +5117,12 @@
     },
     {
       "type": "java.util.ArrayList"
+    },
+    {
+      "type": "java.util.Collection"
+    },
+    {
+      "type": "java.util.Date"
     },
     {
       "type": "java.util.Enumeration"
@@ -5537,6 +5728,12 @@
       ]
     },
     {
+      "type": "org.h2.server.ShutdownHandler"
+    },
+    {
+      "type": "org.h2.server.TcpServer"
+    },
+    {
       "type": "org.h2.server.web.JakartaWebServlet"
     },
     {
@@ -5619,6 +5816,22 @@
           "parameterTypes": []
         }
       ]
+    },
+    {
+      "type": "org.h2.tools.Server",
+      "methods": [
+        {
+          "name": "start",
+          "parameterTypes": []
+        },
+        {
+          "name": "stop",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.h2.util.Tool"
     },
     {
       "type": "org.hibernate.validator.HibernateValidator"
@@ -5820,6 +6033,27 @@
       "type": "org.slf4j.spi.SLF4JServiceProvider"
     },
     {
+      "type": "org.springdoc.api.AbstractOpenApiResource"
+    },
+    {
+      "type": "org.springdoc.core.conditions.CacheOrGroupedOpenApiCondition",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.springdoc.core.conditions.MultipleOpenApiGroupsCondition",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.springdoc.core.conditions.MultipleOpenApiSupportCondition",
       "methods": [
         {
@@ -5838,7 +6072,302 @@
       ]
     },
     {
-      "type": "org.springdoc.core.configuration.SpringDocConfiguration"
+      "type": "org.springdoc.core.configuration.SpringDocConfiguration",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "additionalModelsConverter",
+          "parameterTypes": [
+            "org.springdoc.core.providers.ObjectMapperProvider"
+          ]
+        },
+        {
+          "name": "fileSupportConverter",
+          "parameterTypes": [
+            "org.springdoc.core.providers.ObjectMapperProvider"
+          ]
+        },
+        {
+          "name": "globalOpenApiCustomizer",
+          "parameterTypes": []
+        },
+        {
+          "name": "initExtraSchemas",
+          "parameterTypes": []
+        },
+        {
+          "name": "localSpringDocParameterNameDiscoverer",
+          "parameterTypes": []
+        },
+        {
+          "name": "methodParameterPojoExtractor",
+          "parameterTypes": [
+            "org.springdoc.core.utils.SchemaUtils"
+          ]
+        },
+        {
+          "name": "modelConverterRegistrar",
+          "parameterTypes": [
+            "java.util.Optional",
+            "org.springdoc.core.properties.SpringDocConfigProperties"
+          ]
+        },
+        {
+          "name": "openAPIBuilder",
+          "parameterTypes": [
+            "java.util.Optional",
+            "org.springdoc.core.service.SecurityService",
+            "org.springdoc.core.properties.SpringDocConfigProperties",
+            "org.springdoc.core.utils.PropertyResolverUtils",
+            "java.util.Optional",
+            "java.util.Optional",
+            "java.util.Optional"
+          ]
+        },
+        {
+          "name": "operationBuilder",
+          "parameterTypes": [
+            "org.springdoc.core.service.GenericParameterService",
+            "org.springdoc.core.service.RequestBodyService",
+            "org.springdoc.core.service.SecurityService",
+            "org.springdoc.core.utils.PropertyResolverUtils"
+          ]
+        },
+        {
+          "name": "parameterBuilder",
+          "parameterTypes": [
+            "org.springdoc.core.utils.PropertyResolverUtils",
+            "java.util.Optional",
+            "org.springdoc.core.providers.ObjectMapperProvider",
+            "java.util.Optional"
+          ]
+        },
+        {
+          "name": "parameterObjectNamingStrategyCustomizer",
+          "parameterTypes": []
+        },
+        {
+          "name": "polymorphicModelConverter",
+          "parameterTypes": [
+            "org.springdoc.core.providers.ObjectMapperProvider"
+          ]
+        },
+        {
+          "name": "propertyResolverUtils",
+          "parameterTypes": [
+            "org.springframework.beans.factory.config.ConfigurableBeanFactory",
+            "org.springframework.context.MessageSource",
+            "org.springdoc.core.properties.SpringDocConfigProperties"
+          ]
+        },
+        {
+          "name": "requestBodyBuilder",
+          "parameterTypes": [
+            "org.springdoc.core.service.GenericParameterService",
+            "org.springdoc.core.utils.PropertyResolverUtils"
+          ]
+        },
+        {
+          "name": "responseSupportConverter",
+          "parameterTypes": [
+            "org.springdoc.core.providers.ObjectMapperProvider"
+          ]
+        },
+        {
+          "name": "schemaPropertyDeprecatingConverter",
+          "parameterTypes": []
+        },
+        {
+          "name": "schemaUtils",
+          "parameterTypes": [
+            "java.util.Optional"
+          ]
+        },
+        {
+          "name": "securityParser",
+          "parameterTypes": [
+            "org.springdoc.core.utils.PropertyResolverUtils"
+          ]
+        },
+        {
+          "name": "springDocAppInitializer",
+          "parameterTypes": [
+            "org.springdoc.core.properties.SpringDocConfigProperties"
+          ]
+        },
+        {
+          "name": "springDocCustomizers",
+          "parameterTypes": [
+            "java.util.Optional",
+            "java.util.Optional",
+            "java.util.Optional",
+            "java.util.Optional",
+            "java.util.Optional",
+            "java.util.Optional",
+            "java.util.Optional",
+            "java.util.Optional",
+            "java.util.Optional",
+            "java.util.Optional"
+          ]
+        },
+        {
+          "name": "springDocProviders",
+          "parameterTypes": [
+            "java.util.Optional",
+            "java.util.Optional",
+            "java.util.Optional",
+            "java.util.Optional",
+            "java.util.Optional",
+            "java.util.Optional",
+            "org.springdoc.core.providers.ObjectMapperProvider"
+          ]
+        },
+        {
+          "name": "springdocObjectMapperProvider",
+          "parameterTypes": [
+            "org.springdoc.core.properties.SpringDocConfigProperties"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.springdoc.core.configuration.SpringDocConfiguration$OpenApiResourceAdvice",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.springdoc.core.configuration.SpringDocConfiguration"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.springdoc.core.configuration.SpringDocConfiguration$SpringDocSpringDataWebPropertiesProvider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "springDataWebPropertiesProvider",
+          "parameterTypes": [
+            "java.util.Optional"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.springdoc.core.configuration.SpringDocConfiguration$WebConversionServiceConfiguration",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "webConversionServiceProvider",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.springdoc.core.configuration.SpringDocSecurityConfiguration",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.springdoc.core.configuration.SpringDocSecurityConfiguration$SpringSecurityLoginEndpointConfiguration",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.springdoc.core.configuration.SpringDocSecurityConfiguration"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.springdoc.core.configuration.hints.SpringDocSecurityHints"
+    },
+    {
+      "type": "org.springdoc.core.converters.AdditionalModelsConverter"
+    },
+    {
+      "type": "org.springdoc.core.converters.FileSupportConverter"
+    },
+    {
+      "type": "org.springdoc.core.converters.ModelConverterRegistrar"
+    },
+    {
+      "type": "org.springdoc.core.converters.PolymorphicModelConverter"
+    },
+    {
+      "type": "org.springdoc.core.converters.ResponseSupportConverter"
+    },
+    {
+      "type": "org.springdoc.core.converters.SchemaPropertyDeprecatingConverter"
+    },
+    {
+      "type": "org.springdoc.core.customizers.DelegatingMethodParameterCustomizer"
+    },
+    {
+      "type": "org.springdoc.core.customizers.GlobalOpenApiCustomizer"
+    },
+    {
+      "type": "org.springdoc.core.customizers.OpenApiCustomizer"
+    },
+    {
+      "type": "org.springdoc.core.customizers.OperationIdCustomizer"
+    },
+    {
+      "type": "org.springdoc.core.customizers.ParameterObjectNamingStrategyCustomizer"
+    },
+    {
+      "type": "org.springdoc.core.customizers.PropertyCustomizer"
+    },
+    {
+      "type": "org.springdoc.core.customizers.SpringDocCustomizers"
+    },
+    {
+      "type": "org.springdoc.core.discoverer.SpringDocParameterNameDiscoverer"
+    },
+    {
+      "type": "org.springdoc.core.events.SpringDocAppInitializer",
+      "methods": [
+        {
+          "name": "init",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.springdoc.core.extractor.MethodParameterPojoExtractor"
+    },
+    {
+      "type": "org.springdoc.core.models.GroupedOpenApi"
+    },
+    {
+      "type": "org.springdoc.core.properties.AbstractSwaggerUiConfigProperties",
+      "methods": [
+        {
+          "name": "setPath",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setUrl",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
     },
     {
       "type": "org.springdoc.core.properties.SpringDocConfigProperties",
@@ -5867,8 +6396,77 @@
           "parameterTypes": [
             "boolean"
           ]
+        },
+        {
+          "name": "setPath",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
         }
       ]
+    },
+    {
+      "type": "org.springdoc.core.properties.SwaggerUiConfigProperties",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.springdoc.core.properties.SwaggerUiOAuthProperties",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.springdoc.core.providers.ObjectMapperProvider"
+    },
+    {
+      "type": "org.springdoc.core.providers.RouterFunctionProvider"
+    },
+    {
+      "type": "org.springdoc.core.providers.SpringDataWebPropertiesProvider"
+    },
+    {
+      "type": "org.springdoc.core.providers.SpringDocProviders"
+    },
+    {
+      "type": "org.springdoc.core.providers.SpringWebProvider"
+    },
+    {
+      "type": "org.springdoc.core.providers.WebConversionServiceProvider"
+    },
+    {
+      "type": "org.springdoc.core.service.AbstractRequestService"
+    },
+    {
+      "type": "org.springdoc.core.service.GenericParameterService"
+    },
+    {
+      "type": "org.springdoc.core.service.GenericResponseService"
+    },
+    {
+      "type": "org.springdoc.core.service.OpenAPIService"
+    },
+    {
+      "type": "org.springdoc.core.service.OperationService"
+    },
+    {
+      "type": "org.springdoc.core.service.RequestBodyService"
+    },
+    {
+      "type": "org.springdoc.core.service.SecurityService"
+    },
+    {
+      "type": "org.springdoc.core.utils.PropertyResolverUtils"
+    },
+    {
+      "type": "org.springdoc.core.utils.SchemaUtils"
     },
     {
       "type": "org.springdoc.scalar.ScalarDisableAutoConfiguration",
@@ -5878,6 +6476,162 @@
           "parameterTypes": []
         }
       ]
+    },
+    {
+      "type": "org.springdoc.ui.AbstractSwaggerConfigurer"
+    },
+    {
+      "type": "org.springdoc.ui.AbstractSwaggerIndexTransformer"
+    },
+    {
+      "type": "org.springdoc.ui.AbstractSwaggerWelcome"
+    },
+    {
+      "type": "org.springdoc.webmvc.api.OpenApiResource"
+    },
+    {
+      "type": "org.springdoc.webmvc.api.OpenApiWebMvcResource"
+    },
+    {
+      "type": "org.springdoc.webmvc.core.configuration.SpringDocWebMvcConfiguration",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "openApiResource",
+          "parameterTypes": [
+            "org.springframework.beans.factory.ObjectFactory",
+            "org.springdoc.core.service.AbstractRequestService",
+            "org.springdoc.core.service.GenericResponseService",
+            "org.springdoc.core.service.OperationService",
+            "org.springdoc.core.properties.SpringDocConfigProperties",
+            "org.springdoc.core.providers.SpringDocProviders",
+            "org.springdoc.core.customizers.SpringDocCustomizers"
+          ]
+        },
+        {
+          "name": "requestBuilder",
+          "parameterTypes": [
+            "org.springdoc.core.service.GenericParameterService",
+            "org.springdoc.core.service.RequestBodyService",
+            "org.springdoc.core.customizers.SpringDocCustomizers",
+            "org.springdoc.core.discoverer.SpringDocParameterNameDiscoverer",
+            "org.springdoc.core.extractor.MethodParameterPojoExtractor"
+          ]
+        },
+        {
+          "name": "responseBuilder",
+          "parameterTypes": [
+            "org.springdoc.core.service.OperationService",
+            "org.springdoc.core.properties.SpringDocConfigProperties",
+            "org.springdoc.core.utils.PropertyResolverUtils"
+          ]
+        },
+        {
+          "name": "springWebProvider",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.springdoc.webmvc.core.configuration.SpringDocWebMvcConfiguration$SpringDocWebMvcRouterConfiguration",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "routerFunctionProvider",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.springdoc.webmvc.core.providers.RouterFunctionWebMvcProvider"
+    },
+    {
+      "type": "org.springdoc.webmvc.core.providers.SpringWebMvcProvider"
+    },
+    {
+      "type": "org.springdoc.webmvc.core.service.RequestService"
+    },
+    {
+      "type": "org.springdoc.webmvc.ui.SwaggerConfig",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "indexPageTransformer",
+          "parameterTypes": [
+            "org.springdoc.core.properties.SwaggerUiConfigProperties",
+            "org.springdoc.core.properties.SwaggerUiOAuthProperties",
+            "org.springdoc.webmvc.ui.SwaggerWelcomeCommon",
+            "org.springdoc.core.providers.ObjectMapperProvider"
+          ]
+        },
+        {
+          "name": "springDocSwaggerInitializer",
+          "parameterTypes": [
+            "org.springdoc.core.properties.SwaggerUiConfigProperties"
+          ]
+        },
+        {
+          "name": "swaggerConfigResource",
+          "parameterTypes": [
+            "org.springdoc.webmvc.ui.SwaggerWelcomeCommon"
+          ]
+        },
+        {
+          "name": "swaggerResourceResolver",
+          "parameterTypes": [
+            "org.springdoc.core.properties.SwaggerUiConfigProperties"
+          ]
+        },
+        {
+          "name": "swaggerWebMvcConfigurer",
+          "parameterTypes": [
+            "org.springdoc.core.properties.SwaggerUiConfigProperties",
+            "org.springframework.boot.autoconfigure.web.WebProperties",
+            "org.springframework.boot.autoconfigure.web.servlet.WebMvcProperties",
+            "org.springdoc.webmvc.ui.SwaggerIndexTransformer",
+            "org.springdoc.webmvc.ui.SwaggerResourceResolver",
+            "org.springdoc.webmvc.ui.SwaggerWelcomeCommon"
+          ]
+        },
+        {
+          "name": "swaggerWelcome",
+          "parameterTypes": [
+            "org.springdoc.core.properties.SwaggerUiConfigProperties",
+            "org.springdoc.core.properties.SpringDocConfigProperties",
+            "org.springframework.beans.factory.ObjectProvider"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.springdoc.webmvc.ui.SwaggerConfigResource"
+    },
+    {
+      "type": "org.springdoc.webmvc.ui.SwaggerIndexPageTransformer"
+    },
+    {
+      "type": "org.springdoc.webmvc.ui.SwaggerIndexTransformer"
+    },
+    {
+      "type": "org.springdoc.webmvc.ui.SwaggerResourceResolver"
+    },
+    {
+      "type": "org.springdoc.webmvc.ui.SwaggerWebMvcConfigurer"
+    },
+    {
+      "type": "org.springdoc.webmvc.ui.SwaggerWelcomeCommon"
+    },
+    {
+      "type": "org.springdoc.webmvc.ui.SwaggerWelcomeWebMvc"
     },
     {
       "type": "org.springframework.aop.SpringProxy"
@@ -5986,6 +6740,9 @@
       "type": "org.springframework.beans.factory.annotation.Qualifier"
     },
     {
+      "type": "org.springframework.beans.factory.annotation.Value"
+    },
+    {
       "type": "org.springframework.beans.factory.aot.BeanFactoryInitializationAotProcessor"
     },
     {
@@ -6031,6 +6788,9 @@
     },
     {
       "type": "org.springframework.boot.SpringBootConfiguration"
+    },
+    {
+      "type": "org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties"
     },
     {
       "type": "org.springframework.boot.actuate.autoconfigure.web.server.ConditionalOnManagementPort"
@@ -6377,6 +7137,9 @@
       ]
     },
     {
+      "type": "org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties"
+    },
+    {
       "type": "org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration"
     },
     {
@@ -6408,6 +7171,51 @@
     },
     {
       "type": "org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration"
+    },
+    {
+      "type": "org.springframework.boot.autoconfigure.h2.H2ConsoleAutoConfiguration",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.springframework.boot.autoconfigure.h2.H2ConsoleProperties"
+          ]
+        },
+        {
+          "name": "h2Console",
+          "parameterTypes": []
+        },
+        {
+          "name": "h2ConsoleLogger",
+          "parameterTypes": [
+            "org.springframework.beans.factory.ObjectProvider"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.springframework.boot.autoconfigure.h2.H2ConsoleAutoConfiguration$H2ConsoleLogger"
+    },
+    {
+      "type": "org.springframework.boot.autoconfigure.h2.H2ConsoleProperties",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "setEnabled",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setPath",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
     },
     {
       "type": "org.springframework.boot.autoconfigure.http.ConditionalOnPreferredJsonMapper"
@@ -7728,7 +8536,15 @@
       "type": "org.springframework.boot.autoconfigure.web.servlet.error.AbstractErrorController"
     },
     {
-      "type": "org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController"
+      "type": "org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController",
+      "methods": [
+        {
+          "name": "error",
+          "parameterTypes": [
+            "jakarta.servlet.http.HttpServletRequest"
+          ]
+        }
+      ]
     },
     {
       "type": "org.springframework.boot.autoconfigure.web.servlet.error.DefaultErrorViewResolver"
@@ -8102,6 +8918,9 @@
     },
     {
       "type": "org.springframework.boot.context.properties.NestedConfigurationProperty"
+    },
+    {
+      "type": "org.springframework.boot.context.properties.bind.BindResult"
     },
     {
       "type": "org.springframework.boot.context.properties.bind.Name"
@@ -8689,6 +9508,9 @@
       ]
     },
     {
+      "type": "org.springframework.context.event.EventListener"
+    },
+    {
       "type": "org.springframework.context.event.EventListenerMethodProcessor",
       "methods": [
         {
@@ -8707,7 +9529,16 @@
       "type": "org.springframework.context.support.PropertySourcesPlaceholderConfigurer"
     },
     {
+      "type": "org.springframework.core.DefaultParameterNameDiscoverer"
+    },
+    {
       "type": "org.springframework.core.Ordered"
+    },
+    {
+      "type": "org.springframework.core.ParameterNameDiscoverer"
+    },
+    {
+      "type": "org.springframework.core.PrioritizedParameterNameDiscoverer"
     },
     {
       "type": "org.springframework.core.PriorityOrdered"
@@ -8770,6 +9601,9 @@
       "type": "org.springframework.data.ldap.repository.LdapRepository"
     },
     {
+      "type": "org.springframework.data.querydsl.binding.QuerydslBindingsFactory"
+    },
+    {
       "type": "org.springframework.data.r2dbc.core.R2dbcEntityTemplate"
     },
     {
@@ -8813,6 +9647,9 @@
     },
     {
       "type": "org.springframework.hateoas.server.mvc.TypeConstrainedMappingJackson2HttpMessageConverter"
+    },
+    {
+      "type": "org.springframework.http.HttpStatus"
     },
     {
       "type": "org.springframework.http.ReactiveHttpInputMessage"
@@ -9336,6 +10173,9 @@
       "type": "org.springframework.security.data.repository.query.SecurityEvaluationContextExtension"
     },
     {
+      "type": "org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient"
+    },
+    {
       "type": "org.springframework.security.oauth2.client.registration.ClientRegistration"
     },
     {
@@ -9361,6 +10201,9 @@
     },
     {
       "type": "org.springframework.security.oauth2.server.authorization.OAuth2Authorization"
+    },
+    {
+      "type": "org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService"
     },
     {
       "type": "org.springframework.security.oauth2.server.resource.BearerTokenError"
@@ -9563,6 +10406,9 @@
       "type": "org.springframework.web.bind.annotation.ExceptionHandler"
     },
     {
+      "type": "org.springframework.web.bind.annotation.GetMapping"
+    },
+    {
       "type": "org.springframework.web.bind.annotation.Mapping"
     },
     {
@@ -9590,6 +10436,12 @@
       "type": "org.springframework.web.bind.annotation.ResponseBody"
     },
     {
+      "type": "org.springframework.web.bind.annotation.ResponseStatus"
+    },
+    {
+      "type": "org.springframework.web.bind.annotation.RestController"
+    },
+    {
       "type": "org.springframework.web.bind.annotation.RestControllerAdvice"
     },
     {
@@ -9615,6 +10467,9 @@
     },
     {
       "type": "org.springframework.web.context.ServletContextAware"
+    },
+    {
+      "type": "org.springframework.web.context.WebApplicationContext"
     },
     {
       "type": "org.springframework.web.context.request.RequestContextListener"
@@ -9850,6 +10705,9 @@
       "type": "org.springframework.web.servlet.config.annotation.WebMvcConfigurer"
     },
     {
+      "type": "org.springframework.web.servlet.function.RouterFunction"
+    },
+    {
       "type": "org.springframework.web.servlet.function.support.HandlerFunctionAdapter"
     },
     {
@@ -9883,6 +10741,9 @@
       "type": "org.springframework.web.servlet.handler.MatchableHandlerMapping"
     },
     {
+      "type": "org.springframework.web.servlet.handler.SimpleUrlHandlerMapping"
+    },
+    {
       "type": "org.springframework.web.servlet.i18n.AbstractLocaleResolver"
     },
     {
@@ -9908,6 +10769,18 @@
     },
     {
       "type": "org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"
+    },
+    {
+      "type": "org.springframework.web.servlet.resource.AbstractResourceResolver"
+    },
+    {
+      "type": "org.springframework.web.servlet.resource.LiteWebJarsResourceResolver"
+    },
+    {
+      "type": "org.springframework.web.servlet.resource.ResourceResolver"
+    },
+    {
+      "type": "org.springframework.web.servlet.resource.ResourceTransformer"
     },
     {
       "type": "org.springframework.web.servlet.resource.ResourceUrlProvider"
@@ -9967,6 +10840,9 @@
       "type": "org.thymeleaf.spring6.SpringTemplateEngine"
     },
     {
+      "type": "org.webjars.WebJarAssetLocator"
+    },
+    {
       "type": "org.webjars.WebJarVersionLocator"
     },
     {
@@ -10018,9 +10894,6 @@
       "type": "org.zalando.logbook.Strategy"
     },
     {
-      "type": "org.zalando.logbook.StructuredHttpLogFormatter"
-    },
-    {
       "type": "org.zalando.logbook.attributes.AttributeExtractor"
     },
     {
@@ -10054,14 +10927,12 @@
           "parameterTypes": []
         },
         {
-          "name": "jsonBodyFieldsFilter",
+          "name": "httpFormatter",
           "parameterTypes": []
         },
         {
-          "name": "jsonFormatter",
-          "parameterTypes": [
-            "com.fasterxml.jackson.databind.ObjectMapper"
-          ]
+          "name": "jsonBodyFieldsFilter",
+          "parameterTypes": []
         },
         {
           "name": "logbook",
@@ -10160,11 +11031,53 @@
         {
           "name": "<init>",
           "parameterTypes": []
+        },
+        {
+          "name": "getExclude",
+          "parameterTypes": []
+        },
+        {
+          "name": "getFilter",
+          "parameterTypes": []
+        },
+        {
+          "name": "getInclude",
+          "parameterTypes": []
+        },
+        {
+          "name": "getObfuscate",
+          "parameterTypes": []
+        },
+        {
+          "name": "getWrite",
+          "parameterTypes": []
         }
       ]
     },
     {
+      "type": "org.zalando.logbook.autoconfigure.LogbookProperties$Filter"
+    },
+    {
+      "type": "org.zalando.logbook.autoconfigure.LogbookProperties$Obfuscate",
+      "methods": [
+        {
+          "name": "getHeaders",
+          "parameterTypes": []
+        },
+        {
+          "name": "getParameters",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.zalando.logbook.autoconfigure.LogbookProperties$Write"
+    },
+    {
       "type": "org.zalando.logbook.core.DefaultCorrelationId"
+    },
+    {
+      "type": "org.zalando.logbook.core.DefaultHttpLogFormatter"
     },
     {
       "type": "org.zalando.logbook.core.DefaultHttpLogWriter"
@@ -10204,9 +11117,6 @@
     },
     {
       "type": "org.zalando.logbook.json.JacksonJsonFieldBodyFilter"
-    },
-    {
-      "type": "org.zalando.logbook.json.JsonHttpLogFormatter"
     },
     {
       "type": "org.zalando.logbook.openfeign.FeignLogbookLogger"
@@ -10408,6 +11318,15 @@
     },
     {
       "type": "sun.security.provider.SHA5$SHA512",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.security.provider.SecureRandom",
       "methods": [
         {
           "name": "<init>",
@@ -10700,6 +11619,13 @@
     {
       "type": {
         "proxy": [
+          "org.springframework.context.event.EventListener"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
           "org.springframework.web.bind.annotation.ControllerAdvice"
         ]
       }
@@ -10729,6 +11655,13 @@
       "type": {
         "proxy": [
           "org.springframework.web.bind.annotation.RequestMapping"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.springframework.web.bind.annotation.RequestPart"
         ]
       }
     },
@@ -10841,10 +11774,16 @@
       "glob": "META-INF/resources/index.html"
     },
     {
+      "glob": "META-INF/resources/webjars-locator.properties"
+    },
+    {
       "glob": "META-INF/services/ch.qos.logback.classic.spi.Configurator"
     },
     {
       "glob": "META-INF/services/io.r2dbc.spi.ConnectionFactoryProvider"
+    },
+    {
+      "glob": "META-INF/services/io.swagger.v3.core.converter.ModelConverter"
     },
     {
       "glob": "META-INF/services/jakarta.el.ExpressionFactory"
@@ -10895,13 +11834,7 @@
       "glob": "META-INF/services/org.zalando.logbook.BodyFilter"
     },
     {
-      "glob": "META-INF/services/org.zalando.logbook.HeaderFilter"
-    },
-    {
       "glob": "META-INF/services/org.zalando.logbook.LogbookFactory"
-    },
-    {
-      "glob": "META-INF/services/org.zalando.logbook.QueryFilter"
     },
     {
       "glob": "META-INF/services/org.zalando.logbook.RequestFilter"
@@ -10931,19 +11864,19 @@
       "glob": "META-INF/validation.xml"
     },
     {
-      "glob": "application-default.properties"
+      "glob": "application-dev.properties"
     },
     {
-      "glob": "application-default.xml"
+      "glob": "application-dev.xml"
     },
     {
-      "glob": "application-default.yaml"
+      "glob": "application-dev.yaml"
     },
     {
-      "glob": "application-default.yml"
+      "glob": "application-dev.yml"
     },
     {
-      "glob": "application-moodlerules-default.yml"
+      "glob": "application-moodlerules-dev.yml"
     },
     {
       "glob": "application-moodlerules.yml"
@@ -10970,16 +11903,16 @@
       "glob": "ch/qos/logback/core/logback-core-version.properties"
     },
     {
-      "glob": "config/application-default.properties"
+      "glob": "config/application-dev.properties"
     },
     {
-      "glob": "config/application-default.xml"
+      "glob": "config/application-dev.xml"
     },
     {
-      "glob": "config/application-default.yaml"
+      "glob": "config/application-dev.yaml"
     },
     {
-      "glob": "config/application-default.yml"
+      "glob": "config/application-dev.yml"
     },
     {
       "glob": "config/application.properties"
@@ -11381,6 +12314,9 @@
       "glob": "es/ubu/lsi/ubumonitoranalytics/shared/application/port/out/session/SessionStorePort.class"
     },
     {
+      "glob": "es/ubu/lsi/ubumonitoranalytics/shared/infrastructure/config/H2ServerConfig.class"
+    },
+    {
       "glob": "es/ubu/lsi/ubumonitoranalytics/shared/infrastructure/config/OpenApiConfig.class"
     },
     {
@@ -11423,7 +12359,7 @@
       "glob": "es/ubu/lsi/ubumonitoranalytics/shared/infrastructure/security/SessionAwareJwtAuthenticationConverter.class"
     },
     {
-      "glob": "es/ubu/lsi/ubumonitoranalytics/shared/infrastructure/security/config/SecurityConfig.class"
+      "glob": "es/ubu/lsi/ubumonitoranalytics/shared/infrastructure/security/config/DevSecurityConfig.class"
     },
     {
       "glob": "es/ubu/lsi/ubumonitoranalytics/shared/infrastructure/session/CaffeineSessionStoreAdapter.class"
@@ -11433,6 +12369,9 @@
     },
     {
       "glob": "git.properties"
+    },
+    {
+      "glob": "io/swagger/v3/oas/annotations/Hidden.class"
     },
     {
       "glob": "jakarta/servlet/Filter.class"
@@ -11798,6 +12737,57 @@
       "glob": "org/h2/util/data.zip"
     },
     {
+      "glob": "org/springdoc/core/conditions/CacheOrGroupedOpenApiCondition$OnCacheDisabled.class"
+    },
+    {
+      "glob": "org/springdoc/core/conditions/CacheOrGroupedOpenApiCondition$OnMultipleOpenApiSupportCondition.class"
+    },
+    {
+      "glob": "org/springdoc/core/conditions/CacheOrGroupedOpenApiCondition.class"
+    },
+    {
+      "glob": "org/springdoc/core/conditions/MultipleOpenApiGroupsCondition$OnGroupConfigProperty.class"
+    },
+    {
+      "glob": "org/springdoc/core/conditions/MultipleOpenApiGroupsCondition$OnGroupedOpenApiBean.class"
+    },
+    {
+      "glob": "org/springdoc/core/conditions/MultipleOpenApiGroupsCondition$OnListGroupedOpenApiBean.class"
+    },
+    {
+      "glob": "org/springdoc/core/conditions/MultipleOpenApiGroupsCondition.class"
+    },
+    {
+      "glob": "org/springdoc/core/conditions/MultipleOpenApiSupportCondition$OnActuatorDifferentPort.class"
+    },
+    {
+      "glob": "org/springdoc/core/conditions/MultipleOpenApiSupportCondition$OnMultipleOpenApiSupportCondition.class"
+    },
+    {
+      "glob": "org/springdoc/core/conditions/MultipleOpenApiSupportCondition.class"
+    },
+    {
+      "glob": "org/springdoc/core/configuration/SpringDocConfiguration$OpenApiResourceAdvice.class"
+    },
+    {
+      "glob": "org/springdoc/core/configuration/SpringDocConfiguration$QuerydslProvider.class"
+    },
+    {
+      "glob": "org/springdoc/core/configuration/SpringDocConfiguration$SpringDocActuatorConfiguration.class"
+    },
+    {
+      "glob": "org/springdoc/core/configuration/SpringDocConfiguration$SpringDocRepositoryRestConfiguration.class"
+    },
+    {
+      "glob": "org/springdoc/core/configuration/SpringDocConfiguration$SpringDocSpringDataWebPropertiesProvider.class"
+    },
+    {
+      "glob": "org/springdoc/core/configuration/SpringDocConfiguration$SpringDocWebFluxSupportConfiguration.class"
+    },
+    {
+      "glob": "org/springdoc/core/configuration/SpringDocConfiguration$WebConversionServiceConfiguration.class"
+    },
+    {
       "glob": "org/springdoc/core/configuration/SpringDocConfiguration.class"
     },
     {
@@ -11828,6 +12818,15 @@
       "glob": "org/springdoc/core/configuration/SpringDocPageableConfiguration.class"
     },
     {
+      "glob": "org/springdoc/core/configuration/SpringDocSecurityConfiguration$SpringDocSecurityOAuth2ClientConfiguration.class"
+    },
+    {
+      "glob": "org/springdoc/core/configuration/SpringDocSecurityConfiguration$SpringDocSecurityOAuth2Configuration.class"
+    },
+    {
+      "glob": "org/springdoc/core/configuration/SpringDocSecurityConfiguration$SpringSecurityLoginEndpointConfiguration.class"
+    },
+    {
       "glob": "org/springdoc/core/configuration/SpringDocSecurityConfiguration.class"
     },
     {
@@ -11846,6 +12845,24 @@
       "glob": "org/springdoc/core/properties/AbstractSwaggerUiConfigProperties.class"
     },
     {
+      "glob": "org/springdoc/core/properties/SpringDocConfigProperties$ApiDocs.class"
+    },
+    {
+      "glob": "org/springdoc/core/properties/SpringDocConfigProperties$Cache.class"
+    },
+    {
+      "glob": "org/springdoc/core/properties/SpringDocConfigProperties$GroupConfig.class"
+    },
+    {
+      "glob": "org/springdoc/core/properties/SpringDocConfigProperties$Groups.class"
+    },
+    {
+      "glob": "org/springdoc/core/properties/SpringDocConfigProperties$ModelConverters.class"
+    },
+    {
+      "glob": "org/springdoc/core/properties/SpringDocConfigProperties$SortConverter.class"
+    },
+    {
       "glob": "org/springdoc/core/properties/SpringDocConfigProperties.class"
     },
     {
@@ -11861,7 +12878,16 @@
       "glob": "org/springdoc/core/properties/SwaggerUiOAuthProperties.class"
     },
     {
+      "glob": "org/springdoc/webmvc/core/configuration/MultipleOpenApiSupportConfiguration$SpringDocWebMvcActuatorDifferentConfiguration.class"
+    },
+    {
       "glob": "org/springdoc/webmvc/core/configuration/MultipleOpenApiSupportConfiguration.class"
+    },
+    {
+      "glob": "org/springdoc/webmvc/core/configuration/SpringDocWebMvcConfiguration$SpringDocWebMvcActuatorConfiguration.class"
+    },
+    {
+      "glob": "org/springdoc/webmvc/core/configuration/SpringDocWebMvcConfiguration$SpringDocWebMvcRouterConfiguration.class"
     },
     {
       "glob": "org/springdoc/webmvc/core/configuration/SpringDocWebMvcConfiguration.class"
@@ -11960,6 +12986,9 @@
       "glob": "org/springframework/boot/autoconfigure/condition/ConditionalOnClass.class"
     },
     {
+      "glob": "org/springframework/boot/autoconfigure/condition/ConditionalOnExpression.class"
+    },
+    {
       "glob": "org/springframework/boot/autoconfigure/condition/ConditionalOnMissingBean.class"
     },
     {
@@ -11994,6 +13023,9 @@
     },
     {
       "glob": "org/springframework/boot/autoconfigure/dao/PersistenceExceptionTranslationAutoConfiguration.class"
+    },
+    {
+      "glob": "org/springframework/boot/autoconfigure/h2/H2ConsoleAutoConfiguration$H2ConsoleLogger.class"
     },
     {
       "glob": "org/springframework/boot/autoconfigure/h2/H2ConsoleAutoConfiguration.class"
@@ -12621,6 +13653,9 @@
     },
     {
       "glob": "spring.properties"
+    },
+    {
+      "glob": "springdoc.config.properties"
     },
     {
       "glob": "static/index.html"
