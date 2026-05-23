@@ -6,6 +6,6 @@ import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.GlobalMapperC
 import org.mapstruct.Mapper;
 
 @Mapper(config = GlobalMapperConfig.class)
-public interface CourseLogsApiDelegateMapper {
+public interface ImportLogsMapper {
     ImportCourseLogsResponseDto toDto(ProcessLogsResult processLogsResult);
 }

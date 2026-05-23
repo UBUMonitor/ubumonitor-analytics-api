@@ -115,6 +115,8 @@ paths:
 
   /courses/{courseId}/logs/import:
     $ref: './paths/courses/logs/import.yaml'
+  /courses/{courseId}/logs/info:
+    $ref: './paths/courses/logs/info.yaml'
 
   /users/{userId}/images/profile:
     $ref: "./paths/users/images/profile.yaml"

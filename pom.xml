@@ -9,7 +9,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.5.13</version>
+    <version>3.5.14</version>
     <relativePath/>
   </parent>
 
@@ -237,6 +237,7 @@
                 <openApiNullable>false</openApiNullable>
                 <interfaceOnly>false</interfaceOnly>
                 <skipDefaultInterface>false</skipDefaultInterface>
+                <jsonIncludeNonNull>true</jsonIncludeNonNull>
               </configOptions>
 
             </configuration>
@@ -296,8 +297,9 @@
               <sources>
                 <source>${project.build.directory}/generated-sources/openapi/src/main/java</source>
                 <source>${project.build.directory}/generated-sources/moodle-adapter/src/main/java</source>
-                <!-- Añadimos las fuentes generadas por los procesadores de anotaciones (MapStruct) -->
                 <source>${project.build.directory}/generated-sources/annotations</source>
+                <source>${project.build.directory}/generated-sources/jooq</source>
+
               </sources>
             </configuration>
           </execution>
@@ -313,18 +315,7 @@
               </sources>
             </configuration>
           </execution>
-          <execution>
-            <id>add-jooq-sources</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>add-source</goal>
-            </goals>
-            <configuration>
-              <sources>
-                <source>${project.build.directory}/generated-sources/jooq</source>
-              </sources>
-            </configuration>
-          </execution>
+
         </executions>
       </plugin>
       <plugin>
@@ -443,7 +434,7 @@
               <buildArgs>
                 <buildArg>--no-fallback</buildArg>
                 <buildArg>-H:+ReportExceptionStackTraces</buildArg>
-                <buildArg>-H:IncludeResources=patterns/.*</buildArg>
+                <buildArg>-H:IncludeResources=(patterns/.*|db/migration/.*|.*\.(yml|yaml|sql|properties|json|xml))</buildArg>
                 <buildArg>--initialize-at-run-time=com.github.benmanes.caffeine.cache</buildArg>
 
               </buildArgs>

@@ -1,13 +1,14 @@
 package es.ubu.lsi.ubumonitoranalytics.features.courselogs.infrastructure.out.persistence;
 
 import es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.port.out.LogPersistencePort;
-import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.LogLine;
+import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.ProcessLogLine;
 import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.LogsRecord;
+import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
 import lombok.RequiredArgsConstructor;
+import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -59,17 +60,21 @@ public class LogPersistenceAdapter implements LogPersistencePort {
     }
 
     @Override
-    @Transactional
-    public void saveBatch(List<LogLine> logs) {
+    public void saveBatch(List<ProcessLogLine> logs, SessionData sessionData) {
+
+
+        DSLContext dsl = jooq.dsl(sessionData);
+
         List<LogsRecord> records = logs.stream()
-            .map(this::toRecord)
+            .map(log -> toRecord(dsl, log))
             .toList();
 
-        jooq.dsl().batchInsert(records).execute();
+        dsl.batchInsert(records).execute();
     }
 
-    private LogsRecord toRecord(LogLine log) {
-        LogsRecord r = jooq.dsl().newRecord(LOGS);
+    private LogsRecord toRecord(DSLContext dsl, ProcessLogLine log) {
+
+        LogsRecord r = dsl.newRecord(LOGS);
 
         r.setTimestamp(log.getTime());
         r.setUserId(log.getUserId());

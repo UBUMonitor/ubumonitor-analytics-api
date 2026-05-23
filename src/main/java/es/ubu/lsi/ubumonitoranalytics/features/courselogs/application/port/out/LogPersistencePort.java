@@ -1,6 +1,7 @@
 package es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.port.out;
 
-import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.LogLine;
+import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.ProcessLogLine;
+import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,7 +15,7 @@ public interface LogPersistencePort {
 
     Map<String, Byte> getLogOrigins();
 
-    void saveBatch(List<LogLine> batch);
+    void saveBatch(List<ProcessLogLine> batch, SessionData sessionData);
 
     LocalDateTime getLastDateTime(Integer courseId);
 }

@@ -5,7 +5,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class LogLine {
+public class ProcessLogLine {
     private LocalDateTime time;
     private Byte componentId;
     private Short eventId;

@@ -49,6 +49,9 @@
       ]
     },
     {
+      "type": "ch.qos.logback.core.FileAppender"
+    },
+    {
       "type": "ch.qos.logback.core.OutputStreamAppender",
       "methods": [
         {
@@ -85,7 +88,91 @@
       ]
     },
     {
+      "type": "ch.qos.logback.core.rolling.RollingFileAppender",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "setFile",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setRollingPolicy",
+          "parameterTypes": [
+            "ch.qos.logback.core.rolling.RollingPolicy"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "ch.qos.logback.core.rolling.RollingPolicy"
+    },
+    {
+      "type": "ch.qos.logback.core.rolling.RollingPolicyBase",
+      "methods": [
+        {
+          "name": "setFileNamePattern",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setParent",
+          "parameterTypes": [
+            "ch.qos.logback.core.FileAppender"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "setMaxFileSize",
+          "parameterTypes": [
+            "ch.qos.logback.core.util.FileSize"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "ch.qos.logback.core.rolling.TimeBasedRollingPolicy",
+      "methods": [
+        {
+          "name": "setMaxHistory",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setTotalSizeCap",
+          "parameterTypes": [
+            "ch.qos.logback.core.util.FileSize"
+          ]
+        }
+      ]
+    },
+    {
       "type": "ch.qos.logback.core.spi.ContextAware"
+    },
+    {
+      "type": "ch.qos.logback.core.util.FileSize",
+      "methods": [
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
     },
     {
       "type": "co.elastic.clients.elasticsearch.ElasticsearchClient"
@@ -110,6 +197,9 @@
     },
     {
       "type": "com.fasterxml.jackson.annotation.JsonIgnore"
+    },
+    {
+      "type": "com.fasterxml.jackson.annotation.JsonInclude$IncludeEditor"
     },
     {
       "type": "com.fasterxml.jackson.annotation.JsonProperty"
@@ -2307,6 +2397,12 @@
           "parameterTypes": [
             "es.ubu.lsi.ubumonitoranalytics.api.generated.model.AuthLoginRequestDto"
           ]
+        },
+        {
+          "name": "authOffline",
+          "parameterTypes": [
+            "es.ubu.lsi.ubumonitoranalytics.api.generated.model.AuthOfflineRequestDto"
+          ]
         }
       ]
     },
@@ -2422,6 +2518,25 @@
     {
       "type": "es.ubu.lsi.ubumonitoranalytics.api.generated.api.CourseLogsApi",
       "methods": [
+        {
+          "name": "getCourseLogs",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.util.List",
+            "java.util.List",
+            "java.util.List",
+            "java.util.List",
+            "java.util.List",
+            "java.util.List",
+            "java.util.List",
+            "java.lang.Integer",
+            "java.lang.Integer",
+            "java.util.List",
+            "java.lang.Boolean"
+          ]
+        },
         {
           "name": "importCourseLogs",
           "parameterTypes": [
@@ -2619,6 +2734,45 @@
       ]
     },
     {
+      "type": "es.ubu.lsi.ubumonitoranalytics.api.generated.model.AuthOfflineRequestDto",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDbPassword",
+          "parameterTypes": []
+        },
+        {
+          "name": "getHost",
+          "parameterTypes": []
+        },
+        {
+          "name": "getUserName",
+          "parameterTypes": []
+        },
+        {
+          "name": "setDbPassword",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setHost",
+          "parameterTypes": [
+            "java.net.URI"
+          ]
+        },
+        {
+          "name": "setUserName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
       "type": "es.ubu.lsi.ubumonitoranalytics.api.generated.model.AuthResponseDto",
       "methods": [
         {
@@ -2754,6 +2908,19 @@
       ]
     },
     {
+      "type": "es.ubu.lsi.ubumonitoranalytics.api.generated.model.GetCourseLogsResponseDto",
+      "methods": [
+        {
+          "name": "getContent",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPage",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "es.ubu.lsi.ubumonitoranalytics.api.generated.model.ImportCourseLogsResponseDto",
       "methods": [
         {
@@ -2766,6 +2933,100 @@
         },
         {
           "name": "getSaved",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "es.ubu.lsi.ubumonitoranalytics.api.generated.model.LogEntryDto",
+      "methods": [
+        {
+          "name": "getComponent",
+          "parameterTypes": []
+        },
+        {
+          "name": "getComponentId",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCourseId",
+          "parameterTypes": []
+        },
+        {
+          "name": "getEventId",
+          "parameterTypes": []
+        },
+        {
+          "name": "getEventName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getId",
+          "parameterTypes": []
+        },
+        {
+          "name": "getIp",
+          "parameterTypes": []
+        },
+        {
+          "name": "getModuleId",
+          "parameterTypes": []
+        },
+        {
+          "name": "getModuleName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getOriginId",
+          "parameterTypes": []
+        },
+        {
+          "name": "getOriginName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTimeCreated",
+          "parameterTypes": []
+        },
+        {
+          "name": "getUserFullName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getUserId",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "es.ubu.lsi.ubumonitoranalytics.api.generated.model.PaginationInfoDto",
+      "methods": [
+        {
+          "name": "getEmpty",
+          "parameterTypes": []
+        },
+        {
+          "name": "getFirst",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLast",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPage",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTotalElements",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTotalPages",
           "parameterTypes": []
         }
       ]
@@ -3137,10 +3398,27 @@
       ]
     },
     {
+      "type": "es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.port.in.FetchCourseLogsUseCase"
+    },
+    {
       "type": "es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.port.in.ImportCourseLogsUseCase"
     },
     {
+      "type": "es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.port.out.FetchLogPersistencePort"
+    },
+    {
       "type": "es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.port.out.LogPersistencePort"
+    },
+    {
+      "type": "es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.service.FetchCourseLogsService",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.port.out.FetchLogPersistencePort"
+          ]
+        }
+      ]
     },
     {
       "type": "es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.service.ImportCourseLogsService",
@@ -3161,6 +3439,143 @@
           "name": "<init>",
           "parameterTypes": [
             "es.ubu.lsi.ubumonitoranalytics.features.courselogs.infrastructure.config.MoodleRulesConfig"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.FetchLogLine",
+      "fields": [
+        {
+          "name": "componentId"
+        },
+        {
+          "name": "componentName"
+        },
+        {
+          "name": "courseId"
+        },
+        {
+          "name": "eventId"
+        },
+        {
+          "name": "eventName"
+        },
+        {
+          "name": "id"
+        },
+        {
+          "name": "ipAddress"
+        },
+        {
+          "name": "moduleId"
+        },
+        {
+          "name": "moduleName"
+        },
+        {
+          "name": "originId"
+        },
+        {
+          "name": "originName"
+        },
+        {
+          "name": "timestamp"
+        },
+        {
+          "name": "userFullName"
+        },
+        {
+          "name": "userId"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "setComponentId",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "setComponentName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setCourseId",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "setEventId",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "setEventName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setId",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "setIpAddress",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setModuleId",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "setModuleName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setOriginId",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "setOriginName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setTimestamp",
+          "parameterTypes": [
+            "java.time.LocalDateTime"
+          ]
+        },
+        {
+          "name": "setUserFullName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setUserId",
+          "parameterTypes": [
+            "java.lang.Integer"
           ]
         }
       ]
@@ -3281,20 +3696,50 @@
           "name": "<init>",
           "parameterTypes": [
             "es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.port.in.ImportCourseLogsUseCase",
-            "es.ubu.lsi.ubumonitoranalytics.features.courselogs.infrastructure.in.rest.CourseLogsApiDelegateMapper"
+            "es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.port.in.FetchCourseLogsUseCase",
+            "es.ubu.lsi.ubumonitoranalytics.features.courselogs.infrastructure.in.rest.ImportLogsMapper",
+            "es.ubu.lsi.ubumonitoranalytics.features.courselogs.infrastructure.in.rest.GetLogsMapper"
           ]
         }
       ]
     },
     {
-      "type": "es.ubu.lsi.ubumonitoranalytics.features.courselogs.infrastructure.in.rest.CourseLogsApiDelegateMapper"
+      "type": "es.ubu.lsi.ubumonitoranalytics.features.courselogs.infrastructure.in.rest.GetLogsMapper"
     },
     {
-      "type": "es.ubu.lsi.ubumonitoranalytics.features.courselogs.infrastructure.in.rest.CourseLogsApiDelegateMapperImpl",
+      "type": "es.ubu.lsi.ubumonitoranalytics.features.courselogs.infrastructure.in.rest.GetLogsMapperImpl",
+      "fields": [
+        {
+          "name": "mapperUtils"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "es.ubu.lsi.ubumonitoranalytics.features.courselogs.infrastructure.in.rest.ImportLogsMapper"
+    },
+    {
+      "type": "es.ubu.lsi.ubumonitoranalytics.features.courselogs.infrastructure.in.rest.ImportLogsMapperImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "es.ubu.lsi.ubumonitoranalytics.features.courselogs.infrastructure.out.persistence.FetchSavedLogsLogPersistenceAdapter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq"
+          ]
         }
       ]
     },
@@ -4756,6 +5201,31 @@
       ]
     },
     {
+      "type": "jakarta.validation.constraints.Pattern",
+      "methods": [
+        {
+          "name": "flags",
+          "parameterTypes": []
+        },
+        {
+          "name": "groups",
+          "parameterTypes": []
+        },
+        {
+          "name": "message",
+          "parameterTypes": []
+        },
+        {
+          "name": "payload",
+          "parameterTypes": []
+        },
+        {
+          "name": "regexp",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "jakarta.validation.executable.ExecutableValidator"
     },
     {
@@ -4810,6 +5280,9 @@
       "type": "java.lang.Byte[]"
     },
     {
+      "type": "java.lang.CharSequence"
+    },
+    {
       "type": "java.lang.CharSequence[]"
     },
     {
@@ -4861,6 +5334,9 @@
       "type": "java.lang.Float[]"
     },
     {
+      "type": "java.lang.Integer"
+    },
+    {
       "type": "java.lang.Integer[]"
     },
     {
@@ -4877,6 +5353,9 @@
           "parameterTypes": []
         }
       ]
+    },
+    {
+      "type": "java.lang.Number"
     },
     {
       "type": "java.lang.Object",
@@ -4968,6 +5447,9 @@
     },
     {
       "type": "java.lang.constant.Constable[]"
+    },
+    {
+      "type": "java.lang.constant.ConstantDesc"
     },
     {
       "type": "java.lang.constant.ConstantDesc[]"
@@ -5116,13 +5598,16 @@
       "type": "java.time.Year[]"
     },
     {
+      "type": "java.util.AbstractCollection"
+    },
+    {
+      "type": "java.util.AbstractList"
+    },
+    {
       "type": "java.util.ArrayList"
     },
     {
       "type": "java.util.Collection"
-    },
-    {
-      "type": "java.util.Date"
     },
     {
       "type": "java.util.Enumeration"
@@ -5135,6 +5620,9 @@
     },
     {
       "type": "java.util.List"
+    },
+    {
+      "type": "java.util.RandomAccess"
     },
     {
       "type": "java.util.SequencedCollection"
@@ -5230,6 +5718,9 @@
       "type": "javax.net.ssl.SSLParameters"
     },
     {
+      "type": "javax.persistence.Column"
+    },
+    {
       "type": "javax.security.auth.Destroyable"
     },
     {
@@ -5314,6 +5805,10 @@
         },
         {
           "name": "getLocalPort",
+          "parameterTypes": []
+        },
+        {
+          "name": "getName",
           "parameterTypes": []
         },
         {
@@ -5838,6 +6333,15 @@
     },
     {
       "type": "org.hibernate.validator.internal.constraintvalidators.bv.NotNullValidator",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.hibernate.validator.internal.constraintvalidators.bv.PatternValidator",
       "methods": [
         {
           "name": "<init>",
@@ -7498,6 +8002,12 @@
         {
           "name": "<init>",
           "parameterTypes": []
+        },
+        {
+          "name": "setDefaultPropertyInclusion",
+          "parameterTypes": [
+            "com.fasterxml.jackson.annotation.JsonInclude$Include"
+          ]
         }
       ]
     },
@@ -8319,6 +8829,18 @@
         {
           "name": "<init>",
           "parameterTypes": []
+        },
+        {
+          "name": "setMaxFileSize",
+          "parameterTypes": [
+            "org.springframework.util.unit.DataSize"
+          ]
+        },
+        {
+          "name": "setMaxRequestSize",
+          "parameterTypes": [
+            "org.springframework.util.unit.DataSize"
+          ]
         }
       ]
     },
@@ -8536,15 +9058,7 @@
       "type": "org.springframework.boot.autoconfigure.web.servlet.error.AbstractErrorController"
     },
     {
-      "type": "org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController",
-      "methods": [
-        {
-          "name": "error",
-          "parameterTypes": [
-            "jakarta.servlet.http.HttpServletRequest"
-          ]
-        }
-      ]
+      "type": "org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController"
     },
     {
       "type": "org.springframework.boot.autoconfigure.web.servlet.error.DefaultErrorViewResolver"
@@ -10430,6 +10944,9 @@
       "type": "org.springframework.web.bind.annotation.RequestMethod[]"
     },
     {
+      "type": "org.springframework.web.bind.annotation.RequestParam"
+    },
+    {
       "type": "org.springframework.web.bind.annotation.RequestPart"
     },
     {
@@ -11661,6 +12178,13 @@
     {
       "type": {
         "proxy": [
+          "org.springframework.web.bind.annotation.RequestParam"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
           "org.springframework.web.bind.annotation.RequestPart"
         ]
       }
@@ -11933,10 +12457,7 @@
       "glob": "db/migration"
     },
     {
-      "glob": "db/migration/V1__create_tables.sql"
-    },
-    {
-      "glob": "db/migration/V2__inserts.sql"
+      "glob": "db/migration/V1__init.sql"
     },
     {
       "glob": "es/ubu/lsi/ubumonitoranalytics"
@@ -12095,10 +12616,19 @@
       "glob": "es/ubu/lsi/ubumonitoranalytics/features/course/content/infrastructure/out/persistence/SyncCourseContentPersistenceAdapter.class"
     },
     {
+      "glob": "es/ubu/lsi/ubumonitoranalytics/features/courselogs/application/port/in/FetchCourseLogsUseCase.class"
+    },
+    {
       "glob": "es/ubu/lsi/ubumonitoranalytics/features/courselogs/application/port/in/ImportCourseLogsUseCase.class"
     },
     {
+      "glob": "es/ubu/lsi/ubumonitoranalytics/features/courselogs/application/port/out/FetchLogPersistencePort.class"
+    },
+    {
       "glob": "es/ubu/lsi/ubumonitoranalytics/features/courselogs/application/port/out/LogPersistencePort.class"
+    },
+    {
+      "glob": "es/ubu/lsi/ubumonitoranalytics/features/courselogs/application/service/FetchCourseLogsService.class"
     },
     {
       "glob": "es/ubu/lsi/ubumonitoranalytics/features/courselogs/application/service/ImportCourseLogsService.class"
@@ -12119,10 +12649,19 @@
       "glob": "es/ubu/lsi/ubumonitoranalytics/features/courselogs/infrastructure/in/rest/CourseLogsApiDelegateImpl.class"
     },
     {
-      "glob": "es/ubu/lsi/ubumonitoranalytics/features/courselogs/infrastructure/in/rest/CourseLogsApiDelegateMapper.class"
+      "glob": "es/ubu/lsi/ubumonitoranalytics/features/courselogs/infrastructure/in/rest/GetLogsMapper.class"
     },
     {
-      "glob": "es/ubu/lsi/ubumonitoranalytics/features/courselogs/infrastructure/in/rest/CourseLogsApiDelegateMapperImpl.class"
+      "glob": "es/ubu/lsi/ubumonitoranalytics/features/courselogs/infrastructure/in/rest/GetLogsMapperImpl.class"
+    },
+    {
+      "glob": "es/ubu/lsi/ubumonitoranalytics/features/courselogs/infrastructure/in/rest/ImportLogsMapper.class"
+    },
+    {
+      "glob": "es/ubu/lsi/ubumonitoranalytics/features/courselogs/infrastructure/in/rest/ImportLogsMapperImpl.class"
+    },
+    {
+      "glob": "es/ubu/lsi/ubumonitoranalytics/features/courselogs/infrastructure/out/persistence/FetchSavedLogsLogPersistenceAdapter.class"
     },
     {
       "glob": "es/ubu/lsi/ubumonitoranalytics/features/courselogs/infrastructure/out/persistence/LogPersistenceAdapter.class"

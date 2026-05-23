@@ -14,9 +14,19 @@ import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DefaultConfiguration;
 import org.jooq.impl.DefaultDSLContext;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.Enumeration;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -112,17 +122,19 @@ public class JooqProvider {
     // FLYWAY (solo una vez por tenant)
     // =========================================================
 
-    private void migrateIfNeeded(String tenantId, DataSource ds) {
+    private void migrateIfNeeded(String tenantId, DataSource ds) throws Exception {
 
         if (!migratedTenants.add(tenantId)) {
             return;
         }
 
-        log.info("Running Flyway migration for tenant {}", tenantId);
 
+        String migrationPath = extractMigrationsToTemp();
+
+        log.info("Running Flyway migration for tenant {}", tenantId);
         Flyway.configure()
             .dataSource(ds)
-            .locations("classpath:db/migration")
+            .locations("filesystem:" + migrationPath)
             .baselineOnMigrate(true)
             .validateOnMigrate(true)
             .load()
@@ -157,5 +169,30 @@ public class JooqProvider {
         dataSourceCache.invalidateAll();
         migratedTenants.clear();
         log.info("Cleared all tenants");
+    }
+
+    private String extractMigrationsToTemp() throws Exception {
+
+        Path tempDir = Files.createTempDirectory("flyway-migrations");
+
+        PathMatchingResourcePatternResolver resolver =
+            new PathMatchingResourcePatternResolver();
+
+        Resource[] resources =
+            resolver.getResources("classpath:db/migration/*.sql");
+
+        for (Resource resource : resources) {
+
+            Path target =
+                tempDir.resolve(Objects.requireNonNull(resource.getFilename()));
+
+            try (InputStream in = resource.getInputStream()) {
+                Files.copy(in, target,
+                    StandardCopyOption.REPLACE_EXISTING);
+                log.info("Extracted migration {} to {}", resource.getFilename(), target);
+            }
+        }
+
+        return tempDir.toAbsolutePath().toString();
     }
 }
