@@ -2,10 +2,10 @@ package es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.service;
 
 import es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.port.in.ImportCourseLogsUseCase;
 import es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.port.out.LogPersistencePort;
-import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.ProcessLogLine;
-import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.ProcessLogsResult;
-import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
+import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.importlogs.ProcessLogLine;
+import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.importlogs.ProcessLogsResult;
+
+import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -20,13 +20,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-import java.util.concurrent.Semaphore;
+
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.StreamSupport;
 
@@ -35,18 +32,18 @@ import java.util.stream.StreamSupport;
 @Slf4j
 public class ImportCourseLogsService implements ImportCourseLogsUseCase {
 
-    private static final int BATCH_SIZE = 10_000;
 
     private final LogParserService logParserService;
     private final LogPersistencePort logPersistencePort;
-    private final ExecutorService executorService;
-    private final CurrentSessionContext currentSessionContext;
 
-    private final Semaphore dbLimiter = new Semaphore(2);
 
     @Override
     @SneakyThrows
     public ProcessLogsResult process(Integer courseId, MultipartFile file) {
+
+        if (!logPersistencePort.existCourse(courseId)) {
+            throw  new EntityNotFoundException("Course with id " + courseId + " not found");
+        }
 
         Map<String, Byte> logComponents = logPersistencePort.getLogComponents();
         Map<String, Short> logEvents = logPersistencePort.getLogEvents();
@@ -95,20 +92,12 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
 
             log.info("Finished processing CSV logs: {}", validLines.size());
 
-            List<Future<Boolean>> futures = new ArrayList<>();
-            SessionData sessionData = currentSessionContext.getSessionData();
+            boolean persisted = persistBatch(validLines);
+            if (persisted) {
+                saved.addAndGet(validLines.size());
 
-            for (int i = 0; i < validLines.size(); i += BATCH_SIZE) {
-
-                List<ProcessLogLine> batch = validLines.subList(i, Math.min(i + BATCH_SIZE, validLines.size()));
-
-                futures.add(executorService.submit(() -> persistBatch(batch, saved, failed, sessionData)));
-            }
-
-            // esperar a que terminen todos los batches
-            for (Future<Boolean> f : futures) {
-                f.get();
-
+            } else {
+                failed.addAndGet(validLines.size());
             }
         }
 
@@ -120,30 +109,20 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
     }
 
 
-    private boolean persistBatch(List<ProcessLogLine> batch, AtomicInteger saved, AtomicInteger failed, SessionData sessionData) {
+    private boolean persistBatch(List<ProcessLogLine> logLines) {
 
-        if (batch.isEmpty()) {
+        if (logLines.isEmpty()) {
             return true;
         }
 
         try {
-            dbLimiter.acquire();
 
-            logPersistencePort.saveBatch(batch, sessionData);
-            saved.addAndGet(batch.size());
+            logPersistencePort.saveBatch(logLines);
             return true;
 
-        } catch (InterruptedException _) {
-            Thread.currentThread().interrupt();
-            failed.addAndGet(batch.size());
-            return false;
         } catch (Exception e) {
             log.error("Error persisting batch", e);
-            failed.addAndGet(batch.size());
             return false;
-
-        } finally {
-            dbLimiter.release();
         }
     }
 

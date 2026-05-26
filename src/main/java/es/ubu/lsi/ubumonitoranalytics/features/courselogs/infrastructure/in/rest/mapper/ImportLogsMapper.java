@@ -1,7 +1,7 @@
-package es.ubu.lsi.ubumonitoranalytics.features.courselogs.infrastructure.in.rest;
+package es.ubu.lsi.ubumonitoranalytics.features.courselogs.infrastructure.in.rest.mapper;
 
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.ImportCourseLogsResponseDto;
-import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.ProcessLogsResult;
+import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.importlogs.ProcessLogsResult;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.GlobalMapperConfig;
 import org.mapstruct.Mapper;
 

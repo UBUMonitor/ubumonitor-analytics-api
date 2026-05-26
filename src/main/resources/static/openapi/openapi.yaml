@@ -114,9 +114,11 @@ paths:
     $ref: './paths/courses/content/sync.yaml'
 
   /courses/{courseId}/logs/import:
-    $ref: './paths/courses/logs/import.yaml'
+    $ref: './paths/courses/courselogs/import.yaml'
   /courses/{courseId}/logs/info:
-    $ref: './paths/courses/logs/info.yaml'
+    $ref: './paths/courses/courselogs/info.yaml'
+  /courses/{courseId}/logs/metrics:
+    $ref: './paths/courses/courselogs/metrics.yaml'
 
   /users/{userId}/images/profile:
     $ref: "./paths/users/images/profile.yaml"

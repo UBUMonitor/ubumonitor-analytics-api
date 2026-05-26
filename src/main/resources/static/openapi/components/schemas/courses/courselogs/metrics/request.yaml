@@ -1,0 +1,126 @@
+CourseLogsMetricsRequest:
+  type: object
+  required:
+    - groupBy
+
+  properties:
+
+    fields:
+      title: CourseLogsInfoRequestFields
+      type: array
+      description: Columns to include in response
+      items:
+        type: string
+        enum:
+          - COURSE_ID
+          - USER_ID
+          - MODULE_ID
+          - COMPONENT_ID
+          - EVENT_ID
+          - ORIGIN_ID
+          - IP_ADDRESS
+          - USER_FULL_NAME
+          - MODULE_NAME
+          - COMPONENT_NAME
+          - EVENT_NAME
+          - ORIGIN_NAME
+
+    timeRange:
+      type: object
+      properties:
+        from:
+          type: string
+          format: none
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$'
+          example: "2026-05-01T00:00:00"
+        to:
+          type: string
+          format: none
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$'
+          example: "2026-05-31T23:59:59"
+
+    groupBy:
+      type: array
+      items:
+        type: string
+        enum:
+          - USER_ID
+          - MODULE_ID
+          - COMPONENT_ID
+          - EVENT_ID
+          - ORIGIN_ID
+          - IP_ADDRESS
+    interval:
+      type: string
+      description: >
+        Optional time aggregation interval for grouping logs by time buckets.
+        If not provided, no time-based grouping is applied.
+      enum:
+        - HOURLY
+        - DAILY
+        - WEEKLY
+        - MONTHLY
+        - DAY_OF_WEEK
+      example: DAILY
+    fillGapsStrategy:
+      type: string
+      enum:
+        - NONE
+        - ZERO
+        - NULL
+      default: NONE
+    sortBy:
+      type: array
+      items:
+        title: CourseLogsMetricsRequestSortByItem
+        type: object
+        required:
+          - field
+        properties:
+          field:
+            type: string
+            enum:
+              - VALUE
+              - USER_ID
+              - MODULE_ID
+              - TIME
+              - TIME_BUCKET
+
+          direction:
+            type: string
+            enum: [ ASC, DESC ]
+            example: ASC
+            default: ASC
+    filters:
+      type: object
+      properties:
+
+        userIds:
+          type: array
+          items:
+            type: integer
+
+        moduleIds:
+          type: array
+          items:
+            type: integer
+
+        componentIds:
+          type: array
+          items:
+            type: integer
+
+        eventIds:
+          type: array
+          items:
+            type: integer
+
+        originIds:
+          type: array
+          items:
+            type: integer
+
+        ipAddresses:
+          type: array
+          items:
+            type: string

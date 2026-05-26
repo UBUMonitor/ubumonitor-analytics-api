@@ -1,0 +1,100 @@
+CourseLogsInfoResponse:
+  type: object
+  required:
+    - content
+  properties:
+    page:
+      title: PaginationInfo
+      type: object
+      required:
+        - page
+        - size
+        - totalElements
+      properties:
+        page:
+          type: integer
+          example: 0
+          description: Zero-based index of the current page
+
+        size:
+          type: integer
+          example: 20
+          description: Number of items per page
+
+        totalElements:
+          type: integer
+          example: 1200
+          description: Total number of elements matching the filters
+
+        totalPages:
+          type: integer
+          example: 60
+          description: Total number of pages
+
+        first:
+          type: boolean
+          example: true
+          description: Whether this is the first page
+
+        last:
+          type: boolean
+          example: false
+          description: Whether this is the last page
+
+        empty:
+          type: boolean
+          example: false
+          description: Whether the page has no content
+    content:
+      type: array
+      description: List of log rows (dynamic fields based on columns)
+      items:
+        title: LogEntry
+        type: object
+        properties:
+          id:
+            type: integer
+            description: Log entry ID
+          timeCreated:
+            type: string
+            format: none
+            pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$'
+            example: "2026-05-22T10:15:30"
+            description: Log creation time
+          courseId:
+            type: integer
+            description: ID of the course associated with the log
+          userId:
+            type: integer
+            description: ID of the user associated with the log
+          userFullName:
+            type: string
+            description: Full name of the user associated with the log
+          moduleId:
+            type: integer
+            description: ID of the module associated with the log
+          moduleName:
+            type: string
+            description: Name of the module associated with the log
+          component:
+            type: string
+            description: Component associated with the log
+          componentId:
+            type: integer
+            description: ID of the component associated with the log
+
+          eventName:
+            type: string
+            description: Name of the event associated with the log
+          eventId:
+            type: integer
+            description: ID of the event associated with the log
+          originName:
+            type: string
+            description: Name of the origin associated with the log
+          originId:
+            type: integer
+            description: ID of the origin associated with the log
+          ip:
+            type: string
+            description: IP address associated with the log

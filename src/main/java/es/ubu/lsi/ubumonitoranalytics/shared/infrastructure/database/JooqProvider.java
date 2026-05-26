@@ -19,13 +19,10 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.Enumeration;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -89,6 +86,7 @@ public class JooqProvider {
             HikariDataSource ds = new HikariDataSource();
 
             String jdbcUrl = DatabaseUtil.buildJdbcUrl(
+                moodleConfig.getDb().getJdbcUrlTemplate(),
                 moodleConfig.getDb().getBasePath(),
                 session.getHost(),
                 session.getUserName()

@@ -1,11 +1,10 @@
 package es.ubu.lsi.ubumonitoranalytics.features.courselogs.infrastructure.out.persistence;
 
 import es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.port.out.LogPersistencePort;
-import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.ProcessLogLine;
-import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.LogsRecord;
-import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
+import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.importlogs.ProcessLogLine;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
 import lombok.RequiredArgsConstructor;
+import org.jooq.BatchBindStep;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
@@ -14,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Courses.COURSES;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Logs.LOGS;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsComponents.LOGS_COMPONENTS;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsEvents.LOGS_EVENTS;
@@ -25,6 +25,16 @@ import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsOrigins.LOGS_ORIGIN
 public class LogPersistenceAdapter implements LogPersistencePort {
 
     private final Jooq jooq;
+
+    @Override
+    public boolean existCourse(Integer courseId) {
+        DSLContext dsl = jooq.dsl();
+        return dsl.fetchExists(
+            dsl.selectOne()
+                .from(COURSES)
+                .where(COURSES.ID.eq(courseId))
+        );
+    }
 
     @Override
     public Map<String, Byte> getLogComponents() {
@@ -60,32 +70,36 @@ public class LogPersistenceAdapter implements LogPersistencePort {
     }
 
     @Override
-    public void saveBatch(List<ProcessLogLine> logs, SessionData sessionData) {
+    public void saveBatch(List<ProcessLogLine> logs) {
 
+        DSLContext dsl = jooq.dsl();
 
-        DSLContext dsl = jooq.dsl(sessionData);
+        BatchBindStep batch = dsl.batch(
+            dsl.insertInto(LOGS,
+                LOGS.TIMESTAMP,
+                LOGS.USER_ID,
+                LOGS.COURSE_ID,
+                LOGS.COMPONENT_ID,
+                LOGS.EVENT_ID,
+                LOGS.MODULE_ID,
+                LOGS.ORIGIN_ID,
+                LOGS.IP_ADDRESS
+            ).values((LocalDateTime) null, null, null, null, null, null, null, null)
+        );
+        for (ProcessLogLine l : logs) {
+            batch.bind(
+                l.getTime(),
+                l.getUserId(),
+                l.getCourseId(),
+                l.getComponentId(),
+                l.getEventId(),
+                l.getModuleId(),
+                l.getOriginId(),
+                l.getIpAddress()
+            );
+        }
 
-        List<LogsRecord> records = logs.stream()
-            .map(log -> toRecord(dsl, log))
-            .toList();
-
-        dsl.batchInsert(records).execute();
-    }
-
-    private LogsRecord toRecord(DSLContext dsl, ProcessLogLine log) {
-
-        LogsRecord r = dsl.newRecord(LOGS);
-
-        r.setTimestamp(log.getTime());
-        r.setUserId(log.getUserId());
-        r.setCourseId(log.getCourseId());
-        r.setComponentId(log.getComponentId());
-        r.setEventId(log.getEventId());
-        r.setModuleId(log.getModuleId());
-        r.setOriginId(log.getOriginId());
-        r.setIpAddress(log.getIpAddress());
-
-        return r;
+        batch.execute();
     }
 
     @Override

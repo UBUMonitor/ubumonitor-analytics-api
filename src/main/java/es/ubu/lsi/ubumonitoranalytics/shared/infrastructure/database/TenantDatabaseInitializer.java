@@ -16,6 +16,7 @@ public class TenantDatabaseInitializer {
     public void createIfNotExists(URI host, String userName, String dbPassword) {
 
         DatabaseUtil.createAndInitializeDatabase(
+            moodleConfig.getDb().getJdbcUrlTemplate(),
             moodleConfig.getDb().getBasePath(),
             host,
             userName,

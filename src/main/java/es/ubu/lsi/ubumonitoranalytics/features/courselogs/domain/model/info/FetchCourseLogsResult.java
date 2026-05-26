@@ -1,4 +1,4 @@
-package es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model;
+package es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.info;
 
 
 import lombok.Builder;

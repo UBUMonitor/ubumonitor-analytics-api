@@ -40,7 +40,7 @@ public class DatabaseUtil {
         return toHostString(host) + "_" + toSafeUserName(userName);
     }
 
-    public static String buildJdbcUrl(String basePath, URI host, String userName) {
+    public static String buildJdbcUrl(String jdbcTemplate, String basePath, URI host, String userName) {
         String fileName = buildDbFileName(host, userName);
 
         // Usamos Path para normalizar la ruta según el SO (evita problemas de / o \)
@@ -54,11 +54,11 @@ public class DatabaseUtil {
         // toString() de Path suele ser suficiente, pero esto es más robusto:
         String normalizedPath = fullPath.replace("\\", "/");
 
-        return String.format("jdbc:h2:file:%s;CIPHER=AES;DB_CLOSE_ON_EXIT=FALSE", normalizedPath);
+        return String.format(jdbcTemplate, normalizedPath);
     }
 
 
-    public static void createAndInitializeDatabase(String basePath, URI host, String userName, String dbPassword) {
+    public static void createAndInitializeDatabase(String jdbcTemplate, String basePath, URI host, String userName, String dbPassword) {
 
         Path dir = Path.of(basePath);
 
@@ -66,6 +66,7 @@ public class DatabaseUtil {
             Files.createDirectories(dir);
 
             String jdbcUrl = DatabaseUtil.buildJdbcUrl(
+                jdbcTemplate,
                 basePath,
                 host,
                 userName

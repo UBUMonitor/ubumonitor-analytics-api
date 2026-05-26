@@ -1,9 +1,8 @@
 package es.ubu.lsi.ubumonitoranalytics.shared.domain.exception;
 
-public class EntityNotFoundException extends RuntimeException {
-    public EntityNotFoundException() {
-        super();
-    }
+import es.ubu.lsi.ubumonitoranalytics.shared.application.exception.NotFoundException;
+
+public class EntityNotFoundException extends NotFoundException {
     public EntityNotFoundException(String message) {
         super(message);
     }

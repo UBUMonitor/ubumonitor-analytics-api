@@ -49,6 +49,7 @@ moodle:
     read-timeout: 30000
   db:
     base-path: ./moodle_dbs
+    jdbc-url-template: jdbc:h2:file:%s;CIPHER=AES;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1;CACHE_SIZE=65536
 logging:
   level:
     org.h2: DEBUG

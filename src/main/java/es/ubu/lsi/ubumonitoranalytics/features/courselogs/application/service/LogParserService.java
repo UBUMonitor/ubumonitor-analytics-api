@@ -1,10 +1,9 @@
 package es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.service;
 
-import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.ProcessLogLine;
+import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.importlogs.ProcessLogLine;
 import es.ubu.lsi.ubumonitoranalytics.features.courselogs.infrastructure.config.MoodleRulesConfig;
 import io.krakens.grok.api.Grok;
 import io.krakens.grok.api.Match;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.stereotype.Service;
@@ -16,7 +15,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -105,7 +103,7 @@ public class LogParserService {
 
         String key = component + "::" + eventName;
 
-        List<Grok> groks = grokCache.computeIfAbsent(key, k -> {
+        List<Grok> groks = grokCache.computeIfAbsent(key, _ -> {
             Map<String, List<Grok>> eventMap =
                 moodleRulesConfig.getRules().get(component);
 
