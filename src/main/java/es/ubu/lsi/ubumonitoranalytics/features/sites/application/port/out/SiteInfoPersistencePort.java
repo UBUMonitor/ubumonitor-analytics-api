@@ -5,7 +5,7 @@ import es.ubu.lsi.ubumonitoranalytics.features.sites.application.dto.SiteInfo;
 
 public interface SiteInfoPersistencePort {
 
-    SiteInfo fetchSiteInfo(String userName);
+    SiteInfo fetchSiteInfo(String username);
     void save(SiteInfo site);
 }
 

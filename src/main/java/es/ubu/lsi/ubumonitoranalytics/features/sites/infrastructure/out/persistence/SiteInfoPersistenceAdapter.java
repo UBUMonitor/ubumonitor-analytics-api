@@ -8,7 +8,6 @@ import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Sites.SITES;
 
@@ -34,14 +33,14 @@ public class SiteInfoPersistenceAdapter implements SiteInfoPersistencePort {
     }
 
     @Override
-    public SiteInfo fetchSiteInfo(String userName) {
+    public SiteInfo fetchSiteInfo(String username) {
 
 
-        SitesRecord dto = jooq.dsl().fetchOne(SITES, SITES.USER_NAME.eq(userName));
+        SitesRecord dto = jooq.dsl().fetchOne(SITES, SITES.USER_NAME.eq(username));
 
         if (dto == null) {
             throw new EntityNotFoundException(
-                "Site not found for userName: " + userName
+                "Site not found for username: " + username
             );
         }
 

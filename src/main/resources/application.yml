@@ -7,9 +7,7 @@ spring:
     virtual:
       enabled: true
 
-  web:
-    resources:
-      add-mappings: false
+
 
   devtools:
     restart:
@@ -28,7 +26,9 @@ spring:
 
   flyway:
     enabled: false
-
+openapi:
+  uBUMonitorAnalytics:
+    base-path: /api
 server:
   port: 9090
   tomcat:
@@ -40,7 +40,7 @@ springdoc:
     enabled: false
 
 jwt:
-  expiration-time-in-seconds: 7200
+  expiration-time-in-seconds: 0
 
 moodle:
   api:

@@ -10,7 +10,7 @@ import java.net.URI;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RegisterInput {
-    private String userName;
+    private String username;
     private URI host;
     private String hostName;
     private String dbPassword;

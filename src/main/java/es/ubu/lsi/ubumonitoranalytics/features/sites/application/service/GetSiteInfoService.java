@@ -19,7 +19,7 @@ public class GetSiteInfoService implements GetSiteInfoUseCase {
     @Override
     public SiteInfo getIteInfo() {
         SessionData sessionData = currentSessionContext.getSessionData();
-        return siteInfoPersistencePort.fetchSiteInfo(sessionData.getUserName());
+        return siteInfoPersistencePort.fetchSiteInfo(sessionData.getUsername());
     }
 }
 

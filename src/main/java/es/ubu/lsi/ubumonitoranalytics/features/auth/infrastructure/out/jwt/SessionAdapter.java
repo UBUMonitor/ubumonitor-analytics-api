@@ -9,12 +9,10 @@ import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.TenantDatab
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security.JwtUtils;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
-import java.time.Duration;
-import java.time.Instant;
+
 
 
 @Component
@@ -29,14 +27,14 @@ public class SessionAdapter implements SessionPort {
     @Override
     public JwtToken generateSession(AuthInput authInput) {
 
-        String userName = authInput.getUserName();
+        String username = authInput.getUsername();
         String dbPassword = authInput.getDbPassword();
         String moodleToken = authInput.getMoodleToken();
         URI hostUri = authInput.getHost();
 
-        if (sessionStore.hasSession(hostUri, userName)) {
+        if (sessionStore.hasSession(hostUri, username)) {
 
-            SessionData existingSession = sessionStore.getSession(hostUri, userName);
+            SessionData existingSession = sessionStore.getSession(hostUri, username);
             existingSession.setMoodleToken(moodleToken);
 
             currentSessionContext.setSessionData(existingSession);
@@ -44,20 +42,20 @@ public class SessionAdapter implements SessionPort {
             return toJwtToken(existingSession.getJwt());
         }
 
-        SessionData newSession = createSession(userName, dbPassword, moodleToken, hostUri);
+        SessionData newSession = createSession(username, dbPassword, moodleToken, hostUri);
 
         return toJwtToken(newSession.getJwt());
     }
 
-    private SessionData createSession(String userName, String dbPassword, String moodleToken, URI hostUri) {
+    private SessionData createSession(String username, String dbPassword, String moodleToken, URI hostUri) {
 
-        databaseInitializer.createIfNotExists(hostUri, userName, dbPassword);
+        databaseInitializer.createIfNotExists(hostUri, username, dbPassword);
 
-        String jwt = jwtUtils.generateJwtToken(userName, hostUri);
+        String jwt = jwtUtils.generateJwtToken(username, hostUri);
 
         SessionData sessionData = SessionData.builder()
             .jwt(jwt)
-            .userName(userName)
+            .username(username)
             .host(hostUri)
             .moodleToken(moodleToken)
             .dbPassword(dbPassword)
@@ -72,16 +70,9 @@ public class SessionAdapter implements SessionPort {
 
     private JwtToken toJwtToken(String jwt) {
 
-        Jwt claims = jwtUtils.parse(jwt);
-
-        long expiration = Duration.between(
-            Instant.now(),
-            claims.getExpiresAt()
-        ).getSeconds();
 
         return JwtToken.builder()
             .token(jwt)
-            .expiresIn(expiration)
             .build();
     }
 }

@@ -29,6 +29,10 @@ CourseEnrollmentsResponse:
             type: string
             format: date-time
             description: The timestamp of the user's last access to the course.
+          imageUrl:
+            type: string
+            format: uri
+            description: The URL of the user's profile image.
           roles:
             type: array
             description: List of roles the user has in the course.

@@ -30,7 +30,7 @@ public interface SiteInfoApiAdapterMapper {
     @Mapping(target = "id", source = "userid")
     @Mapping(target = "userPicture.url", source = "userpictureurl")
     @Mapping(target = "userPicture.data", ignore = true)
-    @Mapping(target = "userName", source = "username")
+    @Mapping(target = "username", source = "username")
     @Mapping(target = "lastName", source = "lastname")
     @Mapping(target = "fullName", source = "fullname")
     @Mapping(target = "firstName", source = "firstname")

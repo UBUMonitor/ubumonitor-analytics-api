@@ -8,7 +8,7 @@ public interface SessionStorePort {
     void saveSession(String jwt, SessionData sessionData);
     SessionData getSession(String jwt);
     void invalidateSession(String jwt);
-    boolean hasSession(URI host, String userName);
+    boolean hasSession(URI host, String username);
 
-    SessionData getSession(URI host, String userName);
+    SessionData getSession(URI host, String username);
 }

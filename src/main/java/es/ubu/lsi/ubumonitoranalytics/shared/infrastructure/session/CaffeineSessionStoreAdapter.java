@@ -8,14 +8,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
-import java.util.concurrent.TimeUnit;
 
 @Component
 @RequiredArgsConstructor
 public class CaffeineSessionStoreAdapter implements SessionStorePort {
 
     private final Cache<String, SessionData> sessionCache = Caffeine.newBuilder()
-        .expireAfterAccess(24, TimeUnit.HOURS)
         .maximumSize(1000)
         .build();
 
@@ -37,19 +35,19 @@ public class CaffeineSessionStoreAdapter implements SessionStorePort {
     }
 
     @Override
-    public boolean hasSession(URI host, String userName) {
+    public boolean hasSession(URI host, String username) {
         return sessionCache.asMap()
             .values()
             .stream()
-            .anyMatch(sessionData -> sessionData.getHost().equals(host) && sessionData.getUserName().equals(userName));
+            .anyMatch(sessionData -> sessionData.getHost().equals(host) && sessionData.getUsername().equals(username));
     }
 
     @Override
-    public SessionData getSession(URI host, String userName) {
+    public SessionData getSession(URI host, String username) {
         return sessionCache.asMap()
             .values()
             .stream()
-            .filter(sessionData -> sessionData.getHost().equals(host) && sessionData.getUserName().equals(userName))
+            .filter(sessionData -> sessionData.getHost().equals(host) && sessionData.getUsername().equals(username))
             .findAny()
             .orElse(null);
     }

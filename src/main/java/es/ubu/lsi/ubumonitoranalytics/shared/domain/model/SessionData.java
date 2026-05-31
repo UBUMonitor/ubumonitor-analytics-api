@@ -13,7 +13,7 @@ import java.net.URI;
 @AllArgsConstructor
 public class SessionData {
     private String jwt;
-    private String userName;
+    private String username;
 
     private URI host;
     private String moodleToken;

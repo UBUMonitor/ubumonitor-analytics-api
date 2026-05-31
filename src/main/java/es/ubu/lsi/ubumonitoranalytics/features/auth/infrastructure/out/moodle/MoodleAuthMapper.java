@@ -14,7 +14,7 @@ import org.mapstruct.Mapping;
 public interface MoodleAuthMapper {
 
 
-    @Mapping(target = "username", source = "userName")
+    @Mapping(target = "username", source = "username")
     @Mapping(target = "password", source = "password")
     @Mapping(target = "host", source = "host")
     MoodleAdapterLoginTokenRequestDto toDto(AuthInput authInput);

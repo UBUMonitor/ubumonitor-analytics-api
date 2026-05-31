@@ -2,6 +2,7 @@ package es.ubu.lsi.ubumonitoranalytics.shared.application.exception;
 
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.ErrorDetailDto;
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.ErrorResponseDto;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 
@@ -11,10 +12,11 @@ import java.util.List;
 import java.util.UUID;
 
 @Component
+@Slf4j
 public class ErrorResponseFactory {
 
     public ErrorResponseDto build(String code, String message, Throwable ex) {
-
+        log.error("Error occurred", ex);
         List<ErrorDetailDto> errors = new ArrayList<>();
 
         if (ex != null) {

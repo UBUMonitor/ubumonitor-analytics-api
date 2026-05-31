@@ -1,12 +1,12 @@
-openapi: 3.0.3
+openapi: 3.0.0
 info:
-  title: Moodle Analytics
+  title: UBU Monitor Analytics
   version: "1.0.0"
   description: |
-    Moodle Analytics API provides endpoints for authenticating users, synchronizing course and enrollment information, and retrieving details about courses and enrollments. It allows clients to interact with the Moodle site to manage user sessions, access course data, and keep enrollment information up-to-date. The API is designed to facilitate integration with Moodle and enable efficient management of user authentication and course-related data.
+    UBUMonitor Analytics API provides endpoints for authenticating users, synchronizing course and enrollment information, and retrieving details about courses and enrollments. It allows clients to interact with the UBUMonitor site to manage user sessions, access course data, and keep enrollment information up-to-date. The API is designed to facilitate integration with UBUMonitor and enable efficient management of user authentication and course-related data.
 
 servers:
-  - url: http://localhost:9090/api
+  - url: http://localhost:9090
     description: Local development server
 components:
   securitySchemes:
@@ -74,7 +74,7 @@ components:
 
 
 security:
-  - bearerAuth: []
+  - bearerAuth: [ ]
 
 paths:
   /public/auth/credentials:
@@ -95,6 +95,9 @@ paths:
   /sites/info:
     $ref: './paths/sites/info.yaml'
 
+  /public/users/{userId}/images/profile:
+    $ref: "./paths/users/images/profile.yaml"
+
   /enrollments/sync:
     $ref: './paths/enrollments/sync.yaml'
 
@@ -107,11 +110,12 @@ paths:
   /courses/{courseId}/enrollments/sync:
     $ref: './paths/courses/enrollments/sync.yaml'
 
-  /courses/{courseId}/content/info:
-    $ref: './paths/courses/content/info.yaml'
 
   /courses/{courseId}/content/sync:
     $ref: './paths/courses/content/sync.yaml'
+
+  /courses/{courseId}/content/info:
+    $ref: './paths/courses/content/info.yaml'
 
   /courses/{courseId}/logs/import:
     $ref: './paths/courses/courselogs/import.yaml'
@@ -120,5 +124,4 @@ paths:
   /courses/{courseId}/logs/metrics:
     $ref: './paths/courses/courselogs/metrics.yaml'
 
-  /users/{userId}/images/profile:
-    $ref: "./paths/users/images/profile.yaml"
+

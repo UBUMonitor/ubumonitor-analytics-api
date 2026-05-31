@@ -20,9 +20,9 @@ public class GetUserCoursesService implements GetUserCoursesUseCase {
     @Override
     public UserEnrolledCourses getActualUserEnrollments() {
         SessionData sessionData = currentSessionContext.getSessionData();
-        Integer userId = persistenceFetchPort.getUserIdByUserName(sessionData.getUserName());
+        Integer userId = persistenceFetchPort.getUserIdByUserName(sessionData.getUsername());
         if (userId == null) {
-            throw new EntityNotFoundException("User not found " + sessionData.getUserName());
+            throw new EntityNotFoundException("User not found " + sessionData.getUsername());
         }
         return persistenceFetchPort.getEnrolledCourses(userId);
     }

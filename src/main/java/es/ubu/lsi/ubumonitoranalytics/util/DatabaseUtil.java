@@ -26,22 +26,22 @@ public class DatabaseUtil {
     }
 
 
-    public static String toSafeUserName(String userName) {
-        if (userName == null || userName.isBlank()) {
+    public static String toSafeUserName(String username) {
+        if (username == null || username.isBlank()) {
             return "default_user";
         }
         // URLEncoder es la forma más segura de mantener la identidad del usuario
         // sin romper las reglas del sistema de archivos.
-        return URLEncoder.encode(userName, StandardCharsets.UTF_8);
+        return URLEncoder.encode(username, StandardCharsets.UTF_8);
     }
 
 
-    public static String buildDbFileName(URI host, String userName) {
-        return toHostString(host) + "_" + toSafeUserName(userName);
+    public static String buildDbFileName(URI host, String username) {
+        return toHostString(host) + "_" + toSafeUserName(username);
     }
 
-    public static String buildJdbcUrl(String jdbcTemplate, String basePath, URI host, String userName) {
-        String fileName = buildDbFileName(host, userName);
+    public static String buildJdbcUrl(String jdbcTemplate, String basePath, URI host, String username) {
+        String fileName = buildDbFileName(host, username);
 
         // Usamos Path para normalizar la ruta según el SO (evita problemas de / o \)
         String fullPath = Path.of(basePath)
@@ -58,7 +58,7 @@ public class DatabaseUtil {
     }
 
 
-    public static void createAndInitializeDatabase(String jdbcTemplate, String basePath, URI host, String userName, String dbPassword) {
+    public static void createAndInitializeDatabase(String jdbcTemplate, String basePath, URI host, String username, String dbPassword) {
 
         Path dir = Path.of(basePath);
 
@@ -69,13 +69,13 @@ public class DatabaseUtil {
                 jdbcTemplate,
                 basePath,
                 host,
-                userName
+                username
             );
 
             log.info("ABS PATH DB: {}", dir.toAbsolutePath());
             log.info("FINAL FILE: {}", jdbcUrl);
-            log.info("FILE EXISTS: {}", Files.exists(getFile(basePath, host, userName)));
-            log.info("Ensuring database exists for {} / {}", host, userName);
+            log.info("FILE EXISTS: {}", Files.exists(getFile(basePath, host, username)));
+            log.info("Ensuring database exists for {} / {}", host, username);
 
             // Solo “abre” la DB (H2 la crea si no existe)
             try (var _ = DriverManager.getConnection(
@@ -93,12 +93,12 @@ public class DatabaseUtil {
         }
     }
 
-    public static boolean exists(String basePath, URI host, String userName) {
-        return Files.exists(getFile(basePath, host, userName));
+    public static boolean exists(String basePath, URI host, String username) {
+        return Files.exists(getFile(basePath, host, username));
     }
 
-    public static Path getFile(String basePath, URI host, String userName) {
-        String fileName = DatabaseUtil.buildDbFileName(host, userName);
+    public static Path getFile(String basePath, URI host, String username) {
+        String fileName = DatabaseUtil.buildDbFileName(host, username);
         return Path.of(basePath)
             .resolve(fileName + ".mv.db");
     }

@@ -26,11 +26,11 @@ public class PersistenceFetchAdapter implements PersistenceFetchPort {
     private final GetEnrollmentPersistenceAdapterMapper mapper;
 
     @Override
-    public Integer getUserIdByUserName(String userName) {
+    public Integer getUserIdByUserName(String username) {
         return jooq.dsl()
             .select(SITES.USER_ID)
             .from(SITES)
-            .where(SITES.USER_NAME.eq(userName))
+            .where(SITES.USER_NAME.eq(username))
             .fetchOneInto(Integer.class);
     }
 

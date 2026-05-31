@@ -10,7 +10,7 @@ import java.net.URI;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuthInput {
-    private String userName;
+    private String username;
     private String password;
     private URI host;
     private String dbPassword;

@@ -7,12 +7,15 @@ import es.ubu.lsi.ubumonitoranalytics.api.generated.model.UserEnrollmentInfoDto;
 import es.ubu.lsi.ubumonitoranalytics.features.enrollment.course.domain.model.User;
 import es.ubu.lsi.ubumonitoranalytics.features.enrollment.course.domain.model.UserCourse;
 import es.ubu.lsi.ubumonitoranalytics.features.enrollment.course.domain.model.UsersResponse;
+import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.GlobalMapperConfig;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -21,10 +24,11 @@ public interface CourseEnrollmentsApiDelegateMapper {
 
 
 
-    CourseEnrollmentsResponseDto toDto(UsersResponse usersResponse, @Context Integer courseId);
+    CourseEnrollmentsResponseDto toDto(UsersResponse usersResponse, @Context Integer courseId, @Context SessionData sessionData);
 
+    @Mapping(target = "imageUrl", source = "user.id", qualifiedByName = "imageUrl")
     @Mapping(target = "lastCourseAccess", source = "user.courses", qualifiedByName = "lastCourseAccess")
-    UserEnrollmentInfoDto toUserEnrollmentInfoDto(User user, @Context Integer courseId);
+    UserEnrollmentInfoDto toUserEnrollmentInfoDto(User user, @Context Integer courseId, @Context SessionData sessionData);
 
     @Named("lastCourseAccess")
     default OffsetDateTime mapLastCourseAccess(List<UserCourse> userCourses, @Context Integer courseId) {
@@ -37,5 +41,20 @@ public interface CourseEnrollmentsApiDelegateMapper {
 
     @Mapping(target = ".", source = "course")
     UserEnrollmentInfoCoursesInnerDto toUserEnrollmentInfoCoursesInnerDto(UserCourse userCourse);
+
+
+    @Named( "imageUrl")
+    default URI mapImageUrl(Integer userId, @Context SessionData sessionData) {
+        if (userId == null) {
+            return null;
+        }
+        return ServletUriComponentsBuilder
+            .fromCurrentContextPath()
+            .path("/api/public/users/{userId}/images/profile")
+            .queryParam("username", sessionData.getUsername())
+            .queryParam("host", sessionData.getHost())
+            .buildAndExpand(userId)
+            .toUri();
+    }
 }
 

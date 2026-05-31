@@ -26,7 +26,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Component
@@ -45,7 +44,6 @@ public class JooqProvider {
 
         this.dataSourceCache = Caffeine.newBuilder()
             .maximumSize(100)
-            .expireAfterAccess(24, TimeUnit.HOURS)
             .build();
     }
 
@@ -89,7 +87,7 @@ public class JooqProvider {
                 moodleConfig.getDb().getJdbcUrlTemplate(),
                 moodleConfig.getDb().getBasePath(),
                 session.getHost(),
-                session.getUserName()
+                session.getUsername()
             );
 
             ds.setJdbcUrl(jdbcUrl);

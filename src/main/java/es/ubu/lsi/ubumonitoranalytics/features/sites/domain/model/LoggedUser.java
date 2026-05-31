@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class LoggedUser {
 
     private Integer id;
-    private String userName;
+    private String username;
     private String fullName;
     private String firstName;
     private String lastName;

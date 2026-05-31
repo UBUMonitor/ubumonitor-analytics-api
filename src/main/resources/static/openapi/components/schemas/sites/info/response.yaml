@@ -36,7 +36,7 @@ SiteInfoResponse:
         id:
           type: integer
           description: The unique identifier of the user.
-        userName:
+        username:
           type: string
           description: The username of the user.
         fullName:

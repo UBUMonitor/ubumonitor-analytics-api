@@ -15,7 +15,7 @@ public interface AuthMapper {
 
     @Mapping(target = "moodleToken", ignore = true)
     @Mapping(target = "dbPassword", source = "dbPassword")
-    @Mapping(target = "userName", source = "userName")
+    @Mapping(target = "username", source = "username")
     @Mapping(target = "password", source = "password")
     @Mapping(target = "host", source = "host")
     AuthInput toDomain(AuthLoginRequestDto authLoginRequestDto);
@@ -23,13 +23,13 @@ public interface AuthMapper {
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "moodleToken", source = "token")
     @Mapping(target = "dbPassword", source = "dbPassword")
-    @Mapping(target = "userName", source = "userName")
+    @Mapping(target = "username", source = "username")
     @Mapping(target = "host", source = "host")
     AuthInput toDomain(AuthTokenRequestDto authTokenRequestDto);
 
     @Mapping(target = "moodleToken", ignore = true)
     @Mapping(target = "dbPassword", source = "dbPassword")
-    @Mapping(target = "userName", source = "userName")
+    @Mapping(target = "username", source = "username")
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "host", source = "host")
     AuthInput toDomain(AuthOfflineRequestDto authOfflineRequestDto);

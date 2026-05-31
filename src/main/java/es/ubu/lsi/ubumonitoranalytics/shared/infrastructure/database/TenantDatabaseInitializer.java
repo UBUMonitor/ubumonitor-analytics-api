@@ -13,13 +13,13 @@ public class TenantDatabaseInitializer {
 
     private final MoodleConfig moodleConfig;
 
-    public void createIfNotExists(URI host, String userName, String dbPassword) {
+    public void createIfNotExists(URI host, String username, String dbPassword) {
 
         DatabaseUtil.createAndInitializeDatabase(
             moodleConfig.getDb().getJdbcUrlTemplate(),
             moodleConfig.getDb().getBasePath(),
             host,
-            userName,
+            username,
             dbPassword
         );
     }

@@ -10,7 +10,7 @@ public final class TenantContext {
 
 
     public static String buildTenantId(SessionData session) {
-        return session.getHost() + "_" + session.getUserName();
+        return session.getHost() + "_" + session.getUsername();
     }
 
     public static String getPassword(SessionData session) {
