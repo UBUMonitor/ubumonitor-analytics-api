@@ -1,5 +1,8 @@
 AuthResponse:
   type: object
+  required:
+    - accessToken
+    - tokenType
   properties:
     accessToken:
       type: string

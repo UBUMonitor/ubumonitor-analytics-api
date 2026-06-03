@@ -117,8 +117,13 @@ paths:
   /courses/{courseId}/content/info:
     $ref: './paths/courses/content/info.yaml'
 
+  /courses/{courseId}/logs/sync:
+    $ref: './paths/courses/courselogs/sync.yaml'
+
   /courses/{courseId}/logs/import:
     $ref: './paths/courses/courselogs/import.yaml'
+
+
   /courses/{courseId}/logs/info:
     $ref: './paths/courses/courselogs/info.yaml'
   /courses/{courseId}/logs/metrics:

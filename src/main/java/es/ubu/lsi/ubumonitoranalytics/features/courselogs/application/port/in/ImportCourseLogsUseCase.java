@@ -6,4 +6,6 @@ import org.springframework.web.multipart.MultipartFile;
 public interface ImportCourseLogsUseCase {
 
     ProcessLogsResult process(Integer course, MultipartFile file);
+
+    ProcessLogsResult sync(Integer course);
 }

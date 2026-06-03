@@ -9,6 +9,7 @@ import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -27,13 +28,21 @@ public class LogPersistenceAdapter implements LogPersistencePort {
     private final Jooq jooq;
 
     @Override
-    public boolean existCourse(Integer courseId) {
+    public void createIfNotExists(Integer courseId) {
         DSLContext dsl = jooq.dsl();
-        return dsl.fetchExists(
+
+        boolean exists = dsl.fetchExists(
             dsl.selectOne()
                 .from(COURSES)
                 .where(COURSES.ID.eq(courseId))
         );
+
+        if (!exists) {
+            dsl.insertInto(COURSES)
+                .set(COURSES.ID, courseId)
+                .execute();
+        }
+
     }
 
     @Override

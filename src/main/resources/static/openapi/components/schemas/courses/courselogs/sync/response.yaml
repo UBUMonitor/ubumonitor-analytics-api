@@ -1,0 +1,11 @@
+CourseLogsResponse:
+  properties:
+    saved:
+      type: integer
+      description: Number of logs imported
+    ignored:
+      type: integer
+      description: Number of logs ignored (e.g. duplicates or don't have a mapper for component, event or origin)
+    failed:
+      type: integer
+      description: Number of logs that failed to import due to errors

@@ -1,5 +1,8 @@
 SiteInfoResponse:
   type: object
+  required:
+    - site
+    - user
   properties:
     site:
       title: Site Information
@@ -32,6 +35,10 @@ SiteInfoResponse:
       title: User Information
       type: object
       description: Information about the authenticated user.
+      required:
+        - id
+        - username
+        - fullName
       properties:
         id:
           type: integer

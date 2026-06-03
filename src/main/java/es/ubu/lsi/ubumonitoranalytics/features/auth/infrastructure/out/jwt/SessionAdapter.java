@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import java.net.URI;
 
 
-
 @Component
 @RequiredArgsConstructor
 public class SessionAdapter implements SessionPort {
@@ -31,6 +30,7 @@ public class SessionAdapter implements SessionPort {
         String dbPassword = authInput.getDbPassword();
         String moodleToken = authInput.getMoodleToken();
         URI hostUri = authInput.getHost();
+        String password = authInput.getPassword();
 
         if (sessionStore.hasSession(hostUri, username)) {
 
@@ -42,12 +42,12 @@ public class SessionAdapter implements SessionPort {
             return toJwtToken(existingSession.getJwt());
         }
 
-        SessionData newSession = createSession(username, dbPassword, moodleToken, hostUri);
+        SessionData newSession = createSession(username, password, dbPassword, moodleToken, hostUri);
 
         return toJwtToken(newSession.getJwt());
     }
 
-    private SessionData createSession(String username, String dbPassword, String moodleToken, URI hostUri) {
+    private SessionData createSession(String username, String password, String dbPassword, String moodleToken, URI hostUri) {
 
         databaseInitializer.createIfNotExists(hostUri, username, dbPassword);
 
@@ -56,6 +56,7 @@ public class SessionAdapter implements SessionPort {
         SessionData sessionData = SessionData.builder()
             .jwt(jwt)
             .username(username)
+            .password(password)
             .host(hostUri)
             .moodleToken(moodleToken)
             .dbPassword(dbPassword)

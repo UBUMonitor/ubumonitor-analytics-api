@@ -5,7 +5,7 @@ import es.ubu.lsi.ubumonitoranalytics.api.generated.model.CourseLogsInfoRequestD
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.CourseLogsInfoResponseDto;
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.CourseLogsMetricsRequestDto;
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.CourseLogsMetricsResponseDto;
-import es.ubu.lsi.ubumonitoranalytics.api.generated.model.ImportCourseLogsResponseDto;
+import es.ubu.lsi.ubumonitoranalytics.api.generated.model.CourseLogsResponseDto;
 import es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.port.in.FetchCourseLogsUseCase;
 import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.info.FetchCourseLogsResult;
 import es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.port.in.ImportCourseLogsUseCase;
@@ -34,7 +34,13 @@ public class CourseLogsApiDelegateImpl implements CourseLogsApiDelegate {
     private final GetCourseLogsMetricsMapper getCourseLogsMetricsMapper;
 
     @Override
-    public ResponseEntity<ImportCourseLogsResponseDto> importCourseLogs(Integer courseId, MultipartFile file) {
+    public ResponseEntity<CourseLogsResponseDto> syncCourseLogs(Integer courseId) {
+        ProcessLogsResult processLogsResult = importCourseLogsUseCase.sync(courseId);
+        return ResponseEntity.ok(importLogsMapper.toDto(processLogsResult));
+    }
+
+    @Override
+    public ResponseEntity<CourseLogsResponseDto> importCourseLogs(Integer courseId, MultipartFile file) {
         ProcessLogsResult processLogsResult = importCourseLogsUseCase.process(courseId, file);
         return ResponseEntity.ok(importLogsMapper.toDto(processLogsResult));
     }

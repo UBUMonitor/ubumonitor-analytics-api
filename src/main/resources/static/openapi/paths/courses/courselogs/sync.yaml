@@ -1,29 +1,17 @@
 post:
   tags:
     - CourseLogs
-  operationId: ImportCourseLogs
-  summary: Import Moodle logs CSV
+  operationId: SyncCourseLogs
+  summary: Sync Moodle logs CSV
   parameters:
     - name: courseId
       in: path
       required: true
       schema:
         type: integer
-  requestBody:
-    required: true
-    content:
-      multipart/form-data:
-        schema:
-          type: object
-          required:
-            - logFile
-          properties:
-            logFile:
-              type: string
-              format: binary
   responses:
     '200':
-      description: Import completed
+      description: Sync completed
       content:
         application/json:
           schema:

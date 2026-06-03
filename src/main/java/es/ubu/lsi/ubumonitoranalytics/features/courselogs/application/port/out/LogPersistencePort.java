@@ -8,7 +8,7 @@ import java.util.Map;
 
 public interface LogPersistencePort {
 
-    boolean existCourse(Integer courseId);
+    void createIfNotExists(Integer courseId);
 
     Map<String, Byte> getLogComponents();
 
