@@ -6,5 +6,7 @@ import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.auth.AuthInput;
 
 public interface SessionPort {
     JwtToken generateSession(AuthInput authInput);
+
+
 }
 

@@ -3,8 +3,8 @@
 package es.ubu.lsi.ubumonitoranalytics.features.sites.infrastructure.out.moodle;
 
 
-import es.ubu.lsi.moodleadapter.api.generated.model.MoodleAdapterSiteInfoDto;
-import es.ubu.lsi.moodleadapter.api.generated.model.MoodleAdapterSiteInfoResponseDto;
+import es.ubu.lsi.moodle.model.core.webservice.getsiteinfo.response.GetSiteInfoResponseApi;
+import es.ubu.lsi.moodle.model.tool.mobile.getpublicconfig.response.GetPublicConfigResponseApi;
 import es.ubu.lsi.ubumonitoranalytics.features.sites.application.dto.SiteInfo;
 import es.ubu.lsi.ubumonitoranalytics.features.sites.domain.model.LoggedUser;
 import es.ubu.lsi.ubumonitoranalytics.features.sites.domain.model.Site;
@@ -15,17 +15,17 @@ import org.mapstruct.Mapping;
 @Mapper(config = GlobalMapperConfig.class)
 public interface SiteInfoApiAdapterMapper {
 
-    @Mapping(target = "site", source = "siteInfoResponseDto")
-    @Mapping(target = "loggedUser", source = "siteInfoResponseDto.siteinfo")
-    SiteInfo toDomain(MoodleAdapterSiteInfoResponseDto siteInfoResponseDto);
+    @Mapping(target = "site", expression = "java(toSiteInfoDomain(getSiteInfoResponseApi, getPublicConfigResponseApi))")
+    @Mapping(target = "loggedUser", source = "getSiteInfoResponseApi")
+    SiteInfo toDomain(GetSiteInfoResponseApi getSiteInfoResponseApi, GetPublicConfigResponseApi getPublicConfigResponseApi);
 
-    @Mapping(target = "id", source = "siteinfo.siteid")
-    @Mapping(target = "host", source = "siteinfo.siteurl")
-    @Mapping(target = "siteName", source = "siteinfo.sitename")
-    @Mapping(target = "versionNumber", source = "siteinfo.version")
-    @Mapping(target = "typeOfLogin", source = "siteconfig.typeoflogin")
-    @Mapping(target = "launchUrl", source = "siteconfig.launchurl")
-    Site toSiteInfoDomain(MoodleAdapterSiteInfoResponseDto siteInfoResponseDto);
+    @Mapping(target = "id", source = "getSiteInfoResponseApi.siteid")
+    @Mapping(target = "host", source = "getSiteInfoResponseApi.siteurl")
+    @Mapping(target = "siteName", source = "getSiteInfoResponseApi.sitename")
+    @Mapping(target = "versionNumber", source = "getSiteInfoResponseApi.version")
+    @Mapping(target = "typeOfLogin", source = "getPublicConfigResponseApi.typeoflogin")
+    @Mapping(target = "launchUrl", source = "getPublicConfigResponseApi.launchurl")
+    Site toSiteInfoDomain(GetSiteInfoResponseApi getSiteInfoResponseApi, GetPublicConfigResponseApi getPublicConfigResponseApi);
 
     @Mapping(target = "id", source = "userid")
     @Mapping(target = "userPicture.url", source = "userpictureurl")
@@ -34,7 +34,7 @@ public interface SiteInfoApiAdapterMapper {
     @Mapping(target = "lastName", source = "lastname")
     @Mapping(target = "fullName", source = "fullname")
     @Mapping(target = "firstName", source = "firstname")
-    LoggedUser toUserDomain(MoodleAdapterSiteInfoDto siteInfoResponseDto);
+    LoggedUser toUserDomain(GetSiteInfoResponseApi getSiteInfoResponseApi);
 
 
 

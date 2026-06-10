@@ -18,7 +18,6 @@ public class MoodleConfig {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Api {
-        private String baseUrl;
         private Integer connectTimeout;
         private Integer readTimeout;
     }

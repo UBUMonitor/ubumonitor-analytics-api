@@ -1,109 +1,73 @@
 package es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.moodle.config;
 
 
-
-import es.ubu.lsi.moodleadapter.api.generated.api.CoursesApi;
-import es.ubu.lsi.moodleadapter.api.generated.api.LoginApi;
-import es.ubu.lsi.moodleadapter.api.generated.api.SiteApi;
-import es.ubu.lsi.moodleadapter.api.generated.api.UsersApi;
-import es.ubu.lsi.moodleadapter.api.generated.invoker.ApiClient;
-import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
+import es.ubu.lsi.moodle.api.Client;
+import es.ubu.lsi.moodle.core.DefaultClient;
+import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.moodle.RestClientHttpTransport;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.http.HttpRequest;
-import org.springframework.http.client.ClientHttpRequestExecution;
+import org.springframework.http.client.BufferingClientHttpRequestFactory;
+import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.JdkClientHttpRequestFactory;
 import org.springframework.web.client.RestClient;
 
-import java.io.IOException;
+
 import java.net.http.HttpClient;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
 @Configuration
 @RequiredArgsConstructor
+@Slf4j
 public class MoodleApiConfig {
 
-    private final CurrentSessionContext currentSessionContext;
 
-    @Bean("publicRestClient")
-    public RestClient publicRestClient(MoodleConfig moodleConfig, RestClient.Builder builder) {
+    @Bean("moodleRestClient")
+    public RestClient moodleRestClient(MoodleConfig moodleConfig, RestClient.Builder builder) {
+
         HttpClient httpClient = HttpClient.newBuilder()
             .connectTimeout(Duration.ofMillis(moodleConfig.getApi().getConnectTimeout()))
             .build();
 
-        JdkClientHttpRequestFactory requestFactory = new JdkClientHttpRequestFactory(httpClient);
+        JdkClientHttpRequestFactory requestFactory =
+            new JdkClientHttpRequestFactory(httpClient);
+
         requestFactory.setReadTimeout(moodleConfig.getApi().getReadTimeout());
 
-        return builder
-            .requestFactory(requestFactory)
-            .baseUrl(moodleConfig.getApi().getBaseUrl())
-            .build();
-    }
-
-    @Bean("secureRestClient")
-    public RestClient secureRestClient(MoodleConfig moodleConfig, RestClient.Builder builder) {
-        HttpClient httpClient = HttpClient.newBuilder()
-            .connectTimeout(Duration.ofMillis(moodleConfig.getApi().getConnectTimeout()))
-            .build();
-
-        JdkClientHttpRequestFactory requestFactory = new JdkClientHttpRequestFactory(httpClient);
-        requestFactory.setReadTimeout(moodleConfig.getApi().getReadTimeout());
+        ClientHttpRequestFactory bufferingFactory =
+            new BufferingClientHttpRequestFactory(requestFactory);
 
         return builder
-            .requestFactory(requestFactory)
-            .baseUrl(moodleConfig.getApi().getBaseUrl())
-            .requestInterceptor(this::addAuthHeaders)
+            .requestFactory(bufferingFactory)
+            .requestInterceptor((request, body, execution) -> {
+
+                log.info("MOODLE REQUEST URI: {}", request.getURI());
+                log.info("MOODLE REQUEST BODY: {}",
+                    new String(body, StandardCharsets.UTF_8));
+
+                ClientHttpResponse response =
+                    execution.execute(request, body);
+
+                String responseBody = new String(
+                    response.getBody().readAllBytes(),
+                    StandardCharsets.UTF_8);
+
+                log.info("MOODLE RESPONSE STATUS: {}",
+                    response.getStatusCode());
+
+                log.info("MOODLE RESPONSE BODY: {}",
+                    responseBody);
+
+                return response;
+            })
             .build();
-
-    }
-
-    private ClientHttpResponse addAuthHeaders(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
-
-        SessionData sessionData = currentSessionContext.getSessionData();
-
-        if (sessionData != null) {
-
-            request.getHeaders().add("X-Moodle-Token", sessionData.getMoodleToken());
-            request.getHeaders().add("X-Moodle-Host", sessionData.getHost().toString());
-        }
-
-        return execution.execute(request, body);
-    }
-
-
-    @Bean
-    @Primary
-    public ApiClient privateApiClient(@Qualifier("secureRestClient") RestClient restClient) {
-        return new ApiClient(restClient);
-    }
-
-    @Bean("publicApiClient")
-    public ApiClient publicApiClient(@Qualifier("publicRestClient") RestClient restClient) {
-        return new ApiClient(restClient);
     }
 
     @Bean
-    public LoginApi loginApi(@Qualifier("publicApiClient") ApiClient apiClient) {
-        return new LoginApi(apiClient);
-    }
-
-    @Bean
-    public UsersApi userApi(ApiClient apiClient) {
-        return new UsersApi(apiClient);
-    }
-
-    @Bean
-    public CoursesApi courseApi(ApiClient apiClient) {
-        return new CoursesApi(apiClient);
-    }
-
-    @Bean
-    public SiteApi siteApi(ApiClient apiClient) {
-        return new SiteApi(apiClient);
+    public Client moodleClient(RestClientHttpTransport restClientHttpTransport) {
+        return new DefaultClient(restClientHttpTransport);
     }
 }

@@ -1,8 +1,8 @@
 package es.ubu.lsi.ubumonitoranalytics.features.enrollment.course.infrastructure.out.moodle;
 
-import es.ubu.lsi.moodleadapter.api.generated.api.CoursesApi;
-import es.ubu.lsi.moodleadapter.api.generated.model.MoodleAdapterCourseUsersResponseDto;
-import es.ubu.lsi.moodleadapter.api.generated.model.MoodleAdapterGetCourseUsersOptionsParameterDto;
+import es.ubu.lsi.moodle.api.Client;
+import es.ubu.lsi.moodle.model.core.enrol.getenrolledusers.request.GetEnrolledUsersRequestApi;
+import es.ubu.lsi.moodle.model.core.enrol.getenrolledusers.response.GetEnrolledUsersResponseApi;
 import es.ubu.lsi.ubumonitoranalytics.features.enrollment.course.application.port.out.EnrollmentFetchPort;
 import es.ubu.lsi.ubumonitoranalytics.features.enrollment.course.domain.model.User;
 import es.ubu.lsi.ubumonitoranalytics.features.enrollment.course.domain.model.UsersResponse;
@@ -22,15 +22,17 @@ import java.util.concurrent.Executor;
 @RequiredArgsConstructor
 public class MoodleEnrollmentAdapter implements EnrollmentFetchPort {
 
-    private final CoursesApi coursesApi;
-    private final CourseUsersMapper courseUsersMapper;
+    private final Client client;
+    private final EnrolledUsersMapper enrolledUsersMapper;
     private final MoodleDownloaderPort moodleDownloaderPort;
     private final Executor executor;
 
     @Override
     public UsersResponse fetchCourseEnrolledUsers(Integer courseId, String token) {
-        MoodleAdapterCourseUsersResponseDto response = coursesApi.getCourseUsers(courseId, new MoodleAdapterGetCourseUsersOptionsParameterDto());
-        UsersResponse usersResponse = courseUsersMapper.toDomain(response, courseId);
+        GetEnrolledUsersRequestApi request = new GetEnrolledUsersRequestApi();
+        request.setCourseid(courseId);
+        List<GetEnrolledUsersResponseApi> response = client.coreEnrol().getEnrolledUsers(request);
+        UsersResponse usersResponse = enrolledUsersMapper.toDomain(response, courseId, courseId);
         downloadImages(usersResponse, token);
 
         return usersResponse;

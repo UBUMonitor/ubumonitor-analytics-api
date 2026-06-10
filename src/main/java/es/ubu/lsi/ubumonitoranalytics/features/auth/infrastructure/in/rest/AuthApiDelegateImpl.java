@@ -6,6 +6,7 @@ import es.ubu.lsi.ubumonitoranalytics.api.generated.model.AuthOfflineRequestDto;
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.AuthResponseDto;
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.AuthTokenRequestDto;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.application.port.in.AuthUseCase;
+import es.ubu.lsi.ubumonitoranalytics.features.auth.application.port.in.LogoutUseCase;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.JwtToken;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.auth.AuthInput;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,8 @@ public class AuthApiDelegateImpl implements AuthApiDelegate {
 
     private final AuthUseCase authUseCase;
     private final AuthMapper authMapper;
+
+    private final LogoutUseCase logoutUseCase;
 
 
     @Override
@@ -42,6 +45,10 @@ public class AuthApiDelegateImpl implements AuthApiDelegate {
     }
 
 
-
+    @Override
+    public ResponseEntity<Void> authLogout() {
+        logoutUseCase.logout();
+        return ResponseEntity.noContent().build();
+    }
 }
 

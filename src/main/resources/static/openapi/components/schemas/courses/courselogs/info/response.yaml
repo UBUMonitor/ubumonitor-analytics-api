@@ -58,7 +58,7 @@ CourseLogsInfoResponse:
           timeCreated:
             type: string
             format: none
-            pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$'
+            pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?$'
             example: "2026-05-22T10:15:30"
             description: Log creation time
           courseId:

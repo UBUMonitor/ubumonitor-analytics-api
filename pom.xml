@@ -31,7 +31,11 @@
   </properties>
 
   <dependencies>
-
+    <dependency>
+      <groupId>es.ubu.lsi</groupId>
+      <artifactId>moodle-java-client</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
@@ -49,7 +53,6 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-logging</artifactId>
     </dependency>
-    <!-- Logbook (MVC en lugar de WebFlux) -->
     <dependency>
       <groupId>org.zalando</groupId>
       <artifactId>logbook-spring-boot-starter</artifactId>
@@ -76,6 +79,11 @@
       <version>1.22.2</version>
     </dependency>
 
+    <dependency>
+      <groupId>com.vladsch.flexmark</groupId>
+      <artifactId>flexmark</artifactId>
+      <version>0.64.8</version>
+    </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents.client5</groupId>
       <artifactId>httpclient5</artifactId>
@@ -252,42 +260,6 @@
 
             </configuration>
           </execution>
-          <execution>
-            <id>generate-moodle-adapter-client</id>
-            <goals>
-              <goal>generate</goal>
-            </goals>
-
-            <configuration>
-              <inputSpec>
-                ${project.basedir}/src/main/resources/static/openapi/consumer/openapi_moodle_adapter.yaml
-              </inputSpec>
-
-              <generatorName>java</generatorName>
-              <library>restclient</library>
-
-              <apiPackage>es.ubu.lsi.moodleadapter.api.generated.api</apiPackage>
-              <modelPackage>es.ubu.lsi.moodleadapter.api.generated.model</modelPackage>
-              <invokerPackage>es.ubu.lsi.moodleadapter.api.generated.invoker</invokerPackage>
-
-              <output>${project.build.directory}/generated-sources/moodle-adapter</output>
-
-              <apiNameSuffix>Api</apiNameSuffix>
-              <addCompileSourceRoot>true</addCompileSourceRoot>
-              <modelNamePrefix>MoodleAdapter</modelNamePrefix>
-              <generateApiTests>false</generateApiTests>
-              <generateModelTests>false</generateModelTests>
-
-              <configOptions>
-                <dateLibrary>java8</dateLibrary>
-                <useJakartaEe>true</useJakartaEe>
-                <useBeanValidation>true</useBeanValidation>
-                <useTags>true</useTags>
-                <jackson>true</jackson>
-                <useSpringBoot3>true</useSpringBoot3>
-              </configOptions>
-            </configuration>
-          </execution>
         </executions>
       </plugin>
       <!-- Build helper -->
@@ -336,7 +308,6 @@
         <configuration>
           <url>jdbc:h2:file:${project.build.directory}/moodle_dbs/bootstrap</url>
           <user>sa</user>
-          <password>sa</password>
         </configuration>
 
         <executions>
@@ -366,7 +337,6 @@
                 <driver>org.h2.Driver</driver>
                 <url>jdbc:h2:file:${project.build.directory}/moodle_dbs/bootstrap</url>
                 <user>sa</user>
-                <password>sa</password>
               </jdbc>
 
               <generator>

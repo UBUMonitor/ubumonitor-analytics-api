@@ -36,6 +36,5 @@ public class AuthService implements AuthUseCase {
         return sessionPort.generateSession(authInput);
     }
 
-
 }
 
