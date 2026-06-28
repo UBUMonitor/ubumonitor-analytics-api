@@ -8,5 +8,6 @@ public enum CourseLogsGroupBy {
     ORIGIN_ID,
     IP_ADDRESS,
     COURSE_ID,
-    TIME_BUCKET
+    TIME_BUCKET,
+    SECTION_ID
 }

@@ -22,7 +22,8 @@ CourseLogsMetricsRequest:
           - COMPONENT_NAME
           - EVENT_NAME
           - ORIGIN_NAME
-
+          - SECTION_ID
+          - SECTION_NAME
     timeRange:
       type: object
       properties:
@@ -48,6 +49,7 @@ CourseLogsMetricsRequest:
           - EVENT_ID
           - ORIGIN_ID
           - IP_ADDRESS
+          - SECTION_ID
     interval:
       type: string
       description: >
@@ -132,5 +134,12 @@ CourseLogsMetricsRequest:
           type: array
           items:
             type: string
+          nullable: true
+          default: null
+
+        sectionIds:
+          type: array
+          items:
+            type: integer
           nullable: true
           default: null

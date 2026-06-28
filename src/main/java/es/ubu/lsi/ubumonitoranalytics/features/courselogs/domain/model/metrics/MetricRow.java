@@ -25,5 +25,7 @@ public class MetricRow {
     private String ipAddress;
     private Integer courseId;
     private String timeBucket;
+    private String sectionId;
+    private String sectionName;
     private Integer value; // El COUNT(*) resultante
 }

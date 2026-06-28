@@ -15,6 +15,7 @@ import java.util.*;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Logs.LOGS;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Users.USERS;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Modules.MODULES;
+import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Sections.SECTIONS;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsComponents.LOGS_COMPONENTS;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsEvents.LOGS_EVENTS;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsOrigins.LOGS_ORIGINS;
@@ -104,11 +105,17 @@ public class FetchSavedLogPersistenceAdapter implements FetchLogPersistencePort 
     ) {
         SelectJoinStep<Record> query = jooq.dsl().select(fields).from(LOGS);
 
+        // MODULES se necesita tanto para MODULE_NAME como para resolver
+        // SECTION_ID/SECTION_NAME, ya que la sección cuelga del módulo.
+        boolean needsModules = requiredColumns.contains(LogViewColumn.MODULE_NAME)
+            || requiredColumns.contains(LogViewColumn.SECTION_ID)
+            || requiredColumns.contains(LogViewColumn.SECTION_NAME);
+
+        if (needsModules) {
+            query = query.leftJoin(MODULES).on(LOGS.MODULE_ID.eq(MODULES.ID));
+        }
         if (requiredColumns.contains(LogViewColumn.USER_FULL_NAME)) {
             query = query.leftJoin(USERS).on(LOGS.USER_ID.eq(USERS.ID));
-        }
-        if (requiredColumns.contains(LogViewColumn.MODULE_NAME)) {
-            query = query.leftJoin(MODULES).on(LOGS.MODULE_ID.eq(MODULES.ID));
         }
         if (requiredColumns.contains(LogViewColumn.COMPONENT_NAME)) {
             query = query.join(LOGS_COMPONENTS).on(LOGS.COMPONENT_ID.eq(LOGS_COMPONENTS.ID));
@@ -118,6 +125,9 @@ public class FetchSavedLogPersistenceAdapter implements FetchLogPersistencePort 
         }
         if (requiredColumns.contains(LogViewColumn.ORIGIN_NAME)) {
             query = query.join(LOGS_ORIGINS).on(LOGS.ORIGIN_ID.eq(LOGS_ORIGINS.ID));
+        }
+        if (requiredColumns.contains(LogViewColumn.SECTION_NAME)) {
+            query = query.leftJoin(SECTIONS).on(MODULES.SECTION_ID.eq(SECTIONS.ID));
         }
 
         return query;
@@ -148,6 +158,20 @@ public class FetchSavedLogPersistenceAdapter implements FetchLogPersistencePort 
             addInFilter(conditions, LOGS.COMPONENT_ID, filters.getComponentIds());
             addInFilter(conditions, LOGS.EVENT_ID, filters.getEventIds());
             addInFilter(conditions, LOGS.IP_ADDRESS, filters.getIpAddresses());
+
+            if (filters.getSectionIds() != null) {
+                if (filters.getSectionIds().isEmpty()) {
+                    conditions.add(DSL.falseCondition());
+                } else {
+                    conditions.add(
+                        LOGS.MODULE_ID.in(
+                            DSL.select(MODULES.ID)
+                                .from(MODULES)
+                                .where(MODULES.SECTION_ID.in(filters.getSectionIds()))
+                        )
+                    );
+                }
+            }
         }
 
         return conditions;
@@ -227,6 +251,8 @@ public class FetchSavedLogPersistenceAdapter implements FetchLogPersistencePort 
             case COMPONENT_NAME -> LOGS_COMPONENTS.NAME.as("COMPONENT_NAME");
             case EVENT_NAME -> LOGS_EVENTS.NAME.as("EVENT_NAME");
             case ORIGIN_NAME -> LOGS_ORIGINS.NAME.as("ORIGIN_NAME");
+            case SECTION_ID -> MODULES.SECTION_ID.as("SECTION_ID");
+            case SECTION_NAME -> SECTIONS.NAME.as("SECTION_NAME");
         };
     }
 }

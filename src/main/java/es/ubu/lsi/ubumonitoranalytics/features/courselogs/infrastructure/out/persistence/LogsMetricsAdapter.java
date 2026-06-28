@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Logs.LOGS;
+import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Sections.SECTIONS;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Users.USERS;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Modules.MODULES;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsComponents.LOGS_COMPONENTS;
@@ -33,12 +34,28 @@ public class LogsMetricsAdapter implements LogsMetricsPort {
 
         Set<Field<?>> innerGroupBy = resolveInnerGroupByFields(request);
 
+        boolean needsSectionInner = needsSection(request);
+
         List<SelectField<?>> innerSelect = new ArrayList<>(innerGroupBy);
         innerSelect.add(DSL.count().as(VALUE));
 
-        Table<Record> aggregatedLogs = jooq.dsl()
+        SelectJoinStep<Record> innerFrom = jooq.dsl()
             .select(innerSelect)
-            .from(LOGS)
+            .from(LOGS);
+
+        // =========================
+        // INNER JOIN PHASE
+        // (needed when a column used in GROUP BY / SELECT of the
+        // inner aggregation lives in a table other than LOGS, e.g.
+        // MODULES.SECTION_ID)
+        // =========================
+        if (needsSectionInner) {
+            innerFrom = innerFrom
+                .leftJoin(MODULES)
+                .on(LOGS.MODULE_ID.eq(MODULES.ID));
+        }
+
+        Table<Record> aggregatedLogs = innerFrom
             .where(conditions)
             .groupBy(innerGroupBy)
             .asTable("agg_logs");
@@ -46,7 +63,7 @@ public class LogsMetricsAdapter implements LogsMetricsPort {
         List<SelectField<?>> outerSelect = resolveOuterSelectFields(request, aggregatedLogs);
 
         // =========================
-        // JOIN PHASE
+        // OUTER JOIN PHASE
         // =========================
         SelectJoinStep<Record> query = jooq.dsl()
             .select(outerSelect)
@@ -95,20 +112,15 @@ public class LogsMetricsAdapter implements LogsMetricsPort {
 
         Field<?> field = switch (sort.getField()) {
 
-            case VALUE ->
-                aggregatedLogs.field(VALUE, Integer.class);
+            case VALUE -> aggregatedLogs.field(VALUE, Integer.class);
 
-            case USER_ID ->
-                aggregatedLogs.field(LOGS.USER_ID);
+            case USER_ID -> aggregatedLogs.field(LOGS.USER_ID);
 
-            case MODULE_ID ->
-                aggregatedLogs.field(LOGS.MODULE_ID);
+            case MODULE_ID -> aggregatedLogs.field(LOGS.MODULE_ID);
 
-            case TIME_BUCKET ->
-                aggregatedLogs.field(TIME_BUCKET);
+            case TIME_BUCKET -> aggregatedLogs.field(TIME_BUCKET);
 
-            case TIME ->
-                aggregatedLogs.field(TIME_BUCKET); // alias lógico
+            case TIME -> aggregatedLogs.field(TIME_BUCKET); // alias lógico
 
         };
 
@@ -116,8 +128,6 @@ public class LogsMetricsAdapter implements LogsMetricsPort {
             ? field.asc()
             : field.desc();
     }
-
-
 
 
     // =========================================================
@@ -156,6 +166,14 @@ public class LogsMetricsAdapter implements LogsMetricsPort {
                 .on(aggregatedLogs.field(LOGS.ORIGIN_ID).eq(LOGS_ORIGINS.ID));
         }
 
+        // SECTION_ID is already projected by the inner aggregation
+        // (see needsSection()/innerFrom join to MODULES), so here we
+        // only need to join SECTIONS to resolve the human-readable name.
+        if (selection.contains(CourseLogsSelectColumn.SECTION_NAME)) {
+            query = query.leftJoin(SECTIONS)
+                .on(aggregatedLogs.field(MODULES.SECTION_ID).eq(SECTIONS.ID));
+        }
+
         return query;
     }
 
@@ -183,6 +201,21 @@ public class LogsMetricsAdapter implements LogsMetricsPort {
         }
 
         return innerGroupBy;
+    }
+
+    // =========================================================
+    // Does this request need MODULES joined inside the inner
+    // aggregation (because it groups/selects by SECTION)?
+    // =========================================================
+    private boolean needsSection(CourseLogsMetricsRequest request) {
+
+        boolean inGroupBy = request.getGroupBy() != null
+            && request.getGroupBy().stream().anyMatch(g -> g.name().contains("SECTION"));
+
+        boolean inFields = request.getFields() != null
+            && request.getFields().stream().anyMatch(f -> f.name().contains("SECTION"));
+
+        return inGroupBy || inFields;
     }
 
     // =========================================================
@@ -246,6 +279,7 @@ public class LogsMetricsAdapter implements LogsMetricsPort {
         if (columnOrGroup.contains("ORIGIN")) return LOGS.ORIGIN_ID;
         if (columnOrGroup.contains("IP_ADDRESS")) return LOGS.IP_ADDRESS;
         if (columnOrGroup.contains("COURSE_ID")) return LOGS.COURSE_ID;
+        if (columnOrGroup.contains("SECTION")) return MODULES.SECTION_ID;
 
         throw new IllegalArgumentException("Unknown field: " + columnOrGroup);
     }
@@ -263,6 +297,7 @@ public class LogsMetricsAdapter implements LogsMetricsPort {
             case IP_ADDRESS -> aggregatedLogs.field(LOGS.IP_ADDRESS);
             case COURSE_ID -> aggregatedLogs.field(LOGS.COURSE_ID);
             case TIME_BUCKET -> aggregatedLogs.field(TIME_BUCKET, String.class);
+            case SECTION_ID -> aggregatedLogs.field(MODULES.SECTION_ID);
         };
     }
 
@@ -288,6 +323,9 @@ public class LogsMetricsAdapter implements LogsMetricsPort {
 
             case IP_ADDRESS -> aggregatedLogs.field(LOGS.IP_ADDRESS);
             case COURSE_ID -> aggregatedLogs.field(LOGS.COURSE_ID);
+            case SECTION_ID -> aggregatedLogs.field(MODULES.SECTION_ID);
+
+            case SECTION_NAME -> SECTIONS.NAME.as("sectionName");
         };
     }
 
@@ -312,7 +350,7 @@ public class LogsMetricsAdapter implements LogsMetricsPort {
             }
         }
 
-        var filters = request.getFilters();
+        CourseLogsMetricsRequestFilters filters = request.getFilters();
         if (filters != null) {
             addInFilter(conditions, LOGS.USER_ID, filters.getUserIds());
             addInFilter(conditions, LOGS.MODULE_ID, filters.getModuleIds());
@@ -320,6 +358,16 @@ public class LogsMetricsAdapter implements LogsMetricsPort {
             addInFilter(conditions, LOGS.EVENT_ID, filters.getEventIds());
             addInFilter(conditions, LOGS.ORIGIN_ID, filters.getOriginIds());
             addInFilter(conditions, LOGS.IP_ADDRESS, filters.getIpAddresses());
+            if (filters.getSectionIds() != null) {
+
+                conditions.add(
+                    LOGS.MODULE_ID.in(
+                        DSL.select(MODULES.ID)
+                            .from(MODULES)
+                            .where(MODULES.SECTION_ID.in(filters.getSectionIds()))
+                    )
+                );
+            }
         }
 
         return conditions;

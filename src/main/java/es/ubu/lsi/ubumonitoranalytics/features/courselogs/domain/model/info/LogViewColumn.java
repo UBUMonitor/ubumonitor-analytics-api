@@ -15,6 +15,8 @@ public enum LogViewColumn {
     MODULE_NAME,
     COMPONENT_NAME,
     EVENT_NAME,
-    ORIGIN_NAME;
+    ORIGIN_NAME,
+    SECTION_ID,
+    SECTION_NAME;
 
 }

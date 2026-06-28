@@ -13,4 +13,5 @@ public class CourseLogsMetricsRequestFilters {
     private List<Short> eventIds;
     private List<Byte> originIds;
     private List<String> ipAddresses;
+    private List<Integer> sectionIds;
 }

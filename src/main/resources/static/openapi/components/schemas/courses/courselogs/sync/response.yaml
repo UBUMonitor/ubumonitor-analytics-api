@@ -1,4 +1,8 @@
 CourseLogsResponse:
+  required:
+    - saved
+    - ignored
+    - failed
   properties:
     saved:
       type: integer

@@ -8,6 +8,11 @@ SiteInfoResponse:
       title: Site Information
       type: object
       description: Basic information about the Moodle site.
+      required:
+        - siteName
+        - siteVersion
+        - siteUrl
+        - typeOfLogin
       properties:
         siteName:
           type: string
@@ -39,6 +44,8 @@ SiteInfoResponse:
         - id
         - username
         - fullName
+        - firstName
+        - lastName
       properties:
         id:
           type: integer

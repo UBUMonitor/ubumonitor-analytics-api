@@ -9,11 +9,15 @@ CourseLogsInfoRequest:
         from:
           type: string
           format: none
+          nullable: true
+          default: null
           pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?$'
           example: "2026-05-01T00:00:00"
         to:
           type: string
           format: none
+          nullable: true
+          default: null
           pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?$'
           example: "2026-05-31T23:59:59"
 
@@ -24,36 +28,56 @@ CourseLogsInfoRequest:
 
         userIds:
           type: array
+          nullable: true
+          default: null
           items:
             type: integer
           example: [123, 456, 789]
 
         moduleIds:
           type: array
+          nullable: true
+          default: null
           items:
             type: integer
           example: [10, 20]
 
         componentIds:
           type: array
+          nullable: true
+          default: null
           items:
             type: integer
           example: [5, 6]
 
+        sectionIds:
+          type: array
+          nullable: true
+          default: null
+          items:
+            type: integer
+          example: [2, 4]
+
         eventIds:
           type: array
+          nullable: true
+          default: null
           items:
             type: integer
           example: [1, 2]
 
         originIds:
           type: array
+          nullable: true
+          default: null
           items:
             type: integer
           example: [3]
 
         ipAddresses:
           type: array
+          nullable: true
+          default: null
           items:
             type: string
           example: ["192.168.1.1", "10.0.0.1"]
@@ -79,6 +103,8 @@ CourseLogsInfoRequest:
           - COMPONENT_NAME
           - EVENT_NAME
           - ORIGIN_NAME
+          - SECTION_ID
+          - SECTION_NAME
       example:
         - TIMESTAMP
         - USER_FULL_NAME

@@ -51,6 +51,21 @@ CourseLogsInfoResponse:
       items:
         title: LogEntry
         type: object
+        required:
+          - id
+          - timeCreated
+          - courseId
+          - userId
+          - userFullName
+          - moduleId
+          - moduleName
+          - component
+          - componentId
+          - eventName
+          - eventId
+          - originName
+          - originId
+          - ip
         properties:
           id:
             type: integer

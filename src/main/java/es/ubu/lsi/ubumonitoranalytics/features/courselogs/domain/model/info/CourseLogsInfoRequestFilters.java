@@ -12,5 +12,6 @@ public class CourseLogsInfoRequestFilters {
     private List<Byte> componentIds;
     private List<Short> eventIds;
     private List<Byte> originIds;
+    private List<Integer> sectionIds;
     private List<String> ipAddresses;
 }

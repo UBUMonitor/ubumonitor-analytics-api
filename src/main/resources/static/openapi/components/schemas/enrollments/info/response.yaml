@@ -1,5 +1,7 @@
 EnrollmentsResponse:
   type: object
+  required:
+    - courses
   properties:
     courses:
       type: array
@@ -7,6 +9,14 @@ EnrollmentsResponse:
       items:
         title: Course Information
         type: object
+        required:
+          - id
+          - fullName
+          - showGrades
+          - enableCompletion
+          - startDate
+          - endDate
+          - timeModified
         properties:
           id:
             type: integer
