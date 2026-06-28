@@ -4,6 +4,5 @@ import es.ubu.lsi.ubumonitoranalytics.features.enrollment.user.domain.model.User
 
 public interface SyncEnrollmentPersistencePort {
 
-
-    void sync(UserEnrolledCourses userEnrolledCourses);
+  void sync(UserEnrolledCourses userEnrolledCourses);
 }

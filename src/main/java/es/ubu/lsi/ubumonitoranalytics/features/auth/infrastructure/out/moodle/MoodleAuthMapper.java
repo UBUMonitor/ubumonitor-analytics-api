@@ -1,6 +1,4 @@
-
 package es.ubu.lsi.ubumonitoranalytics.features.auth.infrastructure.out.moodle;
-
 
 import es.ubu.lsi.moodle.model.login.token.request.LoginTokenRequestApi;
 import es.ubu.lsi.moodle.model.login.token.response.LoginTokenResponseApi;
@@ -13,14 +11,12 @@ import org.mapstruct.Mapping;
 @Mapper(config = GlobalMapperConfig.class)
 public interface MoodleAuthMapper {
 
+  @Mapping(target = "service", ignore = true)
+  @Mapping(target = "username", source = "username")
+  @Mapping(target = "password", source = "password")
+  @Mapping(target = "baseurl", source = "host")
+  LoginTokenRequestApi toDto(AuthInput authInput);
 
-    @Mapping(target = "service", ignore = true)
-    @Mapping(target = "username", source = "username")
-    @Mapping(target = "password", source = "password")
-    @Mapping(target = "baseurl", source = "host")
-    LoginTokenRequestApi toDto(AuthInput authInput);
-
-    @Mapping(target = "moodleToken", source = "token")
-    LoginAuthResult toDomain(LoginTokenResponseApi loginTokenResponse);
+  @Mapping(target = "moodleToken", source = "token")
+  LoginAuthResult toDomain(LoginTokenResponseApi loginTokenResponse);
 }
-

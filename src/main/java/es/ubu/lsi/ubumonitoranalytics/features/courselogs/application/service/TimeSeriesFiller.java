@@ -4,8 +4,6 @@ import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.metrics.C
 import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.metrics.FillGapStrategy;
 import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.metrics.MetricRow;
 import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.metrics.TimeInterval;
-import org.springframework.stereotype.Component;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalUnit;
@@ -13,70 +11,58 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Component;
 
 @Component
 public class TimeSeriesFiller {
 
-    public List<MetricRow> fill(
-        List<MetricRow> rows,
-        CourseLogsMetricsRequest request
-    ) {
-        if (request.getInterval() == null || request.getTimeRange() == null ||
-            !request.getInterval().isContinuous() || request.getFillGapsStrategy() == FillGapStrategy.NONE) {
-            return rows;
-        }
+  public List<MetricRow> fill(List<MetricRow> rows, CourseLogsMetricsRequest request) {
+    if (request.getInterval() == null
+        || request.getTimeRange() == null
+        || !request.getInterval().isContinuous()
+        || request.getFillGapsStrategy() == FillGapStrategy.NONE) {
+      return rows;
+    }
 
-        Map<String, MetricRow> indexed = rows.stream()
-            .collect(Collectors.toMap(
-                MetricRow::getTimeBucket,
-                r -> r,
-                (a, b) -> a
-            ));
+    Map<String, MetricRow> indexed =
+        rows.stream().collect(Collectors.toMap(MetricRow::getTimeBucket, r -> r, (a, b) -> a));
 
-        List<String> fullRange = generateTimeBuckets(
+    List<String> fullRange =
+        generateTimeBuckets(
             request.getTimeRange().getFrom(),
             request.getTimeRange().getTo(),
-            request.getInterval()
-        );
+            request.getInterval());
 
-        List<MetricRow> result = new ArrayList<>();
-        Integer value = request.getFillGapsStrategy().getValue();
-        for (String bucket : fullRange) {
-            MetricRow existing = indexed.get(bucket);
+    List<MetricRow> result = new ArrayList<>();
+    Integer value = request.getFillGapsStrategy().getValue();
+    for (String bucket : fullRange) {
+      MetricRow existing = indexed.get(bucket);
 
-            if (existing != null) {
-                result.add(existing);
-            } else {
-                result.add(MetricRow.builder()
-                    .timeBucket(bucket)
-                    .value(value)
-                    .build());
-            }
-        }
-
-        return result;
+      if (existing != null) {
+        result.add(existing);
+      } else {
+        result.add(MetricRow.builder().timeBucket(bucket).value(value).build());
+      }
     }
 
-    private List<String> generateTimeBuckets(
-        LocalDateTime from,
-        LocalDateTime to,
-        TimeInterval interval
-    ) {
-        List<String> buckets = new ArrayList<>();
+    return result;
+  }
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(interval.pattern());
+  private List<String> generateTimeBuckets(
+      LocalDateTime from, LocalDateTime to, TimeInterval interval) {
+    List<String> buckets = new ArrayList<>();
 
-        TemporalUnit unit = interval.unit();
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(interval.pattern());
 
-        LocalDateTime cursor = from;
+    TemporalUnit unit = interval.unit();
 
-        while (!cursor.isAfter(to)) {
-            buckets.add(cursor.format(formatter));
-            cursor = cursor.plus(1, unit);
-        }
+    LocalDateTime cursor = from;
 
-        return buckets;
+    while (!cursor.isAfter(to)) {
+      buckets.add(cursor.format(formatter));
+      cursor = cursor.plus(1, unit);
     }
 
-
+    return buckets;
+  }
 }

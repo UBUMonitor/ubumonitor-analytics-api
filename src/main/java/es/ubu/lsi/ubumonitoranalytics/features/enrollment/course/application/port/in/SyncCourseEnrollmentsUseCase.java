@@ -4,7 +4,5 @@ import es.ubu.lsi.ubumonitoranalytics.features.enrollment.course.domain.model.Us
 
 public interface SyncCourseEnrollmentsUseCase {
 
-    UsersResponse syncCourseEnrollments(Integer courseId);
-
+  UsersResponse syncCourseEnrollments(Integer courseId);
 }
-

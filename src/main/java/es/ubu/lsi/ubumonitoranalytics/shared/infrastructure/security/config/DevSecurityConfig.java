@@ -2,6 +2,7 @@ package es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security.config;
 
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security.CurrentSessionClearFilter;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security.SessionAwareJwtAuthenticationConverter;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,63 +18,56 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.List;
-
 @Configuration
 @Profile("dev")
 @RequiredArgsConstructor
 public class DevSecurityConfig {
 
-    private final SessionAwareJwtAuthenticationConverter sessionConverter;
-    private final CurrentSessionClearFilter currentSessionClearFilter;
+  private final SessionAwareJwtAuthenticationConverter sessionConverter;
+  private final CurrentSessionClearFilter currentSessionClearFilter;
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        http
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+    http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .csrf(AbstractHttpConfigurer::disable)
+        .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
+        .authorizeHttpRequests(
+            auth ->
+                auth.requestMatchers(HttpMethod.OPTIONS, "/**")
+                    .permitAll()
+                    // endpoints públicos
+                    .requestMatchers("/api/public/**")
+                    .permitAll()
+                    // endpoints protegidos
+                    .requestMatchers("/api/**")
+                    .authenticated()
+                    .anyRequest()
+                    .permitAll())
 
-            .csrf(AbstractHttpConfigurer::disable)
+        // sesión stateless
+        .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-            .headers(headers -> headers
-                .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)
-            )
+        // OAuth2 + JWT
+        .oauth2ResourceServer(
+            oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(sessionConverter)))
 
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                // endpoints públicos
-                .requestMatchers("/api/public/**").permitAll()
-                // endpoints protegidos
-                .requestMatchers("/api/**").authenticated()
-                .anyRequest().permitAll()
-            )
+        // filtros custom
+        .addFilterAfter(currentSessionClearFilter, UsernamePasswordAuthenticationFilter.class);
 
-            // sesión stateless
-            .sessionManagement(sm ->
-                sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
+    return http.build();
+  }
 
-            // OAuth2 + JWT
-            .oauth2ResourceServer(oauth2 -> oauth2
-                .jwt(jwt -> jwt.jwtAuthenticationConverter(sessionConverter))
-            )
+  public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration config = new CorsConfiguration();
 
-            // filtros custom
-            .addFilterAfter(currentSessionClearFilter, UsernamePasswordAuthenticationFilter.class);
+    config.setAllowedOriginPatterns(List.of("*"));
+    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+    config.setAllowedHeaders(List.of("*"));
+    config.setAllowCredentials(false);
 
-        return http.build();
-    }
-
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration config = new CorsConfiguration();
-
-        config.setAllowedOriginPatterns(List.of("*"));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("*"));
-        config.setAllowCredentials(false);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
-        return source;
-    }
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", config);
+    return source;
+  }
 }

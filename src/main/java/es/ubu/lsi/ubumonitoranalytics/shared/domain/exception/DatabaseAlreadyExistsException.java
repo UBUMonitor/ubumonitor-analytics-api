@@ -4,7 +4,7 @@ import es.ubu.lsi.ubumonitoranalytics.shared.application.exception.ConflictExcep
 
 public class DatabaseAlreadyExistsException extends ConflictException {
 
-    public DatabaseAlreadyExistsException(String name) {
-        super("Database already exists: " + name);
-    }
+  public DatabaseAlreadyExistsException(String name) {
+    super("Database already exists: " + name);
+  }
 }

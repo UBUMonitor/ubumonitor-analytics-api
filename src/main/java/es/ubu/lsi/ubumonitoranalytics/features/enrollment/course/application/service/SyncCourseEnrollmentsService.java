@@ -13,27 +13,19 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class SyncCourseEnrollmentsService implements SyncCourseEnrollmentsUseCase {
 
-    private final EnrollmentFetchPort enrollmentFetchPort;
-    private final CurrentSessionContext currentSessionContext;
+  private final EnrollmentFetchPort enrollmentFetchPort;
+  private final CurrentSessionContext currentSessionContext;
 
+  private final UserCoursePersistencePort userCoursePersistencePort;
 
+  @Override
+  @Transactional
+  public UsersResponse syncCourseEnrollments(Integer courseId) {
+    UsersResponse usersResponse =
+        enrollmentFetchPort.fetchCourseEnrolledUsers(
+            courseId, currentSessionContext.getSessionData().getMoodleToken());
 
-    private final UserCoursePersistencePort userCoursePersistencePort;
-
-
-    @Override
-    @Transactional
-    public UsersResponse syncCourseEnrollments(Integer courseId) {
-        UsersResponse usersResponse = enrollmentFetchPort.fetchCourseEnrolledUsers(
-            courseId,
-            currentSessionContext.getSessionData().getMoodleToken()
-        );
-
-        userCoursePersistencePort.sync(usersResponse);
-        return usersResponse;
-    }
-
-
-
+    userCoursePersistencePort.sync(usersResponse);
+    return usersResponse;
+  }
 }
-

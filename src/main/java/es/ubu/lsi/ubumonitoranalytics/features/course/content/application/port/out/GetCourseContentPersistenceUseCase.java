@@ -4,5 +4,5 @@ import es.ubu.lsi.ubumonitoranalytics.features.course.content.domain.model.Cours
 
 public interface GetCourseContentPersistenceUseCase {
 
-    CourseContent getCourseContent(Integer courseId);
+  CourseContent getCourseContent(Integer courseId);
 }

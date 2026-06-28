@@ -4,6 +4,5 @@ import es.ubu.lsi.ubumonitoranalytics.features.enrollment.course.domain.model.Us
 
 public interface GetCourseEnrollmentsUseCase {
 
-    UsersResponse getCourseEnrollment(Integer courseId);
+  UsersResponse getCourseEnrollment(Integer courseId);
 }
-

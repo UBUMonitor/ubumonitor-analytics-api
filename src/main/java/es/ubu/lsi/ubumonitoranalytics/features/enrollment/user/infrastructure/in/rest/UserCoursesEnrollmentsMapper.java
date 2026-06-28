@@ -12,20 +12,18 @@ import org.mapstruct.Mapping;
 @Mapper(config = GlobalMapperConfig.class)
 public interface UserCoursesEnrollmentsMapper {
 
-    @Mapping(target = "courses", source = "enrolledCourses")
-    EnrollmentsResponseDto toDto(UserEnrolledCourses userEnrolledCourses);
+  @Mapping(target = "courses", source = "enrolledCourses")
+  EnrollmentsResponseDto toDto(UserEnrolledCourses userEnrolledCourses);
 
+  @Mapping(target = ".", source = "course")
+  CourseInformationDto toCourseInformationDto(Enrollment enrollment);
 
-    @Mapping(target = ".", source = "course")
-    CourseInformationDto toCourseInformationDto(Enrollment enrollment);
-
-    @Mapping(target = "timeModified", source = "timeModified")
-    @Mapping(target = "startDate", source = "startDate")
-    @Mapping(target = "showGrades", source = "showGrades")
-    @Mapping(target = "id", source = "id")
-    @Mapping(target = "endDate", source = "endDate")
-    @Mapping(target = "enableCompletion", source = "enableCompletion")
-    @Mapping(target = "fullName", source = "fullName")
-    CourseInformationDto toCourseInformationDto(Course course);
+  @Mapping(target = "timeModified", source = "timeModified")
+  @Mapping(target = "startDate", source = "startDate")
+  @Mapping(target = "showGrades", source = "showGrades")
+  @Mapping(target = "id", source = "id")
+  @Mapping(target = "endDate", source = "endDate")
+  @Mapping(target = "enableCompletion", source = "enableCompletion")
+  @Mapping(target = "fullName", source = "fullName")
+  CourseInformationDto toCourseInformationDto(Course course);
 }
-

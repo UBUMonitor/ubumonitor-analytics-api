@@ -12,21 +12,17 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class SitesApiDelegateImpl implements SitesApiDelegate {
 
-    private final GetSiteInfoUseCase getSiteInfoUseCase;
-    private final SyncSiteInfoUseCase syncSiteInfoUseCase;
-    private final SiteInfoMapper siteInfoMapper;
+  private final GetSiteInfoUseCase getSiteInfoUseCase;
+  private final SyncSiteInfoUseCase syncSiteInfoUseCase;
+  private final SiteInfoMapper siteInfoMapper;
 
-    @Override
-    public ResponseEntity<SiteInfoResponseDto> syncSiteInfo() {
-        return ResponseEntity.ok(siteInfoMapper.toDto(syncSiteInfoUseCase.syncSiteInfo()));
-    }
+  @Override
+  public ResponseEntity<SiteInfoResponseDto> syncSiteInfo() {
+    return ResponseEntity.ok(siteInfoMapper.toDto(syncSiteInfoUseCase.syncSiteInfo()));
+  }
 
-    @Override
-    public ResponseEntity<SiteInfoResponseDto> getSiteInfo() {
-        return ResponseEntity.ok(siteInfoMapper.toDto(getSiteInfoUseCase.getIteInfo()));
-    }
-
-
-
+  @Override
+  public ResponseEntity<SiteInfoResponseDto> getSiteInfo() {
+    return ResponseEntity.ok(siteInfoMapper.toDto(getSiteInfoUseCase.getIteInfo()));
+  }
 }
-

@@ -15,29 +15,24 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class SyncUserCoursesService implements SyncUserCoursesUseCase {
-    private final CurrentSessionContext currentSessionContext;
-    private final EnrollmentCoursesApiFetchPort enrollmentCoursesApiFetchPort;
-    private final SyncEnrollmentPersistencePort enrollmentPort;
-    private final PersistenceFetchPort persistenceFetchPort;
+  private final CurrentSessionContext currentSessionContext;
+  private final EnrollmentCoursesApiFetchPort enrollmentCoursesApiFetchPort;
+  private final SyncEnrollmentPersistencePort enrollmentPort;
+  private final PersistenceFetchPort persistenceFetchPort;
 
-    @Override
-    @Transactional
-    public UserEnrolledCourses syncActualUserEnrollments() {
-        SessionData sessionData = currentSessionContext.getSessionData();
-        Integer userId = persistenceFetchPort.getUserIdByUserName(sessionData.getUsername());
-        if (userId == null) {
-            throw new EntityNotFoundException("User not found " + sessionData.getUsername());
-        }
-        UserEnrolledCourses userEnrolledCourses = enrollmentCoursesApiFetchPort.fetchEnrolledCourses(userId);
-
-
-        enrollmentPort.sync(userEnrolledCourses); // 3. Sync matrículas
-
-        return userEnrolledCourses;
+  @Override
+  @Transactional
+  public UserEnrolledCourses syncActualUserEnrollments() {
+    SessionData sessionData = currentSessionContext.getSessionData();
+    Integer userId = persistenceFetchPort.getUserIdByUserName(sessionData.getUsername());
+    if (userId == null) {
+      throw new EntityNotFoundException("User not found " + sessionData.getUsername());
     }
+    UserEnrolledCourses userEnrolledCourses =
+        enrollmentCoursesApiFetchPort.fetchEnrolledCourses(userId);
 
+    enrollmentPort.sync(userEnrolledCourses); // 3. Sync matrículas
 
-
-
+    return userEnrolledCourses;
+  }
 }
-

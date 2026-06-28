@@ -5,24 +5,21 @@ import es.ubu.lsi.moodle.model.core.enrol.getuserscourses.request.GetUsersCourse
 import es.ubu.lsi.moodle.model.core.enrol.getuserscourses.response.GetUsersCoursesResponseApi;
 import es.ubu.lsi.ubumonitoranalytics.features.enrollment.user.application.port.out.EnrollmentCoursesApiFetchPort;
 import es.ubu.lsi.ubumonitoranalytics.features.enrollment.user.domain.model.UserEnrolledCourses;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class MoodleUserCoursesApiAdapter implements EnrollmentCoursesApiFetchPort {
 
-    private final Client client;
-    private final MoodleUserCoursesAdapterMapper moodleUserCoursesAdapterMapper;
+  private final Client client;
+  private final MoodleUserCoursesAdapterMapper moodleUserCoursesAdapterMapper;
 
-    @Override
-    public UserEnrolledCourses fetchEnrolledCourses(Integer userId) {
-        GetUsersCoursesRequestApi request = moodleUserCoursesAdapterMapper.toRequest(userId);
-        List<GetUsersCoursesResponseApi> response = client.coreEnrol().getUsersCourses(request);
-        return moodleUserCoursesAdapterMapper.toDomain(userId, response);
-    }
-
+  @Override
+  public UserEnrolledCourses fetchEnrolledCourses(Integer userId) {
+    GetUsersCoursesRequestApi request = moodleUserCoursesAdapterMapper.toRequest(userId);
+    List<GetUsersCoursesResponseApi> response = client.coreEnrol().getUsersCourses(request);
+    return moodleUserCoursesAdapterMapper.toDomain(userId, response);
+  }
 }
-

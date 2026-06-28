@@ -1,5 +1,7 @@
 package es.ubu.lsi.ubumonitoranalytics.features.enrollment.course.infrastructure.out.persistence.mapper;
 
+import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Courses.COURSES;
+import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.UsersCourses.USERS_COURSES;
 
 import es.ubu.lsi.ubumonitoranalytics.features.enrollment.course.domain.model.Course;
 import es.ubu.lsi.ubumonitoranalytics.features.enrollment.course.domain.model.Group;
@@ -15,37 +17,29 @@ import org.jooq.Record;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Courses.COURSES;
-import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.UsersCourses.USERS_COURSES;
-
-
 @Mapper(config = GlobalMapperConfig.class)
 public interface EnrollmentCourseEnrollmentsMapper {
 
-    @Mapping(target = "userPicture", ignore = true)
-    @Mapping(target = "roles", ignore = true)
-    @Mapping(target = "groups", ignore = true)
-    @Mapping(target = "courses", ignore = true)
-    User toUserDomain(UsersRecord r);
+  @Mapping(target = "userPicture", ignore = true)
+  @Mapping(target = "roles", ignore = true)
+  @Mapping(target = "groups", ignore = true)
+  @Mapping(target = "courses", ignore = true)
+  User toUserDomain(UsersRecord r);
 
-    Course toCourseDomain(CoursesRecord r);
+  Course toCourseDomain(CoursesRecord r);
 
-    Group toGroupDomain(GroupsRecord into);
+  Group toGroupDomain(GroupsRecord into);
 
-    Role toRoleDomain(RolesRecord into);
+  Role toRoleDomain(RolesRecord into);
 
-    default UserCourse toUserCourseDomain(Record r) {
+  default UserCourse toUserCourseDomain(Record r) {
 
-        UserCourse uc = new UserCourse();
+    UserCourse uc = new UserCourse();
 
-        uc.setCourse(
-            toCourseDomain(r.into(COURSES))
-        );
+    uc.setCourse(toCourseDomain(r.into(COURSES)));
 
-        uc.setLastCourseAccess(
-            r.get(USERS_COURSES.LAST_COURSE_ACCESS)
-        );
+    uc.setLastCourseAccess(r.get(USERS_COURSES.LAST_COURSE_ACCESS));
 
-        return uc;
-    }
+    return uc;
+  }
 }

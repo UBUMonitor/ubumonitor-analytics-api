@@ -9,10 +9,9 @@ import org.mapstruct.Mapping;
 @Mapper(config = GlobalMapperConfig.class)
 public interface UserImageMapper {
 
-
-    @Mapping(target = "isModified", ignore = true)
-    @Mapping(target = "image", source = "imageData")
-    @Mapping(target = "hexHash", source = "imageHash")
-    @Mapping(target = "contentType", source = "contentType")
-    UserImage toDomain(UsersImagesRecord usersImagesRecord);
+  @Mapping(target = "isModified", ignore = true)
+  @Mapping(target = "image", source = "imageData")
+  @Mapping(target = "hexHash", source = "imageHash")
+  @Mapping(target = "contentType", source = "contentType")
+  UserImage toDomain(UsersImagesRecord usersImagesRecord);
 }

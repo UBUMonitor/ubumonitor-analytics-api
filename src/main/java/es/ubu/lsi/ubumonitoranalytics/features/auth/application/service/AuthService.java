@@ -9,32 +9,28 @@ import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.auth.LoginAuthR
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-
 @Service
 @RequiredArgsConstructor
 public class AuthService implements AuthUseCase {
 
-    private final SessionPort sessionPort;
-    private final MoodleApiPort moodleApiPort;
+  private final SessionPort sessionPort;
+  private final MoodleApiPort moodleApiPort;
 
+  @Override
+  public JwtToken loginByToken(AuthInput authInput) {
+    return sessionPort.generateSession(authInput);
+  }
 
-    @Override
-    public JwtToken loginByToken(AuthInput authInput) {
-        return sessionPort.generateSession(authInput);
-    }
+  @Override
+  public JwtToken loginByCredentials(AuthInput authInput) {
+    LoginAuthResult result = moodleApiPort.login(authInput);
+    authInput.setMoodleToken(result.getMoodleToken());
+    return sessionPort.generateSession(authInput);
+  }
 
-    @Override
-    public JwtToken loginByCredentials(AuthInput authInput) {
-        LoginAuthResult result = moodleApiPort.login(authInput);
-        authInput.setMoodleToken(result.getMoodleToken());
-        return sessionPort.generateSession(authInput);
-    }
+  @Override
+  public JwtToken loginOffline(AuthInput authInput) {
 
-    @Override
-    public JwtToken loginOffline(AuthInput authInput) {
-
-        return sessionPort.generateSession(authInput);
-    }
-
+    return sessionPort.generateSession(authInput);
+  }
 }
-

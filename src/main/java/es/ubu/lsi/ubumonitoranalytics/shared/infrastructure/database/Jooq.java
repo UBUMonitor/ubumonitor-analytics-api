@@ -11,14 +11,14 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class Jooq {
 
-    private final JooqProvider provider;
-    private final CurrentSessionContext currentSessionContext;
+  private final JooqProvider provider;
+  private final CurrentSessionContext currentSessionContext;
 
-    public @NonNull DSLContext dsl() {
-        return dsl(currentSessionContext.getSessionData());
-    }
+  public @NonNull DSLContext dsl() {
+    return dsl(currentSessionContext.getSessionData());
+  }
 
-    public @NonNull DSLContext dsl(SessionData sessionData) {
-        return provider.getDSLContext(sessionData);
-    }
+  public @NonNull DSLContext dsl(SessionData sessionData) {
+    return provider.getDSLContext(sessionData);
+  }
 }

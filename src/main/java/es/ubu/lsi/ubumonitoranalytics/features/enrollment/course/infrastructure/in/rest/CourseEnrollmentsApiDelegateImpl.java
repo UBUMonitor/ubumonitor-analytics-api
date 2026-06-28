@@ -15,28 +15,26 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class CourseEnrollmentsApiDelegateImpl implements CourseEnrollmentsApiDelegate {
 
+  private final SyncCourseEnrollmentsUseCase syncCourseEnrollmentsUseCase;
+  private final GetCourseEnrollmentsUseCase getCourseEnrollmentsUseCase;
+  private final CourseEnrollmentsApiDelegateMapper courseEnrollmentsApiDelegateMapper;
+  private final CurrentSessionContext currentSessionContext;
 
+  @Override
+  public ResponseEntity<CourseEnrollmentsResponseDto> syncCourseUsersEnrollments(Integer courseId) {
+    UsersResponse usersResponse = syncCourseEnrollmentsUseCase.syncCourseEnrollments(courseId);
+    SessionData sessionData = currentSessionContext.getSessionData();
+    return ResponseEntity.ok(
+        courseEnrollmentsApiDelegateMapper.toDto(usersResponse, courseId, sessionData));
+  }
 
-    private final SyncCourseEnrollmentsUseCase syncCourseEnrollmentsUseCase;
-    private final GetCourseEnrollmentsUseCase getCourseEnrollmentsUseCase;
-    private final CourseEnrollmentsApiDelegateMapper courseEnrollmentsApiDelegateMapper;
-    private final CurrentSessionContext currentSessionContext;
+  @Override
+  public ResponseEntity<CourseEnrollmentsResponseDto> getCourseUsersEnrollmentsInfo(
+      Integer courseId) {
+    UsersResponse usersResponse = getCourseEnrollmentsUseCase.getCourseEnrollment(courseId);
+    SessionData sessionData = currentSessionContext.getSessionData();
 
-
-    @Override
-    public ResponseEntity<CourseEnrollmentsResponseDto> syncCourseUsersEnrollments(Integer courseId) {
-        UsersResponse usersResponse = syncCourseEnrollmentsUseCase.syncCourseEnrollments(courseId);
-        SessionData sessionData = currentSessionContext.getSessionData();
-        return ResponseEntity.ok(courseEnrollmentsApiDelegateMapper.toDto(usersResponse, courseId, sessionData));
-    }
-
-    @Override
-    public ResponseEntity<CourseEnrollmentsResponseDto> getCourseUsersEnrollmentsInfo(Integer courseId) {
-        UsersResponse usersResponse = getCourseEnrollmentsUseCase.getCourseEnrollment(courseId);
-        SessionData sessionData = currentSessionContext.getSessionData();
-
-        return ResponseEntity.ok(courseEnrollmentsApiDelegateMapper.toDto(usersResponse, courseId, sessionData));
-    }
-
+    return ResponseEntity.ok(
+        courseEnrollmentsApiDelegateMapper.toDto(usersResponse, courseId, sessionData));
+  }
 }
-

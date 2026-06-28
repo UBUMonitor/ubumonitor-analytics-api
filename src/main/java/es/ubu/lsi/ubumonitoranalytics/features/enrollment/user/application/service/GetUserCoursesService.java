@@ -9,22 +9,20 @@ import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessi
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-
 @Service
 @RequiredArgsConstructor
 public class GetUserCoursesService implements GetUserCoursesUseCase {
 
-    private final PersistenceFetchPort persistenceFetchPort;
-    private final CurrentSessionContext currentSessionContext;
+  private final PersistenceFetchPort persistenceFetchPort;
+  private final CurrentSessionContext currentSessionContext;
 
-    @Override
-    public UserEnrolledCourses getActualUserEnrollments() {
-        SessionData sessionData = currentSessionContext.getSessionData();
-        Integer userId = persistenceFetchPort.getUserIdByUserName(sessionData.getUsername());
-        if (userId == null) {
-            throw new EntityNotFoundException("User not found " + sessionData.getUsername());
-        }
-        return persistenceFetchPort.getEnrolledCourses(userId);
+  @Override
+  public UserEnrolledCourses getActualUserEnrollments() {
+    SessionData sessionData = currentSessionContext.getSessionData();
+    Integer userId = persistenceFetchPort.getUserIdByUserName(sessionData.getUsername());
+    if (userId == null) {
+      throw new EntityNotFoundException("User not found " + sessionData.getUsername());
     }
+    return persistenceFetchPort.getEnrolledCourses(userId);
+  }
 }
-

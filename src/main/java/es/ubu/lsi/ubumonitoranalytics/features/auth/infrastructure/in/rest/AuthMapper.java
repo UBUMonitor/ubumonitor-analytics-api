@@ -13,34 +13,28 @@ import org.mapstruct.Mapping;
 @Mapper(config = GlobalMapperConfig.class)
 public interface AuthMapper {
 
-    @Mapping(target = "moodleToken", ignore = true)
-    @Mapping(target = "dbPassword", source = "dbPassword")
-    @Mapping(target = "username", source = "username")
-    @Mapping(target = "password", source = "password")
-    @Mapping(target = "host", source = "host")
-    AuthInput toDomain(AuthLoginRequestDto authLoginRequestDto);
+  @Mapping(target = "moodleToken", ignore = true)
+  @Mapping(target = "dbPassword", source = "dbPassword")
+  @Mapping(target = "username", source = "username")
+  @Mapping(target = "password", source = "password")
+  @Mapping(target = "host", source = "host")
+  AuthInput toDomain(AuthLoginRequestDto authLoginRequestDto);
 
-    @Mapping(target = "password", ignore = true)
-    @Mapping(target = "moodleToken", source = "token")
-    @Mapping(target = "dbPassword", source = "dbPassword")
-    @Mapping(target = "username", source = "username")
-    @Mapping(target = "host", source = "host")
-    AuthInput toDomain(AuthTokenRequestDto authTokenRequestDto);
+  @Mapping(target = "password", ignore = true)
+  @Mapping(target = "moodleToken", source = "token")
+  @Mapping(target = "dbPassword", source = "dbPassword")
+  @Mapping(target = "username", source = "username")
+  @Mapping(target = "host", source = "host")
+  AuthInput toDomain(AuthTokenRequestDto authTokenRequestDto);
 
-    @Mapping(target = "moodleToken", ignore = true)
-    @Mapping(target = "dbPassword", source = "dbPassword")
-    @Mapping(target = "username", source = "username")
-    @Mapping(target = "password", ignore = true)
-    @Mapping(target = "host", source = "host")
-    AuthInput toDomain(AuthOfflineRequestDto authOfflineRequestDto);
+  @Mapping(target = "moodleToken", ignore = true)
+  @Mapping(target = "dbPassword", source = "dbPassword")
+  @Mapping(target = "username", source = "username")
+  @Mapping(target = "password", ignore = true)
+  @Mapping(target = "host", source = "host")
+  AuthInput toDomain(AuthOfflineRequestDto authOfflineRequestDto);
 
-
-
-    @Mapping(target = "tokenType", constant = "Bearer")
-    @Mapping(target = "accessToken", source = "token")
-    AuthResponseDto toAuthResponse(JwtToken jwtToken);
-
-
-
+  @Mapping(target = "tokenType", constant = "Bearer")
+  @Mapping(target = "accessToken", source = "token")
+  AuthResponseDto toAuthResponse(JwtToken jwtToken);
 }
-

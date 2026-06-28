@@ -5,10 +5,11 @@ import lombok.Data;
 @Data
 public class CourseLogsInfoRequestSortItem {
 
-    private LogViewColumn field;
-    private Direction direction;
+  private LogViewColumn field;
+  private Direction direction;
 
-    public enum Direction {
-        ASC, DESC
-    }
+  public enum Direction {
+    ASC,
+    DESC
+  }
 }

@@ -6,10 +6,9 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum FillGapStrategy {
-    ZERO(0),
-    NULL(null),
-    NONE(null);
+  ZERO(0),
+  NULL(null),
+  NONE(null);
 
-    private final Integer value;
-
+  private final Integer value;
 }

@@ -8,22 +8,23 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-
 @Component
 @RequiredArgsConstructor
 public class CourseContentApiDelegateImpl implements CourseContentApiDelegate {
 
-    private final SyncCourseContentUseCase syncCourseContentUseCase;
-    private final GetCourseContentUseCase getCourseContentUseCase;
-    private final CourseContentApiDelegateMapper courseContentApiDelegateMapper;
+  private final SyncCourseContentUseCase syncCourseContentUseCase;
+  private final GetCourseContentUseCase getCourseContentUseCase;
+  private final CourseContentApiDelegateMapper courseContentApiDelegateMapper;
 
-    @Override
-    public ResponseEntity<CourseContentResponseDto> getCourseUsersContentInfo(Integer courseId) {
-        return ResponseEntity.ok(courseContentApiDelegateMapper.toDto(getCourseContentUseCase.getCourseContent(courseId)));
-    }
+  @Override
+  public ResponseEntity<CourseContentResponseDto> getCourseUsersContentInfo(Integer courseId) {
+    return ResponseEntity.ok(
+        courseContentApiDelegateMapper.toDto(getCourseContentUseCase.getCourseContent(courseId)));
+  }
 
-    @Override
-    public ResponseEntity<CourseContentResponseDto> syncCourseContent(Integer courseId) {
-        return ResponseEntity.ok(courseContentApiDelegateMapper.toDto(syncCourseContentUseCase.syncCourseContent(courseId)));
-    }
+  @Override
+  public ResponseEntity<CourseContentResponseDto> syncCourseContent(Integer courseId) {
+    return ResponseEntity.ok(
+        courseContentApiDelegateMapper.toDto(syncCourseContentUseCase.syncCourseContent(courseId)));
+  }
 }

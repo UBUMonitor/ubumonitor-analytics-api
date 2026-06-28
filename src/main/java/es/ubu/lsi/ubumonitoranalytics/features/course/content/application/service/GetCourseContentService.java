@@ -7,16 +7,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 @Service
 @RequiredArgsConstructor
 public class GetCourseContentService implements GetCourseContentUseCase {
 
-    private final GetCourseContentPersistenceUseCase getCourseContentPersistenceUseCase;
+  private final GetCourseContentPersistenceUseCase getCourseContentPersistenceUseCase;
 
-    @Override
-    @Transactional(readOnly = true)
-    public CourseContent getCourseContent(Integer courseId) {
-        return getCourseContentPersistenceUseCase.getCourseContent(courseId);
-    }
+  @Override
+  @Transactional(readOnly = true)
+  public CourseContent getCourseContent(Integer courseId) {
+    return getCourseContentPersistenceUseCase.getCourseContent(courseId);
+  }
 }

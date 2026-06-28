@@ -11,12 +11,11 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class GetCourseEnrollmentsService implements GetCourseEnrollmentsUseCase {
 
-    private final EnrollmentGetPersistencePort enrollmentGetPersistencePort;
+  private final EnrollmentGetPersistencePort enrollmentGetPersistencePort;
 
-    @Override
-    @Transactional(readOnly = true)
-    public UsersResponse getCourseEnrollment(Integer courseId) {
-        return enrollmentGetPersistencePort.getCourseEnrollment(courseId);
-    }
+  @Override
+  @Transactional(readOnly = true)
+  public UsersResponse getCourseEnrollment(Integer courseId) {
+    return enrollmentGetPersistencePort.getCourseEnrollment(courseId);
+  }
 }
-

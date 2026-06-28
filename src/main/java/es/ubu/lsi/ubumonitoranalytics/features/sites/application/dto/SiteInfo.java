@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class SiteInfo {
-    private Site site;
-    private LoggedUser loggedUser;
+  private Site site;
+  private LoggedUser loggedUser;
 }
-

@@ -11,15 +11,13 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class SyncSiteInfoService implements SyncSiteInfoUseCase {
 
-    private final SiteInfoApiPort siteInfoApiPort;
-    private final SiteInfoPersistencePort siteInfoPersistencePort;
+  private final SiteInfoApiPort siteInfoApiPort;
+  private final SiteInfoPersistencePort siteInfoPersistencePort;
 
-
-    @Override
-    public SiteInfo syncSiteInfo() {
-        SiteInfo siteInfo = siteInfoApiPort.fetchSiteInfo();
-        siteInfoPersistencePort.save(siteInfo);
-        return siteInfo;
-    }
+  @Override
+  public SiteInfo syncSiteInfo() {
+    SiteInfo siteInfo = siteInfoApiPort.fetchSiteInfo();
+    siteInfoPersistencePort.save(siteInfo);
+    return siteInfo;
+  }
 }
-

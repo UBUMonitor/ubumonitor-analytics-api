@@ -12,14 +12,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class GetSiteInfoService implements GetSiteInfoUseCase {
 
-    private final CurrentSessionContext currentSessionContext;
-    private final SiteInfoPersistencePort siteInfoPersistencePort;
+  private final CurrentSessionContext currentSessionContext;
+  private final SiteInfoPersistencePort siteInfoPersistencePort;
 
-
-    @Override
-    public SiteInfo getIteInfo() {
-        SessionData sessionData = currentSessionContext.getSessionData();
-        return siteInfoPersistencePort.fetchSiteInfo(sessionData.getUsername());
-    }
+  @Override
+  public SiteInfo getIteInfo() {
+    SessionData sessionData = currentSessionContext.getSessionData();
+    return siteInfoPersistencePort.fetchSiteInfo(sessionData.getUsername());
+  }
 }
-

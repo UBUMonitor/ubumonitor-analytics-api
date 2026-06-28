@@ -6,7 +6,5 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 @MapperConfig(
     componentModel = "spring",
     nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
-    uses = MapperUtils.class
-)
-public interface GlobalMapperConfig {
-}
+    uses = MapperUtils.class)
+public interface GlobalMapperConfig {}

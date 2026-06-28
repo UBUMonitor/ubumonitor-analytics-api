@@ -12,25 +12,24 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class LogoutService implements LogoutUseCase {
 
-    private final SessionStorePort sessionStorePort;
-    private final CurrentSessionContext currentSessionContext;
-    private final JooqProvider jooqProvider;
+  private final SessionStorePort sessionStorePort;
+  private final CurrentSessionContext currentSessionContext;
+  private final JooqProvider jooqProvider;
 
-    @Override
-    public void logout() {
+  @Override
+  public void logout() {
 
-        SessionData sessionData = currentSessionContext.getSessionData();
+    SessionData sessionData = currentSessionContext.getSessionData();
 
-        try {
-            // close and remove tenant datasource associated with this session
-            if (sessionData != null) {
+    try {
+      // close and remove tenant datasource associated with this session
+      if (sessionData != null) {
 
-                jooqProvider.closeTenant(sessionData);
-                sessionStorePort.invalidateSession(sessionData.getJwt());
-            }
-        } finally {
-            currentSessionContext.clear();
-        }
+        jooqProvider.closeTenant(sessionData);
+        sessionStorePort.invalidateSession(sessionData.getJwt());
+      }
+    } finally {
+      currentSessionContext.clear();
     }
+  }
 }
-

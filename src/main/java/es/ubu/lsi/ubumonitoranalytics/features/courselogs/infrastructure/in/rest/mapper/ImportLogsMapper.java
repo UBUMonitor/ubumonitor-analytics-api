@@ -7,5 +7,5 @@ import org.mapstruct.Mapper;
 
 @Mapper(config = GlobalMapperConfig.class)
 public interface ImportLogsMapper {
-    CourseLogsResponseDto toDto(ProcessLogsResult processLogsResult);
+  CourseLogsResponseDto toDto(ProcessLogsResult processLogsResult);
 }

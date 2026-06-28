@@ -1,6 +1,4 @@
-
 package es.ubu.lsi.ubumonitoranalytics.features.sites.infrastructure.in.rest;
-
 
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.SiteInfoResponseDto;
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.SiteInformationDto;
@@ -15,16 +13,13 @@ import org.mapstruct.Mapping;
 @Mapper(config = GlobalMapperConfig.class)
 public interface SiteInfoMapper {
 
-    @Mapping(target = "user", source = "loggedUser")
-    @Mapping(target = "site", source = "site")
-    SiteInfoResponseDto toDto(SiteInfo siteInfo);
+  @Mapping(target = "user", source = "loggedUser")
+  @Mapping(target = "site", source = "site")
+  SiteInfoResponseDto toDto(SiteInfo siteInfo);
 
-    @Mapping(target = "siteVersion", source = "versionNumber")
-    @Mapping(target = "siteUrl", source = "host")
-    SiteInformationDto toSiteInformationDto(Site site);
+  @Mapping(target = "siteVersion", source = "versionNumber")
+  @Mapping(target = "siteUrl", source = "host")
+  SiteInformationDto toSiteInformationDto(Site site);
 
-    UserInformationDto toUserInformationDto(LoggedUser loggedUser);
-
-
+  UserInformationDto toUserInformationDto(LoggedUser loggedUser);
 }
-

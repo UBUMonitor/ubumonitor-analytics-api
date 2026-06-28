@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class ProcessLogsResult {
-    private int saved;
-    private int ignored;
-    private int failed;
+  private int saved;
+  private int ignored;
+  private int failed;
 }

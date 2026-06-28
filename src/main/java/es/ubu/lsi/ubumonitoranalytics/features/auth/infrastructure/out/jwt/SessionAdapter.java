@@ -8,52 +8,52 @@ import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.TenantDatabaseInitializer;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security.JwtUtils;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
+import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import java.net.URI;
-
 
 @Component
 @RequiredArgsConstructor
 public class SessionAdapter implements SessionPort {
 
-    private final JwtUtils jwtUtils;
-    private final SessionStorePort sessionStore;
-    private final CurrentSessionContext currentSessionContext;
-    private final TenantDatabaseInitializer databaseInitializer;
+  private final JwtUtils jwtUtils;
+  private final SessionStorePort sessionStore;
+  private final CurrentSessionContext currentSessionContext;
+  private final TenantDatabaseInitializer databaseInitializer;
 
-    @Override
-    public JwtToken generateSession(AuthInput authInput) {
+  @Override
+  public JwtToken generateSession(AuthInput authInput) {
 
-        String username = authInput.getUsername();
-        String dbPassword = authInput.getDbPassword();
-        String moodleToken = authInput.getMoodleToken();
-        URI hostUri = authInput.getHost();
-        String password = authInput.getPassword();
+    String username = authInput.getUsername();
+    String dbPassword = authInput.getDbPassword();
+    String moodleToken = authInput.getMoodleToken();
+    URI hostUri = authInput.getHost();
+    String password = authInput.getPassword();
 
-        if (sessionStore.hasSession(hostUri, username)) {
+    if (sessionStore.hasSession(hostUri, username)) {
 
-            SessionData existingSession = sessionStore.getSession(hostUri, username);
-            existingSession.setMoodleToken(moodleToken);
+      SessionData existingSession = sessionStore.getSession(hostUri, username);
+      existingSession.setMoodleToken(moodleToken);
 
-            currentSessionContext.setSessionData(existingSession);
+      currentSessionContext.setSessionData(existingSession);
 
-            return toJwtToken(existingSession.getJwt());
-        }
-
-        SessionData newSession = createSession(username, password, dbPassword, moodleToken, hostUri);
-
-        return toJwtToken(newSession.getJwt());
+      return toJwtToken(existingSession.getJwt());
     }
 
-    private SessionData createSession(String username, String password, String dbPassword, String moodleToken, URI hostUri) {
+    SessionData newSession = createSession(username, password, dbPassword, moodleToken, hostUri);
 
-        databaseInitializer.createIfNotExists(hostUri, username, dbPassword);
+    return toJwtToken(newSession.getJwt());
+  }
 
-        String jwt = jwtUtils.generateJwtToken(username, hostUri);
+  private SessionData createSession(
+      String username, String password, String dbPassword, String moodleToken, URI hostUri) {
 
-        SessionData sessionData = SessionData.builder()
+    databaseInitializer.createIfNotExists(hostUri, username, dbPassword);
+
+    String jwt = jwtUtils.generateJwtToken(username, hostUri);
+
+    SessionData sessionData =
+        SessionData.builder()
             .jwt(jwt)
             .username(username)
             .password(password)
@@ -62,18 +62,15 @@ public class SessionAdapter implements SessionPort {
             .dbPassword(dbPassword)
             .build();
 
-        sessionStore.saveSession(jwt, sessionData);
+    sessionStore.saveSession(jwt, sessionData);
 
-        currentSessionContext.setSessionData(sessionData);
+    currentSessionContext.setSessionData(sessionData);
 
-        return sessionData;
-    }
+    return sessionData;
+  }
 
-    private JwtToken toJwtToken(String jwt) {
+  private JwtToken toJwtToken(String jwt) {
 
-
-        return JwtToken.builder()
-            .token(jwt)
-            .build();
-    }
+    return JwtToken.builder().token(jwt).build();
+  }
 }

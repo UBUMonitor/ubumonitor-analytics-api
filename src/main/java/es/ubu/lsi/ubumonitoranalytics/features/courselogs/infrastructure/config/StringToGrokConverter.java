@@ -1,6 +1,5 @@
 package es.ubu.lsi.ubumonitoranalytics.features.courselogs.infrastructure.config;
 
-
 import io.krakens.grok.api.Grok;
 import io.krakens.grok.api.GrokCompiler;
 import lombok.RequiredArgsConstructor;
@@ -13,11 +12,10 @@ import org.springframework.stereotype.Component;
 @ConfigurationPropertiesBinding
 @RequiredArgsConstructor
 public class StringToGrokConverter implements Converter<String, Grok> {
-    private final GrokCompiler grokInstance;
+  private final GrokCompiler grokInstance;
 
-
-    @Override
-    public Grok convert(@NonNull String source) {
-        return grokInstance.compile(source);
-    }
+  @Override
+  public Grok convert(@NonNull String source) {
+    return grokInstance.compile(source);
+  }
 }

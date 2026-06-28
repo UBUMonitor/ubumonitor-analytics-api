@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class JwtToken {
-    private String token;
-    private Long expiresIn;
+  private String token;
+  private Long expiresIn;
 }
-
