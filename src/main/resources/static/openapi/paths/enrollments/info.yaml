@@ -1,0 +1,15 @@
+get:
+  tags:
+    - UserEnrollments
+  summary: Get user courses enrollments information
+  operationId: GetActualUserEnrollments
+  description: Synchronizes or retrieves the enrollments of the logged user's courses information. This endpoint returns the latest enrollment data for the courses the user is enrolled in and updates the local database accordingly when applicable.
+  responses:
+    '200':
+      description: Successful retrieval of enrollments. The response includes the updated enrollment information for the user's courses.
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/enrollments/info/response.yaml#/EnrollmentsResponse'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/unauthorized_401'

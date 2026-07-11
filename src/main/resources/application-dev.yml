@@ -1,0 +1,49 @@
+spring:
+  devtools:
+    restart:
+      enabled: false
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+
+  swagger-ui:
+    path: /swagger-ui.html
+    url: /openapi/openapi.yaml
+    tags-sorter: method
+
+
+jwt:
+  secret: 3f8d9c7a1b2e4f6d8a0c9e1b3d5f7a9c6e2d4b8f0a1c3e5d7f9b2a4c6e8d0f1
+
+logbook:
+  format:
+    style: http
+
+  filter:
+    enabled: true
+
+  obfuscate:
+    headers:
+      - Authorization
+      - X-Moodle-Token
+      - Cookie
+    parameters:
+      - password
+      - token
+
+  include:
+    - /api/**
+  exclude:
+    - /actuator/**
+    - /v3/api-docs/**
+    - /swagger-ui/**
+    - /swagger-ui.html
+
+  write:
+    level: INFO

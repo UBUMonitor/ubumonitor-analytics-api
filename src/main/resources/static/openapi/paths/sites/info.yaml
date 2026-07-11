@@ -1,0 +1,17 @@
+get:
+  tags:
+    - Sites
+  summary: Get site info and actual user logged
+  operationId: getSiteInfo
+  description: Get site info and actual user logged
+  responses:
+    '200':
+      description: Site information
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/sites/info/response.yaml#/SiteInfoResponse'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/unauthorized_401'
+
+

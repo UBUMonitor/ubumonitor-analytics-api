@@ -1,0 +1,92 @@
+CourseLogsMetricsResponse:
+  type: object
+  properties:
+    rows:
+      type: array
+      items:
+        title: CourseLogsMetricsResponseRow
+        type: object
+
+        properties:
+          timeBucket:
+            type: string
+            format: none
+            example: "2026-05-01"
+            nullable: true
+          user:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 4521
+              fullName:
+                type: string
+                example: María González
+                nullable: true
+
+          module:
+            type: object
+            nullable: true
+            properties:
+              id:
+                type: integer
+                example: 874
+                nullable: true
+              name:
+                type: string
+                example: Foro de dudas generales
+                nullable: true
+
+          component:
+            type: object
+            nullable: true
+            properties:
+              id:
+                type: integer
+                example: 2
+              name:
+                type: string
+                example: forum
+
+          event:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 15
+              name:
+                type: string
+                example: discussion_created
+
+          origin:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              name:
+                type: string
+                example: web
+
+          ipAddress:
+            type: string
+            format: ipv4
+            example: 192.168.1.150
+
+          courseId:
+            type: integer
+            example: 105
+          sectionId:
+            type: integer
+            example: 3
+
+          sectionName:
+            type: string
+            example: "Unidad 1: Introducción"
+
+          value:
+            type: integer
+            example: 42
+
+  required:
+    - rows

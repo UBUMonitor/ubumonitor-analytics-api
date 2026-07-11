@@ -1,0 +1,34 @@
+post:
+  tags:
+    - CourseLogs
+  operationId: GetCourseLogs
+  summary: Get course logs with filters
+  description: |
+    Retrieves logs for a specific course with optional filtering by date range
+    and selectable log columns.
+
+  parameters:
+    - name: courseId
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: Course identifier
+
+
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../../components/schemas/courses/courselogs/info/request.yaml#/CourseLogsInfoRequest'
+  responses:
+    "200":
+      description: Logs retrieved successfully
+      content:
+        application/json:
+          schema:
+            $ref: '../../../components/schemas/courses/courselogs/info/response.yaml#/CourseLogsInfoResponse'
+
+    '401':
+      $ref: '../../../openapi.yaml#/components/responses/unauthorized_401'

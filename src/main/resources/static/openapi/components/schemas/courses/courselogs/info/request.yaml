@@ -1,0 +1,145 @@
+CourseLogsInfoRequest:
+  type: object
+  properties:
+
+    timeRange:
+      title: CourseLogsInfoRequestTimeRange
+      type: object
+      properties:
+        from:
+          type: string
+          format: none
+          nullable: true
+          default: null
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?$'
+          example: "2026-05-01T00:00:00"
+        to:
+          type: string
+          format: none
+          nullable: true
+          default: null
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?$'
+          example: "2026-05-31T23:59:59"
+
+    filters:
+      title: CourseLogsInfoRequestFilters
+      type: object
+      properties:
+
+        userIds:
+          type: array
+          nullable: true
+          default: null
+          items:
+            type: integer
+          example: [123, 456, 789]
+
+        moduleIds:
+          type: array
+          nullable: true
+          default: null
+          items:
+            type: integer
+          example: [10, 20]
+
+        componentIds:
+          type: array
+          nullable: true
+          default: null
+          items:
+            type: integer
+          example: [5, 6]
+
+        sectionIds:
+          type: array
+          nullable: true
+          default: null
+          items:
+            type: integer
+          example: [2, 4]
+
+        eventIds:
+          type: array
+          nullable: true
+          default: null
+          items:
+            type: integer
+          example: [1, 2]
+
+        originIds:
+          type: array
+          nullable: true
+          default: null
+          items:
+            type: integer
+          example: [3]
+
+        ipAddresses:
+          type: array
+          nullable: true
+          default: null
+          items:
+            type: string
+          example: ["192.168.1.1", "10.0.0.1"]
+
+    fields:
+      title: CourseLogsInfoRequestFields
+      type: array
+      description: Columns to include in response
+      items:
+        type: string
+        enum:
+          - ID
+          - TIMESTAMP
+          - COURSE_ID
+          - USER_ID
+          - MODULE_ID
+          - COMPONENT_ID
+          - EVENT_ID
+          - ORIGIN_ID
+          - IP_ADDRESS
+          - USER_FULL_NAME
+          - MODULE_NAME
+          - COMPONENT_NAME
+          - EVENT_NAME
+          - ORIGIN_NAME
+          - SECTION_ID
+          - SECTION_NAME
+      example:
+        - TIMESTAMP
+        - USER_FULL_NAME
+        - EVENT_NAME
+        - IP_ADDRESS
+
+    pagination:
+      title: CourseLogsInfoRequestPagination
+      type: object
+      properties:
+        page:
+          type: integer
+          example: 0
+          default: 0
+
+        size:
+          type: integer
+          example: 20
+          default: 20
+
+    sort:
+      type: array
+      items:
+        title: CourseLogsInfoRequestSortItem
+        type: object
+        properties:
+          field:
+            type: string
+            example: TIMESTAMP
+          direction:
+            type: string
+            enum: [ASC, DESC]
+            example: DESC
+
+    includeTotal:
+      type: boolean
+      default: false
+      example: false

@@ -1,0 +1,33 @@
+post:
+  tags:
+    - CourseLogs
+  operationId: ImportCourseLogs
+  summary: Import Moodle logs CSV
+  parameters:
+    - name: courseId
+      in: path
+      required: true
+      schema:
+        type: integer
+  requestBody:
+    required: true
+    content:
+      multipart/form-data:
+        schema:
+          type: object
+          required:
+            - logFile
+          properties:
+            logFile:
+              type: string
+              format: binary
+  responses:
+    '200':
+      description: Import completed
+      content:
+        application/json:
+          schema:
+            $ref: '../../../components/schemas/courses/courselogs/sync/response.yaml#/CourseLogsResponse'
+
+    '401':
+      $ref: '../../../openapi.yaml#/components/responses/unauthorized_401'

@@ -1,0 +1,13 @@
+AuthResponse:
+  type: object
+  required:
+    - accessToken
+    - tokenType
+  properties:
+    accessToken:
+      type: string
+      description: Access token for authentication
+    tokenType:
+      type: string
+      description: Type of the token, usually "Bearer"
+      example: Bearer

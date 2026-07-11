@@ -1,0 +1,21 @@
+post:
+  tags:
+    - CourseLogs
+  operationId: SyncCourseLogs
+  summary: Sync Moodle logs CSV
+  parameters:
+    - name: courseId
+      in: path
+      required: true
+      schema:
+        type: integer
+  responses:
+    '200':
+      description: Sync completed
+      content:
+        application/json:
+          schema:
+            $ref: '../../../components/schemas/courses/courselogs/sync/response.yaml#/CourseLogsResponse'
+
+    '401':
+      $ref: '../../../openapi.yaml#/components/responses/unauthorized_401'

@@ -1,24 +1,58 @@
-# Compiled class file
+# === Compilados ===
+target/
+build/
+
+# === Archivos de sistema ===
+.DS_Store
+Thumbs.db
+
+# === IDEs ===
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+.settings/
+.classpath
+.project
+.factorypath
+
+# === Maven ===
+.mvn/
+!/.mvn/wrapper/maven-wrapper.jar
+
+# === Gradle ===
+.gradle/
+gradle-app.setting
+!gradle-wrapper.jar
+gradle-wrapper.properties
+
+# === Spring Boot ===
+*.h2.db
+*.mv.db
+*.trace.db
+
+# Archivos de configuración locales
+application-local.properties
+application-local.yml
+
+# === Java ===
 *.class
 
-# Log file
-*.log
+# === Cobertura / tests ===
+jacoco.exec
+coverage/
 
-# BlueJ files
-*.ctxt
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
+# === Packaging ===
 *.jar
 *.war
-*.nar
 *.ear
-*.zip
-*.tar.gz
-*.rar
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
-replay_pid*
+# === Otros ===
+*.zip
+*.tar
+*.gz
+
+
+moodle_dbs/
+*.log

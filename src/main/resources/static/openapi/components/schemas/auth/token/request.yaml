@@ -1,0 +1,26 @@
+AuthTokenRequest:
+  type: object
+  required:
+    - host
+    - username
+    - token
+    - dbPassword
+  properties:
+    host:
+      type: string
+      format: uri
+      description: Moodle site URL
+      example: https://school.moodledemo.net
+    username:
+      type: string
+      description: Moodle username
+      example: teacher
+    token:
+      type: string
+      description: Moodle token
+      example: abc123def456ghi789jkl012mno345pqr678stu901vwx234yz567
+    dbPassword:
+      type: string
+      format: password
+      description: Database password encrypted with AES-256. This is used to securely store the database password in the system, ensuring that sensitive information is protected while allowing the application to access the database when needed.
+      example: U2FsdGVkX1+5sQ9v3y
