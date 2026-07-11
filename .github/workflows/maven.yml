@@ -47,6 +47,8 @@ jobs:
 
       - name: Build with Maven
         run: mvn -B clean package
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Commit release version and tag
         run: |
