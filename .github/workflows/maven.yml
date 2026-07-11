@@ -27,7 +27,8 @@ jobs:
           distribution: 'temurin'
           cache: maven
           server-id: github
-
+          server-username: GITHUB_ACTOR
+          server-password: GITHUB_TOKEN
       - name: Configure Git user
         run: |
           git config user.name "github-actions[bot]"
