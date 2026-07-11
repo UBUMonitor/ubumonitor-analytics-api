@@ -25,6 +25,7 @@ jobs:
           java-version: '25'
           distribution: 'temurin'
           cache: maven
+          server-id: github
 
       - name: Configure Git user
         run: |
