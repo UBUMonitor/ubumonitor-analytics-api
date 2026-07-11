@@ -1,84 +1,103 @@
 package es.ubu.lsi.ubumonitoranalytics.features.courselogs.infrastructure.out.persistence;
 
+import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Courses.COURSES;
+import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Logs.LOGS;
+import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsComponents.LOGS_COMPONENTS;
+import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsEvents.LOGS_EVENTS;
+import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsOrigins.LOGS_ORIGINS;
+
 import es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.port.out.LogPersistencePort;
-
-import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.LogLine;
-import es.ubu.lsi.ubumonitoranalytics.shared.domain.entities.LogComponentEntity;
-import es.ubu.lsi.ubumonitoranalytics.shared.domain.entities.LogEventEntity;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.JdbcTemplateFactory;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.persistence.repository.LogComponentRepository;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.persistence.repository.LogEventRepository;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.persistence.repository.LogRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
-
-
+import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.importlogs.ProcessLogLine;
+import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-
+import lombok.RequiredArgsConstructor;
+import org.jooq.BatchBindStep;
+import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class LogPersistenceAdapter implements LogPersistencePort {
 
-    private final LogComponentRepository logComponentRepository;
-    private final LogEventRepository logEventRepository;
-    private final JdbcTemplateFactory jdbcTemplateFactory;
-    private final LogRepository logRepository;
+  private final Jooq jooq;
 
-    @Override
-    public Map<String, Byte> getLogComponents() {
-        return logComponentRepository.findAll().stream()
-            .collect(Collectors.toMap(
-                LogComponentEntity::getName,
-                LogComponentEntity::getId
-            ));
+  @Override
+  public void createIfNotExists(Integer courseId) {
+    DSLContext dsl = jooq.dsl();
+
+    boolean exists = dsl.fetchExists(dsl.selectOne().from(COURSES).where(COURSES.ID.eq(courseId)));
+
+    if (!exists) {
+      dsl.insertInto(COURSES).set(COURSES.ID, courseId).execute();
+    }
+  }
+
+  @Override
+  public Map<String, Byte> getLogComponents() {
+    return jooq.dsl()
+        .select(LOGS_COMPONENTS.NAME, LOGS_COMPONENTS.ID)
+        .from(LOGS_COMPONENTS)
+        .fetchMap(LOGS_COMPONENTS.NAME, LOGS_COMPONENTS.ID);
+  }
+
+  @Override
+  public Map<String, Short> getLogEvents() {
+    return jooq.dsl()
+        .select(LOGS_EVENTS.NAME, LOGS_EVENTS.ID)
+        .from(LOGS_EVENTS)
+        .fetchMap(LOGS_EVENTS.NAME, LOGS_EVENTS.ID);
+  }
+
+  @Override
+  public Map<String, Byte> getLogOrigins() {
+    return jooq.dsl()
+        .select(LOGS_ORIGINS.NAME, LOGS_ORIGINS.ID)
+        .from(LOGS_ORIGINS)
+        .fetchMap(LOGS_ORIGINS.NAME, LOGS_ORIGINS.ID);
+  }
+
+  @Override
+  public void saveBatch(List<ProcessLogLine> logs) {
+
+    DSLContext dsl = jooq.dsl();
+
+    BatchBindStep batch =
+        dsl.batch(
+            dsl.insertInto(
+                    LOGS,
+                    LOGS.TIMESTAMP,
+                    LOGS.USER_ID,
+                    LOGS.COURSE_ID,
+                    LOGS.COMPONENT_ID,
+                    LOGS.EVENT_ID,
+                    LOGS.MODULE_ID,
+                    LOGS.ORIGIN_ID,
+                    LOGS.IP_ADDRESS)
+                .values((LocalDateTime) null, null, null, null, null, null, null, null));
+    for (ProcessLogLine l : logs) {
+      batch.bind(
+          l.getTime(),
+          l.getUserId(),
+          l.getCourseId(),
+          l.getComponentId(),
+          l.getEventId(),
+          l.getModuleId(),
+          l.getOriginId(),
+          l.getIpAddress());
     }
 
-    @Override
-    public Map<String, Short> getLogEvents() {
-        return logEventRepository.findAll().stream()
-            .collect(Collectors.toMap(
-                LogEventEntity::getName,
-                LogEventEntity::getId
-            ));
-    }
+    batch.execute();
+  }
 
-    @Override
-    public void saveBatch(List<LogLine> logs) {
-        JdbcTemplate jdbcTemplate = jdbcTemplateFactory.getJdbcTemplate();
-        jdbcTemplate.batchUpdate("""
-            INSERT INTO logs (
-                timestamp,
-                user_id,
-                course_id,
-                component_id,
-                event_id,
-                module_id
-            )
-            VALUES (?, ?, ?, ?, ?, ?)
-        """,
-            logs,
-            logs.size(),
-            (ps, log) -> {
-
-                ps.setObject(1, log.getTime());
-                ps.setObject(2, log.getUserId());     // puede ser null, por eso se usa setObject
-                ps.setInt(3, log.getCourseId());
-                ps.setByte(4, log.getComponentId());
-                ps.setShort(5, log.getEventId());
-                ps.setObject(6, log.getModuleId());   // puede ser null, por eso se usa setObject
-            });
-    }
-
-    @Override
-    public LocalDateTime getLastDateTime(Integer courseId) {
-        return logRepository.findLastTimestampByCourseId(courseId);
-    }
-
-
+  @Override
+  public LocalDateTime getLastDateTime(Integer courseId) {
+    return jooq.dsl()
+        .select(DSL.max(LOGS.TIMESTAMP))
+        .from(LOGS)
+        .where(LOGS.COURSE_ID.eq(courseId))
+        .fetchOneInto(LocalDateTime.class);
+  }
 }
-

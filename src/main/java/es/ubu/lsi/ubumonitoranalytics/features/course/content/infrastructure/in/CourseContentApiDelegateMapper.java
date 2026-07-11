@@ -9,7 +9,6 @@ import org.mapstruct.Mapping;
 @Mapper(config = GlobalMapperConfig.class)
 public interface CourseContentApiDelegateMapper {
 
-    @Mapping(target = "sections", source = "sections")
-    CourseContentResponseDto toDto(CourseContent courseContent);
-
+  @Mapping(target = "sections", source = "sections")
+  CourseContentResponseDto toDto(CourseContent courseContent);
 }

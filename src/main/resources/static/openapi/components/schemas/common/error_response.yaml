@@ -32,6 +32,9 @@ ErrorResponse:
 ErrorDetail:
   type: object
   description: "Details about a specific field validation failure."
+  required:
+    - field
+    - message
   properties:
     field:
       type: string

@@ -1,5 +1,8 @@
 AuthResponse:
   type: object
+  required:
+    - accessToken
+    - tokenType
   properties:
     accessToken:
       type: string
@@ -8,7 +11,3 @@ AuthResponse:
       type: string
       description: Type of the token, usually "Bearer"
       example: Bearer
-    expiresIn:
-      type: integer
-      description: Expiration time in seconds
-      example: 3600

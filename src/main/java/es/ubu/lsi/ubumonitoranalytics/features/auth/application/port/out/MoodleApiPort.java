@@ -5,7 +5,5 @@ import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.auth.LoginAuthR
 
 public interface MoodleApiPort {
 
-    LoginAuthResult login(AuthInput authInput);
-
+  LoginAuthResult login(AuthInput authInput);
 }
-

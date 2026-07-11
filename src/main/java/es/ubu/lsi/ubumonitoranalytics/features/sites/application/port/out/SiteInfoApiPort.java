@@ -4,6 +4,5 @@ import es.ubu.lsi.ubumonitoranalytics.features.sites.application.dto.SiteInfo;
 
 public interface SiteInfoApiPort {
 
-    SiteInfo fetchSiteInfo();
+  SiteInfo fetchSiteInfo();
 }
-

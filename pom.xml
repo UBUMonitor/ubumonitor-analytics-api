@@ -9,12 +9,12 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.5.13</version>
+    <version>3.5.14</version>
     <relativePath/>
   </parent>
 
   <groupId>es.ubu.lsi</groupId>
-  <artifactId>ubumonitor-analytics</artifactId>
+  <artifactId>ubumonitoranalytics</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>ubumonitor-analytics</name>
 
@@ -27,37 +27,32 @@
     <mapstruct.version>1.6.3</mapstruct.version>
     <lombok.version>1.18.42</lombok.version>
     <logbook.version>3.12.3</logbook.version>
+    <start-class>es.ubu.lsi.ubumonitoranalytics.Application</start-class>
   </properties>
 
   <dependencies>
-
+    <dependency>
+      <groupId>es.ubu.lsi</groupId>
+      <artifactId>moodle-java-client</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-data-jpa</artifactId>
+      <artifactId>spring-boot-starter-jooq</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-security</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.springframework.data</groupId>
-      <artifactId>spring-data-envers</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-devtools</artifactId>
-      <scope>runtime</scope>
-      <optional>true</optional>
-    </dependency>
+
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-logging</artifactId>
     </dependency>
-    <!-- Logbook (MVC en lugar de WebFlux) -->
     <dependency>
       <groupId>org.zalando</groupId>
       <artifactId>logbook-spring-boot-starter</artifactId>
@@ -76,6 +71,22 @@
     <dependency>
       <groupId>com.github.ben-manes.caffeine</groupId>
       <artifactId>caffeine</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jsoup</groupId>
+      <artifactId>jsoup</artifactId>
+      <version>1.22.2</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.vladsch.flexmark</groupId>
+      <artifactId>flexmark</artifactId>
+      <version>0.64.8</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents.client5</groupId>
+      <artifactId>httpclient5</artifactId>
     </dependency>
     <!-- Lombok -->
     <dependency>
@@ -244,44 +255,9 @@
                 <openApiNullable>false</openApiNullable>
                 <interfaceOnly>false</interfaceOnly>
                 <skipDefaultInterface>false</skipDefaultInterface>
+                <jsonIncludeNonNull>true</jsonIncludeNonNull>
               </configOptions>
 
-            </configuration>
-          </execution>
-          <execution>
-            <id>generate-moodle-adapter-client</id>
-            <goals>
-              <goal>generate</goal>
-            </goals>
-
-            <configuration>
-              <inputSpec>
-                ${project.basedir}/src/main/resources/static/openapi/consumer/openapi_moodle_adapter.yaml
-              </inputSpec>
-
-              <generatorName>java</generatorName>
-              <library>restclient</library>
-
-              <apiPackage>es.ubu.lsi.moodleadapter.api.generated.api</apiPackage>
-              <modelPackage>es.ubu.lsi.moodleadapter.api.generated.model</modelPackage>
-              <invokerPackage>es.ubu.lsi.moodleadapter.api.generated.invoker</invokerPackage>
-
-              <output>${project.build.directory}/generated-sources/moodle-adapter</output>
-
-              <apiNameSuffix>Api</apiNameSuffix>
-              <addCompileSourceRoot>true</addCompileSourceRoot>
-              <modelNamePrefix>MoodleAdapter</modelNamePrefix>
-              <generateApiTests>false</generateApiTests>
-              <generateModelTests>false</generateModelTests>
-
-              <configOptions>
-                <dateLibrary>java8</dateLibrary>
-                <useJakartaEe>true</useJakartaEe>
-                <useBeanValidation>true</useBeanValidation>
-                <useTags>true</useTags>
-                <jackson>true</jackson>
-                <useSpringBoot3>true</useSpringBoot3>
-              </configOptions>
             </configuration>
           </execution>
         </executions>
@@ -303,8 +279,9 @@
               <sources>
                 <source>${project.build.directory}/generated-sources/openapi/src/main/java</source>
                 <source>${project.build.directory}/generated-sources/moodle-adapter/src/main/java</source>
-                <!-- Añadimos las fuentes generadas por los procesadores de anotaciones (MapStruct) -->
                 <source>${project.build.directory}/generated-sources/annotations</source>
+                <source>${project.build.directory}/generated-sources/jooq</source>
+
               </sources>
             </configuration>
           </execution>
@@ -323,9 +300,160 @@
 
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.flywaydb</groupId>
+        <artifactId>flyway-maven-plugin</artifactId>
+        <version>12.6.1</version>
 
+        <configuration>
+          <url>jdbc:h2:file:${project.build.directory}/moodle_dbs/bootstrap</url>
+          <user>sa</user>
+        </configuration>
+
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>migrate</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.jooq</groupId>
+        <artifactId>jooq-codegen-maven</artifactId>
+
+        <executions>
+          <execution>
+            <id>jooq-codegen</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+
+            <configuration>
+
+              <jdbc>
+                <driver>org.h2.Driver</driver>
+                <url>jdbc:h2:file:${project.build.directory}/moodle_dbs/bootstrap</url>
+                <user>sa</user>
+              </jdbc>
+
+              <generator>
+
+                <database>
+                  <name>org.jooq.meta.h2.H2Database</name>
+                  <inputSchema>PUBLIC</inputSchema>
+
+                  <includes>.*</includes>
+                </database>
+
+                <generate>
+                  <pojos>false</pojos>
+                  <daos>false</daos>
+
+                  <keys>false</keys>
+                  <relations>false</relations>
+                  <indexes>false</indexes>
+
+                  <globalKeyReferences>false</globalKeyReferences>
+                  <globalIndexReferences>false</globalIndexReferences>
+                  <globalTableReferences>false</globalTableReferences>
+                  <records>true</records>
+                  <interfaces>false</interfaces>
+                  <immutablePojos>false</immutablePojos>
+                </generate>
+
+                <target>
+                  <packageName>${project.groupId}.${project.artifactId}.jooq</packageName>
+                  <directory>${project.build.directory}/generated-sources/jooq</directory>
+                </target>
+
+              </generator>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.diffplug.spotless</groupId>
+        <artifactId>spotless-maven-plugin</artifactId>
+        <version>3.7.0</version>
+        <configuration>
+          <java>
+            <googleJavaFormat/>
+          </java>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>apply</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
-  </build>
 
+
+  </build>
+  <profiles>
+
+    <profile>
+      <id>native</id>
+
+      <properties>
+        <native.build.args>
+          --no-fallback
+          -H:+ReportExceptionStackTraces
+          -H:Name=${project.artifactId}
+        </native.build.args>
+      </properties>
+
+      <build>
+        <resources>
+          <resource>
+            <directory>src/main/resources</directory>
+            <includes>
+              <include>**/*</include>
+            </includes>
+          </resource>
+        </resources>
+        <plugins>
+
+          <plugin>
+            <groupId>org.graalvm.buildtools</groupId>
+            <artifactId>native-maven-plugin</artifactId>
+            <version>1.1.0</version>
+
+            <configuration>
+              <imageName>${project.artifactId}</imageName>
+              <mainClass>${start-class}</mainClass>
+
+              <buildArgs>
+                <buildArg>--no-fallback</buildArg>
+                <buildArg>-H:+ReportExceptionStackTraces</buildArg>
+                <buildArg>-H:IncludeResources=(patterns/.*|db/migration/.*|.*\.(yml|yaml|sql|properties|json|xml))</buildArg>
+                <buildArg>--initialize-at-run-time=com.github.benmanes.caffeine.cache</buildArg>
+
+              </buildArgs>
+
+              <outputDirectory>${project.build.directory}</outputDirectory>
+            </configuration>
+
+            <executions>
+              <execution>
+                <id>native-compile</id>
+                <goals>
+                  <goal>compile</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+        </plugins>
+      </build>
+
+    </profile>
+
+  </profiles>
 
 </project>

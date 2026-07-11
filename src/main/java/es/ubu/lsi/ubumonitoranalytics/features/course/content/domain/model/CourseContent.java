@@ -1,14 +1,12 @@
 package es.ubu.lsi.ubumonitoranalytics.features.course.content.domain.model;
 
+import java.util.Collection;
+import lombok.Builder;
 import lombok.Data;
 
-import java.util.List;
-
 @Data
+@Builder
 public class CourseContent {
-    private Integer courseId;
-    private List<Section> sections;
-
+  private Integer courseId;
+  private Collection<Section> sections;
 }
-
-

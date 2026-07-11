@@ -1,5 +1,7 @@
 CourseContentResponse:
   type: object
+  required:
+    - sections
   properties:
     sections:
       type: array
@@ -40,13 +42,21 @@ CourseContentSection:
   required:
     - id
     - name
+    - visible
     - summary
-    - summaryformat
+    - position
     - modules
 
 
 CourseContentModule:
   type: object
+  required:
+    - id
+    - name
+    - modName
+    - url
+    - description
+    - visible
   properties:
     id:
       type: integer
@@ -72,8 +82,3 @@ CourseContentModule:
     visible:
       type: boolean
       description: Is module visible
-
-
-  required:
-    - id
-    - name

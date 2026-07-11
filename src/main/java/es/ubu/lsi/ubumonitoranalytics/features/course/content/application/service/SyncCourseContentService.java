@@ -12,19 +12,15 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class SyncCourseContentService implements SyncCourseContentUseCase {
 
-    private final CourseContentPersistencePort persistencePort;
-    private final FetchCourseContentPort fetchCourseContentPort;
+  private final CourseContentPersistencePort persistencePort;
+  private final FetchCourseContentPort fetchCourseContentPort;
 
-    @Transactional
-    @Override
-    public CourseContent syncCourseContent(Integer courseId) {
-        CourseContent content = fetchCourseContentPort.fetchCourseContent(courseId);
-        persistencePort.save(content);
+  @Transactional
+  @Override
+  public CourseContent syncCourseContent(Integer courseId) {
+    CourseContent content = fetchCourseContentPort.fetchCourseContent(courseId);
+    persistencePort.save(content);
 
-        return content;
-    }
-
-
+    return content;
+  }
 }
-
-

@@ -1,83 +1,150 @@
 package es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.service;
 
-import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.LogLine;
+import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.importlogs.ProcessLogLine;
 import es.ubu.lsi.ubumonitoranalytics.features.courselogs.infrastructure.config.MoodleRulesConfig;
 import io.krakens.grok.api.Grok;
 import io.krakens.grok.api.Match;
-import lombok.RequiredArgsConstructor;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class LogParserService {
-    private static final DateTimeFormatter MOODLE_TIME_FORMATTER = DateTimeFormatter.ofPattern("d/MM/yy, HH:mm:ss");
 
-    private final MoodleRulesConfig moodleRulesConfig;
+  private static final DateTimeFormatter MOODLE_TIME_FORMATTER =
+      DateTimeFormatter.ofPattern("d/MM/yy, HH:mm:ss");
 
-    public LogLine processRow(Integer courseId, CSVRecord row, Map<String, Byte> componentIds, Map<String, Short> eventIds) {
+  private final MoodleRulesConfig moodleRulesConfig;
 
-        String component = row.get("Component");
-        String event = row.get("Event name");
-        Byte componentId = componentIds.get(component);
-        Short eventId = eventIds.get(event);
-        if (componentId == null || eventId == null) {
+  private final Map<String, List<Grok>> grokCache = new HashMap<>();
 
-            log.warn("Not found in database component='[{}]', eventName='[{}]' and description='[{}]'", component, event, row.get("Description"));
-            return null;
-        }
+  public LogParserService(MoodleRulesConfig moodleRulesConfig) {
+    this.moodleRulesConfig = moodleRulesConfig;
+    for (Map.Entry<String, Map<String, List<Grok>>> componentEntry :
+        moodleRulesConfig.getRules().entrySet()) {
 
-        LogLine logLine = new LogLine();
-        logLine.setTime(LocalDateTime.parse(row.get("Time"), MOODLE_TIME_FORMATTER));
-        logLine.setCourseId(courseId);
-        logLine.setComponentId(componentId);
-        logLine.setEventId(eventId);
-        additionalData(component, event, row.get("Description"), logLine);
-        return logLine;
+      String component = componentEntry.getKey();
+
+      Map<String, List<Grok>> eventMap = componentEntry.getValue();
+      if (eventMap == null) continue;
+
+      for (Map.Entry<String, List<Grok>> eventEntry : eventMap.entrySet()) {
+
+        String event = eventEntry.getKey();
+        List<Grok> groks = eventEntry.getValue();
+
+        grokCache.put(component + "::" + event, groks != null ? groks : Collections.emptyList());
+      }
+    }
+  }
+
+  public ProcessLogLine processRow(
+      Integer courseId,
+      CSVRecord row,
+      Map<String, Byte> componentIds,
+      Map<String, Short> eventIds,
+      Map<String, Byte> logOrigins) {
+
+    // ✅ Cache local de columnas (evita repetidos row.get)
+    String component = row.get("Component");
+    String event = row.get("Event name");
+    String origin = row.get("Origin");
+    String time = row.get("Time");
+    String ip = row.get("IP address");
+    String description = row.get("Description");
+
+    // ✅ Map lookups (sin Optional, sin overhead extra)
+    Byte componentId = componentIds.get(component);
+    Short eventId = eventIds.get(event);
+    Byte originId = logOrigins.get(origin);
+
+    if (componentId == null || eventId == null || originId == null) {
+      log.warn("Missing mapping component='{}', event='{}', origin='{}'", component, event, origin);
+      return null;
     }
 
-    private void additionalData(String component, String eventName, String description, LogLine logLine) {
-        List<Grok> groks = Optional.ofNullable(moodleRulesConfig.getRules().get(component))
-            .map(eventMap -> eventMap.get(eventName))
-            .orElse(Collections.emptyList());
+    ProcessLogLine line = new ProcessLogLine();
 
+    // ⚡ parse directo
+    line.setTime(LocalDateTime.parse(time, MOODLE_TIME_FORMATTER));
+    line.setCourseId(courseId);
+    line.setComponentId(componentId);
+    line.setEventId(eventId);
+    line.setOriginId(originId);
+    line.setIpAddress(ip);
 
-        for (Grok grok : groks) {
-            if (CollectionUtils.isEmpty(grok.getNamedRegexCollection()) && grok.getOriginalGrokPattern().equals(description)) {
-                // Si el patrón es exactamente igual a la descripción, no es necesario hacer match
-                // Esto es útil para casos donde no se necesitan extraer variables, solo validar la existencia del evento
-                return;
-            }
-            Match match = grok.match(description);
-            if (match == null) {
-                continue;
-            }
-            Map<String, Object> capture = match.capture();
-            if (!capture.isEmpty()) {
-                addAdditionalData(capture, logLine);
-                return;
-            }
-        }
+    applyAdditionalData(component, event, description, line);
 
-        log.warn("No Grok rule found for component='[{}]', eventName='[{}]', description='{}'", component, eventName, description);
+    return line;
+  }
 
+  private void applyAdditionalData(
+      String component, String eventName, String description, ProcessLogLine processLogLine) {
+
+    String key = component + "::" + eventName;
+
+    List<Grok> groks =
+        grokCache.computeIfAbsent(
+            key,
+            _ -> {
+              Map<String, List<Grok>> eventMap = moodleRulesConfig.getRules().get(component);
+
+              if (eventMap == null) {
+                return Collections.emptyList();
+              }
+
+              List<Grok> list = eventMap.get(eventName);
+              return list != null ? list : Collections.emptyList();
+            });
+
+    if (groks.isEmpty()) {
+      log.warn("No Grok rules for component='{}', eventName='{}'", component, eventName);
+      return;
     }
 
-    private void addAdditionalData(Map<String, Object> grokResult, LogLine logLine) {
-        Integer userId = (Integer) grokResult.get("user_id");
-        logLine.setUserId(userId);
+    for (Grok grok : groks) {
 
-        Integer courseModuleId = (Integer) grokResult.get("course_module_id");
-        logLine.setModuleId(courseModuleId);
+      // ⚡ micro-opt: evita match si no hay necesidad
+      if (CollectionUtils.isEmpty(grok.getNamedRegexCollection())
+          && grok.getOriginalGrokPattern().equals(description)) {
+        return;
+      }
+
+      Match match = grok.match(description);
+      if (match == null) {
+        continue;
+      }
+
+      Map<String, Object> capture = match.capture();
+      if (capture.isEmpty()) {
+        continue;
+      }
+
+      applyCapturedData(capture, processLogLine);
+      return;
     }
+
+    log.warn("No Grok match found for component='{}', eventName='{}'", component, eventName);
+  }
+
+  private void applyCapturedData(Map<String, Object> grokResult, ProcessLogLine processLogLine) {
+
+    Object userId = grokResult.get("user_id");
+    if (userId != null) {
+      processLogLine.setUserId((Integer) userId);
+    }
+
+    Object moduleId = grokResult.get("course_module_id");
+    if (moduleId != null) {
+      processLogLine.setModuleId((Integer) moduleId);
+    }
+  }
 }

@@ -11,22 +11,22 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @AllArgsConstructor
 public class MoodleConfig {
 
-    private Db db = new Db();
-    private Api api = new Api();
+  private Db db = new Db();
+  private Api api = new Api();
 
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Api {
-        private String baseUrl;
-        private Integer connectTimeout;
-        private Integer readTimeout;
-    }
+  @Data
+  @NoArgsConstructor
+  @AllArgsConstructor
+  public static class Api {
+    private Integer connectTimeout;
+    private Integer readTimeout;
+  }
 
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Db {
-        private String basePath;
-    }
+  @Data
+  @NoArgsConstructor
+  @AllArgsConstructor
+  public static class Db {
+    private String basePath;
+    private String jdbcUrlTemplate;
+  }
 }

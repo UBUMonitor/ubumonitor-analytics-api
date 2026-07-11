@@ -2,7 +2,7 @@ AuthOfflineRequest:
   type: object
   required:
     - host
-    - userName
+    - username
     - dbPassword
   properties:
     host:
@@ -10,7 +10,7 @@ AuthOfflineRequest:
       format: uri
       description: Moodle site URL
       example: https://school.moodledemo.net
-    userName:
+    username:
       type: string
       description: Moodle username
       example: teacher

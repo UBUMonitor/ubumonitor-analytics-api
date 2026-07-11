@@ -2,8 +2,19 @@ package es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.service;
 
 import es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.port.in.ImportCourseLogsUseCase;
 import es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.port.out.LogPersistencePort;
-import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.LogLine;
-import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.ProcessLogsResult;
+import es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.port.out.MoodlePort;
+import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.importlogs.ProcessLogLine;
+import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.importlogs.ProcessLogsResult;
+import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
+import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -12,121 +23,225 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.io.input.BOMInputStream;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestClient;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class ImportCourseLogsService implements ImportCourseLogsUseCase {
 
-    private final LogParserService logParserService;
-    private final LogPersistencePort logPersistencePort;
-    private static final int BATCH_SIZE = 1000;
+  private static final int BATCH_SIZE = 1000;
 
-    @Override
-    @SneakyThrows
-    @Transactional
-    public ProcessLogsResult process(Integer courseId, MultipartFile file) {
+  private final LogParserService logParserService;
+  private final LogPersistencePort logPersistencePort;
+  private final MoodlePort moodlePort;
+  private final CurrentSessionContext currentSessionContext;
 
-        Map<String, Byte> logComponents = logPersistencePort.getLogComponents();
-        Map<String, Short> logEvents = logPersistencePort.getLogEvents();
+  // =========================
+  // LOCAL FILE IMPORT
+  // =========================
+  @Override
+  @SneakyThrows
+  public ProcessLogsResult process(Integer courseId, MultipartFile file) {
 
-        LocalDateTime lastLogDateTime = logPersistencePort.getLastDateTime(courseId);
+    return processStream(
+        courseId, file.getInputStream(), logPersistencePort.getLastDateTime(courseId));
+  }
 
-        List<LogLine> batch = new ArrayList<>(BATCH_SIZE);
+  // =========================
+  // REMOTE SYNC
+  // =========================
+  @Override
+  @SneakyThrows
+  public ProcessLogsResult sync(Integer courseId) {
 
-        int saved = 0;
-        int ignored = 0;
-        int failed = 0;
-        try (
-            BufferedReader reader = buildReader(file);
-            CSVParser parser = buildCsvParser(reader)
-        ) {
+    SessionData sessionData = currentSessionContext.getSessionData();
 
-            for (CSVRecord record : parser) {
-                LogLine logLine;
-                try {
-                     logLine = logParserService.processRow(
-                        courseId,
-                        record,
-                        logComponents,
-                        logEvents
-                    );
-                } catch (Exception e) {
-                    log.warn("Error while processing log line: {}", record, e);
-                    failed++;
-                    continue;
-                }
+    RestClient restClient =
+        moodlePort.login(
+            sessionData.getUsername(), sessionData.getPassword(), sessionData.getHost());
 
+    LocalDateTime lastLogDateTime = logPersistencePort.getLastDateTime(courseId);
 
-                if (!isValidLog(logLine, lastLogDateTime)) {
-                    ignored++;
-                    continue;
-                }
+    logPersistencePort.createIfNotExists(courseId);
 
-                batch.add(logLine);
+    Map<String, Byte> logComponents = logPersistencePort.getLogComponents();
+    Map<String, Short> logEvents = logPersistencePort.getLogEvents();
+    Map<String, Byte> logOrigins = logPersistencePort.getLogOrigins();
 
-                if (batch.size() >= BATCH_SIZE) {
-                    saved += persistBatch(batch);
-                }
-            }
+    List<ProcessLogLine> batch = new ArrayList<>(BATCH_SIZE);
 
-            saved += persistBatch(batch);
+    AtomicInteger saved = new AtomicInteger(0);
+    AtomicInteger ignored = new AtomicInteger(0);
+    AtomicInteger failed = new AtomicInteger(0);
+
+    Consumer<CSVRecord> consumer =
+        csvRecord ->
+            handleRecord(
+                courseId,
+                csvRecord,
+                lastLogDateTime,
+                logComponents,
+                logEvents,
+                logOrigins,
+                batch,
+                ignored,
+                failed);
+
+    if (lastLogDateTime == null || lastLogDateTime.isBefore(LocalDateTime.now().minusDays(30))) {
+
+      moodlePort.downloadAllLogs(courseId, restClient, consumer);
+
+    } else {
+
+      long now = Instant.now().getEpochSecond();
+      ZoneOffset zone = ZoneOffset.UTC;
+
+      Instant lastInstant = lastLogDateTime.toInstant(zone);
+
+      Instant safeStart =
+          lastInstant.atZone(zone).toLocalDate().atStartOfDay(zone).toInstant().minusSeconds(86400);
+
+      long start = safeStart.getEpochSecond();
+      long step = 86400;
+
+      for (long ts = start; ts <= now; ts += step) {
+
+        moodlePort.downloadPartialLogs(courseId, ts, restClient, consumer);
+      }
+    }
+
+    flushBatch(batch, saved, failed);
+
+    return new ProcessLogsResult(saved.get(), ignored.get(), failed.get());
+  }
+
+  // =========================
+  // CORE PIPELINE (REUSE)
+  // =========================
+  private ProcessLogsResult processStream(
+      Integer courseId, InputStream inputStream, LocalDateTime lastLogDateTime) {
+
+    Map<String, Byte> logComponents = logPersistencePort.getLogComponents();
+    Map<String, Short> logEvents = logPersistencePort.getLogEvents();
+    Map<String, Byte> logOrigins = logPersistencePort.getLogOrigins();
+
+    logPersistencePort.createIfNotExists(courseId);
+
+    List<ProcessLogLine> batch = new ArrayList<>(BATCH_SIZE);
+
+    AtomicInteger saved = new AtomicInteger(0);
+    AtomicInteger ignored = new AtomicInteger(0);
+    AtomicInteger failed = new AtomicInteger(0);
+
+    try (BufferedReader reader = buildReader(inputStream);
+        CSVParser parser = buildCsvParser(reader)) {
+
+      for (CSVRecord csvRecord : parser) {
+
+        handleRecord(
+            courseId,
+            csvRecord,
+            lastLogDateTime,
+            logComponents,
+            logEvents,
+            logOrigins,
+            batch,
+            ignored,
+            failed);
+
+        if (batch.size() >= BATCH_SIZE) {
+          flushBatch(batch, saved, failed);
         }
+      }
 
-        return new ProcessLogsResult(saved, ignored, failed);
+    } catch (Exception e) {
+      log.error("Error processing stream", e);
     }
 
-    private int persistBatch(List<LogLine> batch) {
+    flushBatch(batch, saved, failed);
 
-        if (batch.isEmpty()) {
-            return 0;
-        }
+    return new ProcessLogsResult(saved.get(), ignored.get(), failed.get());
+  }
 
-        int size = batch.size();
+  // =========================
+  // RECORD HANDLER
+  // =========================
+  private void handleRecord(
+      Integer courseId,
+      CSVRecord csvRecord,
+      LocalDateTime lastLogDateTime,
+      Map<String, Byte> logComponents,
+      Map<String, Short> logEvents,
+      Map<String, Byte> logOrigins,
+      List<ProcessLogLine> batch,
+      AtomicInteger ignored,
+      AtomicInteger failed) {
 
-        logPersistencePort.saveBatch(batch);
+    try {
+      ProcessLogLine line =
+          logParserService.processRow(courseId, csvRecord, logComponents, logEvents, logOrigins);
 
-        batch.clear();
+      if (isValidLog(line, lastLogDateTime)) {
+        batch.add(line);
+      } else {
+        ignored.incrementAndGet();
+      }
 
-        return size;
+    } catch (Exception e) {
+      log.warn("Error processing CSV row: {}", csvRecord, e);
+      failed.incrementAndGet();
     }
+  }
 
-    private boolean isValidLog(LogLine logLine, LocalDateTime lastLogDateTime) {
-        return logLine != null
-            && (lastLogDateTime == null || lastLogDateTime.isBefore(logLine.getTime()));
+  // =========================
+  // BATCH FLUSH
+  // =========================
+  private void flushBatch(List<ProcessLogLine> batch, AtomicInteger saved, AtomicInteger failed) {
+
+    if (batch.isEmpty()) return;
+
+    try {
+      logPersistencePort.saveBatch(new ArrayList<>(batch));
+      saved.addAndGet(batch.size());
+    } catch (Exception e) {
+      log.error("Error persisting batch", e);
+      failed.addAndGet(batch.size());
+    } finally {
+      batch.clear();
     }
+  }
 
-    private BufferedReader buildReader(MultipartFile file) throws IOException {
-        return new BufferedReader(
-            new InputStreamReader(
-                BOMInputStream.builder()
-                    .setInputStream(file.getInputStream())
-                    .get(),
-                StandardCharsets.UTF_8
-            ),
-            64 * 1024
-        );
-    }
+  // =========================
+  // VALIDATION
+  // =========================
+  private boolean isValidLog(ProcessLogLine line, LocalDateTime lastLogDateTime) {
+    return line != null && (lastLogDateTime == null || lastLogDateTime.isBefore(line.getTime()));
+  }
 
-    private CSVParser buildCsvParser(BufferedReader reader) throws IOException {
+  // =========================
+  // CSV HELPERS
+  // =========================
+  @SneakyThrows
+  private BufferedReader buildReader(InputStream inputStream) {
 
-        CSVFormat format = CSVFormat.DEFAULT.builder()
-            .setHeader()
+    InputStream withBom = BOMInputStream.builder().setInputStream(inputStream).get();
+
+    return new BufferedReader(new InputStreamReader(withBom, StandardCharsets.UTF_8), 64 * 1024);
+  }
+
+  private CSVParser buildCsvParser(BufferedReader reader) throws IOException {
+
+    CSVFormat format =
+        CSVFormat.DEFAULT
+            .builder()
+            .setHeader() // 👈 usa la primera fila como header real
             .setSkipHeaderRecord(true)
+            .setIgnoreSurroundingSpaces(true)
+            .setTrim(true)
             .get();
 
-        return format.parse(reader);
-    }
-
+    return format.parse(reader);
+  }
 }

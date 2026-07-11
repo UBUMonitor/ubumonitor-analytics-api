@@ -1,10 +1,11 @@
 package es.ubu.lsi.ubumonitoranalytics.features.course.content.infrastructure.out.moodle;
 
-import es.ubu.lsi.moodleadapter.api.generated.api.CoursesApi;
-import es.ubu.lsi.moodleadapter.api.generated.model.MoodleAdapterCourseContentsResponseDto;
-import es.ubu.lsi.moodleadapter.api.generated.model.MoodleAdapterGetCourseContentsOptionsParameterDto;
+import es.ubu.lsi.moodle.api.Client;
+import es.ubu.lsi.moodle.model.core.course.getcontents.request.GetCourseContentsRequestApi;
+import es.ubu.lsi.moodle.model.core.course.getcontents.response.GetCourseContentsResponseApi;
 import es.ubu.lsi.ubumonitoranalytics.features.course.content.application.port.out.FetchCourseContentPort;
 import es.ubu.lsi.ubumonitoranalytics.features.course.content.domain.model.CourseContent;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -12,14 +13,13 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class FetchCourseContentAdapter implements FetchCourseContentPort {
 
-    private final CoursesApi coursesApi;
-    private final FetchCourseContentAdapaterMapper fetchCourseContentAdapaterMapper;
+  private final Client client;
+  private final FetchCourseContentAdapaterMapper fetchCourseContentAdapaterMapper;
 
-    @Override
-    public CourseContent fetchCourseContent(Integer courseId) {
-        MoodleAdapterCourseContentsResponseDto dto = coursesApi.getCourseContents(courseId, new MoodleAdapterGetCourseContentsOptionsParameterDto());
-        return fetchCourseContentAdapaterMapper.toDomain(dto, courseId);
-    }
+  @Override
+  public CourseContent fetchCourseContent(Integer courseId) {
+    GetCourseContentsRequestApi request = fetchCourseContentAdapaterMapper.toRequest(courseId);
+    List<GetCourseContentsResponseApi> response = client.coreCourse().getContents(request);
+    return fetchCourseContentAdapaterMapper.toDomain(response, courseId);
+  }
 }
-
-

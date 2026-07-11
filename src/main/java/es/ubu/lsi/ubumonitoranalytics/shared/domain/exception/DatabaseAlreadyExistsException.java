@@ -1,8 +1,10 @@
 package es.ubu.lsi.ubumonitoranalytics.shared.domain.exception;
 
-public class DatabaseAlreadyExistsException extends RuntimeException {
+import es.ubu.lsi.ubumonitoranalytics.shared.application.exception.ConflictException;
 
-    public DatabaseAlreadyExistsException(String name) {
-        super("Database already exists: " + name);
-    }
+public class DatabaseAlreadyExistsException extends ConflictException {
+
+  public DatabaseAlreadyExistsException(String name) {
+    super("Database already exists: " + name);
+  }
 }

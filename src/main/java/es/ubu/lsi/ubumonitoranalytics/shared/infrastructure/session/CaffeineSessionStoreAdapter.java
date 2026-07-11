@@ -4,53 +4,47 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.SessionStorePort;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
+import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import java.net.URI;
-import java.util.concurrent.TimeUnit;
 
 @Component
 @RequiredArgsConstructor
 public class CaffeineSessionStoreAdapter implements SessionStorePort {
 
-    private final Cache<String, SessionData> sessionCache = Caffeine.newBuilder()
-        .expireAfterAccess(24, TimeUnit.HOURS)
-        .maximumSize(1000)
-        .build();
+  private final Cache<String, SessionData> sessionCache =
+      Caffeine.newBuilder().maximumSize(1000).build();
 
+  @Override
+  public void saveSession(String jwt, SessionData sessionData) {
+    sessionCache.put(jwt, sessionData);
+  }
 
-    @Override
-    public void saveSession(String jwt, SessionData sessionData) {
-        sessionCache.put(jwt, sessionData);
-    }
+  @Override
+  public SessionData getSession(String jwt) {
+    return sessionCache.getIfPresent(jwt);
+  }
 
-    @Override
-    public SessionData getSession(String jwt) {
-        return sessionCache.getIfPresent(jwt);
-    }
+  @Override
+  public void invalidateSession(String jwt) {
+    sessionCache.invalidate(jwt);
+  }
 
-    @Override
-    public void invalidateSession(String jwt) {
-        sessionCache.invalidate(jwt);
+  @Override
+  public boolean hasSession(URI host, String username) {
+    return sessionCache.asMap().values().stream()
+        .anyMatch(
+            sessionData ->
+                sessionData.getHost().equals(host) && sessionData.getUsername().equals(username));
+  }
 
-    }
-
-    @Override
-    public boolean hasSession(URI host, String userName) {
-        return sessionCache.asMap()
-            .values()
-            .stream()
-            .anyMatch(sessionData -> sessionData.getHost().equals(host) && sessionData.getUserName().equals(userName));
-    }
-
-    @Override
-    public SessionData getSession(URI host, String userName) {
-        return sessionCache.asMap()
-            .values()
-            .stream()
-            .filter(sessionData -> sessionData.getHost().equals(host) && sessionData.getUserName().equals(userName))
-            .findAny()
-            .orElse(null);
-    }
+  @Override
+  public SessionData getSession(URI host, String username) {
+    return sessionCache.asMap().values().stream()
+        .filter(
+            sessionData ->
+                sessionData.getHost().equals(host) && sessionData.getUsername().equals(username))
+        .findAny()
+        .orElse(null);
+  }
 }

@@ -1,41 +1,39 @@
 package es.ubu.lsi.ubumonitoranalytics.features.sites.infrastructure.out.persistence;
 
-import es.ubu.lsi.ubumonitoranalytics.features.sites.application.port.out.SiteInfoPersistencePort;
+import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Sites.SITES;
+
 import es.ubu.lsi.ubumonitoranalytics.features.sites.application.dto.SiteInfo;
-import es.ubu.lsi.ubumonitoranalytics.shared.domain.entities.SiteEntity;
+import es.ubu.lsi.ubumonitoranalytics.features.sites.application.port.out.SiteInfoPersistencePort;
+import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.SitesRecord;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.EntityNotFoundException;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.persistence.repository.SiteRepository;
+import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-
 
 @Component
 @RequiredArgsConstructor
 public class SiteInfoPersistenceAdapter implements SiteInfoPersistencePort {
 
-    private final SiteRepository siteRepository;
-    private final SitePersistenceAdapterMapper sitePersistenceAdapterMapper;
+  private final Jooq jooq;
+  private final SitePersistenceAdapterMapper mapper;
 
+  @Override
+  public void save(SiteInfo siteInfo) {
 
-    @Override
-    @Transactional
-    public void save(SiteInfo siteInfo) {
-        SiteEntity siteEntity = siteRepository
-            .findById(siteInfo.getSite().getId())
-            .orElseGet(SiteEntity::new);
+    SitesRecord sitesRecord = mapper.toRecord(siteInfo);
 
-        sitePersistenceAdapterMapper.toEntity(siteInfo, siteEntity);
+    jooq.dsl().insertInto(SITES).set(sitesRecord).onDuplicateKeyUpdate().set(sitesRecord).execute();
+  }
 
-        siteRepository.save(siteEntity);
+  @Override
+  public SiteInfo fetchSiteInfo(String username) {
+
+    SitesRecord dto = jooq.dsl().fetchOne(SITES, SITES.USER_NAME.eq(username));
+
+    if (dto == null) {
+      throw new EntityNotFoundException("Site not found for username: " + username);
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public SiteInfo fetchSiteInfo(String userName) {
-        return siteRepository.findByUserName(userName)
-            .map(sitePersistenceAdapterMapper::toDomain)
-            .orElseThrow(() -> new EntityNotFoundException("Site not found for userName: " + userName));
-    }
+    return mapper.toDomain(dto);
+  }
 }
-

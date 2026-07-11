@@ -4,6 +4,5 @@ import lombok.Data;
 
 @Data
 public class LoginAuthResult {
-    private String moodleToken;
+  private String moodleToken;
 }
-

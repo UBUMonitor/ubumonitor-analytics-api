@@ -12,21 +12,19 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class UserEnrollmentsApiDelegateImpl implements UserEnrollmentsApiDelegate {
 
-    private final SyncUserCoursesUseCase syncUserCoursesUseCase;
-    private final GetUserCoursesUseCase getUserCoursesUseCase;
-    private final UserCoursesEnrollmentsMapper userCoursesEnrollmentsMapper;
+  private final SyncUserCoursesUseCase syncUserCoursesUseCase;
+  private final GetUserCoursesUseCase getUserCoursesUseCase;
+  private final UserCoursesEnrollmentsMapper userCoursesEnrollmentsMapper;
 
+  @Override
+  public ResponseEntity<EnrollmentsResponseDto> syncUserEnrollments() {
+    return ResponseEntity.ok(
+        userCoursesEnrollmentsMapper.toDto(syncUserCoursesUseCase.syncActualUserEnrollments()));
+  }
 
-    @Override
-    public ResponseEntity<EnrollmentsResponseDto> syncUserEnrollments() {
-        return ResponseEntity.ok(userCoursesEnrollmentsMapper.toDto(syncUserCoursesUseCase.syncActualUserEnrollments()));
-    }
-
-    @Override
-    public ResponseEntity<EnrollmentsResponseDto> getActualUserEnrollments() {
-        return ResponseEntity.ok(userCoursesEnrollmentsMapper.toDto(getUserCoursesUseCase.getActualUserEnrollments()));
-    }
-
-
+  @Override
+  public ResponseEntity<EnrollmentsResponseDto> getActualUserEnrollments() {
+    return ResponseEntity.ok(
+        userCoursesEnrollmentsMapper.toDto(getUserCoursesUseCase.getActualUserEnrollments()));
+  }
 }
-

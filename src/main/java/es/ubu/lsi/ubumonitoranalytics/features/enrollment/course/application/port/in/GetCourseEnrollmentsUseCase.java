@@ -1,9 +1,8 @@
 package es.ubu.lsi.ubumonitoranalytics.features.enrollment.course.application.port.in;
 
-import es.ubu.lsi.ubumonitoranalytics.features.enrollment.course.domain.model.CourseEnrollment;
+import es.ubu.lsi.ubumonitoranalytics.features.enrollment.course.domain.model.UsersResponse;
 
 public interface GetCourseEnrollmentsUseCase {
 
-    CourseEnrollment getCourseEnrollment(Integer courseId);
+  UsersResponse getCourseEnrollment(Integer courseId);
 }
-
