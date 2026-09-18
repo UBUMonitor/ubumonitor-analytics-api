@@ -6,13 +6,9 @@ spring:
   threads:
     virtual:
       enabled: true
-
-
-
   devtools:
     restart:
       enabled: false
-
   autoconfigure:
     exclude:
       - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
@@ -23,12 +19,13 @@ spring:
     multipart:
       max-file-size: 100MB
       max-request-size: 100MB
-
   flyway:
     enabled: false
+
 openapi:
   uBUMonitorAnalytics:
     base-path: /api
+
 server:
   port: 9090
   tomcat:
@@ -56,4 +53,12 @@ logging:
     com.zaxxer.hikari: DEBUG
     org.springframework.jdbc: DEBUG
 
-
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      probes:
+        enabled: true
