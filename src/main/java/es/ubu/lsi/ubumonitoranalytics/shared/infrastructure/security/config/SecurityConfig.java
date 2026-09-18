@@ -40,7 +40,7 @@ public class SecurityConfig {
                     .requestMatchers("/api/**")
                     .authenticated() // Endpoints
                     .anyRequest()
-                    .denyAll())
+                    .permitAll())
         .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .oauth2ResourceServer(
             oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(sessionConverter)))
