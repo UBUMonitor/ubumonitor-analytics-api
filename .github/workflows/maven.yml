@@ -29,6 +29,7 @@ jobs:
           server-id: github
           server-username: GITHUB_ACTOR
           server-password: PACKAGES_READ_TOKEN
+
       - name: Configure Git user
         run: |
           git config user.name "github-actions[bot]"
@@ -39,12 +40,12 @@ jobs:
         run: |
           CURRENT_VERSION=$(mvn -q -DforceStdout help:evaluate -Dexpression=project.version)
           RELEASE_VERSION=${CURRENT_VERSION%-SNAPSHOT}
-      
+
           if [ "$CURRENT_VERSION" == "$RELEASE_VERSION" ]; then
             echo "La versión en main no tiene -SNAPSHOT, no hay nada que release. Abortando."
             exit 1
           fi
-      
+
           mvn -q versions:set -DnewVersion=$RELEASE_VERSION -DgenerateBackupPoms=false
           echo "version=$RELEASE_VERSION" >> "$GITHUB_OUTPUT"
 
@@ -75,13 +76,19 @@ jobs:
           ref: develop
           fetch-depth: 0
 
+      - name: Merge release commit into develop
+        run: |
+          git fetch origin main
+          git merge origin/main --no-edit -X ours -m "chore(release): merge v${{ steps.release_version.outputs.version }} into develop"
+          git push origin develop
+
       - name: Bump develop to next SNAPSHOT
         run: |
           NEXT_VERSION=$(echo ${{ steps.release_version.outputs.version }} | \
             awk -F. -v OFS=. '{ $NF += 1 ; print }')
-      
+
           mvn -q versions:set -DnewVersion=${NEXT_VERSION}-SNAPSHOT -DgenerateBackupPoms=false
-      
+
           git add pom.xml
           git commit -m "chore: prepare next development version (${NEXT_VERSION}-SNAPSHOT)"
           git push origin develop
