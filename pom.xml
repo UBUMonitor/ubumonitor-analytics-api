@@ -15,7 +15,7 @@
 
   <groupId>es.ubu.lsi</groupId>
   <artifactId>ubumonitoranalytics</artifactId>
-  <version>0.0.3-SNAPSHOT</version>
+  <version>0.0.3</version>
   <name>ubumonitor-analytics</name>
 
   <properties>
