@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: write
+  packages: read
 
 jobs:
   release:
@@ -25,7 +26,9 @@ jobs:
           java-version: '25'
           distribution: 'temurin'
           cache: maven
-
+          server-id: github
+          server-username: GITHUB_ACTOR
+          server-password: PACKAGES_READ_TOKEN
       - name: Configure Git user
         run: |
           git config user.name "github-actions[bot]"
@@ -34,19 +37,22 @@ jobs:
       - name: Remove -SNAPSHOT from version
         id: release_version
         run: |
-          CURRENT_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
+          CURRENT_VERSION=$(mvn -q -DforceStdout help:evaluate -Dexpression=project.version)
           RELEASE_VERSION=${CURRENT_VERSION%-SNAPSHOT}
-
+      
           if [ "$CURRENT_VERSION" == "$RELEASE_VERSION" ]; then
             echo "La versión en main no tiene -SNAPSHOT, no hay nada que release. Abortando."
             exit 1
           fi
-
+      
           mvn -q versions:set -DnewVersion=$RELEASE_VERSION -DgenerateBackupPoms=false
           echo "version=$RELEASE_VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Build with Maven
-        run: mvn -B clean package
+        run: mvn -B clean package -X
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          PACKAGES_READ_TOKEN: ${{ secrets.PACKAGES_READ_TOKEN }}
 
       - name: Commit release version and tag
         run: |
@@ -73,9 +79,9 @@ jobs:
         run: |
           NEXT_VERSION=$(echo ${{ steps.release_version.outputs.version }} | \
             awk -F. -v OFS=. '{ $NF += 1 ; print }')
-
+      
           mvn -q versions:set -DnewVersion=${NEXT_VERSION}-SNAPSHOT -DgenerateBackupPoms=false
-
+      
           git add pom.xml
           git commit -m "chore: prepare next development version (${NEXT_VERSION}-SNAPSHOT)"
           git push origin develop
