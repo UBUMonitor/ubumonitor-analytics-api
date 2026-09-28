@@ -1,0 +1,55 @@
+spring:
+  devtools:
+    restart:
+      enabled: true
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+springdoc:
+  api-docs:
+    enabled: true
+    path:  /v3/api-docs
+    version: openapi_3_1
+
+  swagger-ui:
+    path: /swagger-ui.html
+    url: /v3/api-docs
+    tags-sorter: method
+
+jwt:
+  secret: 3f8d9c7a1b2e4f6d8a0c9e1b3d5f7a9c6e2d4b8f0a1c3e5d7f9b2a4c6e8d0f1
+
+logging:
+  level:
+    root: INFO
+    org.zalando.logbook: TRACE
+    org.jooq.tools.LoggerListener: DEBUG
+    org.jooq: DEBUG
+logbook:
+  format:
+    style: http
+
+  filter:
+    enabled: true
+
+  obfuscate:
+    headers:
+      - Authorization
+      - X-Moodle-Token
+      - Cookie
+    parameters:
+      - password
+      - token
+    json-body-fields:
+      - password
+      - token
+  exclude:
+    - /actuator/**
+    - /v3/api-docs/**
+    - /swagger-ui/**
+    - /swagger-ui.html
+
+  write:
+    level: TRACE

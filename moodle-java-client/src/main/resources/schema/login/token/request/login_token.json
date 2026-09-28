@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "LoginTokenRequest",
+  "type": "object",
+  "properties": {
+    "baseurl": {
+      "type": "string",
+      "format": "uri"
+    },
+    "username": {
+      "type": "string"
+    },
+    "password": {
+      "type": "string",
+      "format": "password"
+    },
+    "service": {
+      "type": "string",
+      "default": "moodle_mobile_app"
+    }
+  },
+  "required": ["baseurl", "username", "password"]
+}

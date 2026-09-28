@@ -1,0 +1,21 @@
+get:
+  tags:
+    - Sites
+  summary: Get public site info
+  operationId: getPublicSiteInfo
+  description: Get public site info
+  parameters:
+    - name: host
+      in: query
+      description: The Moodle host
+      required: true
+      schema:
+        type: string
+        format: uri
+  responses:
+    '200':
+      description: Site information
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/sites/public-info/response.yaml#/PublicSiteInfoResponse'

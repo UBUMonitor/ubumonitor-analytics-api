@@ -1,0 +1,56 @@
+AuthTokenRequest:
+  type: object
+  required:
+    - host
+    - token
+    - dbPassword
+  properties:
+    host:
+      type: string
+      format: uri
+      description: Moodle site URL
+      example: https://school.moodledemo.net
+    token:
+      type: string
+      description: Moodle token
+      example: abc123def456ghi789jkl012mno345pqr678stu901vwx234yz567
+    dbPassword:
+      type: string
+      format: password
+      description: Database password encrypted with AES-256. This is used to securely store the database password in the system, ensuring that sensitive information is protected while allowing the application to access the database when needed.
+      example: U2FsdGVkX1+5sQ9v3y
+    cookies:
+      type: array
+      description: Cookies from SSO request, if any.
+      items:
+        type: object
+        required:
+          - name
+          - value
+        properties:
+          name:
+            type: string
+            description: Cookie name.
+          value:
+            type: string
+            description: Cookie value.
+          domain:
+            type: string
+            description: Cookie domain.
+          path:
+            type: string
+            description: Cookie path.
+          secure:
+            type: boolean
+            description: Whether the cookie is only sent over HTTPS.
+          httpOnly:
+            type: boolean
+            description: Whether the cookie is inaccessible to client-side scripts.
+
+      example:
+        - name: MoodleSession
+          value: abc123...
+          domain: moodle.midominio.com
+          path: /
+          secure: true
+          httpOnly: true

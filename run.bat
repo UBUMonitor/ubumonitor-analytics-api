@@ -34,14 +34,14 @@ if errorlevel 1 (
 REM ================================
 REM  BUSCAR JAR AUTOMATICAMENTE
 REM ================================
-for %%f in (target\*.jar) do (
+for %%f in (ubumonitor-analytics\target\*.jar) do (
     set JAR=%%f
     goto :jar_found
 )
 
 :jar_found
 if "%JAR%"=="" (
-    echo ERROR: No se encontro ningun JAR en target\
+    echo ERROR: No se encontro ningun JAR en ubumonitor-analytics\target\
     pause
     exit /b 1
 )

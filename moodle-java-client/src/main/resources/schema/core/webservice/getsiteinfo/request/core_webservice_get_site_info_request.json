@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "GetSiteInfoRequest",
+  "description": "Return some site info / user info / list web service functions",
+  "type": "object",
+  "extends": {
+    "$ref": "../../../../common/moodle_webservice_request.json"
+  },
+  "properties": {
+    "wsfunction": {
+      "type": "string",
+      "default": "core_webservice_get_site_info"
+    },
+    "args": {
+      "type": "object",
+      "title": "GetSiteInfoArgs",
+      "properties": {
+        "serviceshortnames": {
+          "type": "array",
+          "description": " //DEPRECATED PARAMETER - it was a design error in the original implementation. \\\n                    It is ignored now. (parameter kept for backward compatibility)",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

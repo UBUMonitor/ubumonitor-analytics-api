@@ -1,0 +1,80 @@
+SiteInfoResponse:
+  type: object
+  required:
+    - site
+    - user
+  properties:
+    site:
+      $ref: '#/SiteInfo'
+    user:
+      $ref: '#/UserInfo'
+
+SiteInfo:
+  title: Site Information
+  type: object
+  description: Basic information about the Moodle site.
+  required:
+    - siteName
+    - siteVersion
+    - siteUrl
+    - typeOfLogin
+  properties:
+    siteName:
+      type: string
+      description: The name of the Moodle site.
+    siteVersion:
+      type: string
+      description: The version of the Moodle site.
+    siteUrl:
+      type: string
+      format: uri
+      description: The URL of the Moodle site.
+    typeOfLogin:
+      type: string
+      description: The type of login method used by the Moodle site.
+      enum:
+        - APP
+        - BROWSER
+        - EMBEDDED
+    launchUrl:
+      type: string
+      format: uri
+      description: The SSO login launch URL for the Moodle site, if applicable.
+    enableMobileWebService:
+      type: boolean
+      description: Indicates if the mobile web service is enabled for the Moodle site.
+    enableWebServices:
+      type: boolean
+      description: Indicates if web services are enabled for the Moodle site.
+    maintenanceEnabled:
+      type: boolean
+      description: Indicates if maintenance mode is enabled for the Moodle site.
+    maintenanceMessage:
+      type: string
+      description: The maintenance message for the Moodle site, if applicable.
+UserInfo:
+  title: User Information
+  type: object
+  description: Information about the authenticated user.
+  required:
+    - id
+    - username
+    - fullName
+    - firstName
+    - lastName
+  properties:
+    id:
+      type: integer
+      description: The unique identifier of the user.
+    username:
+      type: string
+      description: The username of the user.
+    fullName:
+      type: string
+      description: The full name of the user.
+    firstName:
+      type: string
+      description: The first name of the user.
+    lastName:
+      type: string
+      description: The last name of the user.

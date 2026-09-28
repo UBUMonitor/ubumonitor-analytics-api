@@ -1,0 +1,91 @@
+CourseLogsMetricsResponse:
+  type: object
+  properties:
+    rows:
+      type: array
+      items:
+        title: CourseLogsMetricsResponseRow
+        type: object
+        required:
+          - value
+        properties:
+          timeBucket:
+            type: string
+            format: none
+            example: "2026-05-01"
+            
+          user:
+            type: object
+            required:
+              - id
+              - fullName
+            properties:
+              id:
+                type: integer
+                example: 4521
+              fullName:
+                type: string
+                example: María González
+
+          module:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 874
+              name:
+                type: string
+                example: Foro de dudas generales
+
+          component:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 2
+              name:
+                type: string
+                example: forum
+
+          event:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 15
+              name:
+                type: string
+                example: discussion_created
+
+          origin:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              name:
+                type: string
+                example: web
+
+          ipAddress:
+            type: string
+            format: ipv4
+            example: 192.168.1.150
+
+          courseId:
+            type: integer
+            example: 105
+          sectionId:
+            type: integer
+            example: 3
+
+          sectionName:
+            type: string
+            example: "Unidad 1: Introducción"
+
+          value:
+            type: integer
+            example: 42
+
+  required:
+    - rows
