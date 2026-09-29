@@ -1,14 +1,5 @@
 package es.ubu.lsi.moodle.integration;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
-import static com.github.tomakehurst.wiremock.client.WireMock.request;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -18,6 +9,9 @@ import es.ubu.lsi.moodle.core.DefaultClient;
 import es.ubu.lsi.moodle.http.JavaHttpTransport;
 import es.ubu.lsi.moodle.json.JacksonMapper;
 import es.ubu.lsi.moodle.model.login.token.request.LoginTokenRequestApi;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
+
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -25,9 +19,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
-import org.junit.jupiter.api.DynamicTest;
-import org.junit.jupiter.api.TestFactory;
+
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 class MoodleClientIntegrationTest {
 
@@ -35,7 +31,7 @@ class MoodleClientIntegrationTest {
 
   @TestFactory
   Stream<DynamicTest> runFixtureTests() throws Exception {
-    Path fixtureDirectory = Path.of(getClass().getClassLoader().getResource("integration").toURI());
+    Path fixtureDirectory = Path.of(Objects.requireNonNull(getClass().getClassLoader().getResource("integration")).toURI());
     List<Path> fixtures;
     try (Stream<Path> paths = Files.walk(fixtureDirectory)) {
       fixtures =
@@ -64,7 +60,7 @@ class MoodleClientIntegrationTest {
           .path("moodleMocks")
           .forEach(mock -> configureMock(wireMock, mock, wireMock.baseUrl()));
 
-      ObjectNode loginRequestJson = ((ObjectNode) auth.path("body")).deepCopy();
+      ObjectNode loginRequestJson = auth.path("body").deepCopy();
       loginRequestJson.put("baseurl", wireMock.baseUrl());
       LoginTokenRequestApi loginRequest =
           OBJECT_MAPPER.treeToValue(loginRequestJson, LoginTokenRequestApi.class);
@@ -116,7 +112,7 @@ class MoodleClientIntegrationTest {
             requestDefinition.path("method").asText("POST"),
             urlEqualTo(requestDefinition.path("path").asText()));
     JsonNode body = requestDefinition.path("body");
-    assertTrue(!body.isMissingNode(), "Every Moodle mock request must define a body");
+    assertFalse(body.isMissingNode(), "Every Moodle mock request must define a body");
     mapping.withRequestBody(
         body.isTextual()
             ? equalTo(

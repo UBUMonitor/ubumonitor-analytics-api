@@ -1,14 +1,5 @@
 package es.ubu.lsi.ubumonitoranalytics.integration;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.containing;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
-import static com.github.tomakehurst.wiremock.client.WireMock.request;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -17,13 +8,6 @@ import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.Sessio
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.JooqProvider;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.moodle.config.MoodleConfig;
-import java.io.IOException;
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.UUID;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,16 +16,23 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
+
+import java.io.IOException;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.UUID;
+import java.util.stream.Stream;
+
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class MoodleAnalyticsIntegrationTest {
@@ -153,7 +144,7 @@ class MoodleAnalyticsIntegrationTest {
       }
       testCase.path("moodleMocks").forEach(mock -> configureMock(wireMock, mock));
       JsonNode authRequest = authDefinition.path("request");
-      ObjectNode authBody = ((ObjectNode) authRequest.path("body")).deepCopy();
+      ObjectNode authBody =  authRequest.path("body").deepCopy();
       authBody.put("host", wireMock.baseUrl());
       ResponseEntity<String> authResponse =
           exchange(
@@ -166,9 +157,9 @@ class MoodleAnalyticsIntegrationTest {
           authDefinition.path("expectedResponse").path("status").asInt(200),
           authResponse.getStatusCode().value());
       accessToken = OBJECT_MAPPER.readTree(authResponse.getBody()).path("accessToken").asText();
-      assertTrue(!accessToken.isBlank(), "Auth response must include an access token");
+      assertFalse(accessToken.isBlank(), "Auth response must include an access token");
       ObjectNode expectedAuthBody =
-          ((ObjectNode) authDefinition.path("expectedResponse").path("body")).deepCopy();
+           authDefinition.path("expectedResponse").path("body").deepCopy();
       expectedAuthBody.put("accessToken", accessToken);
       assertEquals(expectedAuthBody, OBJECT_MAPPER.readTree(authResponse.getBody()));
       applyDatabaseSetup(databaseSetup, wireMock.baseUrl(), authBody);
@@ -232,9 +223,9 @@ class MoodleAnalyticsIntegrationTest {
     if (!expectedBody.isMissingNode()) {
       JsonNode actualBody = OBJECT_MAPPER.readTree(response.getBody());
       if (expectedBody.isObject() && "${JWT}".equals(expectedBody.path("accessToken").asText())) {
-        ObjectNode resolvedExpectedBody = ((ObjectNode) expectedBody).deepCopy();
+        ObjectNode resolvedExpectedBody = expectedBody.deepCopy();
         String actualToken = actualBody.path("accessToken").asText();
-        assertTrue(!actualToken.isBlank(), "Response must include an access token");
+        assertFalse(actualToken.isBlank(), "Response must include an access token");
         resolvedExpectedBody.put("accessToken", actualToken);
         expectedBody = resolvedExpectedBody;
       }
@@ -247,8 +238,8 @@ class MoodleAnalyticsIntegrationTest {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
     requestHeaders
-        .fields()
-        .forEachRemaining(
+        .properties()
+        .forEach(
             header -> {
               String value = header.getValue().asText();
               if (jwtToken != null) {
@@ -269,7 +260,7 @@ class MoodleAnalyticsIntegrationTest {
     }
     return request
         .retrieve()
-        .onStatus(status -> status.isError(), (httpRequest, clientResponse) -> {})
+        .onStatus(HttpStatusCode::isError, (_, _) -> {})
         .toEntity(String.class);
   }
 
@@ -308,14 +299,14 @@ class MoodleAnalyticsIntegrationTest {
         .headers(requestHeaders -> requestHeaders.addAll(headers))
         .body(parts)
         .retrieve()
-        .onStatus(status -> status.isError(), (httpRequest, clientResponse) -> {})
+        .onStatus(HttpStatusCode::isError, (_, _) -> {})
         .toEntity(String.class);
   }
 
   private void applyHeaders(HttpHeaders headers, JsonNode requestHeaders, String jwtToken) {
     requestHeaders
-        .fields()
-        .forEachRemaining(
+        .properties()
+        .forEach(
             header -> {
               String value = header.getValue().asText();
               if (jwtToken != null) {
