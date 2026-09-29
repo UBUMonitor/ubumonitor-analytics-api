@@ -1,18 +1,16 @@
 package es.ubu.lsi.ubumonitoranalytics.features.courselogs.infrastructure.in.rest;
 
 import es.ubu.lsi.ubumonitoranalytics.api.generated.api.CourseLogsApiDelegate;
-import es.ubu.lsi.ubumonitoranalytics.api.generated.model.CourseLogsInfoRequestDto;
-import es.ubu.lsi.ubumonitoranalytics.api.generated.model.CourseLogsInfoResponseDto;
-import es.ubu.lsi.ubumonitoranalytics.api.generated.model.CourseLogsMetricsRequestDto;
-import es.ubu.lsi.ubumonitoranalytics.api.generated.model.CourseLogsMetricsResponseDto;
-import es.ubu.lsi.ubumonitoranalytics.api.generated.model.CourseLogsResponseDto;
+import es.ubu.lsi.ubumonitoranalytics.api.generated.model.*;
 import es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.port.in.FetchCourseLogsUseCase;
 import es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.port.in.ImportCourseLogsUseCase;
 import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.importlogs.ProcessLogsResult;
-import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.info.CourseLogsInfoRequest;
-import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.info.FetchCourseLogsResult;
+import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.info.CourseLogsInfoResult;
+import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.list.CourseLogsInfoRequest;
+import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.list.FetchCourseLogsResult;
 import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.metrics.CourseLogsMetricsRequest;
 import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.metrics.CourseLogsMetricsResult;
+import es.ubu.lsi.ubumonitoranalytics.features.courselogs.infrastructure.in.rest.mapper.ColumnInfoMapper;
 import es.ubu.lsi.ubumonitoranalytics.features.courselogs.infrastructure.in.rest.mapper.GetCourseLogsMapper;
 import es.ubu.lsi.ubumonitoranalytics.features.courselogs.infrastructure.in.rest.mapper.GetCourseLogsMetricsMapper;
 import es.ubu.lsi.ubumonitoranalytics.features.courselogs.infrastructure.in.rest.mapper.ImportLogsMapper;
@@ -31,37 +29,53 @@ public class CourseLogsApiDelegateImpl implements CourseLogsApiDelegate {
   private final ImportLogsMapper importLogsMapper;
   private final GetCourseLogsMapper getCourseLogsMapper;
   private final GetCourseLogsMetricsMapper getCourseLogsMetricsMapper;
+  private final ColumnInfoMapper columnInfoMapper;
 
   @Override
   public ResponseEntity<CourseLogsResponseDto> syncCourseLogs(Integer courseId) {
+
     ProcessLogsResult processLogsResult = importCourseLogsUseCase.sync(courseId);
+
     return ResponseEntity.ok(importLogsMapper.toDto(processLogsResult));
   }
 
   @Override
   public ResponseEntity<CourseLogsResponseDto> importCourseLogs(
       Integer courseId, MultipartFile file) {
+
     ProcessLogsResult processLogsResult = importCourseLogsUseCase.process(courseId, file);
+
     return ResponseEntity.ok(importLogsMapper.toDto(processLogsResult));
   }
 
   @Override
-  public ResponseEntity<CourseLogsInfoResponseDto> getCourseLogs(
-      Integer courseId, CourseLogsInfoRequestDto courseLogsInfoRequestDto) {
+  public ResponseEntity<CourseLogsInfoResponseDto> getCourseInfoLogs(Integer courseId) {
+    CourseLogsInfoResult courseLogsInfoResult = fetchCourseLogsUseCase.getCourseLogsInfo(courseId);
+    return ResponseEntity.ok(columnInfoMapper.toDto(courseLogsInfoResult));
+  }
+
+  @Override
+  public ResponseEntity<CourseLogsListResponseDto> getCourseListLogs(
+      Integer courseId, CourseLogsListRequestDto courseLogsListRequestDto) {
     CourseLogsInfoRequest courseLogsInfoRequest =
-        getCourseLogsMapper.toDomain(courseId, courseLogsInfoRequestDto);
+        getCourseLogsMapper.toDomain(courseId, courseLogsListRequestDto);
+
     FetchCourseLogsResult fetchCourseLogsResult =
         fetchCourseLogsUseCase.getCourseLogs(courseLogsInfoRequest);
+
     return ResponseEntity.ok(getCourseLogsMapper.toDto(fetchCourseLogsResult));
   }
 
   @Override
   public ResponseEntity<CourseLogsMetricsResponseDto> getCourseLogsMetrics(
       Integer courseId, CourseLogsMetricsRequestDto courseLogsMetricsRequestDto) {
+
     CourseLogsMetricsRequest courseLogsMetricsRequest =
         getCourseLogsMetricsMapper.toDomain(courseId, courseLogsMetricsRequestDto);
+
     CourseLogsMetricsResult result =
         fetchCourseLogsUseCase.getCourseLogsMetrics(courseLogsMetricsRequest);
+
     return ResponseEntity.ok(getCourseLogsMetricsMapper.toDto(result));
   }
 }

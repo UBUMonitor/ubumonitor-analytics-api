@@ -1,0 +1,79 @@
+{
+  "auth": {
+    "request": {
+      "method": "POST",
+      "path": "/login/token.php",
+      "body": {
+        "baseurl": "${MOODLE_HOST}",
+      "username": "teacher",
+      "password": "wiremock-password",
+      "service": "moodle_mobile_app"
+      }
+    },
+    "expectedResponse": {
+      "status": 200,
+      "body": {
+        "token": "wiremock-token"
+      }
+    }
+  },
+  "moodleMocks": [
+    {
+      "request": {
+        "method": "POST",
+        "path": "/login/token.php",
+        "body": "baseurl=${MOODLE_HOST}&username=teacher&password=wiremock-password&service=moodle_mobile_app"
+      },
+      "response": {
+        "body": {
+          "token": "wiremock-token"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "path": "/webservice/rest/server.php",
+        "body": "wsfunction=core_webservice_get_site_info&moodlewsrestformat=json&wstoken=wiremock-token"
+      },
+      "response": {
+        "body": {
+          "sitename": "Mount Orange",
+          "username": "teacher",
+          "firstname": "Jeffrey",
+          "lastname": "Sanders",
+          "fullname": "Jeffrey Sanders",
+          "lang": "en",
+          "userid": 13,
+          "siteurl": "https://school.moodledemo.net",
+          "userpictureurl": "https://school.moodledemo.net/pluginfile.php/160/user/icon/boost/f1?rev=75854",
+          "functions": [],
+          "advancedfeatures": []
+        }
+      }
+    }
+  ],
+  "request": {
+    "method": "CLIENT",
+    "path": "coreWebservice.getSiteInfo",
+    "body": {
+      "args": {}
+    }
+  },
+  "expectedResponse": {
+    "status": 200,
+    "body": {
+      "sitename": "Mount Orange",
+      "username": "teacher",
+      "firstname": "Jeffrey",
+      "lastname": "Sanders",
+      "fullname": "Jeffrey Sanders",
+      "lang": "en",
+      "userid": 13,
+      "siteurl": "https://school.moodledemo.net",
+      "userpictureurl": "https://school.moodledemo.net/pluginfile.php/160/user/icon/boost/f1?rev=75854",
+      "functions": [],
+      "advancedfeatures": []
+    }
+  }
+}

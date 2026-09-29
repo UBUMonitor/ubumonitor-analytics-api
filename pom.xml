@@ -4,46 +4,62 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
          https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-  <groupId>es.ubu.lsi</groupId>
-  <artifactId>ubumonitor-parent</artifactId>
-  <version>0.0.4-SNAPSHOT</version>
-  <packaging>pom</packaging>
+    <groupId>es.ubu.lsi</groupId>
+    <artifactId>ubumonitor-parent</artifactId>
+    <version>0.0.4-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
-  <name>ubumonitor</name>
+    <name>ubumonitor</name>
 
-  <modules>
-    <module>ubumonitor-analytics</module>
-    <module>moodle-java-client</module>
-  </modules>
+    <modules>
+        <module>ubumonitor-analytics</module>
+        <module>moodle-java-client</module>
+    </modules>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>com.diffplug.spotless</groupId>
-        <artifactId>spotless-maven-plugin</artifactId>
-        <version>3.10.3</version>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <version>3.10.3</version>
 
-        <configuration>
-          <java>
-            <removeUnusedImports/>
-            <googleJavaFormat/>
-          </java>
-        </configuration>
+                <configuration>
+                    <java>
+                        <removeUnusedImports/>
+                        <googleJavaFormat/>
+                    </java>
+                    <formats>
+                        <format>
+                            <includes>
+                                <include>**/*.json</include>
+                                <include>**/*.xml</include>
+                            </includes>
+                            <excludes>
+                                <exclude>**/target/**</exclude>
+                            </excludes>
 
-        <executions>
-          <execution>
-            <id>spotless-apply</id>
-            <phase>process-sources</phase>
-            <goals>
-              <goal>apply</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
+
+                            <indent>
+                                <spaces>true</spaces>
+                                <spacesPerTab>2</spacesPerTab>
+                            </indent>
+                        </format>
+                    </formats>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <id>spotless-apply</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>apply</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
-

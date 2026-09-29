@@ -1,10 +1,13 @@
 package es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.service;
 
 import es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.port.in.ImportCourseLogsUseCase;
+import es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.port.out.CourseLogsInfoPort;
 import es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.port.out.LogPersistencePort;
 import es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.port.out.MoodlePort;
+import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.importlogs.LogImportStats;
 import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.importlogs.ProcessLogLine;
 import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.importlogs.ProcessLogsResult;
+import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.info.CourseLogsInfoResult;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
 import java.io.BufferedReader;
@@ -40,6 +43,7 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
 
   private final LogParserService logParserService;
   private final LogPersistencePort logPersistencePort;
+  private final CourseLogsInfoPort courseLogsInfoPort;
   private final MoodlePort moodlePort;
   private final CurrentSessionContext currentSessionContext;
 
@@ -116,8 +120,9 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
     }
 
     flushBatch(batch, saved, failed);
-
-    return new ProcessLogsResult(saved.get(), ignored.get(), failed.get());
+    CourseLogsInfoResult courseLogsInfoResult = courseLogsInfoPort.getCourseLogsInfo(courseId);
+    LogImportStats logImportStats = new LogImportStats(saved.get(), ignored.get(), failed.get());
+    return new ProcessLogsResult(logImportStats, courseLogsInfoResult);
   }
 
   // =========================
@@ -164,8 +169,9 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
     }
 
     flushBatch(batch, saved, failed);
-
-    return new ProcessLogsResult(saved.get(), ignored.get(), failed.get());
+    CourseLogsInfoResult courseLogsInfoResult = courseLogsInfoPort.getCourseLogsInfo(courseId);
+    LogImportStats logImportStats = new LogImportStats(saved.get(), ignored.get(), failed.get());
+    return new ProcessLogsResult(logImportStats, courseLogsInfoResult);
   }
 
   // =========================

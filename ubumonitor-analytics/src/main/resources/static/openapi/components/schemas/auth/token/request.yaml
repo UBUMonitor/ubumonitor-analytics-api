@@ -17,8 +17,8 @@ AuthTokenRequest:
     dbPassword:
       type: string
       format: password
-      description: Database password encrypted with AES-256. This is used to securely store the database password in the system, ensuring that sensitive information is protected while allowing the application to access the database when needed.
-      example: U2FsdGVkX1+5sQ9v3y
+      description: Secret key used to encrypt the database using AES-256. This value must be kept securely and must not be stored or exposed in plain text.
+      example: my-secure-encryption-key
     cookies:
       type: array
       description: Cookies from SSO request, if any.

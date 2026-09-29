@@ -1,7 +1,7 @@
 post:
   tags:
     - CourseLogs
-  operationId: GetCourseLogs
+  operationId: GetCourseInfoLogs
   summary: Get course logs with filters
   description: |
     Retrieves logs for a specific course with optional filtering by date range
@@ -14,14 +14,6 @@ post:
       schema:
         type: integer
       description: Course identifier
-
-
-  requestBody:
-    required: true
-    content:
-      application/json:
-        schema:
-          $ref: '../../../components/schemas/courses/courselogs/info/request.yaml#/CourseLogsInfoRequest'
   responses:
     "200":
       description: Logs retrieved successfully

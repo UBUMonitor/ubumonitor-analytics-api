@@ -6,12 +6,11 @@ import es.ubu.lsi.ubumonitoranalytics.features.auth.application.port.out.Session
 import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.JwtToken;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.auth.AuthInput;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.exception.UnauthorizedException;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
-
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
 
 @Service
 @RequiredArgsConstructor
@@ -73,6 +72,4 @@ public class AuthService implements AuthUseCase {
 
     return loginByToken(authInput);
   }
-
-
 }

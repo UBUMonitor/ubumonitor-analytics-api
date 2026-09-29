@@ -1,0 +1,53 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/public/sites/info?host=${MOODLE_HOST}"
+  },
+  "moodleMocks": [
+    {
+      "request": {
+        "method": "POST",
+        "path": "/lib/ajax/service.php",
+        "body": [
+          {
+            "methodname": "tool_mobile_get_public_config",
+            "args": {}
+          }
+        ]
+      },
+      "response": {
+        "body": [
+          {
+            "error": false,
+            "data": {
+              "wwwroot": "https://school.moodledemo.net",
+              "httpswwwroot": "https://school.moodledemo.net",
+              "sitename": "Mount Orange",
+              "enablewebservices": 1,
+              "enablemobilewebservice": 1,
+              "maintenanceenabled": 0,
+              "maintenancemessage": "",
+              "typeoflogin": 1,
+              "launchurl": "https://school.moodledemo.net/admin/tool/mobile/launch.php"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "expectedResponse": {
+    "status": 200,
+    "body": {
+      "site": {
+        "siteName": "Mount Orange",
+        "siteUrl": "https://school.moodledemo.net",
+        "typeOfLogin": "APP",
+        "launchUrl": "https://school.moodledemo.net/admin/tool/mobile/launch.php?service=moodle_mobile_app&urlscheme=moodlemobile&passport=1",
+        "enableMobileWebService": true,
+        "enableWebServices": true,
+        "maintenanceEnabled": false,
+        "maintenanceMessage": ""
+      }
+    }
+  }
+}

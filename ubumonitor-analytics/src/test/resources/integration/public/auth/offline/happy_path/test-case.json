@@ -1,0 +1,15 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/public/auth/offline",
+    "body": {
+      "host": "${MOODLE_HOST}",
+      "username": "teacher",
+      "dbPassword": "analytics-test-password"
+    }
+  },
+  "expectedResponse": {
+    "status": 200,
+    "body": {"tokenType": "Bearer", "accessToken": "${JWT}"}
+  }
+}

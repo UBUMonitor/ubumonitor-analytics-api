@@ -45,7 +45,9 @@ public class AuthApiDelegateImpl implements AuthApiDelegate {
   public ResponseEntity<AuthResponseDto> authSSO(AuthSSORequestDto authSSORequestDto) {
     AuthInput authInput = authMapper.toDomain(authSSORequestDto);
     if (authInput.getMoodleToken() == null) {
-      throw new UnauthorizedException("Cannot extract Moodle token from SSO token: "  + authSSORequestDto.getMoodleLaunchCredential());
+      throw new UnauthorizedException(
+          "Cannot extract Moodle token from SSO token: "
+              + authSSORequestDto.getMoodleLaunchCredential());
     }
     JwtToken jwtToken = authUseCase.loginBySSO(authInput);
     return ResponseEntity.ok(authMapper.toAuthResponse(jwtToken));

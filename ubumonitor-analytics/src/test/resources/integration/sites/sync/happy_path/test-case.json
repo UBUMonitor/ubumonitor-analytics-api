@@ -1,0 +1,191 @@
+{
+  "auth": {
+    "request": {
+      "method": "POST",
+      "path": "/api/public/auth/token",
+      "body": {
+        "host": "${MOODLE_HOST}",
+        "token": "wiremock-moodle-token",
+        "dbPassword": "analytics-test-password"
+      }
+    },
+    "expectedResponse": {
+      "status": 200,
+      "body": {
+        "tokenType": "Bearer",
+        "accessToken": "${JWT}"
+      }
+    }
+  },
+  "moodleMocks": [
+    {
+      "request": {
+        "method": "POST",
+        "path": "/webservice/rest/server.php",
+        "body": "wsfunction=core_webservice_get_site_info&moodlewsrestformat=json&wstoken=wiremock-moodle-token"
+      },
+      "response": {
+        "body": {
+          "sitename": "Mount Orange",
+          "username": "teacher",
+          "firstname": "Jeffrey",
+          "lastname": "Sanders",
+          "fullname": "Jeffrey Sanders",
+          "lang": "en",
+          "userid": 13,
+          "userpictureurl": "https://school.moodledemo.net/pluginfile.php/160/user/icon/boost/f1?rev=75854",
+          "functions": [],
+          "downloadfiles": 1,
+          "uploadfiles": 1,
+          "release": "5.2 (Build: 20260420)",
+          "version": "2026042000",
+          "mobilecssurl": "",
+          "advancedfeatures": [
+            {
+              "name": "usecomments",
+              "value": 1
+            },
+            {
+              "name": "usetags",
+              "value": 1
+            },
+            {
+              "name": "enablenotes",
+              "value": 1
+            },
+            {
+              "name": "messaging",
+              "value": 1
+            },
+            {
+              "name": "enableblogs",
+              "value": 1
+            },
+            {
+              "name": "enablecompletion",
+              "value": 1
+            },
+            {
+              "name": "enablebadges",
+              "value": 1
+            },
+            {
+              "name": "messagingallusers",
+              "value": 0
+            },
+            {
+              "name": "enablecustomreports",
+              "value": 1
+            },
+            {
+              "name": "enableglobalsearch",
+              "value": 1
+            },
+            {
+              "name": "mnet_dispatcher_mode",
+              "value": 0
+            },
+            {
+              "name": "enablecompetencies",
+              "value": 1
+            }
+          ],
+          "usercanmanageownfiles": true,
+          "userquota": 104857600,
+          "usermaxuploadfilesize": 268435456,
+          "userhomepage": 1,
+          "userhomepageurl": null,
+          "siteid": 1,
+          "siteurl": "https://school.moodledemo.net",
+          "sitecalendartype": "gregorian",
+          "usercalendartype": "gregorian",
+          "userissiteadmin": false,
+          "theme": "boost",
+          "limitconcurrentlogins": 0,
+          "usersessionscount": null,
+          "policyagreed": 1
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "path": "/webservice/rest/server.php",
+        "body": "wsfunction=tool_mobile_get_public_config&moodlewsrestformat=json&wstoken=wiremock-moodle-token"
+      },
+      "response": {
+        "body": {
+          "wwwroot": "https://school.moodledemo.net",
+          "httpswwwroot": "https://school.moodledemo.net",
+          "sitename": "Mount Orange",
+          "guestlogin": 1,
+          "rememberusername": 2,
+          "authloginviaemail": 1,
+          "registerauth": "",
+          "forgottenpasswordurl": "",
+          "authnoneenabled": 0,
+          "enablewebservices": 1,
+          "enablemobilewebservice": 1,
+          "maintenanceenabled": 0,
+          "maintenancemessage": "",
+          "logourl": null,
+          "compactlogourl": "https://school.moodledemo.net/pluginfile.php/1/core_admin/logocompact/300x300/1790712137/mlonotrans.png",
+          "typeoflogin": 1,
+          "launchurl": "https://school.moodledemo.net/admin/tool/mobile/launch.php",
+          "mobilecssurl": "",
+          "tool_mobile_disabledfeatures": "",
+          "identityproviders": null,
+          "country": "0",
+          "agedigitalconsentverification": true,
+          "supportname": "Admin User",
+          "supportemail": "changeme@example.com",
+          "supportpage": "",
+          "supportavailability": 1,
+          "autolang": 1,
+          "lang": "en",
+          "langmenu": 1,
+          "langlist": "",
+          "locale": "",
+          "tool_mobile_minimumversion": "",
+          "tool_mobile_iosappid": "633359593",
+          "tool_mobile_androidappid": "com.moodle.moodlemobile",
+          "tool_mobile_setuplink": "https://download.moodle.org/mobile",
+          "tool_mobile_qrcodetype": 2,
+          "warnings": [],
+          "showloginform": 1
+        }
+      }
+    }
+  ],
+  "request": {
+    "method": "POST",
+    "path": "/api/sites/sync",
+    "body": null,
+    "headers": {
+      "Authorization": "Bearer ${JWT}"
+    }
+  },
+  "expectedResponse": {
+    "status": 200,
+    "body": {
+      "site": {
+        "siteName": "Mount Orange",
+        "siteVersion": "2026042000",
+        "siteUrl": "https://school.moodledemo.net",
+        "typeOfLogin": "APP",
+        "launchUrl": "https://school.moodledemo.net/admin/tool/mobile/launch.php?service=moodle_mobile_app&urlscheme=moodlemobile&passport=1",
+        "enableMobileWebService": true,
+        "enableWebServices": true,
+        "maintenanceEnabled": false,
+        "maintenanceMessage": ""
+      },
+      "user": {
+        "id": 13,
+        "username": "teacher",
+        "fullName": "Jeffrey Sanders",
+        "firstName": "Jeffrey",
+        "lastName": "Sanders"
+      }
+    }
+  }
+}

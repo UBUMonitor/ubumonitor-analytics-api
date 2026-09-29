@@ -131,10 +131,10 @@ paths:
   /courses/{courseId}/logs/import:
     $ref: './paths/courses/courselogs/import.yaml'
 
-
   /courses/{courseId}/logs/info:
     $ref: './paths/courses/courselogs/info.yaml'
+  /courses/{courseId}/logs/list:
+    $ref: './paths/courses/courselogs/list.yaml'
   /courses/{courseId}/logs/metrics:
     $ref: './paths/courses/courselogs/metrics.yaml'
-
 

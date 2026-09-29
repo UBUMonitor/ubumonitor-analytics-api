@@ -9,7 +9,7 @@ import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Sections.SECTIONS;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Users.USERS;
 
 import es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.port.out.FetchLogPersistencePort;
-import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.info.*;
+import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.list.*;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
 import java.util.*;
 import lombok.RequiredArgsConstructor;

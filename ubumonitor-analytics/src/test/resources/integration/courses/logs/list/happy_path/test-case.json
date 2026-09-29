@@ -1,0 +1,74 @@
+﻿{
+    "databaseSetup":  [
+                          "INSERT INTO USERS (ID, FULL_NAME, FIRST_NAME, LAST_NAME, EMAIL) VALUES (13, \u0027Jeffrey Sanders\u0027, \u0027Jeffrey\u0027, \u0027Sanders\u0027, \u0027jeffrey@example.com\u0027)",
+                          "INSERT INTO COURSES (ID, FULL_NAME, SHORT_NAME) VALUES (2, \u0027Algebra\u0027, \u0027ALG2\u0027)",
+                          "INSERT INTO SECTIONS (ID, COURSE_ID, NAME, POSITION, VISIBLE, ACTIVE) VALUES (3, 2, \u0027General\u0027, 0, TRUE, TRUE)",
+                          "INSERT INTO MODULES (ID, SECTION_ID, NAME, MOD_NAME, POSITION, VISIBLE, ACTIVE) VALUES (7, 3, \u0027Course page\u0027, \u0027page\u0027, 1, TRUE, TRUE)",
+                          "INSERT INTO LOGS (TIMESTAMP, USER_ID, COURSE_ID, COMPONENT_ID, EVENT_ID, MODULE_ID, ORIGIN_ID, IP_ADDRESS) VALUES (TIMESTAMP \u00272026-01-01 12:00:00\u0027, 13, 2, 2, 2, 7, 1, \u0027192.0.2.13\u0027)"
+                      ],
+    "request":  {
+                    "method":  "POST",
+                    "path":  "/api/courses/2/logs/list",
+                    "headers":  {
+                                    "Authorization":  "******"
+                                },
+                    "body":  {
+                                 "fields":  [
+                                                "ID",
+                                                "TIMESTAMP",
+                                                "COURSE_ID",
+                                                "USER_ID",
+                                                "MODULE_ID",
+                                                "COMPONENT_ID",
+                                                "EVENT_ID",
+                                                "ORIGIN_ID",
+                                                "IP_ADDRESS",
+                                                "USER_FULL_NAME",
+                                                "MODULE_NAME",
+                                                "COMPONENT_NAME",
+                                                "EVENT_NAME",
+                                                "ORIGIN_NAME",
+                                                "SECTION_ID",
+                                                "SECTION_NAME"
+                                            ],
+                                 "pagination":  {
+                                                    "page":  0,
+                                                    "size":  10
+                                                },
+                                 "includeTotal":  true
+                             }
+                },
+    "expectedResponse":  {
+                             "status":  200,
+                             "body":  {
+                                          "page":  {
+                                                       "page":  0,
+                                                       "size":  1,
+                                                       "totalElements":  1,
+                                                       "totalPages":  1,
+                                                       "first":  true,
+                                                       "last":  true,
+                                                       "empty":  false
+                                                   },
+                                          "content":  [
+                                                          {
+                                                              "id":  1,
+                                                              "timeCreated":  "2026-01-01T12:00",
+                                                              "courseId":  2,
+                                                              "userId":  13,
+                                                              "userFullName":  "Jeffrey Sanders",
+                                                              "moduleId":  7,
+                                                              "moduleName":  "Course page",
+                                                              "component":  "Assignment",
+                                                              "componentId":  2,
+                                                              "eventName":  "A submission has been submitted.",
+                                                              "eventId":  2,
+                                                              "originName":  "web",
+                                                              "originId":  1,
+                                                              "ip":  "192.0.2.13"
+                                                          }
+                                                      ]
+                                      }
+                         },
+    "authFixture":  "classpath:/integration/shared/teacher-token-auth.json"
+}

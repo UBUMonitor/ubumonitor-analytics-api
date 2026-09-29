@@ -1,0 +1,55 @@
+{
+    "databaseSetup":  [
+
+                      ],
+    "moodleMocks":  [
+                        {
+                            "request":  {
+                                            "method":  "POST",
+                                            "path":  "/webservice/rest/server.php",
+                                            "body":  "wsfunction=tool_mobile_get_public_config\u0026moodlewsrestformat=json\u0026wstoken=wiremock-moodle-token"
+                                        },
+                            "response":  {
+                                             "body":  {
+                                                          "wwwroot":  "https://school.moodledemo.net",
+                                                          "httpswwwroot":  "https://school.moodledemo.net",
+                                                          "sitename":  "Mount Orange",
+                                                          "enablewebservices":  1,
+                                                          "enablemobilewebservice":  1,
+                                                          "maintenanceenabled":  0,
+                                                          "maintenancemessage":  "",
+                                                          "typeoflogin":  1,
+                                                          "launchurl":  "https://school.moodledemo.net/admin/tool/mobile/launch.php"
+                                                      }
+                                         }
+                        },
+                        {
+                            "request":  {
+                                            "method":  "POST",
+                                            "path":  "/webservice/rest/server.php",
+                                            "body":  "wsfunction=core_enrol_get_users_courses\u0026userid=13\u0026returnusercount=0\u0026moodlewsrestformat=json\u0026wstoken=wiremock-moodle-token"
+                                        },
+                            "response":  {
+                                             "body":  [
+
+                                                      ]
+                                         }
+                        }
+                    ],
+    "request":  {
+                    "method":  "POST",
+                    "path":  "/api/enrollments/sync",
+                    "headers":  {
+                                    "Authorization":  "******"
+                                }
+                },
+    "expectedResponse":  {
+                             "status":  200,
+                             "body":  {
+                                          "courses":  [
+
+                                                      ]
+                                      }
+                         },
+    "authFixture":  "classpath:/integration/shared/teacher-token-auth.json"
+}

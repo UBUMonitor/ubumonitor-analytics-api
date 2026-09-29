@@ -4,13 +4,12 @@ import es.ubu.lsi.ubumonitoranalytics.api.generated.model.*;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.JwtToken;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.auth.AuthInput;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.GlobalMapperConfig;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
-
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 @Mapper(config = GlobalMapperConfig.class)
 public interface AuthMapper {
@@ -45,7 +44,10 @@ public interface AuthMapper {
 
   @Mapping(target = "username", ignore = true)
   @Mapping(target = "password", ignore = true)
-  @Mapping(target = "moodleToken", source = "moodleLaunchCredential", qualifiedByName = "extractMoodleToken")
+  @Mapping(
+      target = "moodleToken",
+      source = "moodleLaunchCredential",
+      qualifiedByName = "extractMoodleToken")
   AuthInput toDomain(AuthSSORequestDto authSSORequestDto);
 
   @Named("extractMoodleToken")

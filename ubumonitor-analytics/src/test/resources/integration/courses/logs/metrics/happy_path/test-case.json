@@ -1,0 +1,37 @@
+﻿{
+    "databaseSetup":  [
+                          "INSERT INTO USERS (ID, FULL_NAME, FIRST_NAME, LAST_NAME, EMAIL) VALUES (13, \u0027Jeffrey Sanders\u0027, \u0027Jeffrey\u0027, \u0027Sanders\u0027, \u0027jeffrey@example.com\u0027)",
+                          "INSERT INTO COURSES (ID, FULL_NAME, SHORT_NAME) VALUES (2, \u0027Algebra\u0027, \u0027ALG2\u0027)",
+                          "INSERT INTO LOGS (TIMESTAMP, USER_ID, COURSE_ID, COMPONENT_ID, EVENT_ID, MODULE_ID, ORIGIN_ID, IP_ADDRESS) VALUES (TIMESTAMP \u00272026-01-01 12:00:00\u0027, 13, 2, 2, 2, NULL, 1, \u0027192.0.2.13\u0027)"
+                      ],
+    "request":  {
+                    "method":  "POST",
+                    "path":  "/api/courses/2/logs/metrics",
+                    "headers":  {
+                                    "Authorization":  "******"
+                                },
+                    "body":  {
+                                 "groupBy":  [
+                                                 "COMPONENT_ID"
+                                             ],
+                                 "fields":  [
+                                                "COMPONENT_NAME"
+                                            ]
+                             }
+                },
+    "expectedResponse":  {
+                             "status":  200,
+                             "body":  {
+                                          "rows":  [
+                                                       {
+                                                           "component":  {
+                                                                             "id":  2,
+                                                                             "name":  "Assignment"
+                                                                         },
+                                                           "value":  1
+                                                       }
+                                                   ]
+                                      }
+                         },
+    "authFixture":  "classpath:/integration/shared/teacher-token-auth.json"
+}
