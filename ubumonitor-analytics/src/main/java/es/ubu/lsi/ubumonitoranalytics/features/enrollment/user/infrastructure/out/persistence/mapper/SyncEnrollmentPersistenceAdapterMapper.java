@@ -9,6 +9,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
+/** Maps domain enrollment data to persistence records. */
 @Mapper(config = GlobalMapperConfig.class)
 public interface SyncEnrollmentPersistenceAdapterMapper {
 

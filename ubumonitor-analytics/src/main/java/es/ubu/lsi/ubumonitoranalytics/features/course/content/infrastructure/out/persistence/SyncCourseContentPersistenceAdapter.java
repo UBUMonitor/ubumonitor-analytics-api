@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
+/** Stores synchronized course sections and modules in tenant persistence. */
 @Component
 @RequiredArgsConstructor
 public class SyncCourseContentPersistenceAdapter implements CourseContentPersistencePort {

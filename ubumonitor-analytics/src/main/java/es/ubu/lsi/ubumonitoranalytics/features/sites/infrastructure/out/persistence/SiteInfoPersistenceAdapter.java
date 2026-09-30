@@ -10,6 +10,7 @@ import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+/** Reads and writes site information in tenant persistence. */
 @Component
 @RequiredArgsConstructor
 public class SiteInfoPersistenceAdapter implements SiteInfoPersistencePort {

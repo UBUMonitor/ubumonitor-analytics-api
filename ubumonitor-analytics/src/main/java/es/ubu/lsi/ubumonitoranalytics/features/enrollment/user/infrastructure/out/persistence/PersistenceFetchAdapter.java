@@ -16,6 +16,7 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+/** Reads current-user and course enrollment data from tenant persistence. */
 @Component
 @RequiredArgsConstructor
 public class PersistenceFetchAdapter implements PersistenceFetchPort {

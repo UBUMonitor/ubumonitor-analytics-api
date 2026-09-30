@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+/** Implements the generated REST operations for authentication and logout. */
 @Service
 @RequiredArgsConstructor
 public class AuthApiDelegateImpl implements AuthApiDelegate {

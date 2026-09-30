@@ -18,6 +18,7 @@ import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
+/** Stores course log records and provides their lookup metadata. */
 @Component
 @RequiredArgsConstructor
 public class LogPersistenceAdapter implements LogPersistencePort {

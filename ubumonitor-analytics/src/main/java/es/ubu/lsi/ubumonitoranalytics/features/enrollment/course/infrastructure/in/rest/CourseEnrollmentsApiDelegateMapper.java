@@ -17,6 +17,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+/** Maps course enrollment REST requests and responses. */
 @Mapper(config = GlobalMapperConfig.class)
 public interface CourseEnrollmentsApiDelegateMapper {
 

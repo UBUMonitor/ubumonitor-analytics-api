@@ -6,6 +6,7 @@ import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.GlobalMapperC
 import org.mapstruct.Mapper;
 import org.springframework.web.client.RestClient;
 
+/** Maps authentication input into stored session data. */
 @Mapper(config = GlobalMapperConfig.class)
 public interface SessionAdapterMapper {
 

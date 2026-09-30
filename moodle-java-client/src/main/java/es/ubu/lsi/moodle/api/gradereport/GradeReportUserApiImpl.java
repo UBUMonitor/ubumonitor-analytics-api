@@ -7,6 +7,7 @@ import es.ubu.lsi.moodle.model.gradereport.user.getgradestable.request.GetGrades
 import es.ubu.lsi.moodle.model.gradereport.user.getgradestable.response.GetGradesTableResponseApi;
 import lombok.RequiredArgsConstructor;
 
+/** Implements Moodle user grade-report calls through the shared client. */
 @RequiredArgsConstructor
 public class GradeReportUserApiImpl implements GradeReportUserApi {
   private final Client client;

@@ -29,6 +29,7 @@ import org.springframework.web.client.RestClient;
 import org.zalando.logbook.Logbook;
 import org.zalando.logbook.spring.LogbookClientHttpRequestInterceptor;
 
+/** Implements authentication and web-client operations against Moodle. */
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -63,7 +64,8 @@ public class MoodleClientAdapter implements MoodleApiPort {
   public RestClient getRestClientFromCookies(AuthInput authInput) {
     String cookieHeader = buildCookieHeader(authInput.getCookies());
 
-    CloseableHttpClient httpClient = HttpClients.custom().build(); // sin CookieStore
+    CloseableHttpClient httpClient =
+        HttpClients.custom().build(); // No cookie store is needed here.
     HttpComponentsClientHttpRequestFactory requestFactory =
         new HttpComponentsClientHttpRequestFactory(httpClient);
 

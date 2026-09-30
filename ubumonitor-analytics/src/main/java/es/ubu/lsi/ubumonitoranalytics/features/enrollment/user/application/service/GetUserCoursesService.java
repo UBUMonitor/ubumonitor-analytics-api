@@ -8,7 +8,9 @@ import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+/** Retrieves the current user's locally stored course enrollments. */
 @Service
 @RequiredArgsConstructor
 public class GetUserCoursesService implements GetUserCoursesUseCase {
@@ -16,7 +18,12 @@ public class GetUserCoursesService implements GetUserCoursesUseCase {
   private final PersistenceFetchPort persistenceFetchPort;
   private final CurrentSessionContext currentSessionContext;
 
+  /**
+   * @return enrolled courses for the current user
+   * @throws EntityNotFoundException when the current user is absent from local persistence
+   */
   @Override
+  @Transactional(readOnly = true)
   public UserEnrolledCourses getActualUserEnrollments() {
     SessionData sessionData = currentSessionContext.getSessionData();
     Integer userId = persistenceFetchPort.getUserIdByUserName(sessionData.getUsername());

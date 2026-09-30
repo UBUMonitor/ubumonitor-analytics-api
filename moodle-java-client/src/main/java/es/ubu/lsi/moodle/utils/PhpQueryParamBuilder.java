@@ -19,6 +19,14 @@ public final class PhpQueryParamBuilder {
 
   private static final ObjectMapper MAPPER = new ObjectMapper();
 
+  /**
+   * Converts a request object to Moodle's bracketed PHP query parameter format.
+   *
+   * @param object request object to convert
+   * @return flattened query parameters
+   * @throws NullPointerException when {@code object} is {@code null}
+   * @throws IllegalArgumentException when the object cannot be converted
+   */
   public static Map<String, String> toPhpQuery(Object object) {
 
     Objects.requireNonNull(object, "Object cannot be null");
@@ -72,6 +80,12 @@ public final class PhpQueryParamBuilder {
     }
   }
 
+  /**
+   * Encodes parameters as an {@code application/x-www-form-urlencoded} body.
+   *
+   * @param data form parameters
+   * @return URL-encoded form body
+   */
   public static String ofFormData(Map<String, String> data) {
 
     return data.entrySet().stream()

@@ -18,6 +18,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+/** Configures relaxed security rules for the local development profile. */
 @Configuration
 @Profile("dev")
 @RequiredArgsConstructor
@@ -36,16 +37,16 @@ public class DevSecurityConfig {
             auth ->
                 auth.requestMatchers(HttpMethod.OPTIONS, "/**")
                     .permitAll()
-                    // endpoints públicos
+                    // Public endpoints.
                     .requestMatchers("/api/public/**")
                     .permitAll()
-                    // endpoints protegidos
+                    // Protected endpoints.
                     .requestMatchers("/api/**")
                     .authenticated()
                     .anyRequest()
                     .permitAll())
 
-        // sesión stateless
+        // Keep API authentication stateless.
         .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
         // OAuth2 + JWT

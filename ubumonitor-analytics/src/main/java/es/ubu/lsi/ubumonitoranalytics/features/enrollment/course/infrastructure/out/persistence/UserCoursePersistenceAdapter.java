@@ -31,6 +31,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+/** Persists course users, enrollments, roles, and group associations. */
 @Component
 @RequiredArgsConstructor
 public class UserCoursePersistenceAdapter implements UserCoursePersistencePort {

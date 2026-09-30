@@ -9,6 +9,7 @@ import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.GlobalMapperC
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+/** Maps current-user enrollment responses to REST models. */
 @Mapper(config = GlobalMapperConfig.class)
 public interface UserCoursesEnrollmentsMapper {
 

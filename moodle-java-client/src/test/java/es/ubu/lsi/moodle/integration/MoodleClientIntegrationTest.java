@@ -1,5 +1,8 @@
 package es.ubu.lsi.moodle.integration;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -9,9 +12,6 @@ import es.ubu.lsi.moodle.core.DefaultClient;
 import es.ubu.lsi.moodle.http.JavaHttpTransport;
 import es.ubu.lsi.moodle.json.JacksonMapper;
 import es.ubu.lsi.moodle.model.login.token.request.LoginTokenRequestApi;
-import org.junit.jupiter.api.DynamicTest;
-import org.junit.jupiter.api.TestFactory;
-
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -21,9 +21,8 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
 
 class MoodleClientIntegrationTest {
 
@@ -31,7 +30,9 @@ class MoodleClientIntegrationTest {
 
   @TestFactory
   Stream<DynamicTest> runFixtureTests() throws Exception {
-    Path fixtureDirectory = Path.of(Objects.requireNonNull(getClass().getClassLoader().getResource("integration")).toURI());
+    Path fixtureDirectory =
+        Path.of(
+            Objects.requireNonNull(getClass().getClassLoader().getResource("integration")).toURI());
     List<Path> fixtures;
     try (Stream<Path> paths = Files.walk(fixtureDirectory)) {
       fixtures =

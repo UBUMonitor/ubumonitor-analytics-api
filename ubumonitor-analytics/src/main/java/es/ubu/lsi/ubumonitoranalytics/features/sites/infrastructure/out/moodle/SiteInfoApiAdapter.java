@@ -12,6 +12,7 @@ import java.util.concurrent.Executor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+/** Fetches authenticated site and user information from Moodle. */
 @Component
 @RequiredArgsConstructor
 public class SiteInfoApiAdapter implements SiteInfoApiPort {

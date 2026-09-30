@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.jooq.Record;
 import org.springframework.stereotype.Component;
 
+/** Reads available course log fields and filter values from persistence. */
 @Component
 @RequiredArgsConstructor
 public class CourseLogsInfoAdapter implements CourseLogsInfoPort {

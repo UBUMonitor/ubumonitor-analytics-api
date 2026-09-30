@@ -10,16 +10,29 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
+/** Downloads user images from Moodle through the configured HTTP client. */
 @Component
 @Slf4j
 public class MoodleDownloaderAdapter implements MoodleDownloaderPort {
 
   private final RestClient restClient;
 
+  /**
+   * Creates an adapter using the configured REST client builder.
+   *
+   * @param builder builder used to create the Moodle REST client
+   */
   public MoodleDownloaderAdapter(RestClient.Builder builder) {
     this.restClient = builder.build();
   }
 
+  /**
+   * Downloads a Moodle profile image, returning a placeholder when retrieval fails.
+   *
+   * @param uri image URI
+   * @param token Moodle access token
+   * @return downloaded image response or a placeholder image response
+   */
   @Override
   public ResponseEntity<byte[]> downloadUserImage(URI uri, String token) {
     try {

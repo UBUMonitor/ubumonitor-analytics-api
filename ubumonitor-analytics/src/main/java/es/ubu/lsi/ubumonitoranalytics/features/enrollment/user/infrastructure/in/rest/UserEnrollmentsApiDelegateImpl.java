@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+/** Implements the generated REST operations for current-user enrollments. */
 @Component
 @RequiredArgsConstructor
 public class UserEnrollmentsApiDelegateImpl implements UserEnrollmentsApiDelegate {

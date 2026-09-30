@@ -1,9 +1,9 @@
 post:
   tags: [ Auth ]
   operationId: AuthToken
-  summary: Get Moodle token
+  summary: Authenticate with a Moodle token
   description: |
-    Receives host, username, and password. A JWT token is returned to be used in subsequent Moodle API calls. This endpoint is essential for authenticating users and establishing a secure session with the Moodle instance. The token can be used in the Authorization header of future requests to access protected resources and perform actions on behalf of the authenticated user.
+    Receives a Moodle site URL, an existing Moodle web-service token, and the database encryption key. Returns an application JWT for subsequent authenticated requests.
   requestBody:
     required: true
     content:

@@ -11,9 +11,11 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
+/** Maps generated authentication DTOs to application models and responses. */
 @Mapper(config = GlobalMapperConfig.class)
 public interface AuthMapper {
 
+  /** Maps username-and-password authentication input to the application model. */
   @Mapping(target = "cookies", ignore = true)
   @Mapping(target = "moodleToken", ignore = true)
   @Mapping(target = "dbPassword", source = "dbPassword")
@@ -22,6 +24,7 @@ public interface AuthMapper {
   @Mapping(target = "host", source = "host")
   AuthInput toDomain(AuthLoginRequestDto authLoginRequestDto);
 
+  /** Maps Moodle-token authentication input to the application model. */
   @Mapping(target = "cookies", ignore = true)
   @Mapping(target = "username", ignore = true)
   @Mapping(target = "password", ignore = true)
@@ -30,6 +33,7 @@ public interface AuthMapper {
   @Mapping(target = "host", source = "host")
   AuthInput toDomain(AuthTokenRequestDto authTokenRequestDto);
 
+  /** Maps offline authentication input to the application model. */
   @Mapping(target = "cookies", ignore = true)
   @Mapping(target = "moodleToken", ignore = true)
   @Mapping(target = "dbPassword", source = "dbPassword")
@@ -38,10 +42,12 @@ public interface AuthMapper {
   @Mapping(target = "host", source = "host")
   AuthInput toDomain(AuthOfflineRequestDto authOfflineRequestDto);
 
+  /** Maps an application JWT to the generated REST response. */
   @Mapping(target = "tokenType", constant = "Bearer")
   @Mapping(target = "accessToken", source = "token")
   AuthResponseDto toAuthResponse(JwtToken jwtToken);
 
+  /** Maps an SSO launch credential to the application authentication model. */
   @Mapping(target = "username", ignore = true)
   @Mapping(target = "password", ignore = true)
   @Mapping(
@@ -51,6 +57,7 @@ public interface AuthMapper {
   AuthInput toDomain(AuthSSORequestDto authSSORequestDto);
 
   @Named("extractMoodleToken")
+  /** Extracts the Moodle web-service token from an SSO launch credential. */
   default String extractMoodleToken(String value) {
     if (value == null || value.isBlank()) {
       return null;
@@ -65,15 +72,15 @@ public interface AuthMapper {
         return null;
       }
 
-      // Parte Base64 después de "token="
+      // Base64 payload after "token=".
       String base64 = host.substring("token=".length());
 
-      // Decodificar Base64
+      // Decode the Base64 payload.
       String decoded = new String(Base64.getDecoder().decode(base64), StandardCharsets.UTF_8);
 
-      // Moodle:
+      // Moodle format:
       // md5(wwwroot + passport):::wstoken
-      // o
+      // or
       // md5(wwwroot + passport):::wstoken:::privatetoken
       String[] parts = decoded.split(":::", -1);
 

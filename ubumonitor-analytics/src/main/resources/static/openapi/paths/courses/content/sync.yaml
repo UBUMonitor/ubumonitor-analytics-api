@@ -1,9 +1,9 @@
 post:
   tags:
     - CourseContent
-  summary: Synchronize course users has been enrolled information
+  summary: Synchronize course content
   operationId: SyncCourseContent
-  description: Synchronizes the enrollments of the logged user courses information. This endpoint retrieves the latest enrollment data for the courses the user is enrolled in and updates the local database accordingly. It ensures that the user's course enrollments are up-to-date with the Moodle site.
+  description: Retrieves the latest sections and modules for the specified course from Moodle and stores them in the local tenant database.
   parameters:
     - name: courseId
       in: path

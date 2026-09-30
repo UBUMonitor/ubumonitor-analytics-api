@@ -19,6 +19,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
+/** Adapts Spring's RestClient to the Moodle client's transport contract. */
 @Component
 @RequiredArgsConstructor
 public class RestClientHttpTransport implements HttpTransport {

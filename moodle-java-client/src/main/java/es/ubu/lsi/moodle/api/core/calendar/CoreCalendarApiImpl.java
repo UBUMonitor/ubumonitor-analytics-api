@@ -5,6 +5,7 @@ import es.ubu.lsi.moodle.model.core.calendar.getcalendarevents.request.GetCalend
 import es.ubu.lsi.moodle.model.core.calendar.getcalendarevents.response.GetCalendarEventsResponseApi;
 import lombok.RequiredArgsConstructor;
 
+/** Implements Moodle calendar calls through the shared client. */
 @RequiredArgsConstructor
 public class CoreCalendarApiImpl implements CoreCalendarApi {
 

@@ -13,9 +13,15 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
+/** Adds rows for missing buckets in continuous time series when gap filling is enabled. */
 @Component
 public class TimeSeriesFiller {
 
+  /**
+   * @param rows metric rows returned by persistence
+   * @param request interval, range, and gap-filling strategy
+   * @return rows covering the requested continuous time range when gap filling applies
+   */
   public List<MetricRow> fill(List<MetricRow> rows, CourseLogsMetricsRequest request) {
     if (request.getInterval() == null
         || request.getTimeRange() == null

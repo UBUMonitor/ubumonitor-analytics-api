@@ -1,17 +1,22 @@
 package es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database;
 
 import com.zaxxer.hikari.HikariDataSource;
+import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.database.TenantDatabasePort;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.DatabaseCreationException;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.moodle.config.MoodleConfig;
 import es.ubu.lsi.ubumonitoranalytics.util.DatabaseUtil;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Stream;
 import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.flywaydb.core.Flyway;
@@ -24,13 +29,14 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Component;
 
+/** Caches tenant data sources and creates a jOOQ context for each access. */
 @Slf4j
 @Component
-public class JooqProvider {
+public class JooqProvider implements TenantDatabasePort {
 
   private final MoodleConfig moodleConfig;
 
-  // SOLO cache de DataSource (NO DSLContext)
+  // Cache DataSource instances only; DSLContext instances are request-scoped.
   private final ConcurrentHashMap<String, DataSource> dataSourceCache;
 
   private final Set<String> migratedTenants = ConcurrentHashMap.newKeySet();
@@ -42,10 +48,7 @@ public class JooqProvider {
     this.dataSourceCache = new ConcurrentHashMap<>();
   }
 
-  // =========================================================
-  // PUBLIC API
-  // =========================================================
-
+  /** Returns the cached tenant data source, creating and migrating it when necessary. */
   public DataSource getDataSource(SessionData session) {
 
     if (session == null) {
@@ -56,6 +59,7 @@ public class JooqProvider {
     return dataSourceCache.computeIfAbsent(tenantId, id -> createTenantDataSource(session));
   }
 
+  /** Creates a jOOQ context backed by the data source for the current tenant. */
   public DSLContext getDSLContext(SessionData sessionData) {
 
     DataSource ds = getDataSource(sessionData);
@@ -65,10 +69,7 @@ public class JooqProvider {
     return new DefaultDSLContext(config);
   }
 
-  // =========================================================
-  // DATASOURCE CREATION
-  // =========================================================
-
+  /** Creates and configures a tenant data source, including its Flyway schema migration. */
   private DataSource createTenantDataSource(SessionData session) {
 
     try {
@@ -105,34 +106,33 @@ public class JooqProvider {
     }
   }
 
-  // =========================================================
-  // FLYWAY (solo una vez por tenant)
-  // =========================================================
-
+  /** Runs the Flyway migration once for the supplied tenant. */
   private void migrateIfNeeded(String tenantId, DataSource ds) throws Exception {
 
-    if (!migratedTenants.add(tenantId)) {
+    if (migratedTenants.contains(tenantId)) {
       return;
     }
 
     String migrationPath = extractMigrationsToTemp();
+    try {
+      log.info("Running Flyway migration for tenant {}", tenantId);
+      Flyway.configure()
+          .dataSource(ds)
+          .locations("filesystem:" + migrationPath)
+          .baselineOnMigrate(true)
+          .validateOnMigrate(true)
+          .load()
+          .migrate();
 
-    log.info("Running Flyway migration for tenant {}", tenantId);
-    Flyway.configure()
-        .dataSource(ds)
-        .locations("filesystem:" + migrationPath)
-        .baselineOnMigrate(true)
-        .validateOnMigrate(true)
-        .load()
-        .migrate();
-
-    log.info("Migration completed for tenant {}", tenantId);
+      migratedTenants.add(tenantId);
+      log.info("Migration completed for tenant {}", tenantId);
+    } finally {
+      deleteDirectory(Path.of(migrationPath));
+    }
   }
 
-  // =========================================================
-  // CLEANUP
-  // =========================================================
-
+  /** Closes and removes the data source associated with a tenant session. */
+  @Override
   public void closeTenant(SessionData session) {
 
     if (session == null) return;
@@ -151,10 +151,29 @@ public class JooqProvider {
     log.info("Closed tenant {}", tenantId);
   }
 
+  /** Closes all cached tenant data sources and clears the provider state. */
   public void clearAll() {
+    for (DataSource dataSource : dataSourceCache.values()) {
+      if (dataSource instanceof HikariDataSource hikari) {
+        hikari.close();
+      }
+    }
     dataSourceCache.clear();
     migratedTenants.clear();
     log.info("Cleared all tenants");
+  }
+
+  private static void deleteDirectory(Path directory) throws IOException {
+    if (!Files.exists(directory)) {
+      return;
+    }
+
+    try (Stream<Path> paths = Files.walk(directory)) {
+      List<Path> pathsToDelete = paths.sorted(Comparator.reverseOrder()).toList();
+      for (Path path : pathsToDelete) {
+        Files.deleteIfExists(path);
+      }
+    }
   }
 
   private String extractMigrationsToTemp() throws Exception {

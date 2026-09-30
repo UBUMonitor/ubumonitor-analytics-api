@@ -6,6 +6,7 @@ import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+/** Creates and initializes the H2 database associated with a Moodle user and site. */
 @Component
 @RequiredArgsConstructor
 public class TenantDatabaseInitializer {

@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/** Fetches course content from Moodle and stores it for the current tenant. */
 @Service
 @RequiredArgsConstructor
 public class SyncCourseContentService implements SyncCourseContentUseCase {
@@ -15,6 +16,10 @@ public class SyncCourseContentService implements SyncCourseContentUseCase {
   private final CourseContentPersistencePort persistencePort;
   private final FetchCourseContentPort fetchCourseContentPort;
 
+  /**
+   * @param courseId Moodle course identifier
+   * @return fetched course sections and modules
+   */
   @Transactional
   @Override
   public CourseContent syncCourseContent(Integer courseId) {

@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.client.RestClient;
 
+/** Holds the authentication and tenant connection state for an active session. */
 @Data
 @Builder
 @NoArgsConstructor
@@ -17,6 +18,6 @@ public class SessionData {
   private String password;
   private URI host;
   private String moodleToken;
-  private String dbPassword; // Contraseña encriptada para abrir H2
+  private String dbPassword; // Encrypted password used to open the H2 database.
   private RestClient restClient;
 }

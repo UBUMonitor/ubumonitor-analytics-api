@@ -1,5 +1,8 @@
 package es.ubu.lsi.ubumonitoranalytics.integration;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -8,6 +11,13 @@ import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.Sessio
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.JooqProvider;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.moodle.config.MoodleConfig;
+import java.io.IOException;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.UUID;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,17 +32,6 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
-
-import java.io.IOException;
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.UUID;
-import java.util.stream.Stream;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class MoodleAnalyticsIntegrationTest {
@@ -144,7 +143,7 @@ class MoodleAnalyticsIntegrationTest {
       }
       testCase.path("moodleMocks").forEach(mock -> configureMock(wireMock, mock));
       JsonNode authRequest = authDefinition.path("request");
-      ObjectNode authBody =  authRequest.path("body").deepCopy();
+      ObjectNode authBody = authRequest.path("body").deepCopy();
       authBody.put("host", wireMock.baseUrl());
       ResponseEntity<String> authResponse =
           exchange(
@@ -158,8 +157,7 @@ class MoodleAnalyticsIntegrationTest {
           authResponse.getStatusCode().value());
       accessToken = OBJECT_MAPPER.readTree(authResponse.getBody()).path("accessToken").asText();
       assertFalse(accessToken.isBlank(), "Auth response must include an access token");
-      ObjectNode expectedAuthBody =
-           authDefinition.path("expectedResponse").path("body").deepCopy();
+      ObjectNode expectedAuthBody = authDefinition.path("expectedResponse").path("body").deepCopy();
       expectedAuthBody.put("accessToken", accessToken);
       assertEquals(expectedAuthBody, OBJECT_MAPPER.readTree(authResponse.getBody()));
       applyDatabaseSetup(databaseSetup, wireMock.baseUrl(), authBody);

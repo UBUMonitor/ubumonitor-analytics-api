@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
+/** Provides the executor used for concurrent application tasks. */
 @Configuration
 @RequiredArgsConstructor
 public class VirtualThreadConfig {

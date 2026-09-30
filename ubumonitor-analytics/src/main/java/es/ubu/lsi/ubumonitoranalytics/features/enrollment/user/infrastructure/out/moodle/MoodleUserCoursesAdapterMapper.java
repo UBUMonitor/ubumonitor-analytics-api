@@ -10,6 +10,7 @@ import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+/** Maps Moodle user-course responses to application enrollment models. */
 @Mapper(config = GlobalMapperConfig.class)
 public interface MoodleUserCoursesAdapterMapper {
 

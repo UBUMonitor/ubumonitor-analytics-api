@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+/** Implements the generated REST operations for course content. */
 @Component
 @RequiredArgsConstructor
 public class CourseContentApiDelegateImpl implements CourseContentApiDelegate {

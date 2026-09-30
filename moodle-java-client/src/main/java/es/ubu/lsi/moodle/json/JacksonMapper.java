@@ -7,10 +7,16 @@ import es.ubu.lsi.moodle.exception.JsonMappingException;
 import es.ubu.lsi.moodle.model.ajax.AjaxResponse;
 import java.util.List;
 
+/** Maps Java values to and from Moodle JSON payloads. */
 public class JacksonMapper {
 
   private final ObjectMapper mapper = new ObjectMapper();
 
+  /**
+   * @param obj value to serialize
+   * @return JSON representation
+   * @throws JsonMappingException when serialization fails
+   */
   public String toJson(Object obj) {
     try {
       return mapper.writeValueAsString(obj);
@@ -19,6 +25,13 @@ public class JacksonMapper {
     }
   }
 
+  /**
+   * @param json JSON document
+   * @param type target model class
+   * @param <T> target model type
+   * @return mapped model
+   * @throws JsonMappingException when deserialization fails
+   */
   public <T> T fromJson(String json, Class<T> type) {
     try {
       return mapper.readValue(json, type);
@@ -27,6 +40,11 @@ public class JacksonMapper {
     }
   }
 
+  /**
+   * @param json JSON document
+   * @return parsed JSON tree
+   * @throws JsonMappingException when parsing fails
+   */
   public JsonNode readTree(String json) {
     try {
       return mapper.readTree(json);
@@ -35,6 +53,13 @@ public class JacksonMapper {
     }
   }
 
+  /**
+   * @param json JSON array
+   * @param type target element class
+   * @param <T> target element type
+   * @return mapped elements
+   * @throws JsonMappingException when deserialization fails
+   */
   public <T> List<T> fromJsonArray(String json, Class<T> type) {
     try {
       JavaType javaType = mapper.getTypeFactory().constructCollectionType(List.class, type);
@@ -46,6 +71,13 @@ public class JacksonMapper {
     }
   }
 
+  /**
+   * @param json AJAX response array
+   * @param dataType target response data class
+   * @param <T> target response data type
+   * @return mapped AJAX response envelopes
+   * @throws JsonMappingException when deserialization fails
+   */
   public <T> List<AjaxResponse<T>> fromJsonAjaxArray(String json, Class<T> dataType) {
     try {
       JavaType responseType =

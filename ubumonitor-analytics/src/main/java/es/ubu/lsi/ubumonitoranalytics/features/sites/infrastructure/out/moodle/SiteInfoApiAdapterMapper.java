@@ -13,6 +13,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.springframework.web.util.UriComponentsBuilder;
 
+/** Maps Moodle site responses to site application models. */
 @Mapper(config = GlobalMapperConfig.class)
 public interface SiteInfoApiAdapterMapper {
 

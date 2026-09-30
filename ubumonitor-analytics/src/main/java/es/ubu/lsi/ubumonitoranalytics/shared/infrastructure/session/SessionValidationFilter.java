@@ -16,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+/** Validates the request's session before protected endpoints are invoked. */
 @Component
 @RequiredArgsConstructor
 public class SessionValidationFilter extends OncePerRequestFilter {
@@ -39,7 +40,7 @@ public class SessionValidationFilter extends OncePerRequestFilter {
       SessionData session = sessionStore.getSession(token);
 
       if (session == null) {
-        throw new InsufficientAuthenticationException("Sesión expirada o no encontrada");
+        throw new InsufficientAuthenticationException("Session expired or not found");
       }
 
       currentSessionContext.setSessionData(session);

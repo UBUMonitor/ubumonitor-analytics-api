@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+/** Binds Moodle API and tenant database settings. */
 @ConfigurationProperties(prefix = "moodle")
 @Data
 @NoArgsConstructor

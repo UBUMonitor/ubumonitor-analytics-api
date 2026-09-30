@@ -11,6 +11,7 @@ import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+/** Clears the request-scoped session context after each request. */
 @Component
 @RequiredArgsConstructor
 public class CurrentSessionClearFilter extends OncePerRequestFilter {

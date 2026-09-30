@@ -16,6 +16,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
+/** Maps course log metric requests between REST and application models. */
 @Mapper(config = GlobalMapperConfig.class)
 public interface GetCourseLogsMetricsMapper {
 

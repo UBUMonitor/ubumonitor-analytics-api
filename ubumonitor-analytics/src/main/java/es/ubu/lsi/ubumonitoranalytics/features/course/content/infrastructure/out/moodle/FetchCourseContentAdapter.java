@@ -9,6 +9,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+/** Fetches course sections and modules through the Moodle client. */
 @Component
 @RequiredArgsConstructor
 public class FetchCourseContentAdapter implements FetchCourseContentPort {

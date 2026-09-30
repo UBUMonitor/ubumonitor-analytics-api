@@ -53,7 +53,7 @@ public class LogParserService {
       Map<String, Short> eventIds,
       Map<String, Byte> logOrigins) {
 
-    // ✅ Cache local de columnas (evita repetidos row.get)
+    // Cache column values to avoid repeated CSV lookups.
     String component = row.get("Component");
     String event = row.get("Event name");
     String origin = row.get("Origin");
@@ -61,7 +61,7 @@ public class LogParserService {
     String ip = row.get("IP address");
     String description = row.get("Description");
 
-    // ✅ Map lookups (sin Optional, sin overhead extra)
+    // Resolve database identifiers before parsing the row.
     Byte componentId = componentIds.get(component);
     Short eventId = eventIds.get(event);
     Byte originId = logOrigins.get(origin);
@@ -73,7 +73,7 @@ public class LogParserService {
 
     ProcessLogLine line = new ProcessLogLine();
 
-    // ⚡ parse directo
+    // Parse the timestamp directly into the domain value.
     line.setTime(LocalDateTime.parse(time, MOODLE_TIME_FORMATTER));
     line.setCourseId(courseId);
     line.setComponentId(componentId);
@@ -112,7 +112,7 @@ public class LogParserService {
 
     for (Grok grok : groks) {
 
-      // ⚡ micro-opt: evita match si no hay necesidad
+      // Skip matching when the description already equals the literal pattern.
       if (CollectionUtils.isEmpty(grok.getNamedRegexCollection())
           && grok.getOriginalGrokPattern().equals(description)) {
         return;

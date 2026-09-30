@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+/** Implements the generated REST operations for course logs. */
 @Service
 @RequiredArgsConstructor
 public class CourseLogsApiDelegateImpl implements CourseLogsApiDelegate {

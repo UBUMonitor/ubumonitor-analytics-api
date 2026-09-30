@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 
+/** Sends Moodle requests with the JDK HTTP client and maps JSON responses. */
 @RequiredArgsConstructor
 public class JavaHttpTransport implements HttpTransport {
 
@@ -22,6 +23,7 @@ public class JavaHttpTransport implements HttpTransport {
   private final URI baseUrl;
   private final String token;
 
+  /** Sends a Moodle login request and maps the token response. */
   @Override
   public LoginTokenResponseApi login(URI baseUrl, String context, Map<String, String> form)
       throws Exception {
@@ -29,6 +31,7 @@ public class JavaHttpTransport implements HttpTransport {
     return mapper.fromJson(body, LoginTokenResponseApi.class);
   }
 
+  /** Sends form data and maps one response object. */
   @Override
   public <T> T postForm(String context, Map<String, String> form, Class<T> responseType)
       throws Exception {
@@ -36,6 +39,7 @@ public class JavaHttpTransport implements HttpTransport {
     return mapper.fromJson(body, responseType);
   }
 
+  /** Sends form data and maps an array response. */
   @Override
   public <T> List<T> postFormArray(String context, Map<String, String> form, Class<T> elementType)
       throws Exception {
@@ -43,12 +47,14 @@ public class JavaHttpTransport implements HttpTransport {
     return mapper.fromJsonArray(body, elementType);
   }
 
+  /** Sends JSON and maps one response object. */
   @Override
   public <T> T postJson(String context, Object body, Class<T> responseType) throws Exception {
     String responseBody = executeJson(context, body);
     return mapper.fromJson(responseBody, responseType);
   }
 
+  /** Sends JSON and maps an array response. */
   @Override
   public <T> List<T> postJsonArray(String context, Object body, Class<T> elementType)
       throws Exception {
@@ -56,6 +62,7 @@ public class JavaHttpTransport implements HttpTransport {
     return mapper.fromJsonArray(responseBody, elementType);
   }
 
+  /** Sends JSON and maps Moodle AJAX responses. */
   @Override
   public <T> List<AjaxResponse<T>> postJsonAjaxArray(String context, Object body, Class<T> dataType)
       throws Exception {
@@ -74,6 +81,7 @@ public class JavaHttpTransport implements HttpTransport {
     return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
   }
 
+  /** Returns the token used by this transport. */
   @Override
   public String getToken() {
     return token;

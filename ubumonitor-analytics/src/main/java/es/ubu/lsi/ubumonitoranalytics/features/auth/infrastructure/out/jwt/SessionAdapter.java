@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
+/** Implements session creation and invalidation using the shared session store. */
 @Component
 @RequiredArgsConstructor
 public class SessionAdapter implements SessionPort {

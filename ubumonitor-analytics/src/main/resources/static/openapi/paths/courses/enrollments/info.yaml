@@ -1,7 +1,7 @@
 get:
   tags:
     - CourseEnrollments
-  summary: Get course users has been enrolled information
+  summary: Get course enrollments
   operationId: GetCourseUsersEnrollmentsInfo
   description: Retrieves the enrollment information for users enrolled in a specific course. This endpoint provides details about the users enrolled in the course, including their roles and enrollment status. It allows clients to access up-to-date enrollment information for a particular course on the Moodle site.
   parameters:

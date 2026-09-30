@@ -17,6 +17,7 @@ import org.mapstruct.Named;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+/** Provides shared conversions for Moodle content and persistence mappings. */
 @Mapper(componentModel = "spring")
 public class MapperUtils {
 
@@ -89,11 +90,11 @@ public class MapperUtils {
   }
 
   /**
-   * Convierte contenido de Moodle a texto plano según summaryformat
+   * Converts Moodle content to plain text according to its summary format.
    *
-   * @param content contenido del webservice
-   * @param format 0=text, 1=html, 2=markdown
-   * @return texto limpio
+   * @param content content returned by the Moodle web service
+   * @param format Moodle format identifier
+   * @return plain text, or {@code null} when the content is {@code null}
    */
   @Named("parseMoodleContent")
   public static String parseMoodleContent(String content, Integer format) {
@@ -110,12 +111,12 @@ public class MapperUtils {
           parseHtml(content);
       case 4 -> // Markdown
           parseMarkdown(content);
-      default -> // texto plano
+      default -> // Plain text.
           content;
     };
   }
 
-  /** Convierte HTML a texto plano usando Jsoup */
+  /** Converts HTML to plain text using Jsoup. */
   @Named("parseHtml")
   public static String parseHtml(String html) {
     if (html == null) {
@@ -124,7 +125,7 @@ public class MapperUtils {
     return Jsoup.parse(html).text();
   }
 
-  /** Convierte Markdown a texto plano */
+  /** Converts Markdown to plain text. */
   @Named("parseMarkdown")
   public static String parseMarkdown(String markdown) {
     if (markdown == null) {
@@ -145,10 +146,10 @@ public class MapperUtils {
       return null;
     }
 
-    // 1. Limpieza inicial y normalización
+    // Initial cleanup and normalization.
     String cleaned = MapperUtils.parseHtml(percentage).replace(",", ".").replaceAll("[^0-9.]", "");
 
-    // 2. Validación de contenido
+    // Content validation.
     if (cleaned.isEmpty() || cleaned.equals(".")) {
       return null;
     }
@@ -165,13 +166,13 @@ public class MapperUtils {
     try {
       input = input.trim();
 
-      // Caso: coma como decimal
+      // Comma used as the decimal separator.
       if (input.contains(",") && !input.contains(".")) {
         input = input.replace(",", ".");
       }
-      // Caso: ambos (miles + decimal)
+      // Both separators are present (thousands and decimal).
       else if (input.contains(",") && input.contains(".")) {
-        // El último separador es el decimal
+        // The last separator is the decimal separator.
         if (input.lastIndexOf(",") > input.lastIndexOf(".")) {
           input = input.replace(".", "").replace(",", ".");
         } else {

@@ -3,6 +3,7 @@ package es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.metrics;
 import java.util.List;
 import lombok.Data;
 
+/** Defines the requested grouping, filtering, and interval for course log metrics. */
 @Data
 public class CourseLogsMetricsRequest {
 
@@ -10,7 +11,7 @@ public class CourseLogsMetricsRequest {
 
   private CourseLogsMetricsRequestTimeRange timeRange;
 
-  private List<CourseLogsGroupBy> groupBy; // Define la dimensión base de agrupación
+  private List<CourseLogsGroupBy> groupBy; // Defines the base grouping dimension.
 
   private TimeInterval interval;
   private FillGapStrategy fillGapsStrategy;

@@ -18,6 +18,7 @@ import org.jooq.Record;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
+/** Calculates requested course log aggregates with jOOQ. */
 @Component
 @RequiredArgsConstructor
 public class LogsMetricsAdapter implements LogsMetricsPort {
@@ -105,7 +106,7 @@ public class LogsMetricsAdapter implements LogsMetricsPort {
 
           case TIME_BUCKET -> aggregatedLogs.field(TIME_BUCKET);
 
-          case TIME -> aggregatedLogs.field(TIME_BUCKET); // alias lógico
+          case TIME -> aggregatedLogs.field(TIME_BUCKET); // Logical alias.
         };
 
     return sort.getDirection() == SortBy.SortDirection.ASC ? field.asc() : field.desc();
