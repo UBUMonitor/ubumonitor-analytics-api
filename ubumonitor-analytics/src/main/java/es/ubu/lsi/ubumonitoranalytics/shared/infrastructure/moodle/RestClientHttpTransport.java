@@ -9,6 +9,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.ResolvableType;
@@ -22,6 +23,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 /** Adapts Spring's RestClient to the Moodle client's transport contract. */
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class RestClientHttpTransport implements HttpTransport {
 
   @Qualifier("moodleRestClient")
@@ -33,14 +35,36 @@ public class RestClientHttpTransport implements HttpTransport {
   public LoginTokenResponseApi login(URI baseUrl, String context, Map<String, String> form)
       throws Exception {
     URI finalUri = getUri(baseUrl, context);
+    MultiValueMap<String, String> formData = toFormData(form);
+    log.trace(
+        "Sending Moodle login form to {}; parameter count={}, keys={}",
+        finalUri.getPath(),
+        formData.size(),
+        formData.keySet());
 
-    return restClient
-        .post()
-        .uri(finalUri)
-        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-        .body(toFormData(form))
-        .retrieve()
-        .body(LoginTokenResponseApi.class);
+    try {
+      LoginTokenResponseApi response =
+          restClient
+              .post()
+              .uri(finalUri)
+              .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+              .body(formData)
+              .retrieve()
+              .body(LoginTokenResponseApi.class);
+      log.trace(
+          "Moodle login response deserialized; responsePresent={}, tokenPresent={}, errorPresent={}",
+          response != null,
+          response != null && response.getToken() != null,
+          response != null && response.getError() != null);
+      return response;
+    } catch (RuntimeException exception) {
+      log.trace(
+          "Moodle login request or response mapping failed for {}; form keys={}",
+          finalUri.getPath(),
+          formData.keySet(),
+          exception);
+      throw exception;
+    }
   }
 
   @Override
@@ -139,6 +163,11 @@ public class RestClientHttpTransport implements HttpTransport {
 
     LinkedMultiValueMap<String, String> map = new LinkedMultiValueMap<>();
     map.setAll(form);
+    log.trace(
+        "Converted Moodle form map to MultiValueMap; source count={}, output count={}, keys={}",
+        form.size(),
+        map.size(),
+        map.keySet());
     return map;
   }
 

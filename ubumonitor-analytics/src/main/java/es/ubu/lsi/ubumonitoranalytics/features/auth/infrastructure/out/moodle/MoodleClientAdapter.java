@@ -43,8 +43,17 @@ public class MoodleClientAdapter implements MoodleApiPort {
   @Override
   public String login(AuthInput authInput) {
     LoginTokenRequestApi loginTokenRequest = mapper.toDto(authInput);
+    log.trace(
+        "Mapped Moodle login request; hostPresent={}, usernamePresent={}, passwordPresent={}",
+        loginTokenRequest.getBaseurl() != null,
+        loginTokenRequest.getUsername() != null,
+        loginTokenRequest.getPassword() != null);
     LoginTokenResponseApi loginTokenResponse = client.login(loginTokenRequest);
 
+    log.trace(
+        "Moodle login response mapped; tokenPresent={}, errorPresent={}",
+        loginTokenResponse.getToken() != null,
+        loginTokenResponse.getError() != null);
     return loginTokenResponse.getToken();
   }
 

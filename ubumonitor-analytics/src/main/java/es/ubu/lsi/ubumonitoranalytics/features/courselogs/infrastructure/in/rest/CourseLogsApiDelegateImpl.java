@@ -50,13 +50,13 @@ public class CourseLogsApiDelegateImpl implements CourseLogsApiDelegate {
   }
 
   @Override
-  public ResponseEntity<CourseLogsInfoResponseDto> getCourseInfoLogs(Integer courseId) {
+  public ResponseEntity<CourseLogsResponseDto> getCourseLogsInfo(Integer courseId) {
     CourseLogsInfoResult courseLogsInfoResult = fetchCourseLogsUseCase.getCourseLogsInfo(courseId);
     return ResponseEntity.ok(columnInfoMapper.toDto(courseLogsInfoResult));
   }
 
   @Override
-  public ResponseEntity<CourseLogsListResponseDto> getCourseListLogs(
+  public ResponseEntity<CourseLogsListResponseDto> getCourseLogsList(
       Integer courseId, CourseLogsListRequestDto courseLogsListRequestDto) {
     CourseLogsInfoRequest courseLogsInfoRequest =
         getCourseLogsMapper.toDomain(courseId, courseLogsListRequestDto);

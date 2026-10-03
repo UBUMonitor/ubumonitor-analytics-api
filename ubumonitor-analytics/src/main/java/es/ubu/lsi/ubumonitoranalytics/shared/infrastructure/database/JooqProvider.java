@@ -15,7 +15,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
 import java.util.stream.Stream;
 import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
@@ -35,17 +37,36 @@ import org.springframework.stereotype.Component;
 public class JooqProvider implements TenantDatabasePort {
 
   private final MoodleConfig moodleConfig;
+  private final ExecutorService executor;
 
   // Cache DataSource instances only; DSLContext instances are request-scoped.
   private final ConcurrentHashMap<String, DataSource> dataSourceCache;
 
   private final Set<String> migratedTenants = ConcurrentHashMap.newKeySet();
 
-  public JooqProvider(MoodleConfig moodleConfig) {
+  public JooqProvider(MoodleConfig moodleConfig, ExecutorService executor) {
 
     this.moodleConfig = moodleConfig;
+    this.executor = executor;
 
     this.dataSourceCache = new ConcurrentHashMap<>();
+  }
+
+  /** Starts tenant datasource creation and Flyway migration without blocking session creation. */
+  @Override
+  public void initializeTenantAsync(SessionData session) {
+
+    if (session == null) return;
+
+    CompletableFuture.runAsync(() -> getDataSource(session), executor)
+        .exceptionally(
+            exception -> {
+              log.error(
+                  "Unable to initialize tenant database for {}",
+                  TenantContext.buildTenantId(session),
+                  exception);
+              return null;
+            });
   }
 
   /** Returns the cached tenant data source, creating and migrating it when necessary. */
@@ -72,9 +93,9 @@ public class JooqProvider implements TenantDatabasePort {
   /** Creates and configures a tenant data source, including its Flyway schema migration. */
   private DataSource createTenantDataSource(SessionData session) {
 
-    try {
-      HikariDataSource ds = new HikariDataSource();
+    HikariDataSource ds = new HikariDataSource();
 
+    try {
       String jdbcUrl =
           DatabaseUtil.buildJdbcUrl(
               moodleConfig.getDb().getJdbcUrlTemplate(),
@@ -102,6 +123,7 @@ public class JooqProvider implements TenantDatabasePort {
       return ds;
 
     } catch (Exception e) {
+      ds.close();
       throw new DatabaseCreationException("Error creating tenant datasource", e);
     }
   }
@@ -152,6 +174,7 @@ public class JooqProvider implements TenantDatabasePort {
   }
 
   /** Closes all cached tenant data sources and clears the provider state. */
+  @Override
   public void clearAll() {
     for (DataSource dataSource : dataSourceCache.values()) {
       if (dataSource instanceof HikariDataSource hikari) {

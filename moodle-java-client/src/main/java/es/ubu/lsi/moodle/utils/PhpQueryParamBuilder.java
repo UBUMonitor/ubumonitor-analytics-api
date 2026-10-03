@@ -1,7 +1,5 @@
 package es.ubu.lsi.moodle.utils;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
@@ -12,6 +10,8 @@ import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Slf4j
@@ -36,11 +36,18 @@ public final class PhpQueryParamBuilder {
 
       Map<String, String> result = new LinkedHashMap<>();
 
-      log.debug("Converting object to PHP query parameters: {}", object.getClass().getSimpleName());
+      log.trace(
+          "Converting {} to PHP query parameters; mapped fields: {}",
+          object.getClass().getSimpleName(),
+          map.keySet());
 
       buildQuery(null, map, result);
 
-      log.debug("Successfully converted {} parameters", result.size());
+      log.trace(
+          "Converted {} to {} PHP query parameters; keys: {}",
+          object.getClass().getSimpleName(),
+          result.size(),
+          result.keySet());
 
       return result;
 
@@ -54,7 +61,7 @@ public final class PhpQueryParamBuilder {
   private static void buildQuery(String prefix, Object value, Map<String, String> params) {
 
     switch (value) {
-      case null -> log.trace("Skipping null value at prefix: {}", prefix);
+      case null -> log.trace("Skipping null PHP query parameter: {}", prefix);
 
       case Map<?, ?> map -> {
         for (Map.Entry<?, ?> entry : map.entrySet()) {
@@ -75,7 +82,7 @@ public final class PhpQueryParamBuilder {
       default -> {
         params.put(prefix, String.valueOf(value));
 
-        log.trace("Added parameter: {} = {}", prefix, value);
+        log.trace("Added PHP query parameter: {}", prefix);
       }
     }
   }

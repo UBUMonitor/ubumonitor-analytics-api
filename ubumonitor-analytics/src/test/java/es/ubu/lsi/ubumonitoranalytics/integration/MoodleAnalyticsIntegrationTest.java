@@ -162,21 +162,14 @@ class MoodleAnalyticsIntegrationTest {
       assertEquals(expectedAuthBody, OBJECT_MAPPER.readTree(authResponse.getBody()));
       applyDatabaseSetup(databaseSetup, wireMock.baseUrl(), authBody);
 
-      JsonNode request = testCase.path("request");
-      String requestPath =
-          request.path("path").asText().replace("${MOODLE_HOST}", wireMock.baseUrl());
-      String requestBody = requestBody(request.path("body"));
-      if (requestBody != null) {
-        requestBody = requestBody.replace("${MOODLE_HOST}", wireMock.baseUrl());
+      JsonNode endpoints = testCase.path("endpoints");
+      if (endpoints.isArray()) {
+        for (JsonNode endpoint : endpoints) {
+          runFixtureEndpoint(endpoint, accessToken, wireMock.baseUrl());
+        }
+      } else {
+        runFixtureEndpoint(testCase, accessToken, wireMock.baseUrl());
       }
-      ResponseEntity<String> response =
-          exchangeRequest(request, requestPath, accessToken, requestBody);
-      assertEquals(
-          testCase.path("expectedResponse").path("status").asInt(200),
-          response.getStatusCode().value(),
-          "Unexpected status for " + request.path("path").asText() + ": " + response.getBody());
-
-      assertExpectedBody(testCase, response);
     } finally {
       if (accessToken != null && !accessToken.isBlank()) {
         SessionData sessionData = sessionStore.getSession(accessToken);
@@ -188,6 +181,22 @@ class MoodleAnalyticsIntegrationTest {
       moodleConfig.getDb().setBasePath(previousDatabasePath);
       wireMock.stop();
     }
+  }
+
+  private void runFixtureEndpoint(JsonNode endpoint, String accessToken, String moodleHost)
+      throws IOException {
+    JsonNode request = endpoint.path("request");
+    String requestPath = request.path("path").asText().replace("${MOODLE_HOST}", moodleHost);
+    String body = requestBody(request.path("body"));
+    if (body != null) {
+      body = body.replace("${MOODLE_HOST}", moodleHost);
+    }
+    ResponseEntity<String> response = exchangeRequest(request, requestPath, accessToken, body);
+    assertEquals(
+        endpoint.path("expectedResponse").path("status").asInt(200),
+        response.getStatusCode().value(),
+        "Unexpected status for " + requestPath + ": " + response.getBody());
+    assertExpectedBody(endpoint, response);
   }
 
   private String configureFixtureDatabase(String fixtureName) {

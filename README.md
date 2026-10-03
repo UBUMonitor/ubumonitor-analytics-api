@@ -6,7 +6,6 @@ UBUMonitor Analytics is a Spring Boot API that provides Moodle analytics over RE
 
 - JDK 25
 - Maven
-- GraalVM Native Image for native builds (optional)
 
 ## Build
 

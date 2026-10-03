@@ -8,7 +8,7 @@ import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessi
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-/** Invalidates the current session and closes its tenant data source. */
+/** Invalidates the current session and clears cached tenant data sources. */
 @Service
 @RequiredArgsConstructor
 public class LogoutService implements LogoutUseCase {
@@ -24,10 +24,9 @@ public class LogoutService implements LogoutUseCase {
     SessionData sessionData = currentSessionContext.getSessionData();
 
     try {
-      // close and remove tenant datasource associated with this session
       if (sessionData != null) {
 
-        tenantDatabasePort.closeTenant(sessionData);
+        tenantDatabasePort.clearAll();
         sessionStorePort.invalidateSession(sessionData.getJwt());
       }
     } finally {

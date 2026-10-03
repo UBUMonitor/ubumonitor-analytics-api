@@ -6,6 +6,8 @@ import es.ubu.lsi.ubumonitoranalytics.features.auth.application.port.out.Session
 import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.JwtToken;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.auth.AuthInput;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.exception.UnauthorizedException;
+import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.database.TenantDatabasePort;
+import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ public class AuthService implements AuthUseCase {
 
   private final SessionPort sessionPort;
   private final MoodleApiPort moodleApiPort;
+  private final TenantDatabasePort tenantDatabasePort;
   private final ExecutorService executor;
 
   /**
@@ -39,6 +42,7 @@ public class AuthService implements AuthUseCase {
     }
 
     authInput.setUsername(username);
+    initializeTenantDatabaseAsync(authInput);
 
     RestClient restClient = moodleApiPort.getRestClientFromCookies(authInput);
 
@@ -53,6 +57,8 @@ public class AuthService implements AuthUseCase {
    */
   @Override
   public JwtToken loginByCredentials(AuthInput authInput) {
+
+    initializeTenantDatabaseAsync(authInput);
 
     CompletableFuture<String> moodleTokenFuture =
         CompletableFuture.supplyAsync(() -> fetchMoodleToken(authInput), executor);
@@ -84,7 +90,18 @@ public class AuthService implements AuthUseCase {
   @Override
   public JwtToken loginOffline(AuthInput authInput) {
 
+    initializeTenantDatabaseAsync(authInput);
     return sessionPort.generateSession(authInput, null);
+  }
+
+  private void initializeTenantDatabaseAsync(AuthInput authInput) {
+    SessionData tenantSession =
+        SessionData.builder()
+            .host(authInput.getHost())
+            .username(authInput.getUsername())
+            .dbPassword(authInput.getDbPassword())
+            .build();
+    tenantDatabasePort.initializeTenantAsync(tenantSession);
   }
 
   /**

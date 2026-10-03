@@ -6,7 +6,7 @@ El reactor Maven tiene `ubumonitor-analytics` (API, lógica, persistencia jOOQ/H
 La API consume el cliente como módulo del mismo reactor; el POM raíz declara ambos módulos y la configuración de formato.
 
 ## Comandos
-Ejecuta primero el test de un fixture concreto; deja el build limpio completo para el final. Los builds generan OpenAPI/jOOQ y arrancan el contexto Spring; tardan más que el test aislado. La compilación nativa tarda más y requiere GraalVM Native Image.
+Ejecuta primero el test de un fixture concreto; deja el build limpio completo para el final. Los builds generan OpenAPI/jOOQ y arrancan el contexto Spring; tardan más que el test aislado.
 
 | Objetivo | PowerShell desde la raíz | Coste |
 |---|---|---|
@@ -15,7 +15,6 @@ Ejecuta primero el test de un fixture concreto; deja el build limpio completo pa
 | Empaquetar API y dependencias del reactor | `mvn -pl ubumonitor-analytics -am package` | Largo; compila módulos necesarios y ejecuta tests. |
 | Formatear | `mvn spotless:apply` | Corto; puede modificar archivos Java/XML/JSON. |
 | Arrancar con configuración local `dev` | `mvn -pl ubumonitor-analytics spring-boot:run '-Dspring-boot.run.profiles=dev'` | Compila y deja el servidor en primer plano. |
-| Imagen nativa (perfil Maven) | `mvn -pl ubumonitor-analytics -am -Pnative -DskipTests package` | Muy largo; requiere GraalVM Native Image. |
 | Build completo limpio (último) | `mvn clean install` | El más largo; limpia, genera, prueba e instala el reactor. |
 
 En bash, los mismos comandos sirven; conserva las comillas simples alrededor de cada `-D...` como se muestra. El fixture aislado se selecciona con `integration.fixture.pattern`; cambia el patrón por el recurso `classpath:/integration/.../test-case.json` deseado. En un checkout limpio, instala/compila primero el reactor si el módulo `moodle-java-client` aún no está en el repositorio Maven local.
@@ -103,7 +102,6 @@ No edites código generado: OpenAPI y jOOQ viven bajo `ubumonitor-analytics/targ
 - No aparece una modificación del DTO → OpenAPI/JSON Schema se regenera en `target/` → cambia la fuente YAML/JSON Schema y vuelve a generar.
 - La API local muestra Swagger/H2 Console solo con configuración de desarrollo → `application-dev.yml` no es el perfil por defecto → activa `dev` solo para uso local.
 - `run.bat` tarda y cierra otro proceso → siempre ejecuta `mvn clean install` y mata el listener del puerto 9090 → para iterar, usa el comando dirigido al módulo; revisa el puerto antes de usar el `.bat`.
-- `-Pnative` no activa configuración Spring → `native` es un perfil Maven declarado en `ubumonitor-analytics/pom.xml` → activa el perfil Maven y usa GraalVM Native Image.
 - Falla una API Java reciente o la compilación con otro JDK → ambos módulos fijan Java 25 y la API usa Spring Boot 4.1.1 → compila con JDK 25 y no introduzcas APIs incompatibles.
 - El test recorre todos los fixtures → el patrón por defecto es `classpath:/integration/**/test-case.json` → pasa `-Dintegration.fixture.pattern=classpath:/integration/.../test-case.json`.
 

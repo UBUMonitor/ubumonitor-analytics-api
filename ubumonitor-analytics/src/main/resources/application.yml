@@ -43,7 +43,9 @@ server:
 springdoc:
   api-docs:
     enabled: false
-
+org:
+  jooq:
+    Constants=OFF
 jwt:
   expiration-time-in-seconds: 0
 
@@ -58,6 +60,9 @@ moodle:
 logging:
   level:
     root: INFO
+    es.ubu.lsi.moodle.utils: TRACE
+    es.ubu.lsi.ubumonitoranalytics.features.auth.infrastructure.out.moodle.MoodleClientAdapter: TRACE
+    es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.moodle.RestClientHttpTransport: TRACE
     org.zalando.logbook: TRACE
 
 management:

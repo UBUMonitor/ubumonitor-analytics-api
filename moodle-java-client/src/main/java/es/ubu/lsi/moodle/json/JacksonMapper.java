@@ -1,11 +1,11 @@
 package es.ubu.lsi.moodle.json;
 
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import es.ubu.lsi.moodle.exception.JsonMappingException;
 import es.ubu.lsi.moodle.model.ajax.AjaxResponse;
 import java.util.List;
+import tools.jackson.databind.JavaType;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 /** Maps Java values to and from Moodle JSON payloads. */
 public class JacksonMapper {
