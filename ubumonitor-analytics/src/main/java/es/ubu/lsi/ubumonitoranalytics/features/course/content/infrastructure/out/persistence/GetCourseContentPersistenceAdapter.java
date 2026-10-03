@@ -13,6 +13,7 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+/** Reads course sections and modules from tenant persistence. */
 @Component
 @RequiredArgsConstructor
 public class GetCourseContentPersistenceAdapter implements GetCourseContentPersistenceUseCase {
@@ -32,7 +33,7 @@ public class GetCourseContentPersistenceAdapter implements GetCourseContentPersi
             .orderBy(SECTIONS.POSITION.asc())
             .fetchMap(SECTIONS.ID, mapper::toDomain);
 
-    // 2. Modules agrupadas por section_id
+    // 2. Group modules by section_id.
     Map<Integer, List<CourseModule>> modulesBySection =
         jooq.dsl()
             .selectFrom(MODULES)
@@ -41,12 +42,10 @@ public class GetCourseContentPersistenceAdapter implements GetCourseContentPersi
             .orderBy(MODULES.POSITION.asc())
             .fetchGroups(MODULES.SECTION_ID, mapper::toDomain);
 
-    // 3. Asignar modules a cada section
-    sectionMap
-        .values()
-        .forEach(
-            section ->
-                section.setModules(modulesBySection.getOrDefault(section.getId(), List.of())));
+    // 3. Assign modules to each section.
+    for (Section section : sectionMap.values()) {
+      section.setModules(modulesBySection.getOrDefault(section.getId(), List.of()));
+    }
 
     // 4. Response
     return CourseContent.builder().courseId(courseId).sections(sectionMap.values()).build();

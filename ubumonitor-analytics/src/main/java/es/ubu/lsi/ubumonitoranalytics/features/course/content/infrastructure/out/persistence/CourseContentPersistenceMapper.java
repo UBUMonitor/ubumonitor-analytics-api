@@ -9,6 +9,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
+/** Maps course-content records to and from domain models. */
 @Mapper(config = GlobalMapperConfig.class)
 public interface CourseContentPersistenceMapper {
 

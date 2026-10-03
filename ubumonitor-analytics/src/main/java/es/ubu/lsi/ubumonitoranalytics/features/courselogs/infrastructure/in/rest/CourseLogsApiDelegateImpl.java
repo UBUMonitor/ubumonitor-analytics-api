@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+/** Implements the generated REST operations for course logs. */
 @Service
 @RequiredArgsConstructor
 public class CourseLogsApiDelegateImpl implements CourseLogsApiDelegate {
@@ -49,13 +50,13 @@ public class CourseLogsApiDelegateImpl implements CourseLogsApiDelegate {
   }
 
   @Override
-  public ResponseEntity<CourseLogsInfoResponseDto> getCourseInfoLogs(Integer courseId) {
+  public ResponseEntity<CourseLogsResponseDto> getCourseLogsInfo(Integer courseId) {
     CourseLogsInfoResult courseLogsInfoResult = fetchCourseLogsUseCase.getCourseLogsInfo(courseId);
     return ResponseEntity.ok(columnInfoMapper.toDto(courseLogsInfoResult));
   }
 
   @Override
-  public ResponseEntity<CourseLogsListResponseDto> getCourseListLogs(
+  public ResponseEntity<CourseLogsListResponseDto> getCourseLogsList(
       Integer courseId, CourseLogsListRequestDto courseLogsListRequestDto) {
     CourseLogsInfoRequest courseLogsInfoRequest =
         getCourseLogsMapper.toDomain(courseId, courseLogsListRequestDto);

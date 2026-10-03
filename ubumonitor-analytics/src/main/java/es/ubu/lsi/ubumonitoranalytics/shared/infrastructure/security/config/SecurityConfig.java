@@ -18,6 +18,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+/** Configures authentication and authorization for API requests. */
 @Configuration
 @RequiredArgsConstructor
 @Profile("!dev")
@@ -36,9 +37,9 @@ public class SecurityConfig {
                 auth.requestMatchers(HttpMethod.OPTIONS, "/**")
                     .permitAll()
                     .requestMatchers("/api/public/**")
-                    .permitAll() // Endpoints de autenticación no requieren JWT
+                    .permitAll() // Public authentication endpoints do not require a JWT.
                     .requestMatchers("/api/**")
-                    .authenticated() // Endpoints
+                    .authenticated() // Protected API endpoints require authentication.
                     .anyRequest()
                     .permitAll())
         .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -28,8 +28,7 @@ public class DatabaseUtil {
     if (username == null || username.isBlank()) {
       return "default_user";
     }
-    // URLEncoder es la forma más segura de mantener la identidad del usuario
-    // sin romper las reglas del sistema de archivos.
+    // URL encoding preserves username identity while producing a file-system-safe value.
     return URLEncoder.encode(username, StandardCharsets.UTF_8);
   }
 
@@ -41,12 +40,10 @@ public class DatabaseUtil {
       String jdbcTemplate, String basePath, URI host, String username) {
     String fileName = buildDbFileName(host, username);
 
-    // Usamos Path para normalizar la ruta según el SO (evita problemas de / o \)
+    // Normalize the path for the current operating system.
     String fullPath = Path.of(basePath).resolve(fileName).toAbsolutePath().toString();
 
-    // Importante: H2 en Windows a veces necesita que las barras invertidas
-    // de la ruta sean normales (/) o escapadas en la URL JDBC.
-    // toString() de Path suele ser suficiente, pero esto es más robusto:
+    // H2 JDBC URLs are more portable when Windows path separators are normalized.
     String normalizedPath = fullPath.replace("\\", "/");
 
     return String.format(jdbcTemplate, normalizedPath);
@@ -67,7 +64,7 @@ public class DatabaseUtil {
       log.info("FILE EXISTS: {}", Files.exists(getFile(basePath, host, username)));
       log.info("Ensuring database exists for {} / {}", host, username);
 
-      // Solo “abre” la DB (H2 la crea si no existe)
+      // Opening the database creates it when it does not already exist.
       try (var _ = DriverManager.getConnection(jdbcUrl, "sa", dbPassword + " " + dbPassword)) {
         log.info("Database ready (H2 auto-create)");
       }

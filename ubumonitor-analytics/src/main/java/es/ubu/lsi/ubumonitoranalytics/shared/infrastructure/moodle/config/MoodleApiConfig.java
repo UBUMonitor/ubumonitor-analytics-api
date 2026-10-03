@@ -21,6 +21,7 @@ import org.springframework.web.client.RestClient;
 import org.zalando.logbook.Logbook;
 import org.zalando.logbook.spring.LogbookClientHttpRequestInterceptor;
 
+/** Configures HTTP transports for Moodle REST and web-service requests. */
 @Configuration
 @RequiredArgsConstructor
 @Slf4j

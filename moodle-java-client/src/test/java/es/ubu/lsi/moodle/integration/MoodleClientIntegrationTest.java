@@ -1,17 +1,14 @@
 package es.ubu.lsi.moodle.integration;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.github.tomakehurst.wiremock.WireMockServer;
 import es.ubu.lsi.moodle.api.Client;
 import es.ubu.lsi.moodle.core.DefaultClient;
 import es.ubu.lsi.moodle.http.JavaHttpTransport;
 import es.ubu.lsi.moodle.json.JacksonMapper;
 import es.ubu.lsi.moodle.model.login.token.request.LoginTokenRequestApi;
-import org.junit.jupiter.api.DynamicTest;
-import org.junit.jupiter.api.TestFactory;
-
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -21,9 +18,11 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
 
 class MoodleClientIntegrationTest {
 
@@ -31,7 +30,9 @@ class MoodleClientIntegrationTest {
 
   @TestFactory
   Stream<DynamicTest> runFixtureTests() throws Exception {
-    Path fixtureDirectory = Path.of(Objects.requireNonNull(getClass().getClassLoader().getResource("integration")).toURI());
+    Path fixtureDirectory =
+        Path.of(
+            Objects.requireNonNull(getClass().getClassLoader().getResource("integration")).toURI());
     List<Path> fixtures;
     try (Stream<Path> paths = Files.walk(fixtureDirectory)) {
       fixtures =
@@ -60,7 +61,7 @@ class MoodleClientIntegrationTest {
           .path("moodleMocks")
           .forEach(mock -> configureMock(wireMock, mock, wireMock.baseUrl()));
 
-      ObjectNode loginRequestJson = auth.path("body").deepCopy();
+      ObjectNode loginRequestJson = OBJECT_MAPPER.treeToValue(auth.path("body"), ObjectNode.class);
       loginRequestJson.put("baseurl", wireMock.baseUrl());
       LoginTokenRequestApi loginRequest =
           OBJECT_MAPPER.treeToValue(loginRequestJson, LoginTokenRequestApi.class);
@@ -69,15 +70,15 @@ class MoodleClientIntegrationTest {
               new JavaHttpTransport(new JacksonMapper(), URI.create(wireMock.baseUrl()), ""));
       JsonNode loginResponse = OBJECT_MAPPER.valueToTree(loginClient.login(loginRequest));
       assertEquals(testCase.path("auth").path("expectedResponse").path("body"), loginResponse);
-      String token = loginResponse.path("token").asText();
+      String token = loginResponse.path("token").asString();
       assertTrue(token != null && !token.isBlank(), "Login mock must return a token");
 
       Client client =
           new DefaultClient(
               new JavaHttpTransport(new JacksonMapper(), URI.create(wireMock.baseUrl()), token));
       JsonNode requestDefinition = testCase.path("request");
-      assertEquals("CLIENT", requestDefinition.path("method").asText());
-      String[] operationPath = requestDefinition.path("path").asText().split("\\.", 2);
+      assertEquals("CLIENT", requestDefinition.path("method").asString());
+      String[] operationPath = requestDefinition.path("path").asString().split("\\.", 2);
       Object api = Client.class.getMethod(operationPath[0]).invoke(client);
       Class<?> apiInterface = api.getClass().getInterfaces()[0];
       Method operation =
@@ -109,14 +110,14 @@ class MoodleClientIntegrationTest {
     JsonNode requestDefinition = mockDefinition.path("request");
     var mapping =
         request(
-            requestDefinition.path("method").asText("POST"),
-            urlEqualTo(requestDefinition.path("path").asText()));
+            requestDefinition.path("method").asString("POST"),
+            urlEqualTo(requestDefinition.path("path").asString()));
     JsonNode body = requestDefinition.path("body");
     assertFalse(body.isMissingNode(), "Every Moodle mock request must define a body");
     mapping.withRequestBody(
-        body.isTextual()
+        body.isString()
             ? equalTo(
-                body.asText()
+                body.asString()
                     .replace(
                         "${MOODLE_HOST}", URLEncoder.encode(moodleHost, StandardCharsets.UTF_8)))
             : equalToJson(body.toString(), false, false));

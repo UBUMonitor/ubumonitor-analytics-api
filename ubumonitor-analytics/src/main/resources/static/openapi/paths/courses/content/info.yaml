@@ -1,9 +1,9 @@
 get:
   tags:
     - CourseContent
-  summary: Get course users has been enrolled information
+  summary: Get course content
   operationId: GetCourseUsersContentInfo
-  description: Get course Users Content sections and modules
+  description: Retrieves the sections and modules stored for a course.
   parameters:
     - name: courseId
       in: path

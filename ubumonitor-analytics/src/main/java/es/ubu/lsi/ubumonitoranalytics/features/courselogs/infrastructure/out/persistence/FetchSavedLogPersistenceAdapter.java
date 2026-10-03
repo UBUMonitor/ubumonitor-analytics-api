@@ -19,6 +19,7 @@ import org.jooq.impl.DSL;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Component;
 
+/** Queries tenant persistence for filtered and paginated course logs. */
 @Component
 @RequiredArgsConstructor
 public class FetchSavedLogPersistenceAdapter implements FetchLogPersistencePort {
@@ -39,7 +40,7 @@ public class FetchSavedLogPersistenceAdapter implements FetchLogPersistencePort 
   }
 
   // =================================================================================
-  // EJECUCIÓN DE QUERIES Y CONSTRUCCIÓN DE RESULTADOS
+  // Query execution and result construction.
   // =================================================================================
 
   private @NonNull List<FetchLogLine> fetchLogLines(
@@ -92,15 +93,15 @@ public class FetchSavedLogPersistenceAdapter implements FetchLogPersistencePort 
   }
 
   // =================================================================================
-  // CONSTRUCCIÓN DINÁMICA DE JOOQ (SELECT & JOINS)
+  // Dynamic jOOQ query construction (SELECT and JOIN clauses).
   // =================================================================================
 
   private SelectJoinStep<Record> buildDynamicQuery(
       List<SelectFieldOrAsterisk> fields, Set<LogViewColumn> requiredColumns) {
     SelectJoinStep<Record> query = jooq.dsl().select(fields).from(LOGS);
 
-    // MODULES se necesita tanto para MODULE_NAME como para resolver
-    // SECTION_ID/SECTION_NAME, ya que la sección cuelga del módulo.
+    // MODULES is required for MODULE_NAME and for resolving section fields,
+    // because sections are associated through modules.
     boolean needsModules =
         requiredColumns.contains(LogViewColumn.MODULE_NAME)
             || requiredColumns.contains(LogViewColumn.SECTION_ID)
@@ -145,7 +146,7 @@ public class FetchSavedLogPersistenceAdapter implements FetchLogPersistencePort 
       }
     }
 
-    // 2. Filtros dinámicos
+    // 2. Dynamic filters.
     if (filters != null) {
       addInFilter(conditions, LOGS.USER_ID, filters.getUserIds());
       addInFilter(conditions, LOGS.MODULE_ID, filters.getModuleIds());
@@ -212,7 +213,9 @@ public class FetchSavedLogPersistenceAdapter implements FetchLogPersistencePort 
       List<LogViewColumn> columns, List<CourseLogsInfoRequestSortItem> sort) {
     Set<LogViewColumn> required = new HashSet<>(columns);
     if (sort != null) {
-      sort.forEach(s -> required.add(s.getField()));
+      for (CourseLogsInfoRequestSortItem sortItem : sort) {
+        required.add(sortItem.getField());
+      }
     }
     return required;
   }

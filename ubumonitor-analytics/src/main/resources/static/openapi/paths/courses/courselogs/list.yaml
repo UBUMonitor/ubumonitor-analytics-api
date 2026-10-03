@@ -1,7 +1,7 @@
 post:
   tags:
     - CourseLogs
-  operationId: GetCourseListLogs
+  operationId: GetCourseLogsList
   summary: Get course logs with filters
   description: |
     Retrieves logs for a specific course with optional filtering by date range

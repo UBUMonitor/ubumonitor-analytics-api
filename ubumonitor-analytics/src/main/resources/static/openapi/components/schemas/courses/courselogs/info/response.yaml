@@ -1,9 +1,25 @@
-CourseLogsInfoResponse:
+CourseLogsResponse:
   required:
     - column
   properties:
+    stats:
+      type: object
+      required:
+        - saved
+        - ignored
+        - failed
+      properties:
+        saved:
+          type: integer
+          description: Number of logs imported
+        ignored:
+          type: integer
+          description: Number of logs ignored (e.g. duplicates or don't have a mapper for component, event or origin)
+        failed:
+          type: integer
+          description: Number of logs that failed to import due to errors
     column:
-      $ref: '#/LogColumn'
+      $ref: "#/LogColumn"
 
 LogColumn:
   type: object
@@ -35,6 +51,9 @@ LogColumn:
             $ref: '#/LogEvent'
 LogEvent:
   type: object
+  required:
+    - id
+    - name
   properties:
     id:
       type: integer
@@ -43,6 +62,9 @@ LogEvent:
 
 LogComponent:
   type: object
+  required:
+    - id
+    - name
   properties:
     id:
       type: integer

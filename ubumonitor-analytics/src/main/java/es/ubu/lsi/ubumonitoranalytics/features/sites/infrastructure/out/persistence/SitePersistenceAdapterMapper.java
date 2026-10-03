@@ -6,6 +6,7 @@ import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.GlobalMapperC
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+/** Maps site persistence records to and from application models. */
 @Mapper(config = GlobalMapperConfig.class)
 public interface SitePersistenceAdapterMapper {
 

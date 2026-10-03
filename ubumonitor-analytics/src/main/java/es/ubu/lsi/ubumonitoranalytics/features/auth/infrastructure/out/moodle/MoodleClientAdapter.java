@@ -29,6 +29,7 @@ import org.springframework.web.client.RestClient;
 import org.zalando.logbook.Logbook;
 import org.zalando.logbook.spring.LogbookClientHttpRequestInterceptor;
 
+/** Implements authentication and web-client operations against Moodle. */
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -42,8 +43,17 @@ public class MoodleClientAdapter implements MoodleApiPort {
   @Override
   public String login(AuthInput authInput) {
     LoginTokenRequestApi loginTokenRequest = mapper.toDto(authInput);
+    log.trace(
+        "Mapped Moodle login request; hostPresent={}, usernamePresent={}, passwordPresent={}",
+        loginTokenRequest.getBaseurl() != null,
+        loginTokenRequest.getUsername() != null,
+        loginTokenRequest.getPassword() != null);
     LoginTokenResponseApi loginTokenResponse = client.login(loginTokenRequest);
 
+    log.trace(
+        "Moodle login response mapped; tokenPresent={}, errorPresent={}",
+        loginTokenResponse.getToken() != null,
+        loginTokenResponse.getError() != null);
     return loginTokenResponse.getToken();
   }
 
@@ -63,7 +73,8 @@ public class MoodleClientAdapter implements MoodleApiPort {
   public RestClient getRestClientFromCookies(AuthInput authInput) {
     String cookieHeader = buildCookieHeader(authInput.getCookies());
 
-    CloseableHttpClient httpClient = HttpClients.custom().build(); // sin CookieStore
+    CloseableHttpClient httpClient =
+        HttpClients.custom().build(); // No cookie store is needed here.
     HttpComponentsClientHttpRequestFactory requestFactory =
         new HttpComponentsClientHttpRequestFactory(httpClient);
 

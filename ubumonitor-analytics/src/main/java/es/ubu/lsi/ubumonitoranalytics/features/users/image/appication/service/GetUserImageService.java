@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/** Retrieves profile images and determines whether the supplied ETag is current. */
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -21,6 +22,13 @@ public class GetUserImageService implements GetUserImageUseCase {
   private final SessionStorePort sessionStorePort;
   private final CurrentSessionContext currentSessionContext;
 
+  /**
+   * @param userId Moodle user identifier
+   * @param host Moodle site URI
+   * @param username Moodle username
+   * @param ifNoneMatch request ETag, if supplied
+   * @return image content and modification state, or the unchanged state
+   */
   @Override
   public UserImage getUserImage(Integer userId, URI host, String username, String ifNoneMatch) {
     String normalized = normalize(ifNoneMatch);
@@ -33,12 +41,12 @@ public class GetUserImageService implements GetUserImageUseCase {
     currentSessionContext.setSessionData(sessionData);
     String imageHash = imagePersistencePort.getImageHash(userId);
 
-    // Usuario sin imagen -> placeholder
+    // Return the placeholder when the user has no stored image.
     if (imageHash == null) {
       return getPlaceHolder(normalized);
     }
 
-    // Match ETag -> 304
+    // Return an unmodified result when the ETag matches.
     if (imageHash.equals(normalized)) {
 
       return UserImage.builder().hexHash(imageHash).image(null).isModified(false).build();

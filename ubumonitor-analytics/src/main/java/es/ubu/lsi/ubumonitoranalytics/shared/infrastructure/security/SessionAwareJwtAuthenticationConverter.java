@@ -9,6 +9,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Component;
 
+/** Resolves authenticated JWT principals against the active session store. */
 @Component
 @RequiredArgsConstructor
 public class SessionAwareJwtAuthenticationConverter

@@ -17,6 +17,7 @@ import org.jooq.Record;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+/** Maps course enrollment records to application response models. */
 @Mapper(config = GlobalMapperConfig.class)
 public interface EnrollmentCourseEnrollmentsMapper {
 

@@ -6,6 +6,7 @@ import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.GlobalMapperC
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+/** Maps user image records to the application image model. */
 @Mapper(config = GlobalMapperConfig.class)
 public interface UserImageMapper {
 

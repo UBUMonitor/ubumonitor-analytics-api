@@ -6,6 +6,7 @@ import es.ubu.lsi.moodle.model.core.user.getusersbyfield.response.GetUsersByFiel
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 
+/** Implements Moodle core user calls through the shared client. */
 @RequiredArgsConstructor
 public class CoreUserApiImpl implements CoreUserApi {
   private final Client client;

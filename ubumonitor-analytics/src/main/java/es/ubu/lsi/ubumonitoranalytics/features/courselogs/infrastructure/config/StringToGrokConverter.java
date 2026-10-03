@@ -8,6 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesBindin
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
+/** Compiles configured Grok pattern strings for Spring configuration binding. */
 @Component
 @ConfigurationPropertiesBinding
 @RequiredArgsConstructor

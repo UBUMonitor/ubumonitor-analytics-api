@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/** Fetches the current user's Moodle enrollments and synchronizes tenant persistence. */
 @Service
 @RequiredArgsConstructor
 public class SyncUserCoursesService implements SyncUserCoursesUseCase {
@@ -20,6 +21,10 @@ public class SyncUserCoursesService implements SyncUserCoursesUseCase {
   private final SyncEnrollmentPersistencePort enrollmentPort;
   private final PersistenceFetchPort persistenceFetchPort;
 
+  /**
+   * @return synchronized course enrollments for the current user
+   * @throws EntityNotFoundException when the current user is absent from local persistence
+   */
   @Override
   @Transactional
   public UserEnrolledCourses syncActualUserEnrollments() {
@@ -31,7 +36,7 @@ public class SyncUserCoursesService implements SyncUserCoursesUseCase {
     UserEnrolledCourses userEnrolledCourses =
         enrollmentCoursesApiFetchPort.fetchEnrolledCourses(userId);
 
-    enrollmentPort.sync(userEnrolledCourses); // 3. Sync matrículas
+    enrollmentPort.sync(userEnrolledCourses);
 
     return userEnrolledCourses;
   }

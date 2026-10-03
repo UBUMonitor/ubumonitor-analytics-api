@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+/** Implements the generated REST operations for Moodle site information. */
 @Service
 @RequiredArgsConstructor
 public class SitesApiDelegateImpl implements SitesApiDelegate {

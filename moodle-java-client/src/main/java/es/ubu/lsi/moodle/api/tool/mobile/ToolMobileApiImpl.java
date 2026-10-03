@@ -5,6 +5,7 @@ import es.ubu.lsi.moodle.model.tool.mobile.getpublicconfig.request.GetPublicConf
 import es.ubu.lsi.moodle.model.tool.mobile.getpublicconfig.response.GetPublicConfigResponseApi;
 import lombok.RequiredArgsConstructor;
 
+/** Implements Moodle mobile-tool calls through the shared client. */
 @RequiredArgsConstructor
 public class ToolMobileApiImpl implements ToolMobileApi {
   private final Client client;

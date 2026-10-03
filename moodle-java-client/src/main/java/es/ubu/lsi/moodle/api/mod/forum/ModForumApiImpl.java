@@ -10,6 +10,7 @@ import es.ubu.lsi.moodle.model.mod.forum.getforumsbycourses.response.GetForumsBy
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 
+/** Implements Moodle forum calls through the shared client. */
 @RequiredArgsConstructor
 public class ModForumApiImpl implements ModForumApi {
   private final Client client;

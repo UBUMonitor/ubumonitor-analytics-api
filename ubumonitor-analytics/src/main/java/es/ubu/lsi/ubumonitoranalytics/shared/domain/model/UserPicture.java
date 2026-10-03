@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/** Holds a user's profile image data used during enrollment synchronization. */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

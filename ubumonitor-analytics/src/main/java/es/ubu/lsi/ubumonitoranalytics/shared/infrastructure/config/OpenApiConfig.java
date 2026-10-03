@@ -11,9 +11,15 @@ import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/** Configures OpenAPI generation and API metadata. */
 @Configuration
 public class OpenApiConfig {
 
+  /**
+   * Creates the OpenAPI document metadata and bearer authentication scheme.
+   *
+   * @return configured OpenAPI metadata
+   */
   @Bean
   public OpenAPI customOpenAPI() {
 

@@ -9,6 +9,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+/** Fetches the current user's course enrollments from Moodle. */
 @Component
 @RequiredArgsConstructor
 public class MoodleUserCoursesApiAdapter implements EnrollmentCoursesApiFetchPort {

@@ -14,6 +14,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
+/** Maps Moodle course-content responses to application models. */
 @Mapper(config = GlobalMapperConfig.class)
 public interface FetchCourseContentAdapaterMapper {
 

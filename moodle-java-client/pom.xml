@@ -21,7 +21,7 @@
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
     <maven.compiler.release>${java.version}</maven.compiler.release>
-    <jackson.version>2.19.4</jackson.version>
+    <jackson.version>3.2.3</jackson.version>
     <lombok.version>1.18.42</lombok.version>
 
   </properties>
@@ -37,14 +37,8 @@
   <dependencies>
 
     <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
+      <groupId>tools.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>${jackson.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-annotations</artifactId>
       <version>${jackson.version}</version>
     </dependency>
 

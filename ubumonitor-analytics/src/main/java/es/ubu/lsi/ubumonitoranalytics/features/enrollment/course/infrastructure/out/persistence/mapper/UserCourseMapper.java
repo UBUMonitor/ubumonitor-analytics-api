@@ -19,6 +19,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
+/** Maps user and course records to enrollment persistence models. */
 @Mapper(config = GlobalMapperConfig.class)
 public interface UserCourseMapper {
 

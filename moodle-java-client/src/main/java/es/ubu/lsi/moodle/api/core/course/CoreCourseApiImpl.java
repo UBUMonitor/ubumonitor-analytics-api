@@ -6,6 +6,7 @@ import es.ubu.lsi.moodle.model.core.course.getcontents.response.GetCourseContent
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 
+/** Implements Moodle course calls through the shared client. */
 @RequiredArgsConstructor
 public class CoreCourseApiImpl implements CoreCourseApi {
   private final Client client;

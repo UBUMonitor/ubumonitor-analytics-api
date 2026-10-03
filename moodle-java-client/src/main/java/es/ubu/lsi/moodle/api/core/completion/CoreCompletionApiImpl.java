@@ -5,6 +5,7 @@ import es.ubu.lsi.moodle.model.core.completion.getactivitiescompletionstatus.req
 import es.ubu.lsi.moodle.model.core.completion.getactivitiescompletionstatus.response.GetActivitiesCompletionStatusResponseApi;
 import lombok.RequiredArgsConstructor;
 
+/** Implements Moodle activity-completion calls through the shared client. */
 @RequiredArgsConstructor
 public class CoreCompletionApiImpl implements CoreCompletionApi {
   private final Client client;

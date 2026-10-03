@@ -15,7 +15,7 @@ post:
       content:
         application/json:
           schema:
-            $ref: '../../../components/schemas/courses/courselogs/sync/response.yaml#/CourseLogsResponse'
+            $ref: '../../../components/schemas/courses/courselogs/info/response.yaml#/CourseLogsResponse'
 
     '401':
       $ref: '../../../openapi.yaml#/components/responses/unauthorized_401'

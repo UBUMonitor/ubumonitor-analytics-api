@@ -9,6 +9,7 @@ import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+/** Reads profile image content and hashes from tenant persistence. */
 @Component
 @RequiredArgsConstructor
 public class ImagePersistenceAdapter implements ImagePersistencePort {

@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 
+/** Builds API error bodies and records diagnostic details for failures. */
 @Component
 @Slf4j
 public class ErrorResponseFactory {
@@ -30,10 +31,7 @@ public class ErrorResponseFactory {
         .errors(errors);
   }
 
-  /**
-   * Devuelve una representación compacta formada por los mensajes de la cadena de causas. Cada
-   * excepción se representa como "<ClaseExcepción>: <mensaje>" en una nueva línea.
-   */
+  /** Builds a compact representation of the cause chain, with each exception on a separate line. */
   private String getStackTrace(Throwable ex) {
     if (ex == null) {
       return "";
@@ -57,7 +55,7 @@ public class ErrorResponseFactory {
       }
 
       StackTraceElement[] stackTrace = current.getStackTrace();
-      int limit = Math.min(stackTrace.length, 10); // limita frames para no saturar el log
+      int limit = Math.min(stackTrace.length, 10); // Limit frames to keep logs concise.
       for (int i = 0; i < limit; i++) {
         sb.append(System.lineSeparator()).append(indent).append("    at ").append(stackTrace[i]);
       }

@@ -11,6 +11,7 @@ import es.ubu.lsi.ubumonitoranalytics.features.sites.application.port.out.Public
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+/** Fetches public Moodle site configuration through the AJAX API. */
 @Component
 @RequiredArgsConstructor
 public class PublicSiteInfoApiAdapter implements PublicSiteInfoApiPort {

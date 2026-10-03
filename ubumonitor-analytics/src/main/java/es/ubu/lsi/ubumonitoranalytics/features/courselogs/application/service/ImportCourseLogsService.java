@@ -34,6 +34,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.multipart.MultipartFile;
 
+/** Imports course logs from uploaded CSV files or synchronizes them from Moodle. */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -50,6 +51,11 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
   // =========================
   // LOCAL FILE IMPORT
   // =========================
+  /**
+   * @param courseId Moodle course identifier
+   * @param file uploaded log CSV
+   * @return import statistics and refreshed course log information
+   */
   @Override
   @SneakyThrows
   public ProcessLogsResult process(Integer courseId, MultipartFile file) {
@@ -61,6 +67,10 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
   // =========================
   // REMOTE SYNC
   // =========================
+  /**
+   * @param courseId Moodle course identifier
+   * @return synchronization statistics and refreshed course log information
+   */
   @Override
   @SneakyThrows
   public ProcessLogsResult sync(Integer courseId) {

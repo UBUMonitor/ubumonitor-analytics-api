@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+/** Implements the generated REST operation for user profile images. */
 @Component
 @RequiredArgsConstructor
 public class UsersApiDelegateImpl implements UsersApiDelegate {

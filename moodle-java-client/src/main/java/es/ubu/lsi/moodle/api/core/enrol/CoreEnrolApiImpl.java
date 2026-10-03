@@ -8,6 +8,7 @@ import es.ubu.lsi.moodle.model.core.enrol.getuserscourses.response.GetUsersCours
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 
+/** Implements Moodle enrollment calls through the shared client. */
 @RequiredArgsConstructor
 public class CoreEnrolApiImpl implements CoreEnrolApi {
   private final Client client;

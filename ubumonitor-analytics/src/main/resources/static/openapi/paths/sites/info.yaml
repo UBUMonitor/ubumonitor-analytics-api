@@ -1,9 +1,9 @@
 get:
   tags:
     - Sites
-  summary: Get site info and actual user logged
+  summary: Get site and current-user information
   operationId: getSiteInfo
-  description: Get site info and actual user logged
+  description: Retrieves the Moodle site information and the authenticated user's information.
   responses:
     '200':
       description: Site information

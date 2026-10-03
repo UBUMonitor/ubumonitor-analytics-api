@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+/** Fetches course enrollment data and profile images from Moodle. */
 @Component
 @RequiredArgsConstructor
 public class MoodleEnrollmentAdapter implements EnrollmentFetchPort {
@@ -49,7 +50,9 @@ public class MoodleEnrollmentAdapter implements EnrollmentFetchPort {
                         () -> fetchUserImage(userPicture, token), executor))
             .toList();
 
-    futures.forEach(CompletableFuture::join);
+    for (CompletableFuture<UserPicture> future : futures) {
+      future.join();
+    }
   }
 
   public UserPicture fetchUserImage(UserPicture userPicture, String token) {

@@ -1,5 +1,6 @@
 package es.ubu.lsi.moodle.model.ajax;
 
+/** Response envelope returned by a Moodle AJAX function call. */
 public class AjaxResponse<T> {
   private Boolean error;
   private T data;

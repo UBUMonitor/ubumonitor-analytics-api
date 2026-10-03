@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
+/** Stores the current user's course enrollment data in tenant persistence. */
 @Component
 @RequiredArgsConstructor
 public class SyncSyncEnrollmentPersistenceAdapter implements SyncEnrollmentPersistencePort {

@@ -21,6 +21,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
+/** Maps Moodle enrolled-user responses to application enrollment models. */
 @Mapper(config = GlobalMapperConfig.class)
 public interface EnrolledUsersMapper {
 

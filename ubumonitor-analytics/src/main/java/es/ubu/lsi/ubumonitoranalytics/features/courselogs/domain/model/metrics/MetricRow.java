@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/** Represents one grouped course-log metric row. */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -12,19 +13,19 @@ import lombok.NoArgsConstructor;
 public class MetricRow {
 
   private Integer userId;
-  private String userFullName; // NUEVO
+  private String userFullName;
   private Integer moduleId;
-  private String moduleName; // NUEVO
+  private String moduleName;
   private Byte componentId;
-  private String componentName; // NUEVO
+  private String componentName;
   private Short eventId;
-  private String eventName; // NUEVO
+  private String eventName;
   private Byte originId;
-  private String originName; // NUEVO
+  private String originName;
   private String ipAddress;
   private Integer courseId;
   private String timeBucket;
   private String sectionId;
   private String sectionName;
-  private Integer value; // El COUNT(*) resultante
+  private Integer value; // Resulting COUNT(*) value.
 }

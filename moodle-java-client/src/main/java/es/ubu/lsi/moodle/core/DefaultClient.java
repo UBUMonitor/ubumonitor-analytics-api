@@ -30,6 +30,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/** Routes typed Moodle operations through a shared HTTP transport. */
 public class DefaultClient implements Client {
   private static final String LOGIN_ENDPOINT = "/login/token.php";
   private static final String SERVER_ENDPOINT = "/webservice/rest/server.php";
@@ -47,6 +48,9 @@ public class DefaultClient implements Client {
   private final ModForumApi modForum;
   private final ToolMobileApi toolMobile;
 
+  /**
+   * @param httpTransport transport used for Moodle requests
+   */
   public DefaultClient(HttpTransport httpTransport) {
     this.transport = httpTransport;
     this.coreCalendar = new CoreCalendarApiImpl(this);
@@ -60,51 +64,61 @@ public class DefaultClient implements Client {
     this.toolMobile = new ToolMobileApiImpl(this);
   }
 
+  /** Returns the typed Moodle user API. */
   @Override
   public CoreUserApi coreUser() {
     return coreUser;
   }
 
+  /** Returns the typed Moodle course API. */
   @Override
   public CoreCourseApi coreCourse() {
     return coreCourse;
   }
 
+  /** Returns the typed Moodle enrollment API. */
   @Override
   public CoreEnrolApi coreEnrol() {
     return coreEnrol;
   }
 
+  /** Returns the typed Moodle calendar API. */
   @Override
   public CoreCalendarApi coreCalendar() {
     return coreCalendar;
   }
 
+  /** Returns the typed Moodle completion API. */
   @Override
   public CoreCompletionApi coreCompletion() {
     return coreCompletion;
   }
 
+  /** Returns the typed Moodle web-service API. */
   @Override
   public CoreWebserviceApi coreWebservice() {
     return coreWebservice;
   }
 
+  /** Returns the typed Moodle grade-report API. */
   @Override
   public GradeReportUserApi gradeReportUser() {
     return gradeReportUser;
   }
 
+  /** Returns the typed Moodle forum API. */
   @Override
   public ModForumApi modForum() {
     return modForum;
   }
 
+  /** Returns the typed Moodle mobile-tool API. */
   @Override
   public ToolMobileApi toolMobile() {
     return toolMobile;
   }
 
+  /** Authenticates against Moodle and returns the web-service token response. */
   @Override
   public LoginTokenResponseApi login(LoginTokenRequestApi request) {
     try {
@@ -123,6 +137,7 @@ public class DefaultClient implements Client {
     }
   }
 
+  /** Executes a form-encoded Moodle request and maps one response object. */
   @Override
   public <T> T execute(Object request, Class<T> responseType) {
     try {
@@ -134,6 +149,7 @@ public class DefaultClient implements Client {
     }
   }
 
+  /** Executes a form-encoded Moodle request and maps an array response. */
   @Override
   public <T> List<T> executeList(Object request, Class<T> elementType) {
     try {
@@ -145,6 +161,7 @@ public class DefaultClient implements Client {
     }
   }
 
+  /** Executes one Moodle AJAX request and requires exactly one response. */
   @Override
   public <T> AjaxResponse<T> executeAjax(
       String context, List<? extends AjaxRequest<?>> requests, Class<T> responseType) {
@@ -160,6 +177,7 @@ public class DefaultClient implements Client {
     return responses.getFirst();
   }
 
+  /** Executes Moodle AJAX requests and returns all mapped responses. */
   @Override
   public <T> List<AjaxResponse<T>> executeAjaxList(
       String context, List<? extends AjaxRequest<?>> requests, Class<T> elementType) {

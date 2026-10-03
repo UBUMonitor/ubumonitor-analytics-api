@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
+/** Creates a Grok compiler and registers the bundled pattern definitions. */
 @Configuration
 public class GrokCompilerConfig {
   @Bean

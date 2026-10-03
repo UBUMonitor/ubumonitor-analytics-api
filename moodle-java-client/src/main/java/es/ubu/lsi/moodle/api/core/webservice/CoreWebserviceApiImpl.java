@@ -5,6 +5,7 @@ import es.ubu.lsi.moodle.model.core.webservice.getsiteinfo.request.GetSiteInfoRe
 import es.ubu.lsi.moodle.model.core.webservice.getsiteinfo.response.GetSiteInfoResponseApi;
 import lombok.RequiredArgsConstructor;
 
+/** Implements core Moodle web-service calls through the shared client. */
 @RequiredArgsConstructor
 public class CoreWebserviceApiImpl implements CoreWebserviceApi {
 

@@ -1,5 +1,6 @@
 package es.ubu.lsi.ubumonitoranalytics.shared.domain.exception;
 
+/** Indicates that an application session cannot be found or created. */
 public class SessionNotFoundException extends RuntimeException {
 
   public SessionNotFoundException(String jwt) {

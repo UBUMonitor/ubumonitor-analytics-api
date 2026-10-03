@@ -16,6 +16,7 @@ import org.apache.commons.io.input.BOMInputStream;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
+/** Downloads full or incremental course log exports from Moodle. */
 @Component
 @Slf4j
 public class MoodleAdapter implements MoodlePort {

@@ -2,6 +2,7 @@ spring:
   devtools:
     restart:
       enabled: true
+
   h2:
     console:
       enabled: true
@@ -42,14 +43,14 @@ logbook:
     parameters:
       - password
       - token
+
     json-body-fields:
       - password
       - token
-  exclude:
-    - /actuator/**
-    - /v3/api-docs/**
-    - /swagger-ui/**
-    - /swagger-ui.html
-
-  write:
-    level: TRACE
+      - access_token
+  predicate:
+    exclude:
+      - path: /actuator/**
+      - path: /v3/api-docs/**
+      - path: /swagger-ui/**
+      - path: /swagger-ui.html

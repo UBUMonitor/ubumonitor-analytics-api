@@ -22,6 +22,7 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+/** Reads course enrollment data from tenant persistence. */
 @Component
 @RequiredArgsConstructor
 public class EnrollmentGetPersistenceAdapter implements EnrollmentGetPersistencePort {
@@ -38,15 +39,12 @@ public class EnrollmentGetPersistenceAdapter implements EnrollmentGetPersistence
     Map<Integer, List<Group>> userGroups = fetchGroups(userIds);
     Map<Integer, List<Role>> userRoles = fetchRoles(userIds);
 
-    // ensamblado final
-    users
-        .values()
-        .forEach(
-            u -> {
-              u.setCourses(userCourses.getOrDefault(u.getId(), List.of()));
-              u.setGroups(userGroups.getOrDefault(u.getId(), List.of()));
-              u.setRoles(userRoles.getOrDefault(u.getId(), List.of()));
-            });
+    // Assemble the final response.
+    for (User user : users.values()) {
+      user.setCourses(userCourses.getOrDefault(user.getId(), List.of()));
+      user.setGroups(userGroups.getOrDefault(user.getId(), List.of()));
+      user.setRoles(userRoles.getOrDefault(user.getId(), List.of()));
+    }
 
     return UsersResponse.builder()
         .users(new ArrayList<>(users.values()))

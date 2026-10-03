@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/** Fetches Moodle course enrollments and persists the returned user data. */
 @Service
 @RequiredArgsConstructor
 public class SyncCourseEnrollmentsService implements SyncCourseEnrollmentsUseCase {
@@ -18,6 +19,10 @@ public class SyncCourseEnrollmentsService implements SyncCourseEnrollmentsUseCas
 
   private final UserCoursePersistencePort userCoursePersistencePort;
 
+  /**
+   * @param courseId Moodle course identifier
+   * @return users and enrollment details fetched from Moodle
+   */
   @Override
   @Transactional
   public UsersResponse syncCourseEnrollments(Integer courseId) {

@@ -1,13 +1,13 @@
 get:
   tags:
     - Sites
-  summary: Get public site info
+  summary: Get public site information
   operationId: getPublicSiteInfo
-  description: Get public site info
+  description: Retrieves public information from the Moodle site without authentication.
   parameters:
     - name: host
       in: query
-      description: The Moodle host
+      description: Moodle site URL.
       required: true
       schema:
         type: string
