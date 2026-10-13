@@ -1,0 +1,43 @@
+{
+    "databaseSetup":  [
+
+                      ],
+    "moodleMocks":  [
+                        {
+                            "request":  {
+                                            "method":  "POST",
+                                            "path":  "/webservice/rest/server.php",
+                                            "body":  "wsfunction=tool_mobile_get_public_config\u0026moodlewsrestformat=json\u0026wstoken=wiremock-moodle-token"
+                                        },
+                            "response":  {
+                                             "body":  {
+                                                          "wwwroot":  "https://school.moodledemo.net",
+                                                          "httpswwwroot":  "https://school.moodledemo.net",
+                                                          "sitename":  "Mount Orange",
+                                                          "enablewebservices":  1,
+                                                          "enablemobilewebservice":  1,
+                                                          "maintenanceenabled":  0,
+                                                          "maintenancemessage":  "",
+                                                          "typeoflogin":  1,
+                                                          "launchurl":  "https://school.moodledemo.net/admin/tool/mobile/launch.php"
+                                                      }
+                                         }
+                        }
+                    ],
+    "request":  {
+                    "method":  "GET",
+                    "path":  "/api/enrollments/info",
+                    "headers":  {
+                                    "Authorization":  "******"
+                                }
+                },
+    "expectedResponse":  {
+                             "status":  200,
+                             "body":  {
+                                          "courses":  [
+
+                                                      ]
+                                      }
+                         },
+    "authFixture":  "classpath:/integration/shared/teacher-token-auth.json"
+}

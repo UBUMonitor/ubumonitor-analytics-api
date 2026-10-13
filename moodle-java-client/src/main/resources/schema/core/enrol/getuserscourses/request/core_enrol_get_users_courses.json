@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "GetUsersCoursesRequest",
+  "description": "Get the list of courses where a user is enrolled in",
+  "type": "object",
+  "extends": {
+    "$ref": "../../../../common/moodle_webservice_request.json"
+  },
+  "properties": {
+    "wsfunction": {
+      "type": "string",
+      "default": "core_enrol_get_users_courses"
+    },
+    "args": {
+      "type": "object",
+      "title": "GetUsersCoursesArgs",
+      "properties": {
+        "userid": {
+          "type": "integer"
+        },
+        "returnusercount": {
+          "description": "Include count of enrolled users for each course? This can add several seconds to the response time if a user is on several large courses, so set this to false if the value will not be used to improve performance.",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "userid"
+      ]
+    }
+  }
+}

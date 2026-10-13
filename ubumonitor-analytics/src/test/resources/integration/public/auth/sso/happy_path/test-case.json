@@ -1,0 +1,39 @@
+{
+  "moodleMocks": [
+    {
+      "request": {
+        "method": "POST",
+        "path": "/webservice/rest/server.php",
+        "body": "wsfunction=core_webservice_get_site_info&moodlewsrestformat=json&wstoken=wiremock-moodle-token"
+      },
+      "response": {
+        "body": {
+          "sitename": "Mount Orange",
+          "username": "teacher",
+          "firstname": "Jeffrey",
+          "lastname": "Sanders",
+          "fullname": "Jeffrey Sanders",
+          "userid": 13,
+          "siteid": 1,
+          "siteurl": "https://school.moodledemo.net",
+          "version": "2026042000",
+          "release": "5.2"
+        }
+      }
+    }
+  ],
+  "request": {
+    "method": "POST",
+    "path": "/api/public/auth/sso",
+    "body": {
+      "host": "${MOODLE_HOST}",
+      "moodleLaunchCredential": "moodlemobile://token=eHh4Ojo6d2lyZW1vY2stbW9vZGxlLXRva2Vu",
+      "dbPassword": "analytics-test-password",
+      "cookies": []
+    }
+  },
+  "expectedResponse": {
+    "status": 200,
+    "body": {"tokenType": "Bearer", "accessToken": "${JWT}"}
+  }
+}

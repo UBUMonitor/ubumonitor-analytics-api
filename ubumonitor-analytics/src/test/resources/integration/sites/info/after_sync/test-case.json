@@ -1,0 +1,85 @@
+{
+  "authFixture": "classpath:/integration/shared/teacher-token-auth.json",
+  "moodleMocks": [
+    {
+      "request": {
+        "method": "POST",
+        "path": "/webservice/rest/server.php",
+        "body": "wsfunction=core_webservice_get_site_info&moodlewsrestformat=json&wstoken=wiremock-moodle-token"
+      },
+      "response": {
+        "body": {
+          "sitename": "Mount Orange",
+          "username": "teacher",
+          "firstname": "Jeffrey",
+          "lastname": "Sanders",
+          "fullname": "Jeffrey Sanders",
+          "userid": 13,
+          "siteid": 1,
+          "version": "2026042000"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "path": "/webservice/rest/server.php",
+        "body": "wsfunction=tool_mobile_get_public_config&moodlewsrestformat=json&wstoken=wiremock-moodle-token"
+      },
+      "response": {
+        "body": {
+          "wwwroot": "https://school.moodledemo.net",
+          "sitename": "Mount Orange",
+          "enablewebservices": 1,
+          "enablemobilewebservice": 1,
+          "maintenanceenabled": 0,
+          "maintenancemessage": "",
+          "typeoflogin": 1,
+          "launchurl": "https://school.moodledemo.net/admin/tool/mobile/launch.php"
+        }
+      }
+    }
+  ],
+  "endpoints": [
+    {
+      "request": {
+        "method": "POST",
+        "path": "/api/sites/sync",
+        "headers": {
+          "Authorization": "******"
+        }
+      },
+      "expectedResponse": {
+        "status": 200
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "path": "/api/sites/info",
+        "headers": {
+          "Authorization": "******"
+        }
+      },
+      "expectedResponse": {
+        "status": 200,
+        "body": {
+          "site": {
+            "siteName": "Mount Orange",
+            "siteVersion": "2026042000",
+            "siteUrl": "https://school.moodledemo.net",
+            "typeOfLogin": "APP",
+            "launchUrl": "https://school.moodledemo.net/admin/tool/mobile/launch.php?service=moodle_mobile_app&urlscheme=moodlemobile&passport=1"
+          },
+          "user": {
+            "id": 13,
+            "username": "teacher",
+            "fullName": "Jeffrey Sanders",
+            "firstName": "Jeffrey",
+            "lastName": "Sanders"
+          }
+        }
+      }
+    }
+  ]
+}

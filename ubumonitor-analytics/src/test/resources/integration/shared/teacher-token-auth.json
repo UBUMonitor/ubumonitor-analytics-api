@@ -1,0 +1,49 @@
+{
+  "auth": {
+    "request": {
+      "method": "POST",
+      "path": "/api/public/auth/token",
+      "body": {
+        "host": "${MOODLE_HOST}",
+        "token": "wiremock-moodle-token",
+        "dbPassword": "analytics-test-password"
+      }
+    },
+    "expectedResponse": {
+      "status": 200,
+      "body": {
+        "tokenType": "Bearer",
+        "accessToken": "${JWT}"
+      }
+    }
+  },
+  "moodleMocks": [
+    {
+      "request": {
+        "method": "POST",
+        "path": "/webservice/rest/server.php",
+        "body": "wsfunction=core_webservice_get_site_info&moodlewsrestformat=json&wstoken=wiremock-moodle-token"
+      },
+      "response": {
+        "body": {
+          "sitename": "Mount Orange",
+          "username": "teacher",
+          "firstname": "Jeffrey",
+          "lastname": "Sanders",
+          "fullname": "Jeffrey Sanders",
+          "userid": 13,
+          "userpictureurl": "https://school.moodledemo.net/pluginfile.php/160/user/icon/boost/f1?rev=75854",
+          "siteid": 1,
+          "siteurl": "https://school.moodledemo.net",
+          "version": "2026042000",
+          "release": "5.2"
+        }
+      }
+    }
+  ],
+  "databaseSetup": [
+    "INSERT INTO USERS (ID, FULL_NAME, FIRST_NAME, LAST_NAME, EMAIL) VALUES (13, 'Jeffrey Sanders', 'Jeffrey', 'Sanders', 'jeffreysanders199@example.com')",
+    "INSERT INTO COURSES (ID, FULL_NAME, SHORT_NAME, SHOW_GRADES, ENABLE_COMPLETION) VALUES (2, 'Algebra', 'ALG2', TRUE, TRUE)",
+    "INSERT INTO SITES (HOST, SITE_NAME, VERSION_NUMBER, TYPE_OF_LOGIN, LAUNCH_URL, USER_ID, USER_NAME, FULL_NAME, FIRST_NAME, LAST_NAME) VALUES ('https://school.moodledemo.net', 'Mount Orange', '2026042000', 'APP', 'https://school.moodledemo.net/admin/tool/mobile/launch.php?service=moodle_mobile_app&urlscheme=moodlemobile&passport=1', 13, 'teacher', 'Jeffrey Sanders', 'Jeffrey', 'Sanders')"
+  ]
+}

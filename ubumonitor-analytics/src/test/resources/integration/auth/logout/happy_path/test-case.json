@@ -1,0 +1,9 @@
+{
+  "authFixture": "classpath:/integration/shared/teacher-token-auth.json",
+  "request": {
+    "method": "POST",
+    "path": "/api/auth/logout",
+    "headers": {"Authorization": "******"}
+  },
+  "expectedResponse": {"status": 204}
+}

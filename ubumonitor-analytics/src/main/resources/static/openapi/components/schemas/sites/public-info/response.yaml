@@ -1,0 +1,7 @@
+PublicSiteInfoResponse:
+  type: object
+  required:
+    - site
+  properties:
+    site:
+      $ref: '../info/response.yaml#/SiteInfo'

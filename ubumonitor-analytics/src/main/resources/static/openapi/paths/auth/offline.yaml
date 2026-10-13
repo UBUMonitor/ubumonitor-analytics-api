@@ -1,0 +1,23 @@
+post:
+  tags: [ Auth ]
+  operationId: AuthOffline
+  summary: Create an offline application session
+  description: |
+    Receives the Moodle site URL, username, and database encryption key. Returns an application JWT for an offline session.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../components/schemas/auth/offline/request.yaml#/AuthOfflineRequest'
+
+  security: [ ]
+  responses:
+    '200':
+      description: JWT token retrieved successfully
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/auth/response.yaml#/AuthResponse"
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/unauthorized_401'

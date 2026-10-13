@@ -1,0 +1,72 @@
+CourseLogsResponse:
+  required:
+    - column
+  properties:
+    stats:
+      type: object
+      required:
+        - saved
+        - ignored
+        - failed
+      properties:
+        saved:
+          type: integer
+          description: Number of logs imported
+        ignored:
+          type: integer
+          description: Number of logs ignored (e.g. duplicates or don't have a mapper for component, event or origin)
+        failed:
+          type: integer
+          description: Number of logs that failed to import due to errors
+    column:
+      $ref: "#/LogColumn"
+
+LogColumn:
+  type: object
+  description: Unique value columns
+  required:
+    - components
+    - events
+    - componentsEvents
+  properties:
+    components:
+      type: array
+      items:
+        $ref: '#/LogComponent'
+    events:
+      type: array
+      items:
+        $ref: '#/LogEvent'
+    componentsEvents:
+      type: array
+      items:
+        type: object
+        required:
+          - component
+          - event
+        properties:
+          component:
+            $ref: '#/LogComponent'
+          event:
+            $ref: '#/LogEvent'
+LogEvent:
+  type: object
+  required:
+    - id
+    - name
+  properties:
+    id:
+      type: integer
+    name:
+      type: string
+
+LogComponent:
+  type: object
+  required:
+    - id
+    - name
+  properties:
+    id:
+      type: integer
+    name:
+      type: string

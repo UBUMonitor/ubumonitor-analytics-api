@@ -1,0 +1,69 @@
+get:
+  tags:
+    - Users
+  summary: Get user profile image
+  operationId: GetUserImagesProfile
+  description: Retrieves a user's Moodle profile image and supports conditional requests with an ETag.
+  security: [ ]
+  parameters:
+    - name: If-None-Match
+      in: header
+      description: Entity tag used to check whether the image has changed.
+      required: false
+      schema:
+        type: string
+    - name: userId
+      in: path
+      description: Moodle user identifier.
+      required: true
+      schema:
+        type: integer
+    - name: host
+      in: query
+      description: Moodle site URL.
+      required: true
+      schema:
+        type: string
+        format: uri
+    - name: username
+      in: query
+      description: Moodle username.
+      required: true
+      schema:
+        type: string
+
+  responses:
+    '200':
+      description: Image of the user
+      headers:
+        ETag:
+          schema:
+            type: string
+      content:
+        image/jpeg:
+
+          schema:
+            type: string
+            format: binary
+        image/png:
+          schema:
+            type: string
+            format: binary
+        image/gif:
+          schema:
+            type: string
+            format: binary
+        image/webp:
+          schema:
+            type: string
+            format: binary
+        image/bmp:
+          schema:
+            type: string
+            format: binary
+        image/tiff:
+          schema:
+            type: string
+            format: binary
+    '304':
+      description: Not Modified

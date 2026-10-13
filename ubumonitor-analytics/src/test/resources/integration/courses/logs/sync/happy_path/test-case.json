@@ -1,0 +1,58 @@
+﻿{
+    "moodleMocks":  [
+                        {
+                            "request":  {
+                                            "method":  "GET",
+                                            "path":  "/report/log/index.php?download=csv\u0026id=2\u0026chooselog=1\u0026logreader=logstore_standard\u0026lang=en"
+                                        },
+                            "response":  {
+                                             "contentType":  "text/csv",
+                                             "body":  "Time,User full name,Affected user full name,Event context,Component,Event name,Description,Origin,IP address,Affected user\n\"1/01/26, 12:00:00\",Jeffrey Sanders,,Assignment: Algebra,Assignment,A submission has been submitted.,The user with id \u002713\u0027 has submitted the submission with id \u002742\u0027 for the assignment with course module id \u00277\u0027.,web,192.0.2.13,\n"
+                                         }
+                        }
+                    ],
+    "request":  {
+                    "method":  "POST",
+                    "path":  "/api/courses/2/logs/sync",
+                    "headers":  {
+                                    "Authorization":  "******"
+                                }
+                },
+    "expectedResponse":  {
+                             "status":  200,
+                             "body":  {
+                                          "stats":  {
+                                                        "saved":  1,
+                                                        "ignored":  0,
+                                                        "failed":  0
+                                                    },
+                                          "column":  {
+                                                         "components":  [
+                                                                            {
+                                                                                "id":  2,
+                                                                                "name":  "Assignment"
+                                                                            }
+                                                                        ],
+                                                         "events":  [
+                                                                        {
+                                                                            "id":  2,
+                                                                            "name":  "A submission has been submitted."
+                                                                        }
+                                                                    ],
+                                                         "componentsEvents":  [
+                                                                                  {
+                                                                                      "component":  {
+                                                                                                        "id":  2,
+                                                                                                        "name":  "Assignment"
+                                                                                                    },
+                                                                                      "event":  {
+                                                                                                    "id":  2,
+                                                                                                    "name":  "A submission has been submitted."
+                                                                                                }
+                                                                                  }
+                                                                              ]
+                                                     }
+                                      }
+                         },
+    "authFixture":  "classpath:/integration/shared/teacher-token-auth.json"
+}

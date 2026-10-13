@@ -1,0 +1,88 @@
+{
+  "auth": {
+    "request": {
+      "method": "POST",
+      "path": "/login/token.php",
+      "body": {
+        "baseurl": "${MOODLE_HOST}",
+      "username": "teacher",
+      "password": "wiremock-password",
+      "service": "moodle_mobile_app"
+      }
+    },
+    "expectedResponse": {
+      "status": 200,
+      "body": {
+        "token": "wiremock-token"
+      }
+    }
+  },
+  "moodleMocks": [
+    {
+      "request": {
+        "method": "POST",
+        "path": "/login/token.php",
+        "body": "baseurl=${MOODLE_HOST}&username=teacher&password=wiremock-password&service=moodle_mobile_app"
+      },
+      "response": {
+        "body": {
+          "token": "wiremock-token"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "path": "/webservice/rest/server.php",
+        "body": "wsfunction=core_user_get_users_by_field&field=id&values%5B0%5D=13&moodlewsrestformat=json&wstoken=wiremock-token"
+      },
+      "response": {
+        "body": [
+          {
+            "id": 13,
+            "username": "teacher",
+            "firstname": "Jeffrey",
+            "lastname": "Sanders",
+            "fullname": "Jeffrey Sanders",
+            "email": "jeffreysanders199@example.com",
+            "department": "Senior staff, SE",
+            "city": "Orange City",
+            "country": "AU",
+            "customfields": [],
+            "preferences": []
+          }
+        ]
+      }
+    }
+  ],
+  "request": {
+    "method": "CLIENT",
+    "path": "coreUser.getUsersByField",
+    "body": {
+      "args": {
+        "field": "id",
+        "values": [
+          "13"
+        ]
+      }
+    }
+  },
+  "expectedResponse": {
+    "status": 200,
+    "body": [
+      {
+        "id": 13,
+        "username": "teacher",
+        "firstname": "Jeffrey",
+        "lastname": "Sanders",
+        "fullname": "Jeffrey Sanders",
+        "email": "jeffreysanders199@example.com",
+        "department": "Senior staff, SE",
+        "city": "Orange City",
+        "country": "AU",
+        "customfields": [],
+        "preferences": []
+      }
+    ]
+  }
+}

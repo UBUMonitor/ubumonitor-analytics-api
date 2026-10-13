@@ -1,0 +1,23 @@
+post:
+  tags: [ Auth ]
+  operationId: AuthSSO
+  summary: Authenticate with an SSO launch credential
+  description: |
+    Receives a Moodle site URL, an SSO launch credential, and the database encryption key. Returns an application JWT for subsequent authenticated requests.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../components/schemas/auth/sso/request.yaml#/AuthSSORequest'
+
+  security: [ ]
+  responses:
+    '200':
+      description: JWT token retrieved successfully
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/auth/response.yaml#/AuthResponse"
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/unauthorized_401'
