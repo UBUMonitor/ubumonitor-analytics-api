@@ -7,15 +7,10 @@ on:
 
 permissions:
   contents: write
-  packages: read
 
 concurrency:
   group: release
   cancel-in-progress: false
-
-env:
-  GITHUB_ACTOR: ${{ github.actor }}
-  PACKAGES_READ_TOKEN: ${{ secrets.PACKAGES_READ_TOKEN }}
 
 jobs:
   release:
@@ -34,9 +29,6 @@ jobs:
           java-version: '25'
           distribution: 'temurin'
           cache: maven
-          server-id: github
-          server-username: GITHUB_ACTOR
-          server-password: PACKAGES_READ_TOKEN
 
       - name: Configure Git user
         run: |
