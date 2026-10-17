@@ -70,7 +70,7 @@ public class DatabaseUtil {
       }
 
     } catch (SQLException e) {
-      throw new DatabaseCreationException("Error creating H2 DB", e);
+      throw new DatabaseCreationException(e.getMessage(), e);
     } catch (Exception e) {
       throw new DatabaseCreationException("Unexpected error", e);
     }

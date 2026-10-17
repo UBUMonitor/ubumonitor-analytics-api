@@ -1,4 +1,4 @@
-package es.ubu.lsi.ubumonitoranalytics.features.users.image.infrastructure.out;
+package es.ubu.lsi.ubumonitoranalytics.features.users.image.infrastructure.out.persistence;
 
 import es.ubu.lsi.ubumonitoranalytics.features.users.image.domain.model.UserImage;
 import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.UsersImagesRecord;

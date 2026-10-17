@@ -9,11 +9,11 @@ import es.ubu.lsi.ubumonitoranalytics.features.enrollment.course.domain.model.Us
 import es.ubu.lsi.ubumonitoranalytics.features.enrollment.course.domain.model.UsersResponse;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.moodle.MoodleDownloaderPort;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.UserPicture;
+import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.concurrent.AsyncOperations;
 import es.ubu.lsi.ubumonitoranalytics.util.HashUtil;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -26,7 +26,7 @@ public class MoodleEnrollmentAdapter implements EnrollmentFetchPort {
   private final Client client;
   private final EnrolledUsersMapper enrolledUsersMapper;
   private final MoodleDownloaderPort moodleDownloaderPort;
-  private final Executor executor;
+  private final AsyncOperations asyncOperations;
 
   @Override
   public UsersResponse fetchCourseEnrolledUsers(Integer courseId, String token) {
@@ -41,21 +41,13 @@ public class MoodleEnrollmentAdapter implements EnrollmentFetchPort {
   }
 
   private void downloadImages(UsersResponse usersResponse, String token) {
-    List<CompletableFuture<UserPicture>> futures =
-        usersResponse.getUsers().stream()
-            .map(User::getUserPicture)
-            .map(
-                userPicture ->
-                    CompletableFuture.supplyAsync(
-                        () -> fetchUserImage(userPicture, token), executor))
-            .toList();
-
-    for (CompletableFuture<UserPicture> future : futures) {
-      future.join();
-    }
+    usersResponse.getUsers().stream()
+        .map(User::getUserPicture)
+        .map(picture -> asyncOperations.runAsync(() -> fetchUserImage(picture, token)))
+        .forEach(CompletableFuture::join);
   }
 
-  public UserPicture fetchUserImage(UserPicture userPicture, String token) {
+  public void fetchUserImage(UserPicture userPicture, String token) {
     ResponseEntity<byte[]> image =
         moodleDownloaderPort.downloadUserImage(userPicture.getUrl(), token);
     if (image.getStatusCode().is2xxSuccessful()) {
@@ -68,7 +60,5 @@ public class MoodleEnrollmentAdapter implements EnrollmentFetchPort {
       String hexHash = HashUtil.imageHash(body);
       userPicture.setHexHash(hexHash);
     }
-
-    return userPicture;
   }
 }

@@ -1,0 +1,25 @@
+post:
+  tags:
+    - CourseGrades
+  summary: Synchronize course grades
+  operationId: SyncCourseGrades
+  description: Retrieves the latest enrollment data for users in the specified course and updates the local tenant database.
+  parameters:
+    - name: courseId
+      in: path
+      description: The unique identifier of the course for which to synchronize grades.
+      required: true
+      schema:
+        type: integer
+  responses:
+    '200':
+      description: Successful synchronization of grades. The response includes the updated enrollment information for the user's courses.
+      content:
+        application/json:
+          schema:
+            $ref: '../../../components/schemas/courses/grades/info/response.yaml#/CourseGradeItemsResponse'
+    '401':
+      $ref: '../../../openapi.yaml#/components/responses/unauthorized_401'
+
+
+

@@ -1,6 +1,6 @@
 package es.ubu.lsi.ubumonitoranalytics.features.enrollment.course.domain.model;
 
-import java.util.Collection;
+import java.util.List;
 import lombok.Builder;
 import lombok.Data;
 
@@ -8,5 +8,5 @@ import lombok.Data;
 @Builder
 public class UsersResponse {
   private Integer actualCourseId;
-  private Collection<User> users;
+  private List<User> users;
 }

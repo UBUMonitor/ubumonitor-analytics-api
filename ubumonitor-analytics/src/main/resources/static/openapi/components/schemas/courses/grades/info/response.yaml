@@ -1,0 +1,48 @@
+CourseGradeItemsResponse:
+  type: object
+  required:
+    - gradeItems
+  properties:
+    gradeItems:
+      type: array
+      items:
+        type: object
+        required:
+          - gradeItemId
+          - usersGrades
+          - gradeMin
+          - gradeMax
+        properties:
+          gradeItemId:
+            type: integer
+            description: Unique identifier for the grade item
+          parentGradeItemId:
+            type: integer
+            description: Unique identifier for the parent grade item, if applicable
+          gradeMin:
+            type: number
+            format: double
+            multipleOf: 0.01
+            description: Minimum grade value for the grade item
+          gradeMax:
+            type: number
+            format: double
+            multipleOf: 0.01
+            description: Maximum grade value for the grade item
+          usersGrades:
+            type: array
+            description: List of users associated with the grade item
+            items:
+              type: object
+              required:
+                - userId
+                - grade
+              properties:
+                userId:
+                  type: integer
+                  description: ID of the user associated with the grade information
+                grade:
+                  type: number
+                  format: double
+                  multipleOf: 0.01
+                  description: Raw grade value for the user

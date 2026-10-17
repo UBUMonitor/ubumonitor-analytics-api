@@ -1,8 +1,8 @@
-package es.ubu.lsi.ubumonitoranalytics.features.users.image.infrastructure.out;
+package es.ubu.lsi.ubumonitoranalytics.features.users.image.infrastructure.out.persistence;
 
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.UsersImages.USERS_IMAGES;
 
-import es.ubu.lsi.ubumonitoranalytics.features.users.image.appication.port.out.ImagePersistencePort;
+import es.ubu.lsi.ubumonitoranalytics.features.users.image.appication.port.out.UserProfileImagePersistencePort;
 import es.ubu.lsi.ubumonitoranalytics.features.users.image.domain.model.UserImage;
 import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.UsersImagesRecord;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 /** Reads profile image content and hashes from tenant persistence. */
 @Component
 @RequiredArgsConstructor
-public class ImagePersistenceAdapter implements ImagePersistencePort {
+public class UserProfileImagePersistenceAdapter implements UserProfileImagePersistencePort {
 
   private final Jooq jooq;
   private final UserImageMapper userImageMapper;

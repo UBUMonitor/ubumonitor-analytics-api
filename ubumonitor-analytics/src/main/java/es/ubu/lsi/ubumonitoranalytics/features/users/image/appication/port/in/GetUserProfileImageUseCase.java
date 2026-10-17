@@ -4,7 +4,7 @@ import es.ubu.lsi.ubumonitoranalytics.features.users.image.domain.model.UserImag
 import java.net.URI;
 
 /** Retrieves a user's profile image and its modification state. */
-public interface GetUserImageUseCase {
+public interface GetUserProfileImageUseCase {
 
   /**
    * @param userId Moodle user identifier

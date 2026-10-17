@@ -77,6 +77,8 @@ security:
   - bearerAuth: [ ]
 
 paths:
+  /public/health:
+    $ref: './paths/health/health.yaml'
   /public/auth/credentials:
     $ref: './paths/auth/credentials.yaml'
 
@@ -92,10 +94,13 @@ paths:
   /public/sites/info:
     $ref: './paths/sites/public-info.yaml'
 
+  /public/users/{userId}/images/profile:
+    $ref: "./paths/users/images/profile.yaml"
 
 
   /auth/logout:
     $ref: './paths/auth/logout.yaml'
+
 
   /sites/sync:
     $ref: './paths/sites/sync.yaml'
@@ -103,8 +108,6 @@ paths:
   /sites/info:
     $ref: './paths/sites/info.yaml'
 
-  /public/users/{userId}/images/profile:
-    $ref: "./paths/users/images/profile.yaml"
 
   /enrollments/sync:
     $ref: './paths/enrollments/sync.yaml'
@@ -125,6 +128,12 @@ paths:
   /courses/{courseId}/content/info:
     $ref: './paths/courses/content/info.yaml'
 
+  /courses/{courseId}/grades/sync:
+    $ref: './paths/courses/grades/sync.yaml'
+
+  /courses/{courseId}/grades/info:
+    $ref: './paths/courses/grades/info.yaml'
+
   /courses/{courseId}/logs/sync:
     $ref: './paths/courses/courselogs/sync.yaml'
 
@@ -137,4 +146,7 @@ paths:
     $ref: './paths/courses/courselogs/list.yaml'
   /courses/{courseId}/logs/metrics:
     $ref: './paths/courses/courselogs/metrics.yaml'
+
+  /users/images/document:
+    $ref: './paths/users/images/document.yaml'
 

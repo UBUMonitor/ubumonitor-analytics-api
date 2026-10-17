@@ -3,7 +3,7 @@ package es.ubu.lsi.ubumonitoranalytics.features.users.image.appication.port.out;
 import es.ubu.lsi.ubumonitoranalytics.features.users.image.domain.model.UserImage;
 
 /** Reads profile image content and metadata from tenant persistence. */
-public interface ImagePersistencePort {
+public interface UserProfileImagePersistencePort {
   /**
    * @param userId Moodle user identifier
    * @return stored image hash, or {@code null} when no image exists

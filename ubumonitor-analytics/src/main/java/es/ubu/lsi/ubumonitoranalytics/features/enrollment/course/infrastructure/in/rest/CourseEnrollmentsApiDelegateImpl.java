@@ -18,6 +18,7 @@ public class CourseEnrollmentsApiDelegateImpl implements CourseEnrollmentsApiDel
 
   private final SyncCourseEnrollmentsUseCase syncCourseEnrollmentsUseCase;
   private final GetCourseEnrollmentsUseCase getCourseEnrollmentsUseCase;
+
   private final CourseEnrollmentsApiDelegateMapper courseEnrollmentsApiDelegateMapper;
   private final CurrentSessionContext currentSessionContext;
 

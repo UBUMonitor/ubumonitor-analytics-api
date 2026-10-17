@@ -1,7 +1,7 @@
 package es.ubu.lsi.ubumonitoranalytics.features.users.image.appication.service;
 
-import es.ubu.lsi.ubumonitoranalytics.features.users.image.appication.port.in.GetUserImageUseCase;
-import es.ubu.lsi.ubumonitoranalytics.features.users.image.appication.port.out.ImagePersistencePort;
+import es.ubu.lsi.ubumonitoranalytics.features.users.image.appication.port.in.GetUserProfileImageUseCase;
+import es.ubu.lsi.ubumonitoranalytics.features.users.image.appication.port.out.UserProfileImagePersistencePort;
 import es.ubu.lsi.ubumonitoranalytics.features.users.image.domain.model.UserImage;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.SessionStorePort;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
@@ -16,9 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class GetUserImageService implements GetUserImageUseCase {
+public class GetUserProfileImageService implements GetUserProfileImageUseCase {
 
-  private final ImagePersistencePort imagePersistencePort;
+  private final UserProfileImagePersistencePort imagePersistencePort;
   private final SessionStorePort sessionStorePort;
   private final CurrentSessionContext currentSessionContext;
 
