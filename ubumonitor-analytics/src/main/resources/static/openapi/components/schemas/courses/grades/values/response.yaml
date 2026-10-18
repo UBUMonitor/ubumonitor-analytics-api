@@ -1,0 +1,20 @@
+CourseGradesValuesResponse:
+    type: object
+    properties:
+      grades:
+        type: array
+        items:
+          title: CourseGradesValuesResponseRow
+          type: object
+          properties:
+            gradeItemId:
+              type: integer
+              description: Unique identifier for the grade item
+            userId:
+              type: integer
+              description: Unique identifier for the user
+            gradeRaw:
+              type: number
+              format: double
+              multipleOf: 0.01
+              description: The raw grade value for the user in the specified grade item

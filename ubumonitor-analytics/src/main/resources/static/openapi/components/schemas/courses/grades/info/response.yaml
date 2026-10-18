@@ -9,7 +9,6 @@ CourseGradeItemsResponse:
         type: object
         required:
           - gradeItemId
-          - usersGrades
           - gradeMin
           - gradeMax
         properties:
@@ -29,20 +28,3 @@ CourseGradeItemsResponse:
             format: double
             multipleOf: 0.01
             description: Maximum grade value for the grade item
-          usersGrades:
-            type: array
-            description: List of users associated with the grade item
-            items:
-              type: object
-              required:
-                - userId
-                - grade
-              properties:
-                userId:
-                  type: integer
-                  description: ID of the user associated with the grade information
-                grade:
-                  type: number
-                  format: double
-                  multipleOf: 0.01
-                  description: Raw grade value for the user

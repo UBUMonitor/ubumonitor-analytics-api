@@ -4,7 +4,7 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class CourseGradeItem {
+public class CourseGrade {
   private Integer courseId;
   private List<GradeItem> gradeItems;
   private List<UserGrade> userGrades;

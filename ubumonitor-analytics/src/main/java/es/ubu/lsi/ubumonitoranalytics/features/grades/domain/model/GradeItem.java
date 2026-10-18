@@ -8,6 +8,8 @@ public class GradeItem {
   private Integer id;
   private Integer parentId;
   private String name;
+  private String itemType;
+  private Integer itemInstance;
   private BigDecimal gradeMin;
   private BigDecimal gradeMax;
 }

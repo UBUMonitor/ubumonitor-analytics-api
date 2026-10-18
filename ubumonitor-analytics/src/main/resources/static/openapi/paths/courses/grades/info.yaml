@@ -11,24 +11,6 @@ get:
       required: true
       schema:
         type: integer
-    - name: gradeItemIds
-      in: query
-      description: Optional list of grade item IDs to filter the results. If provided, only the specified grade items will be included in the response.
-      required: false
-      explode: false
-      schema:
-        type: array
-        items:
-          type: integer
-    - name: userIds
-      in: query
-      description: Optional list of user IDs to filter the results. If provided, only the specified users will have their grades included in the response.
-      required: false
-      explode: false
-      schema:
-        type: array
-        items:
-          type: integer
   responses:
     '200':
       description: Successful retrieval of grades. The response includes the grade information for users grades in the specified course.

@@ -15,5 +15,6 @@ public interface MoodleGradesAdapterRequestMapper {
 
   @Mapping(target = "wsfunction", ignore = true)
   @Mapping(target = "args.courseid", source = "courseId")
-  GetGradesTableRequestApi toGradesTableRequest(Integer courseId);
+  @Mapping(target = "args.userid", source = "userId")
+  GetGradesTableRequestApi toGradesTableRequest(Integer courseId, Integer userId);
 }

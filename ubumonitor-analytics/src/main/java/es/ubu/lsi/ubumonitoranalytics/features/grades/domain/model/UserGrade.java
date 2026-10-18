@@ -7,5 +7,6 @@ import lombok.Data;
 public class UserGrade {
   private Integer userId;
   private Integer gradeItemId;
-  private BigDecimal grade;
+  private BigDecimal gradeRaw;
+  private BigDecimal gradePercentageRaw;
 }

@@ -1,0 +1,32 @@
+post:
+  tags:
+    - CourseGrades
+  operationId: GetCourseGradesValues
+  summary: Get course grade values
+  description: Get course grade values
+
+  parameters:
+    - name: courseId
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: Course identifier
+
+
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../../components/schemas/courses/grades/values/request.yaml#/CourseGradesValuesRequest'
+  responses:
+    "200":
+      description: Grades retrieved successfully
+      content:
+        application/json:
+          schema:
+            $ref: '../../../components/schemas/courses/grades/values/response.yaml#/CourseGradesValuesResponse'
+
+    '401':
+      $ref: '../../../openapi.yaml#/components/responses/unauthorized_401'
