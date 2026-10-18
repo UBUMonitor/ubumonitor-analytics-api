@@ -2,7 +2,7 @@ package es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.DatabaseCreationException;
+import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.InvalidDatabaseEncryptionKeyException;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.concurrent.AsyncOperations;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.moodle.config.MoodleConfig;
@@ -38,7 +38,8 @@ class JooqProviderTest {
       provider.initializeTenant(session);
       session.setDbPassword("wrong-password");
 
-      assertThrows(DatabaseCreationException.class, () -> provider.initializeTenant(session));
+      assertThrows(
+          InvalidDatabaseEncryptionKeyException.class, () -> provider.initializeTenant(session));
     } finally {
       provider.closeTenant(session);
       try (var connection =

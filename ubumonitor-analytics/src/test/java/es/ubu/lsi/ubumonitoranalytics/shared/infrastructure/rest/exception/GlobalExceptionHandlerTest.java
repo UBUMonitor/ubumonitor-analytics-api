@@ -1,13 +1,13 @@
 package es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.rest.exception;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import es.ubu.lsi.moodle.exception.MoodleUnauthorizedException;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.exception.ErrorResponseFactory;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.exception.UnauthorizedException;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.InvalidDatabaseEncryptionKeyException;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class GlobalExceptionHandlerTest {
 

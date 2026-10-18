@@ -1,6 +1,7 @@
 package es.ubu.lsi.ubumonitoranalytics.util;
 
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.DatabaseCreationException;
+import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.InvalidDatabaseEncryptionKeyException;
 import java.net.IDN;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -70,6 +71,9 @@ public class DatabaseUtil {
       }
 
     } catch (SQLException e) {
+      if (e.getSQLState() != null && e.getSQLState().startsWith("28")) {
+        throw new InvalidDatabaseEncryptionKeyException("Invalid database encryption key", e);
+      }
       throw new DatabaseCreationException(e.getMessage(), e);
     } catch (Exception e) {
       throw new DatabaseCreationException("Unexpected error", e);

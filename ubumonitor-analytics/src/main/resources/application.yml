@@ -4,8 +4,6 @@ spring:
     enabled: false
   lifecycle:
     timeout-per-shutdown-phase: 5s
-  config:
-    import: classpath:application-moodlerules.yml
   jackson:
     default-property-inclusion: non_null
     mapper:
@@ -53,13 +51,6 @@ server:
 springdoc:
   api-docs:
     enabled: false
-org:
-  jooq:
-    no-logo: true
-    no-tips: true
-jwt:
-  expiration-time-in-seconds: 0
-
 moodle:
   api:
     base-url: ${MOODLE_ADAPTER_API_BASE_URL:http://localhost:8080}
