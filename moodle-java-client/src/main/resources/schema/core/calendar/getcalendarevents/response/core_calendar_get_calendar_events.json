@@ -1,9 +1,43 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "GetCalendarEventsResponse",
   "description": "Get calendar events response",
+  "title": "GetCalendarEventsResponse",
   "type": "object",
   "properties": {
+    "warnings": {
+      "nullable": true,
+      "description": "List of warnings",
+      "title": "WarningList",
+      "type": "array",
+      "items": {
+        "title": "Warning",
+        "type": "object",
+        "properties": {
+          "itemid": {
+            "nullable": true,
+            "description": "Item ID",
+            "type": "integer"
+          },
+          "item": {
+            "nullable": true,
+            "description": "Item",
+            "type": "string"
+          },
+          "warningcode": {
+            "description": "The warning code can be used by the client app to implement specific behaviour",
+            "type": "string"
+          },
+          "message": {
+            "description": "Untranslated English message to explain the warning",
+            "type": "string"
+          }
+        },
+        "required": [
+          "warningcode",
+          "message"
+        ]
+      }
+    },
     "events": {
       "title": "EventList",
       "type": "array",
@@ -11,27 +45,25 @@
         "title": "Event",
         "type": "object",
         "properties": {
-          "id": {
-            "type": "integer",
-            "description": "Event ID"
+          "repeatid": {
+            "description": "Repeat ID",
+            "type": "integer"
           },
-          "name": {
-            "type": "string",
-            "description": "Event name"
+          "instance": {
+            "description": "Instance ID",
+            "type": "integer"
           },
-          "description": {
-            "type": "string",
-            "description": "Description",
-            "nullable": true
+          "visible": {
+            "description": "Visible",
+            "type": "integer"
+          },
+          "groupid": {
+            "description": "Group ID",
+            "type": "integer"
           },
           "format": {
+            "description": "Description format (1 = HTML, 0 = MOODLE, 2 = PLAIN, or 4 = MARKDOWN)",
             "type": "integer",
-            "enum": [
-              0,
-              1,
-              2,
-              4
-            ],
             "javaEnums": [
               {
                 "name": "MOODLE"
@@ -46,71 +78,73 @@
                 "name": "MARKDOWN"
               }
             ],
-            "description": "Description format (1 = HTML, 0 = MOODLE, 2 = PLAIN, or 4 = MARKDOWN)"
+            "enum": [
+              0,
+              1,
+              2,
+              4
+            ]
           },
-          "courseid": {
-            "type": "integer",
-            "description": "Course ID"
-          },
-          "categoryid": {
-            "type": "integer",
-            "description": "Category ID (only for category events)",
-            "nullable": true
-          },
-          "groupid": {
-            "type": "integer",
-            "description": "Group ID"
+          "description": {
+            "nullable": true,
+            "description": "Description",
+            "type": "string"
           },
           "userid": {
-            "type": "integer",
-            "description": "User ID"
-          },
-          "repeatid": {
-            "type": "integer",
-            "description": "Repeat ID"
-          },
-          "modulename": {
-            "type": "string",
-            "description": "Module name",
-            "nullable": true
-          },
-          "instance": {
-            "type": "integer",
-            "description": "Instance ID"
-          },
-          "eventtype": {
-            "type": "string",
-            "description": "Event type"
-          },
-          "timestart": {
-            "type": "integer",
-            "description": "Timestart"
-          },
-          "timeduration": {
-            "type": "integer",
-            "description": "Time duration"
-          },
-          "visible": {
-            "type": "integer",
-            "description": "Visible"
+            "description": "User ID",
+            "type": "integer"
           },
           "uuid": {
-            "type": "string",
+            "nullable": true,
             "description": "Unique ID of iCal events",
-            "nullable": true
+            "type": "string"
           },
           "sequence": {
-            "type": "integer",
-            "description": "Sequence"
+            "description": "Sequence",
+            "type": "integer"
+          },
+          "timeduration": {
+            "description": "Time duration",
+            "type": "integer"
           },
           "timemodified": {
-            "type": "integer",
-            "description": "Time modified"
+            "description": "Time modified",
+            "type": "integer"
+          },
+          "name": {
+            "description": "Event name",
+            "type": "string"
+          },
+          "modulename": {
+            "nullable": true,
+            "description": "Module name",
+            "type": "string"
+          },
+          "eventtype": {
+            "description": "Event type",
+            "type": "string"
+          },
+          "id": {
+            "description": "Event ID",
+            "type": "integer"
+          },
+          "timestart": {
+            "description": "Timestart",
+            "type": "integer"
           },
           "subscriptionid": {
-            "type": "integer",
+            "nullable": true,
             "description": "Subscription ID",
-            "nullable": true
+            "type": "integer"
+          },
+          "courseid": {
+            "description": "Course ID",
+            "type": "integer"
+          },
+          "categoryid": {
+            "nullable": true,
+            "description": "Category ID (only for category events)",
+            "type": "integer"
           }
         },
         "required": [
@@ -128,40 +162,6 @@
           "visible",
           "sequence",
           "timemodified"
-        ]
-      }
-    },
-    "warnings": {
-      "title": "WarningList",
-      "type": "array",
-      "description": "List of warnings",
-      "nullable": true,
-      "items": {
-        "title": "Warning",
-        "type": "object",
-        "properties": {
-          "item": {
-            "type": "string",
-            "description": "Item",
-            "nullable": true
-          },
-          "itemid": {
-            "type": "integer",
-            "description": "Item ID",
-            "nullable": true
-          },
-          "warningcode": {
-            "type": "string",
-            "description": "The warning code can be used by the client app to implement specific behaviour"
-          },
-          "message": {
-            "type": "string",
-            "description": "Untranslated English message to explain the warning"
-          }
-        },
-        "required": [
-          "warningcode",
-          "message"
         ]
       }
     }
