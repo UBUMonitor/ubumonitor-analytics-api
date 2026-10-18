@@ -13,7 +13,7 @@ components:
     bearerAuth:
       type: http
       scheme: bearer
-      bearerFormat: JWT
+      bearerFormat: Opaque session token
   responses:
     bad_request_400:
       description: Bad Request - invalid field or missing data
@@ -144,9 +144,9 @@ paths:
     $ref: './paths/courses/courselogs/info.yaml'
   /courses/{courseId}/logs/list:
     $ref: './paths/courses/courselogs/list.yaml'
-  /courses/{courseId}/logs/metrics:
-    $ref: './paths/courses/courselogs/metrics.yaml'
+
+  /courses/{courseId}/logs/statistics:
+    $ref: './paths/courses/courselogs/statistics.yaml'
 
   /users/images/document:
     $ref: './paths/users/images/document.yaml'
-

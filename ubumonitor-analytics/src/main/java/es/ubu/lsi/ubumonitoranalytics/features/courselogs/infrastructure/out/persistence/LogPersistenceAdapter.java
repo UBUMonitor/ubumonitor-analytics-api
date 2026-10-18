@@ -1,22 +1,28 @@
 package es.ubu.lsi.ubumonitoranalytics.features.courselogs.infrastructure.out.persistence;
 
-import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Courses.COURSES;
-import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Logs.LOGS;
-import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsComponents.LOGS_COMPONENTS;
-import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsEvents.LOGS_EVENTS;
-import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsOrigins.LOGS_ORIGINS;
-
 import es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.port.out.LogPersistencePort;
+import es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.port.out.MoodleLogCatalog;
 import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.importlogs.ProcessLogLine;
+import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.rules.MoodleLogRule;
+import es.ubu.lsi.ubumonitoranalytics.features.courselogs.infrastructure.config.MoodleRulesConfig;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.jooq.BatchBindStep;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Courses.COURSES;
+import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Logs.LOGS;
+import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsComponents.LOGS_COMPONENTS;
+import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsComponentsEvents.LOGS_COMPONENTS_EVENTS;
+import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsEvents.LOGS_EVENTS;
+import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsOrigins.LOGS_ORIGINS;
 
 /** Stores course log records and provides their lookup metadata. */
 @Component
@@ -24,6 +30,7 @@ import org.springframework.stereotype.Component;
 public class LogPersistenceAdapter implements LogPersistencePort {
 
   private final Jooq jooq;
+  private final MoodleRulesConfig moodleRulesConfig;
 
   @Override
   public void createIfNotExists(Integer courseId) {
@@ -37,19 +44,43 @@ public class LogPersistenceAdapter implements LogPersistencePort {
   }
 
   @Override
-  public Map<String, Byte> getLogComponents() {
-    return jooq.dsl()
-        .select(LOGS_COMPONENTS.NAME, LOGS_COMPONENTS.ID)
-        .from(LOGS_COMPONENTS)
-        .fetchMap(LOGS_COMPONENTS.NAME, LOGS_COMPONENTS.ID);
-  }
+  public MoodleLogCatalog getMoodleLogCatalog() {
+    var records =
+        jooq.dsl()
+            .select(
+                LOGS_COMPONENTS.ID,
+                LOGS_COMPONENTS.CODE,
+                LOGS_COMPONENTS.NAME,
+                LOGS_EVENTS.ID,
+                LOGS_EVENTS.CODE,
+                LOGS_EVENTS.NAME,
+                LOGS_COMPONENTS_EVENTS.GROK_PATTERN_EN)
+            .from(LOGS_COMPONENTS)
+            .leftJoin(LOGS_COMPONENTS_EVENTS)
+            .on(LOGS_COMPONENTS.ID.eq(LOGS_COMPONENTS_EVENTS.COMPONENT_ID))
+            .leftJoin(LOGS_EVENTS)
+            .on(LOGS_EVENTS.ID.eq(LOGS_COMPONENTS_EVENTS.EVENT_ID))
+            .fetch();
 
-  @Override
-  public Map<String, Short> getLogEvents() {
-    return jooq.dsl()
-        .select(LOGS_EVENTS.NAME, LOGS_EVENTS.ID)
-        .from(LOGS_EVENTS)
-        .fetchMap(LOGS_EVENTS.NAME, LOGS_EVENTS.ID);
+    List<MoodleLogRule> rules = new ArrayList<>(records.size());
+    for (var record : records) {
+      Short eventId = record.get(LOGS_EVENTS.ID);
+      if (eventId == null) {
+        continue;
+      }
+
+      rules.add(
+          new MoodleLogRule(
+              record.get(LOGS_COMPONENTS.ID),
+              record.get(LOGS_COMPONENTS.CODE),
+              record.get(LOGS_COMPONENTS.NAME),
+              eventId,
+              record.get(LOGS_EVENTS.CODE),
+              record.get(LOGS_EVENTS.NAME),
+              record.get(LOGS_COMPONENTS_EVENTS.GROK_PATTERN_EN)));
+    }
+
+    return moodleRulesConfig.compileRules(rules);
   }
 
   @Override

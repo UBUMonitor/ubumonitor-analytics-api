@@ -1,14 +1,14 @@
-package es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.metrics;
+package es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.statistics;
 
 import java.util.List;
 import lombok.Data;
 
 @Data
-public class CourseLogsMetricsRequestFilters {
+public class CourseLogsStatisticsRequestFilters {
 
   private List<Integer> userIds;
   private List<Integer> moduleIds;
-  private List<Byte> componentIds;
+  private List<Short> componentIds;
   private List<Short> eventIds;
   private List<Byte> originIds;
   private List<String> ipAddresses;

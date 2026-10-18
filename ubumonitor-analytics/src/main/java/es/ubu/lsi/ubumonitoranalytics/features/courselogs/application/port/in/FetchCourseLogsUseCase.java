@@ -3,10 +3,10 @@ package es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.port.in;
 import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.info.CourseLogsInfoResult;
 import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.list.CourseLogsInfoRequest;
 import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.list.FetchCourseLogsResult;
-import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.metrics.CourseLogsMetricsRequest;
-import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.metrics.CourseLogsMetricsResult;
+import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.statistics.CourseLogsStatisticsRequest;
+import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.statistics.CourseLogsStatisticsResult;
 
-/** Retrieves course log records, metrics, and available filter information. */
+/** Retrieves course log records, statistics, and available filter information. */
 public interface FetchCourseLogsUseCase {
   /**
    * @param getCourseLogsCommand filters and pagination for log retrieval
@@ -15,10 +15,11 @@ public interface FetchCourseLogsUseCase {
   FetchCourseLogsResult getCourseLogs(CourseLogsInfoRequest getCourseLogsCommand);
 
   /**
-   * @param courseLogsMetricsRequest filters and grouping for metric calculation
-   * @return calculated course log metrics
+   * @param courseLogsStatisticsRequest filters and grouping for statistic calculation
+   * @return calculated course log statistics
    */
-  CourseLogsMetricsResult getCourseLogsMetrics(CourseLogsMetricsRequest courseLogsMetricsRequest);
+  CourseLogsStatisticsResult getCourseLogsStatistics(
+      CourseLogsStatisticsRequest courseLogsStatisticsRequest);
 
   /**
    * @param courseId Moodle course identifier

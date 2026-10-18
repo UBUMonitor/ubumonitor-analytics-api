@@ -1,8 +1,8 @@
 package es.ubu.lsi.ubumonitoranalytics.features.courselogs.infrastructure.config;
 
 import io.krakens.grok.api.GrokCompiler;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import lombok.SneakyThrows;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -12,11 +12,18 @@ import org.springframework.core.io.Resource;
 @Configuration
 public class GrokCompilerConfig {
   @Bean
-  @SneakyThrows
   public GrokCompiler grok() {
+    return createCompiler();
+  }
+
+  public GrokCompiler createCompiler() {
     Resource resource = new ClassPathResource("patterns/patterns");
     GrokCompiler grokInstance = GrokCompiler.newInstance();
-    grokInstance.register(resource.getInputStream(), StandardCharsets.UTF_8);
+    try (var inputStream = resource.getInputStream()) {
+      grokInstance.register(inputStream, StandardCharsets.UTF_8);
+    } catch (IOException exception) {
+      throw new IllegalStateException("Failed to load Grok patterns", exception);
+    }
     return grokInstance;
   }
 }

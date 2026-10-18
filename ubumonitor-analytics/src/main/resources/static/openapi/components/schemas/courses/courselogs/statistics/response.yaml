@@ -1,10 +1,10 @@
-CourseLogsMetricsResponse:
+CourseLogsStatisticsResponse:
   type: object
   properties:
     rows:
       type: array
       items:
-        title: CourseLogsMetricsResponseRow
+        title: CourseLogsStatisticsResponseRow
         type: object
         required:
           - value

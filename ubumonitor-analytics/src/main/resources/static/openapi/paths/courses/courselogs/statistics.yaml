@@ -1,9 +1,9 @@
 post:
   tags:
     - CourseLogs
-  operationId: GetCourseLogsMetrics
-  summary: Get course logs metrics
-  description: Get course logs metrics
+  operationId: GetCourseLogsStatistics
+  summary: Get course log statistics
+  description: Get aggregated course log statistics
 
   parameters:
     - name: courseId
@@ -19,14 +19,14 @@ post:
     content:
       application/json:
         schema:
-          $ref: '../../../components/schemas/courses/courselogs/metrics/request.yaml#/CourseLogsMetricsRequest'
+          $ref: '../../../components/schemas/courses/courselogs/statistics/request.yaml#/CourseLogsStatisticsRequest'
   responses:
     "200":
       description: Logs retrieved successfully
       content:
         application/json:
           schema:
-            $ref: '../../../components/schemas/courses/courselogs/metrics/response.yaml#/CourseLogsMetricsResponse'
+            $ref: '../../../components/schemas/courses/courselogs/statistics/response.yaml#/CourseLogsStatisticsResponse'
 
     '401':
       $ref: '../../../openapi.yaml#/components/responses/unauthorized_401'

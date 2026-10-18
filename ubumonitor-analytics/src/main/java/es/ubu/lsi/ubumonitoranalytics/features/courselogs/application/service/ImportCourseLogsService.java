@@ -3,6 +3,7 @@ package es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.service;
 import es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.port.in.ImportCourseLogsUseCase;
 import es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.port.out.CourseLogsInfoPort;
 import es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.port.out.LogPersistencePort;
+import es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.port.out.MoodleLogCatalog;
 import es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.port.out.MoodlePort;
 import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.importlogs.LogImportStats;
 import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.importlogs.ProcessLogLine;
@@ -31,6 +32,7 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.io.input.BOMInputStream;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -57,6 +59,7 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
    * @return import statistics and refreshed course log information
    */
   @Override
+  @Transactional
   @SneakyThrows
   public ProcessLogsResult process(Integer courseId, MultipartFile file) {
 
@@ -72,6 +75,7 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
    * @return synchronization statistics and refreshed course log information
    */
   @Override
+  @Transactional
   @SneakyThrows
   public ProcessLogsResult sync(Integer courseId) {
 
@@ -83,8 +87,7 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
 
     logPersistencePort.createIfNotExists(courseId);
 
-    Map<String, Byte> logComponents = logPersistencePort.getLogComponents();
-    Map<String, Short> logEvents = logPersistencePort.getLogEvents();
+    MoodleLogCatalog logCatalog = logPersistencePort.getMoodleLogCatalog();
     Map<String, Byte> logOrigins = logPersistencePort.getLogOrigins();
 
     List<ProcessLogLine> batch = new ArrayList<>(BATCH_SIZE);
@@ -99,10 +102,10 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
                 courseId,
                 csvRecord,
                 lastLogDateTime,
-                logComponents,
-                logEvents,
+                logCatalog.getEvents(),
                 logOrigins,
                 batch,
+                saved,
                 ignored,
                 failed);
 
@@ -141,8 +144,7 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
   private ProcessLogsResult processStream(
       Integer courseId, InputStream inputStream, LocalDateTime lastLogDateTime) {
 
-    Map<String, Byte> logComponents = logPersistencePort.getLogComponents();
-    Map<String, Short> logEvents = logPersistencePort.getLogEvents();
+    MoodleLogCatalog logCatalog = logPersistencePort.getMoodleLogCatalog();
     Map<String, Byte> logOrigins = logPersistencePort.getLogOrigins();
 
     logPersistencePort.createIfNotExists(courseId);
@@ -162,10 +164,10 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
             courseId,
             csvRecord,
             lastLogDateTime,
-            logComponents,
-            logEvents,
+            logCatalog.getEvents(),
             logOrigins,
             batch,
+            saved,
             ignored,
             failed);
 
@@ -191,19 +193,21 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
       Integer courseId,
       CSVRecord csvRecord,
       LocalDateTime lastLogDateTime,
-      Map<String, Byte> logComponents,
-      Map<String, Short> logEvents,
+      Map<MoodleLogCatalog.Key, MoodleLogCatalog.Entry> logEvents,
       Map<String, Byte> logOrigins,
       List<ProcessLogLine> batch,
+      AtomicInteger saved,
       AtomicInteger ignored,
       AtomicInteger failed) {
 
     try {
-      ProcessLogLine line =
-          logParserService.processRow(courseId, csvRecord, logComponents, logEvents, logOrigins);
+      ProcessLogLine line = logParserService.processRow(courseId, csvRecord, logEvents, logOrigins);
 
       if (isValidLog(line, lastLogDateTime)) {
         batch.add(line);
+        if (batch.size() >= BATCH_SIZE) {
+          flushBatch(batch, saved, failed);
+        }
       } else {
         ignored.incrementAndGet();
       }

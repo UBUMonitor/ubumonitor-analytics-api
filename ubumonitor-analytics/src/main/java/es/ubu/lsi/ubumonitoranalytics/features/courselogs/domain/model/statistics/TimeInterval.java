@@ -1,4 +1,4 @@
-package es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.metrics;
+package es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.statistics;
 
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;

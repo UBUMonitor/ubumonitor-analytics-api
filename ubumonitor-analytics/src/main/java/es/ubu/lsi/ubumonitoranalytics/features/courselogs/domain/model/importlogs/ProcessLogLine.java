@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class ProcessLogLine {
   private LocalDateTime time;
-  private Byte componentId;
+  private Short componentId;
   private Short eventId;
   private Integer courseId;
   private Integer userId;

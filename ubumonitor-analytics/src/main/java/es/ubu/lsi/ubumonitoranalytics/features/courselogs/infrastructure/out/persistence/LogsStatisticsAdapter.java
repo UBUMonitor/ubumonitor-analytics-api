@@ -1,5 +1,16 @@
 package es.ubu.lsi.ubumonitoranalytics.features.courselogs.infrastructure.out.persistence;
 
+import es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.port.out.LogsStatisticsPort;
+import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.statistics.*;
+import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
+import lombok.RequiredArgsConstructor;
+import org.jooq.*;
+import org.jooq.Record;
+import org.jooq.impl.DSL;
+import org.springframework.stereotype.Component;
+
+import java.util.*;
+
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Logs.LOGS;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsComponents.LOGS_COMPONENTS;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsEvents.LOGS_EVENTS;
@@ -8,27 +19,17 @@ import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Modules.MODULES;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Sections.SECTIONS;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Users.USERS;
 
-import es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.port.out.LogsMetricsPort;
-import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.metrics.*;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
-import java.util.*;
-import lombok.RequiredArgsConstructor;
-import org.jooq.*;
-import org.jooq.Record;
-import org.jooq.impl.DSL;
-import org.springframework.stereotype.Component;
-
 /** Calculates requested course log aggregates with jOOQ. */
 @Component
 @RequiredArgsConstructor
-public class LogsMetricsAdapter implements LogsMetricsPort {
+public class LogsStatisticsAdapter implements LogsStatisticsPort {
 
   public static final String TIME_BUCKET = "timeBucket";
   public static final String VALUE = "VALUE";
   private final Jooq jooq;
 
   @Override
-  public CourseLogsMetricsResult getCourseLogsMetrics(CourseLogsMetricsRequest request) {
+  public CourseLogsStatisticsResult getCourseLogsStatistics(CourseLogsStatisticsRequest request) {
 
     List<Condition> conditions = buildConditions(request);
 
@@ -68,14 +69,14 @@ public class LogsMetricsAdapter implements LogsMetricsPort {
     // =========================
     Select<?> finalQuery = applyOrderBy(query, request, aggregatedLogs);
 
-    List<MetricRow> rows = finalQuery.fetchInto(MetricRow.class);
+    List<StatisticRow> rows = finalQuery.fetchInto(StatisticRow.class);
 
-    return CourseLogsMetricsResult.builder().rows(rows).build();
+    return CourseLogsStatisticsResult.builder().rows(rows).build();
   }
 
   private Select<?> applyOrderBy(
       SelectJoinStep<Record> query,
-      CourseLogsMetricsRequest request,
+      CourseLogsStatisticsRequest request,
       Table<Record> aggregatedLogs) {
 
     if (request.getSortBy() == null || request.getSortBy().isEmpty()) {
@@ -123,35 +124,35 @@ public class LogsMetricsAdapter implements LogsMetricsPort {
     if (selection == null) return query;
 
     if (selection.contains(CourseLogsSelectColumn.USER_FULL_NAME)) {
-      query = query.leftJoin(USERS).on(aggregatedLogs.field(LOGS.USER_ID).eq(USERS.ID));
+      query = query.leftJoin(USERS).on(USERS.ID.eq(aggregatedLogs.field(LOGS.USER_ID)));
     }
 
     if (selection.contains(CourseLogsSelectColumn.MODULE_NAME)) {
-      query = query.leftJoin(MODULES).on(aggregatedLogs.field(LOGS.MODULE_ID).eq(MODULES.ID));
+      query = query.leftJoin(MODULES).on(MODULES.ID.eq(aggregatedLogs.field(LOGS.MODULE_ID)));
     }
 
     if (selection.contains(CourseLogsSelectColumn.COMPONENT_NAME)) {
       query =
           query
               .leftJoin(LOGS_COMPONENTS)
-              .on(aggregatedLogs.field(LOGS.COMPONENT_ID).eq(LOGS_COMPONENTS.ID));
+              .on(LOGS_COMPONENTS.ID.eq(aggregatedLogs.field(LOGS.COMPONENT_ID)));
     }
 
     if (selection.contains(CourseLogsSelectColumn.EVENT_NAME)) {
       query =
-          query.leftJoin(LOGS_EVENTS).on(aggregatedLogs.field(LOGS.EVENT_ID).eq(LOGS_EVENTS.ID));
+          query.leftJoin(LOGS_EVENTS).on(LOGS_EVENTS.ID.eq(aggregatedLogs.field(LOGS.EVENT_ID)));
     }
 
     if (selection.contains(CourseLogsSelectColumn.ORIGIN_NAME)) {
       query =
-          query.leftJoin(LOGS_ORIGINS).on(aggregatedLogs.field(LOGS.ORIGIN_ID).eq(LOGS_ORIGINS.ID));
+          query.leftJoin(LOGS_ORIGINS).on(LOGS_ORIGINS.ID.eq(aggregatedLogs.field(LOGS.ORIGIN_ID)));
     }
 
     // SECTION_ID is already projected by the inner aggregation
     // (see needsSection()/innerFrom join to MODULES), so here we
     // only need to join SECTIONS to resolve the human-readable name.
     if (selection.contains(CourseLogsSelectColumn.SECTION_NAME)) {
-      query = query.leftJoin(SECTIONS).on(aggregatedLogs.field(MODULES.SECTION_ID).eq(SECTIONS.ID));
+      query = query.leftJoin(SECTIONS).on(SECTIONS.ID.eq(aggregatedLogs.field(MODULES.SECTION_ID)));
     }
 
     return query;
@@ -160,7 +161,7 @@ public class LogsMetricsAdapter implements LogsMetricsPort {
   // =========================================================
   // GROUP BY
   // =========================================================
-  private Set<Field<?>> resolveInnerGroupByFields(CourseLogsMetricsRequest request) {
+  private Set<Field<?>> resolveInnerGroupByFields(CourseLogsStatisticsRequest request) {
 
     Set<Field<?>> innerGroupBy = new LinkedHashSet<>();
 
@@ -177,7 +178,7 @@ public class LogsMetricsAdapter implements LogsMetricsPort {
     }
 
     if (request.getInterval() != null) {
-      innerGroupBy.add(resolveIntervalField(request.getInterval()));
+      innerGroupBy.add(resolveIntervalField(request.getInterval(), request.getWeekStartsOn()));
     }
 
     return innerGroupBy;
@@ -187,7 +188,7 @@ public class LogsMetricsAdapter implements LogsMetricsPort {
   // Does this request need MODULES joined inside the inner
   // aggregation (because it groups/selects by SECTION)?
   // =========================================================
-  private boolean needsSection(CourseLogsMetricsRequest request) {
+  private boolean needsSection(CourseLogsStatisticsRequest request) {
 
     boolean inGroupBy =
         request.getGroupBy() != null
@@ -204,7 +205,7 @@ public class LogsMetricsAdapter implements LogsMetricsPort {
   // OUTER SELECT
   // =========================================================
   private List<SelectField<?>> resolveOuterSelectFields(
-      CourseLogsMetricsRequest request, Table<Record> aggregatedLogs) {
+      CourseLogsStatisticsRequest request, Table<Record> aggregatedLogs) {
 
     Set<SelectField<?>> fields = new LinkedHashSet<>();
 
@@ -232,15 +233,23 @@ public class LogsMetricsAdapter implements LogsMetricsPort {
   // =========================================================
   // TIME BUCKET
   // =========================================================
-  private Field<?> resolveIntervalField(TimeInterval interval) {
+  private Field<?> resolveIntervalField(TimeInterval interval, Integer weekStartsOn) {
 
     if (interval == TimeInterval.DAY_OF_WEEK) {
-      return DSL.field("DAY_OF_WEEK({0})", Integer.class, LOGS.TIMESTAMP).as(TIME_BUCKET);
+      return dayOfWeekField(LOGS.TIMESTAMP, weekStartsOn);
     }
 
     return DSL.field(
             "FORMATDATETIME({0}, {1})",
             String.class, LOGS.TIMESTAMP, DSL.inline(interval.pattern()))
+        .as(TIME_BUCKET);
+  }
+
+  static Field<Integer> dayOfWeekField(Field<?> timestamp, Integer weekStartsOn) {
+    int startDay = weekStartsOn == null ? 1 : weekStartsOn;
+    Field<Integer> isoDayOfWeek = DSL.field("DAY_OF_WEEK({0})", Integer.class, timestamp);
+
+    return DSL.field("MOD({0} - {1} + 7, 7) + 1", Integer.class, isoDayOfWeek, DSL.val(startDay))
         .as(TIME_BUCKET);
   }
 
@@ -304,7 +313,7 @@ public class LogsMetricsAdapter implements LogsMetricsPort {
   // =========================================================
   // CONDITIONS
   // =========================================================
-  private List<Condition> buildConditions(CourseLogsMetricsRequest request) {
+  private List<Condition> buildConditions(CourseLogsStatisticsRequest request) {
 
     List<Condition> conditions = new ArrayList<>();
 
@@ -322,7 +331,7 @@ public class LogsMetricsAdapter implements LogsMetricsPort {
       }
     }
 
-    CourseLogsMetricsRequestFilters filters = request.getFilters();
+    CourseLogsStatisticsRequestFilters filters = request.getFilters();
     if (filters != null) {
       addInFilter(conditions, LOGS.USER_ID, filters.getUserIds());
       addInFilter(conditions, LOGS.MODULE_ID, filters.getModuleIds());

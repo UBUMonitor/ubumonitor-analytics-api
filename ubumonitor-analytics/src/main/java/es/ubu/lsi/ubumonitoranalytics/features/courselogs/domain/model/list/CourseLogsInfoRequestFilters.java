@@ -8,7 +8,7 @@ public class CourseLogsInfoRequestFilters {
 
   private List<Integer> userIds;
   private List<Integer> moduleIds;
-  private List<Byte> componentIds;
+  private List<Short> componentIds;
   private List<Short> eventIds;
   private List<Byte> originIds;
   private List<Integer> sectionIds;

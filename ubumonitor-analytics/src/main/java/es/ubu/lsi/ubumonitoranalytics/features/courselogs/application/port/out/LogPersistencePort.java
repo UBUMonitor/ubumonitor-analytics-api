@@ -14,14 +14,9 @@ public interface LogPersistencePort {
   void createIfNotExists(Integer courseId);
 
   /**
-   * @return log component names mapped to local identifiers
+   * @return component and event identifiers with their compiled parsing rules
    */
-  Map<String, Byte> getLogComponents();
-
-  /**
-   * @return event names mapped to local identifiers
-   */
-  Map<String, Short> getLogEvents();
+  MoodleLogCatalog getMoodleLogCatalog();
 
   /**
    * @return log origin names mapped to local identifiers
