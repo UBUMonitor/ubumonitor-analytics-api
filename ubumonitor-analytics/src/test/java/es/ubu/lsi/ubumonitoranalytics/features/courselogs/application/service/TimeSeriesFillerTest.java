@@ -3,11 +3,12 @@ package es.ubu.lsi.ubumonitoranalytics.features.courselogs.application.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 
-import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.statistics.CourseLogsStatisticsRequest;
-import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.statistics.CourseLogsStatisticsRequestTimeRange;
-import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.statistics.FillGapStrategy;
-import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.statistics.StatisticRow;
-import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.statistics.TimeInterval;
+import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.service.TimeSeriesFiller;
+import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.statistics.CourseLogsStatisticsRequest;
+import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.statistics.CourseLogsStatisticsRequestTimeRange;
+import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.statistics.FillGapStrategy;
+import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.statistics.StatisticRow;
+import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.statistics.TimeInterval;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Test;

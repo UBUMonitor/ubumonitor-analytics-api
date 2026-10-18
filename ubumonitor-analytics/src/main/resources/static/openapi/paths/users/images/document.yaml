@@ -33,7 +33,14 @@ get:
       required: false
       schema:
         type: string
-        default: "UBUMonitor - Enrollment Images"
+        default: "UBUMonitor Analytics"
+    - name: fileName
+      in: query
+      description: The name of the file to be generated.
+      required: false
+      schema:
+        type: string
+        default: "enrollment_images.docx"
 
   responses:
     '200':

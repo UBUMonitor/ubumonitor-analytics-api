@@ -8,14 +8,14 @@ CourseGradeItemsResponse:
       items:
         type: object
         required:
-          - gradeItemId
+          - id
           - gradeMin
           - gradeMax
         properties:
-          gradeItemId:
+          id:
             type: integer
             description: Unique identifier for the grade item
-          parentGradeItemId:
+          parentId:
             type: integer
             description: Unique identifier for the parent grade item, if applicable
           gradeMin:

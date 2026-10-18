@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.sql.DriverManager;
 import java.time.LocalDateTime;
+
+import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.infrastructure.out.persistence.LogsStatisticsAdapter;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 import org.junit.jupiter.api.Test;
