@@ -5,13 +5,6 @@ get:
   operationId: getUsersEnrollmentImagesDocument
   description: Retrieves the enrollment images for users
   parameters:
-    - name: Accept-Language
-      in: header
-      required: false
-      description: The language preference for the response. If not provided, the default language will be used.
-      schema:
-        type: string
-        example: es-ES
     - name: userIds
       in: query
       description: List of user IDs to filter the results. If provided, only the specified users will have their grades included in the response.
@@ -40,6 +33,7 @@ get:
       required: false
       schema:
         type: string
+        default: "UBUMonitor - Enrollment Images"
 
   responses:
     '200':

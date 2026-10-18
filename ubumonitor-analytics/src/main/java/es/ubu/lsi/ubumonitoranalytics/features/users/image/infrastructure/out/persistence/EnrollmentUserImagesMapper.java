@@ -1,5 +1,8 @@
 package es.ubu.lsi.ubumonitoranalytics.features.users.image.infrastructure.out.persistence;
 
+import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Users.USERS;
+import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.UsersImages.USERS_IMAGES;
+
 import es.ubu.lsi.ubumonitoranalytics.features.users.image.domain.model.EnrollmentUserImage;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.GlobalMapperConfig;
 import org.jooq.Record2;
@@ -8,9 +11,6 @@ import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
-
-import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Users.USERS;
-import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.UsersImages.USERS_IMAGES;
 
 @Mapper(config = GlobalMapperConfig.class)
 public interface EnrollmentUserImagesMapper {
@@ -26,9 +26,9 @@ public interface EnrollmentUserImagesMapper {
   EnrollmentUserImage toDomain(Record4<Integer, String, byte[], String> recordValue);
 
   @Named("extractUserId")
-    default Integer extractUserId(Record4<Integer, String, byte[], String> recordValue) {
-        return recordValue.get(USERS.ID);
-    }
+  default Integer extractUserId(Record4<Integer, String, byte[], String> recordValue) {
+    return recordValue.get(USERS.ID);
+  }
 
   @Named("extractFullName")
   default String extractFullName(Record4<Integer, String, byte[], String> recordValue) {
@@ -57,6 +57,7 @@ public interface EnrollmentUserImagesMapper {
   default String extractFullName(Record2<Integer, String> recordValue) {
     return recordValue.get(USERS.FULL_NAME);
   }
+
   @Named("extractUserId")
   default Integer extractUserId(Record2<Integer, String> recordValue) {
     return recordValue.get(USERS.ID);

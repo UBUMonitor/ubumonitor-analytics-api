@@ -8,14 +8,11 @@ import es.ubu.lsi.ubumonitoranalytics.features.users.image.domain.model.UserImag
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.NativeWebRequest;
 
 /** Implements the generated REST operation for user profile images. */
 @Component
@@ -32,14 +29,18 @@ public class UsersApiDelegateImpl implements UsersApiDelegate {
       Integer userId, URI host, String username, String ifNoneMatch) {
     UserImage userImage =
         getUserProfileImageUseCase.getUserImage(userId, host, username, ifNoneMatch);
+    CacheControl cacheControl = CacheControl.noCache().cachePublic();
 
     if (!userImage.isModified()) {
-      return ResponseEntity.status(HttpStatus.NOT_MODIFIED).eTag(userImage.getHexHash()).build();
+      return ResponseEntity.status(HttpStatus.NOT_MODIFIED)
+          .eTag(userImage.getHexHash())
+          .cacheControl(cacheControl)
+          .build();
     }
 
     return ResponseEntity.ok()
         .eTag(userImage.getHexHash())
-        .cacheControl(CacheControl.maxAge(1, TimeUnit.DAYS).cachePublic())
+        .cacheControl(cacheControl)
         .contentType(MediaType.parseMediaType(userImage.getContentType()))
         .contentLength(userImage.getImage().length)
         .body(new ByteArrayResource(userImage.getImage()));
@@ -47,16 +48,11 @@ public class UsersApiDelegateImpl implements UsersApiDelegate {
 
   @Override
   public ResponseEntity<Resource> getUsersEnrollmentImagesDocument(
-      List<Integer> userIds,
-      String acceptLanguage,
-      String defaultImagePath,
-      Boolean useDefaultPhoto,
-      String headerText) {
-    Locale locale = getRequest().map(NativeWebRequest::getLocale).orElse(Locale.getDefault());
+      List<Integer> userIds, String defaultImagePath, Boolean useDefaultPhoto, String headerText) {
 
     EnrollmentImagesDocumentCommand command =
         enrollmentImagesDocumentCommandMapper.toDomain(
-            userIds, locale, defaultImagePath, useDefaultPhoto, headerText);
+            userIds, defaultImagePath, useDefaultPhoto, headerText);
 
     byte[] docx = generateEnrollmentImagesDocumentUseCase.generateEnrollmentImagesDocument(command);
 

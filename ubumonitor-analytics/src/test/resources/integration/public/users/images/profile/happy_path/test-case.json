@@ -3,5 +3,7 @@
     "method": "GET",
     "path": "/api/public/users/13/images/profile?host=https%3A%2F%2Fschool.moodledemo.net&username=teacher"
   },
-  "expectedResponse": {"status": 200}
+  "expectedResponse": {
+    "status": 200
+  }
 }

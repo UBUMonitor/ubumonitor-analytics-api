@@ -9,6 +9,7 @@ import es.ubu.lsi.ubumonitoranalytics.features.users.image.domain.model.Enrollme
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -36,7 +37,7 @@ public class EnrollmentUserImagesPersistenceAdapter implements EnrollmentUserIma
             .stream()
             .collect(Collectors.toMap(r -> r.get(USERS.ID), enrollmentUserImagesMapper::toDomain));
 
-    return userIds.stream().map(byId::get).toList();
+    return userIds.stream().map(byId::get).filter(Objects::nonNull).toList();
   }
 
   @Override
@@ -58,6 +59,6 @@ public class EnrollmentUserImagesPersistenceAdapter implements EnrollmentUserIma
                     r -> r.get(USERS.ID),
                     r -> enrollmentUserImagesMapper.toDomain(r, imageData, contentType)));
 
-    return userIds.stream().map(byId::get).toList();
+    return userIds.stream().map(byId::get).filter(Objects::nonNull).toList();
   }
 }
