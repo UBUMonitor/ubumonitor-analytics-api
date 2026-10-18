@@ -4,7 +4,7 @@ import es.ubu.lsi.ubumonitoranalytics.api.generated.api.AuthApiDelegate;
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.*;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.application.port.in.AuthUseCase;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.application.port.in.LogoutUseCase;
-import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.JwtToken;
+import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.SessionToken;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.auth.AuthInput;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.exception.UnauthorizedException;
 import lombok.RequiredArgsConstructor;
@@ -24,22 +24,22 @@ public class AuthApiDelegateImpl implements AuthApiDelegate {
   @Override
   public ResponseEntity<AuthResponseDto> authLogin(AuthLoginRequestDto loginAuthRequestDto) {
     AuthInput authInput = authMapper.toDomain(loginAuthRequestDto);
-    JwtToken jwtToken = authUseCase.loginByCredentials(authInput);
-    return ResponseEntity.ok(authMapper.toAuthResponse(jwtToken));
+    SessionToken sessionToken = authUseCase.loginByCredentials(authInput);
+    return ResponseEntity.ok(authMapper.toAuthResponse(sessionToken));
   }
 
   @Override
   public ResponseEntity<AuthResponseDto> authToken(AuthTokenRequestDto authTokenRequestDto) {
     AuthInput authInput = authMapper.toDomain(authTokenRequestDto);
-    JwtToken jwtToken = authUseCase.loginByToken(authInput);
-    return ResponseEntity.ok(authMapper.toAuthResponse(jwtToken));
+    SessionToken sessionToken = authUseCase.loginByToken(authInput);
+    return ResponseEntity.ok(authMapper.toAuthResponse(sessionToken));
   }
 
   @Override
   public ResponseEntity<AuthResponseDto> authOffline(AuthOfflineRequestDto authOfflineRequestDto) {
     AuthInput authInput = authMapper.toDomain(authOfflineRequestDto);
-    JwtToken jwtToken = authUseCase.loginOffline(authInput);
-    return ResponseEntity.ok(authMapper.toAuthResponse(jwtToken));
+    SessionToken sessionToken = authUseCase.loginOffline(authInput);
+    return ResponseEntity.ok(authMapper.toAuthResponse(sessionToken));
   }
 
   @Override
@@ -50,8 +50,8 @@ public class AuthApiDelegateImpl implements AuthApiDelegate {
           "Cannot extract Moodle token from SSO token: "
               + authSSORequestDto.getMoodleLaunchCredential());
     }
-    JwtToken jwtToken = authUseCase.loginBySSO(authInput);
-    return ResponseEntity.ok(authMapper.toAuthResponse(jwtToken));
+    SessionToken sessionToken = authUseCase.loginBySSO(authInput);
+    return ResponseEntity.ok(authMapper.toAuthResponse(sessionToken));
   }
 
   @Override

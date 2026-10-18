@@ -1,6 +1,6 @@
 package es.ubu.lsi.ubumonitoranalytics.features.auth.application.port.in;
 
-import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.JwtToken;
+import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.SessionToken;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.auth.AuthInput;
 
 /** Application operations for authenticating a user and creating a session. */
@@ -12,7 +12,7 @@ public interface AuthUseCase {
    * @param tokenAuthInput Moodle token and site details
    * @return the generated session token
    */
-  JwtToken loginByToken(AuthInput tokenAuthInput);
+  SessionToken loginByToken(AuthInput tokenAuthInput);
 
   /**
    * Authenticates with Moodle credentials.
@@ -20,7 +20,7 @@ public interface AuthUseCase {
    * @param authInput username, password, and site details
    * @return the generated session token
    */
-  JwtToken loginByCredentials(AuthInput authInput);
+  SessionToken loginByCredentials(AuthInput authInput);
 
   /**
    * Creates an offline session from the supplied authentication data.
@@ -28,7 +28,7 @@ public interface AuthUseCase {
    * @param offlineAuthInput offline authentication details
    * @return the generated session token
    */
-  JwtToken loginOffline(AuthInput offlineAuthInput);
+  SessionToken loginOffline(AuthInput offlineAuthInput);
 
   /**
    * Authenticates a Moodle single sign-on request.
@@ -36,5 +36,5 @@ public interface AuthUseCase {
    * @param authInput single sign-on authentication details
    * @return the generated session token
    */
-  JwtToken loginBySSO(AuthInput authInput);
+  SessionToken loginBySSO(AuthInput authInput);
 }

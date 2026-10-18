@@ -3,7 +3,11 @@
   "request": {
     "method": "POST",
     "path": "/api/auth/logout",
-    "headers": {"Authorization": "******"}
+    "headers": {
+      "Authorization": "******"
+    }
   },
-  "expectedResponse": {"status": 204}
+  "expectedResponse": {
+    "status": 204
+  }
 }

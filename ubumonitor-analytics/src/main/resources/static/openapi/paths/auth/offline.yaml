@@ -3,7 +3,7 @@ post:
   operationId: AuthOffline
   summary: Create an offline application session
   description: |
-    Receives the Moodle site URL, username, and database encryption key. Returns an application JWT for an offline session.
+    Receives the Moodle site URL, username, and database encryption key. Returns an opaque Bearer session token for an offline session.
   requestBody:
     required: true
     content:
@@ -14,7 +14,7 @@ post:
   security: [ ]
   responses:
     '200':
-      description: JWT token retrieved successfully
+      description: Session token retrieved successfully
       content:
         application/json:
           schema:

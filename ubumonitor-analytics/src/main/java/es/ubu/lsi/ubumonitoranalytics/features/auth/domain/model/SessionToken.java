@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class JwtToken {
+public class SessionToken {
   private String token;
   private Long expiresIn;
 }

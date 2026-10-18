@@ -1,13 +1,14 @@
-package es.ubu.lsi.ubumonitoranalytics.features.auth.infrastructure.out.jwt;
+package es.ubu.lsi.ubumonitoranalytics.features.auth.infrastructure.out.session;
 
 import es.ubu.lsi.ubumonitoranalytics.features.auth.application.port.out.SessionPort;
-import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.JwtToken;
+import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.SessionToken;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.auth.AuthInput;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.SessionStorePort;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security.JwtUtils;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
 import java.net.URI;
+import java.security.SecureRandom;
+import java.util.Base64;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -17,13 +18,15 @@ import org.springframework.web.client.RestClient;
 @RequiredArgsConstructor
 public class SessionAdapter implements SessionPort {
 
-  private final JwtUtils jwtUtils;
+  private static final SecureRandom SECURE_RANDOM = new SecureRandom();
+  private static final int TOKEN_BYTES = 32;
+
   private final SessionStorePort sessionStore;
   private final CurrentSessionContext currentSessionContext;
   private final SessionAdapterMapper sessionAdapterMapper;
 
   @Override
-  public JwtToken generateSession(AuthInput authInput, RestClient restClient) {
+  public SessionToken generateSession(AuthInput authInput, RestClient restClient) {
 
     String username = authInput.getUsername();
     String moodleToken = authInput.getMoodleToken();
@@ -36,46 +39,51 @@ public class SessionAdapter implements SessionPort {
 
       currentSessionContext.setSessionData(existingSession);
 
-      return toJwtToken(existingSession.getJwt());
+      return toSessionToken(existingSession.getToken());
     }
 
     SessionData newSession = createSession(authInput, restClient);
 
-    return toJwtToken(newSession.getJwt());
+    return toSessionToken(newSession.getToken());
   }
 
   @Override
-  public JwtToken updateSession(AuthInput authInput, JwtToken jwtToken, RestClient restClient) {
+  public SessionToken updateSession(
+      AuthInput authInput, SessionToken sessionToken, RestClient restClient) {
 
-    invalidateSession(jwtToken);
+    invalidateSession(sessionToken);
 
     SessionData newSession = createSession(authInput, restClient);
 
-    return toJwtToken(newSession.getJwt());
+    return toSessionToken(newSession.getToken());
   }
 
   @Override
-  public void invalidateSession(JwtToken jwtToken) {
-    sessionStore.invalidateSession(jwtToken.getToken());
+  public void invalidateSession(SessionToken sessionToken) {
+    sessionStore.invalidateSession(sessionToken.getToken());
   }
 
   private SessionData createSession(AuthInput authInput, RestClient restClient) {
 
-    String username = authInput.getUsername();
-    URI hostUri = authInput.getHost();
-    String jwt = jwtUtils.generateJwtToken(username, hostUri);
+    String token = generateToken();
 
-    SessionData sessionData = sessionAdapterMapper.toSessionData(authInput, jwt, restClient);
+    SessionData sessionData = sessionAdapterMapper.toSessionData(authInput, token, restClient);
 
-    sessionStore.saveSession(jwt, sessionData);
+    sessionStore.saveSession(token, sessionData);
 
     currentSessionContext.setSessionData(sessionData);
 
     return sessionData;
   }
 
-  private JwtToken toJwtToken(String jwt) {
+  private SessionToken toSessionToken(String token) {
 
-    return JwtToken.builder().token(jwt).build();
+    return SessionToken.builder().token(token).build();
+  }
+
+  private String generateToken() {
+    byte[] tokenBytes = new byte[TOKEN_BYTES];
+    SECURE_RANDOM.nextBytes(tokenBytes);
+    return Base64.getUrlEncoder().withoutPadding().encodeToString(tokenBytes);
   }
 }

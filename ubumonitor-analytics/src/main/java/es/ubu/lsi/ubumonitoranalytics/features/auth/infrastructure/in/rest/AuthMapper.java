@@ -1,7 +1,7 @@
 package es.ubu.lsi.ubumonitoranalytics.features.auth.infrastructure.in.rest;
 
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.*;
-import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.JwtToken;
+import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.SessionToken;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.auth.AuthInput;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.GlobalMapperConfig;
 import java.net.URI;
@@ -42,10 +42,10 @@ public interface AuthMapper {
   @Mapping(target = "host", source = "host")
   AuthInput toDomain(AuthOfflineRequestDto authOfflineRequestDto);
 
-  /** Maps an application JWT to the generated REST response. */
+  /** Maps an application session token to the generated REST response. */
   @Mapping(target = "tokenType", constant = "Bearer")
   @Mapping(target = "accessToken", source = "token")
-  AuthResponseDto toAuthResponse(JwtToken jwtToken);
+  AuthResponseDto toAuthResponse(SessionToken sessionToken);
 
   /** Maps an SSO launch credential to the application authentication model. */
   @Mapping(target = "username", ignore = true)
@@ -57,7 +57,6 @@ public interface AuthMapper {
   AuthInput toDomain(AuthSSORequestDto authSSORequestDto);
 
   @Named("extractMoodleToken")
-  /** Extracts the Moodle web-service token from an SSO launch credential. */
   default String extractMoodleToken(String value) {
     if (value == null || value.isBlank()) {
       return null;

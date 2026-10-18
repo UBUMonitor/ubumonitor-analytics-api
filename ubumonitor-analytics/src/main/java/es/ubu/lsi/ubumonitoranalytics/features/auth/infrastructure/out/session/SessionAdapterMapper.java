@@ -1,4 +1,4 @@
-package es.ubu.lsi.ubumonitoranalytics.features.auth.infrastructure.out.jwt;
+package es.ubu.lsi.ubumonitoranalytics.features.auth.infrastructure.out.session;
 
 import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.auth.AuthInput;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
@@ -10,5 +10,5 @@ import org.springframework.web.client.RestClient;
 @Mapper(config = GlobalMapperConfig.class)
 public interface SessionAdapterMapper {
 
-  SessionData toSessionData(AuthInput authInput, String jwt, RestClient restClient);
+  SessionData toSessionData(AuthInput authInput, String token, RestClient restClient);
 }

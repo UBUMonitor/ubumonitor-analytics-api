@@ -4,6 +4,7 @@ import es.ubu.lsi.moodle.exception.MoodleUnauthorizedException;
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.ErrorResponseDto;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.exception.*;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.DatabaseCreationException;
+import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.InvalidDatabaseEncryptionKeyException;
 import java.util.StringJoiner;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.Ordered;
@@ -46,7 +47,7 @@ public class GlobalExceptionHandler {
   /** Handles authentication failures returned by Moodle. */
   @ExceptionHandler(MoodleUnauthorizedException.class)
   public ResponseEntity<ErrorResponseDto> moodleUnauthorized(MoodleUnauthorizedException ex) {
-    return response(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED", ex.getMessage(), ex);
+    return response(HttpStatus.UNAUTHORIZED, "MOODLE_UNAUTHORIZED", ex.getMessage(), ex);
   }
 
   /** Handles application not-found errors. */
@@ -65,6 +66,17 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(DatabaseCreationException.class)
   public ResponseEntity<ErrorResponseDto> databaseCreation(DatabaseCreationException ex) {
     return response(HttpStatus.INTERNAL_SERVER_ERROR, "DATABASE_ERROR", ex.getMessage(), ex);
+  }
+
+  /** Handles tenant database passwords that cannot open an encrypted database. */
+  @ExceptionHandler(InvalidDatabaseEncryptionKeyException.class)
+  public ResponseEntity<ErrorResponseDto> invalidDatabaseEncryptionKey(
+      InvalidDatabaseEncryptionKeyException ex) {
+    return response(
+        HttpStatus.UNAUTHORIZED,
+        "INVALID_DATABASE_ENCRYPTION_KEY",
+        "The database password is incorrect.",
+        ex);
   }
 
   /** Handles bean-validation failures and collects field messages. */
