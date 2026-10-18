@@ -1,31 +1,31 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "GetForumsByCoursesRequest",
-  "description": "Returns a list of forum instances in a provided set of courses, if no courses are provided then all the forum instances the user has access to will be returned.\n",
-  "type": "object",
   "extends": {
     "$ref": "../../../../common/moodle_webservice_request.json"
   },
+  "description": "Returns a list of forum instances in a provided set of courses, if no courses are provided then all the forum instances the user has access to will be returned.\n",
+  "title": "GetForumsByCoursesRequest",
+  "type": "object",
   "properties": {
-    "wsfunction": {
-      "type": "string",
-      "default": "mod_forum_get_forums_by_courses"
-    },
     "args": {
       "type": "object",
       "title": "GetForumsByCoursesArgs",
       "properties": {
         "courseids": {
+          "description": "Course Ids",
           "type": "array",
           "items": {
             "type": "integer"
-          },
-          "description": "Course Ids"
+          }
         }
       },
       "required": [
         "courseids"
       ]
+    },
+    "wsfunction": {
+      "default": "mod_forum_get_forums_by_courses",
+      "type": "string"
     }
   }
 }
