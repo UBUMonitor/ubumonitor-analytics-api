@@ -18,8 +18,12 @@ Thumbs.db
 .factorypath
 
 # === Maven ===
-.mvn/
-!/.mvn/wrapper/maven-wrapper.jar
+.mvn/*
+!.mvn/
+!.mvn/jvm.config
+!.mvn/wrapper/
+.mvn/wrapper/*
+!.mvn/wrapper/maven-wrapper.jar
 
 # === Gradle ===
 .gradle/
