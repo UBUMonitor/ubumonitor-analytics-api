@@ -9,7 +9,7 @@
     <parent>
         <groupId>es.ubu.lsi</groupId>
         <artifactId>ubumonitor-parent</artifactId>
-        <version>0.0.4-SNAPSHOT</version>
+        <version>0.0.5-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -201,7 +201,7 @@
         <dependency>
             <groupId>es.ubu.lsi</groupId>
             <artifactId>moodle-java-client</artifactId>
-            <version>0.0.4-SNAPSHOT</version>
+            <version>0.0.5-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -287,9 +287,12 @@
                             <supportingFilesToGenerate>
                                 ApiUtil.java
                             </supportingFilesToGenerate>
-
+                            <importMappings>
+                                <importMapping>Nullable=org.jspecify.annotations.Nullable</importMapping>
+                            </importMappings>
                             <configOptions>
                                 <useSpringBoot4>true</useSpringBoot4>
+                                <useJackson3>true</useJackson3>
                                 <library>spring-boot</library>
                                 <reactive>false</reactive>
                                 <delegatePattern>true</delegatePattern>
