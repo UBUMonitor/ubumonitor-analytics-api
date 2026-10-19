@@ -32,7 +32,7 @@ public class LogPersistenceAdapter implements LogPersistencePort {
   private final MoodleRulesConfig moodleRulesConfig;
 
   @Override
-  public void createIfNotExists(Integer courseId) {
+  public void createIfNotExists(Long courseId) {
     DSLContext dsl = jooq.dsl();
 
     boolean exists = dsl.fetchExists(dsl.selectOne().from(COURSES).where(COURSES.ID.eq(courseId)));
@@ -124,7 +124,7 @@ public class LogPersistenceAdapter implements LogPersistencePort {
   }
 
   @Override
-  public LocalDateTime getLastDateTime(Integer courseId) {
+  public LocalDateTime getLastDateTime(Long courseId) {
     return jooq.dsl()
         .select(DSL.max(LOGS.LOGGED_AT))
         .from(LOGS)

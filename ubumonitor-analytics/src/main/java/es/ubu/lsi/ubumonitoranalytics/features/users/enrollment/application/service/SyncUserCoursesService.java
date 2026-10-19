@@ -29,7 +29,7 @@ public class SyncUserCoursesService implements SyncUserCoursesUseCase {
   @Transactional
   public UserEnrolledCourses syncActualUserEnrollments() {
     SessionData sessionData = currentSessionContext.getSessionData();
-    Integer userId = persistenceFetchPort.getUserIdByUserName(sessionData.getUsername());
+    Long userId = persistenceFetchPort.getUserIdByUserName(sessionData.getUsername());
     if (userId == null) {
       throw new EntityNotFoundException("User not found " + sessionData.getUsername());
     }

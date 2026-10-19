@@ -6,7 +6,7 @@
   <parent>
     <groupId>es.ubu.lsi</groupId>
     <artifactId>ubumonitor-parent</artifactId>
-    <version>0.0.5</version>
+    <version>0.0.6-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>moodle-java-client</artifactId>
@@ -110,6 +110,9 @@
           <usePrimitives>false</usePrimitives>
           <generateBuilders>false</generateBuilders>
           <classNameSuffix>Api</classNameSuffix>
+          <formatTypeMapping>
+            <int64>java.lang.Long</int64>
+          </formatTypeMapping>
         </configuration>
         <executions>
           <execution>

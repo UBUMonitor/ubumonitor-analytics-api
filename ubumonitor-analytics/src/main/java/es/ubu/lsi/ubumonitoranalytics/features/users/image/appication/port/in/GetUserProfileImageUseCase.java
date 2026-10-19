@@ -13,5 +13,5 @@ public interface GetUserProfileImageUseCase {
    * @param ifNoneMatch ETag from a previous response, if available
    * @return the image and whether it changed since the supplied ETag
    */
-  UserImage getUserImage(Integer userId, URI host, String username, String ifNoneMatch);
+  UserImage getUserImage(Long userId, URI host, String username, String ifNoneMatch);
 }

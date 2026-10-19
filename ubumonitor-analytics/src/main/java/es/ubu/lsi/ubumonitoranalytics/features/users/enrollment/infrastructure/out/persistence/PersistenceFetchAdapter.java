@@ -25,17 +25,17 @@ public class PersistenceFetchAdapter implements PersistenceFetchPort {
   private final GetEnrollmentPersistenceAdapterMapper mapper;
 
   @Override
-  public Integer getUserIdByUserName(String username) {
+  public Long getUserIdByUserName(String username) {
     return jooq.dsl()
         .select(SITES.USER_ID)
         .from(SITES)
         .where(SITES.USER_NAME.eq(username))
-        .fetchOneInto(Integer.class);
+        .fetchOneInto(Long.class);
   }
 
   @Override
-  public UserEnrolledCourses getEnrolledCourses(Integer userId) {
-    Map<Integer, UsersCoursesRecord> byCourseId =
+  public UserEnrolledCourses getEnrolledCourses(Long userId) {
+    Map<Long, UsersCoursesRecord> byCourseId =
         jooq.dsl()
             .selectFrom(USERS_COURSES)
             .where(USERS_COURSES.USER_ID.eq(userId))

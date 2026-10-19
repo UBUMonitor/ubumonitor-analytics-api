@@ -16,5 +16,5 @@ public interface EnrollmentImagesDocumentCommandMapper {
       source = "headerText",
       defaultValue = "UBUMonitor Analytics - Course Users Enrollments")
   EnrollmentImagesDocumentCommand toDomain(
-      List<Integer> userIds, String defaultImagePath, Boolean useDefaultPhoto, String headerText);
+      List<Long> userIds, String defaultImagePath, Boolean useDefaultPhoto, String headerText);
 }

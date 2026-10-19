@@ -16,13 +16,13 @@ public class CourseGradesApiDelegateImpl implements CourseGradesApiDelegate {
   private final GradesUseCase gradesUseCase;
 
   @Override
-  public ResponseEntity<CourseGradeItemsResponseDto> getCourseGradesInfo(Integer courseId) {
+  public ResponseEntity<CourseGradeItemsResponseDto> getCourseGradesInfo(Long courseId) {
     return ResponseEntity.ok(
         courseGradesMapper.toResponseDto(gradesUseCase.getGradeItems(courseId)));
   }
 
   @Override
-  public ResponseEntity<CourseGradeItemsResponseDto> syncCourseGrades(Integer courseId) {
+  public ResponseEntity<CourseGradeItemsResponseDto> syncCourseGrades(Long courseId) {
     return ResponseEntity.ok(courseGradesMapper.toResponseDto(gradesUseCase.sync(courseId)));
   }
 }

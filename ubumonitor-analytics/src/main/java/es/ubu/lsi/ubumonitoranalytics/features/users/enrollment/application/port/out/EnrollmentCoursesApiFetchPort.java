@@ -8,5 +8,5 @@ public interface EnrollmentCoursesApiFetchPort {
    * @param userId Moodle user identifier
    * @return the user's enrolled courses
    */
-  UserEnrolledCourses fetchEnrolledCourses(Integer userId);
+  UserEnrolledCourses fetchEnrolledCourses(Long userId);
 }

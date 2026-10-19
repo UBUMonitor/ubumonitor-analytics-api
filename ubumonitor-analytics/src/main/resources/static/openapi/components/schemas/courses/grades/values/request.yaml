@@ -9,6 +9,7 @@ CourseGradesValuesRequest:
       minItems: 1
       items:
         type: integer
+        format: int64
       description: List of grade item identifiers to include in the grade value lookup.
     userIds:
       type: array
@@ -16,4 +17,5 @@ CourseGradesValuesRequest:
       minItems: 1
       items:
         type: integer
+        format: int64
       description: List of user identifiers to include in the grade value lookup.

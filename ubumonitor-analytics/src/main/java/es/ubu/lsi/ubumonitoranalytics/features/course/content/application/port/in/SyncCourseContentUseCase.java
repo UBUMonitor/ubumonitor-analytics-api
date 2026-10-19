@@ -8,5 +8,5 @@ public interface SyncCourseContentUseCase {
    * @param courseId Moodle course identifier
    * @return the synchronized course sections and modules
    */
-  CourseContent syncCourseContent(Integer courseId);
+  CourseContent syncCourseContent(Long courseId);
 }

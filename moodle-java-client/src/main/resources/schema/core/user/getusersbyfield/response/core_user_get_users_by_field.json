@@ -49,7 +49,8 @@
       "firstaccess": {
         "nullable": true,
         "description": "First access to the site (0 if never)",
-        "type": "integer"
+        "type": "integer",
+        "format": "int64"
       },
       "confirmed": {
         "nullable": true,
@@ -121,7 +122,8 @@
       },
       "id": {
         "description": "ID of the user",
-        "type": "integer"
+        "type": "integer",
+        "format": "int64"
       },
       "department": {
         "nullable": true,
@@ -206,7 +208,8 @@
       "lastaccess": {
         "nullable": true,
         "description": "Last access to the site (0 if never)",
-        "type": "integer"
+        "type": "integer",
+        "format": "int64"
       },
       "calendartype": {
         "nullable": true,

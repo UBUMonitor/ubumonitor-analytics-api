@@ -10,5 +10,5 @@ public interface UserGroupPersistencePort {
    * @param users users and their group data
    * @param courseId Moodle course identifier
    */
-  void syncUserGroups(List<Integer> userIds, List<User> users, Integer courseId);
+  void syncUserGroups(List<Long> userIds, List<User> users, Long courseId);
 }

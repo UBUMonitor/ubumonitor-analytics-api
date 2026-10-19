@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 @Builder
 public class StatisticRow {
 
-  private Integer userId;
+  private Long userId;
   private String userFullName;
-  private Integer moduleId;
+  private Long moduleId;
   private String moduleName;
   private Short componentId;
   private String componentName;
@@ -23,9 +23,9 @@ public class StatisticRow {
   private Byte originId;
   private String originName;
   private String ipAddress;
-  private Integer courseId;
+  private Long courseId;
   private String timeBucket;
-  private String sectionId;
+  private Long sectionId;
   private String sectionName;
   private Integer value; // Resulting COUNT(*) value.
 }

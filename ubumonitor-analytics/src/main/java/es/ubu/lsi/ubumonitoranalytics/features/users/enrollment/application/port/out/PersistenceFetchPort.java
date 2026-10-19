@@ -8,11 +8,11 @@ public interface PersistenceFetchPort {
    * @param username Moodle username
    * @return the local user identifier, or {@code null} when absent
    */
-  Integer getUserIdByUserName(String username);
+  Long getUserIdByUserName(String username);
 
   /**
    * @param userId local user identifier
    * @return the user's enrolled courses
    */
-  UserEnrolledCourses getEnrolledCourses(Integer userId);
+  UserEnrolledCourses getEnrolledCourses(Long userId);
 }

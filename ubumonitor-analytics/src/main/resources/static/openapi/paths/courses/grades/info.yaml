@@ -11,6 +11,7 @@ get:
       required: true
       schema:
         type: integer
+        format: int64
   responses:
     '200':
       description: Successful retrieval of grades. The response includes the grade information for users grades in the specified course.

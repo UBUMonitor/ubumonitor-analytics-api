@@ -18,7 +18,7 @@ public class MoodleUserCoursesApiAdapter implements EnrollmentCoursesApiFetchPor
   private final MoodleUserCoursesAdapterMapper moodleUserCoursesAdapterMapper;
 
   @Override
-  public UserEnrolledCourses fetchEnrolledCourses(Integer userId) {
+  public UserEnrolledCourses fetchEnrolledCourses(Long userId) {
     GetUsersCoursesRequestApi request = moodleUserCoursesAdapterMapper.toRequest(userId);
     List<GetUsersCoursesResponseApi> response = client.coreEnrol().getUsersCourses(request);
     return moodleUserCoursesAdapterMapper.toDomain(userId, response);

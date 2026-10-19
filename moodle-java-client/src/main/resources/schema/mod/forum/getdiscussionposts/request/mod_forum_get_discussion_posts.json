@@ -25,7 +25,8 @@
         },
         "discussionid": {
           "description": "Discussion id",
-          "type": "integer"
+          "type": "integer",
+          "format": "int64"
         },
         "sortby": {
           "description": "Sort by this element: id, created or modified",

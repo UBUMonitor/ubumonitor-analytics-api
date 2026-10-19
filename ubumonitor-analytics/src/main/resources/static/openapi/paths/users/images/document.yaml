@@ -15,6 +15,7 @@ get:
         minItems: 1
         items:
           type: integer
+          format: int64
     - name: defaultImagePath
       in: query
       description: The path to the default image file to use.

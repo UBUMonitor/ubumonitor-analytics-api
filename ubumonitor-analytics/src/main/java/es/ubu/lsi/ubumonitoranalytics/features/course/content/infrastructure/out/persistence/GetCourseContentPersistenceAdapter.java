@@ -22,10 +22,10 @@ public class GetCourseContentPersistenceAdapter implements GetCourseContentPersi
   private final Jooq jooq;
 
   @Override
-  public CourseContent getCourseContent(Integer courseId) {
+  public CourseContent getCourseContent(Long courseId) {
 
     // 1. Sections
-    Map<Integer, Section> sectionMap =
+    Map<Long, Section> sectionMap =
         jooq.dsl()
             .selectFrom(SECTIONS)
             .where(SECTIONS.COURSE_ID.eq(courseId))
@@ -34,7 +34,7 @@ public class GetCourseContentPersistenceAdapter implements GetCourseContentPersi
             .fetchMap(SECTIONS.ID, mapper::toDomain);
 
     // 2. Group modules by section_id.
-    Map<Integer, List<CourseModule>> modulesBySection =
+    Map<Long, List<CourseModule>> modulesBySection =
         jooq.dsl()
             .selectFrom(MODULES)
             .where(MODULES.SECTION_ID.in(sectionMap.keySet()))

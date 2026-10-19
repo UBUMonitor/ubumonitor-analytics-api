@@ -13,11 +13,13 @@
       "properties": {
         "courseid": {
           "description": "Course ID",
-          "type": "integer"
+          "type": "integer",
+          "format": "int64"
         },
         "userid": {
           "description": "User ID",
-          "type": "integer"
+          "type": "integer",
+          "format": "int64"
         }
       },
       "required": [

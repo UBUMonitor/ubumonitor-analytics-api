@@ -8,5 +8,5 @@ public interface GetCourseContentUseCase {
    * @param courseId Moodle course identifier
    * @return the course sections and modules
    */
-  CourseContent getCourseContent(Integer courseId);
+  CourseContent getCourseContent(Long courseId);
 }

@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface GradesFetchPersistencePort {
 
-  List<GradeItem> fetchCourseGradeItemsPersistence(Integer courseId);
+  List<GradeItem> fetchCourseGradeItemsPersistence(Long courseId);
 
-  List<UserGrade> fetchCourseUserGradesPersistence(Integer courseId);
+  List<UserGrade> fetchCourseUserGradesPersistence(Long courseId);
 }

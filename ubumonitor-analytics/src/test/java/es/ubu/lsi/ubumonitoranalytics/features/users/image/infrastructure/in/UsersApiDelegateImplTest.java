@@ -18,7 +18,7 @@ class UsersApiDelegateImplTest {
   @Test
   void requiresRevalidationForModifiedAndUnmodifiedImages() {
     GetUserProfileImageUseCase getUserProfileImageUseCase = mock(GetUserProfileImageUseCase.class);
-    when(getUserProfileImageUseCase.getUserImage(13, null, "teacher", null))
+    when(getUserProfileImageUseCase.getUserImage(13L, null, "teacher", null))
         .thenReturn(
             UserImage.builder()
                 .hexHash("image-hash")
@@ -35,9 +35,9 @@ class UsersApiDelegateImplTest {
             mock(EnrollmentImagesDocumentCommandMapper.class));
 
     ResponseEntity<Resource> modifiedResponse =
-        delegate.getUserImagesProfile(13, null, "teacher", null);
+        delegate.getUserImagesProfile(13L, null, "teacher", null);
     ResponseEntity<Resource> unmodifiedResponse =
-        delegate.getUserImagesProfile(13, null, "teacher", null);
+        delegate.getUserImagesProfile(13L, null, "teacher", null);
 
     assertEquals(HttpStatus.OK, modifiedResponse.getStatusCode());
     assertEquals(HttpStatus.NOT_MODIFIED, unmodifiedResponse.getStatusCode());

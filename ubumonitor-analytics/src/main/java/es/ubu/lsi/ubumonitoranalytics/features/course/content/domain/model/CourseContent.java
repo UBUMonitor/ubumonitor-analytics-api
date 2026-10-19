@@ -7,6 +7,6 @@ import lombok.Data;
 @Data
 @Builder
 public class CourseContent {
-  private Integer courseId;
+  private Long courseId;
   private Collection<Section> sections;
 }

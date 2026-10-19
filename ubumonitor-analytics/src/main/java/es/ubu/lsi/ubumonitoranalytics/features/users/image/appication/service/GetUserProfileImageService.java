@@ -30,7 +30,7 @@ public class GetUserProfileImageService implements GetUserProfileImageUseCase {
    * @return image content and modification state, or the unchanged state
    */
   @Override
-  public UserImage getUserImage(Integer userId, URI host, String username, String ifNoneMatch) {
+  public UserImage getUserImage(Long userId, URI host, String username, String ifNoneMatch) {
     String normalized = normalize(ifNoneMatch);
     SessionData sessionData = sessionStorePort.getSession(host, username);
 

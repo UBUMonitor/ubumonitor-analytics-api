@@ -14,16 +14,19 @@
         "groupid": {
           "nullable": true,
           "description": "Get users from this group only",
-          "type": "integer"
+          "type": "integer",
+          "format": "int64"
         },
         "courseid": {
           "description": "Course Id",
-          "type": "integer"
+          "type": "integer",
+          "format": "int64"
         },
         "userid": {
           "nullable": true,
           "description": "Return grades only for this user",
-          "type": "integer"
+          "type": "integer",
+          "format": "int64"
         }
       },
       "required": [

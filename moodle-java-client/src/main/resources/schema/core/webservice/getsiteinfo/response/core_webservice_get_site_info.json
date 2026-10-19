@@ -46,7 +46,8 @@
     },
     "userid": {
       "description": "User id",
-      "type": "integer"
+      "type": "integer",
+      "format": "int64"
     },
     "uploadfiles": {
       "nullable": true,
@@ -75,7 +76,8 @@
     "siteid": {
       "nullable": true,
       "description": "Site course ID",
-      "type": "integer"
+      "type": "integer",
+      "format": "int64"
     },
     "userhomepageurl": {
       "nullable": true,

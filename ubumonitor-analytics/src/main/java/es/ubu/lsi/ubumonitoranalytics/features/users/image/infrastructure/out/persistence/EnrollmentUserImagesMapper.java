@@ -23,25 +23,25 @@ public interface EnrollmentUserImagesMapper {
       target = "userImage.contentType",
       source = "recordValue",
       qualifiedByName = "extractContentType")
-  EnrollmentUserImage toDomain(Record4<Integer, String, byte[], String> recordValue);
+  EnrollmentUserImage toDomain(Record4<Long, String, byte[], String> recordValue);
 
   @Named("extractUserId")
-  default Integer extractUserId(Record4<Integer, String, byte[], String> recordValue) {
+  default Long extractUserId(Record4<Long, String, byte[], String> recordValue) {
     return recordValue.get(USERS.ID);
   }
 
   @Named("extractFullName")
-  default String extractFullName(Record4<Integer, String, byte[], String> recordValue) {
+  default String extractFullName(Record4<Long, String, byte[], String> recordValue) {
     return recordValue.get(USERS.FULL_NAME);
   }
 
   @Named("extractImageData")
-  default byte[] extractImageData(Record4<Integer, String, byte[], String> recordValue) {
+  default byte[] extractImageData(Record4<Long, String, byte[], String> recordValue) {
     return recordValue.get(USERS_IMAGES.IMAGE_DATA);
   }
 
   @Named("extractContentType")
-  default String extractContentType(Record4<Integer, String, byte[], String> recordValue) {
+  default String extractContentType(Record4<Long, String, byte[], String> recordValue) {
     return recordValue.get(USERS_IMAGES.CONTENT_TYPE);
   }
 
@@ -51,15 +51,15 @@ public interface EnrollmentUserImagesMapper {
   @Mapping(target = "userImage.image", source = "imageData")
   @Mapping(target = "userImage.contentType", source = "contentType")
   EnrollmentUserImage toDomain(
-      Record2<Integer, String> recordValue, byte[] imageData, String contentType);
+      Record2<Long, String> recordValue, byte[] imageData, String contentType);
 
   @Named("extractFullName")
-  default String extractFullName(Record2<Integer, String> recordValue) {
+  default String extractFullName(Record2<Long, String> recordValue) {
     return recordValue.get(USERS.FULL_NAME);
   }
 
   @Named("extractUserId")
-  default Integer extractUserId(Record2<Integer, String> recordValue) {
+  default Long extractUserId(Record2<Long, String> recordValue) {
     return recordValue.get(USERS.ID);
   }
 }

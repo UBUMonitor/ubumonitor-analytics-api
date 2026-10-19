@@ -18,13 +18,13 @@ public class CourseContentApiDelegateImpl implements CourseContentApiDelegate {
   private final CourseContentApiDelegateMapper courseContentApiDelegateMapper;
 
   @Override
-  public ResponseEntity<CourseContentResponseDto> getCourseUsersContentInfo(Integer courseId) {
+  public ResponseEntity<CourseContentResponseDto> getCourseUsersContentInfo(Long courseId) {
     return ResponseEntity.ok(
         courseContentApiDelegateMapper.toDto(getCourseContentUseCase.getCourseContent(courseId)));
   }
 
   @Override
-  public ResponseEntity<CourseContentResponseDto> syncCourseContent(Integer courseId) {
+  public ResponseEntity<CourseContentResponseDto> syncCourseContent(Long courseId) {
     return ResponseEntity.ok(
         courseContentApiDelegateMapper.toDto(syncCourseContentUseCase.syncCourseContent(courseId)));
   }

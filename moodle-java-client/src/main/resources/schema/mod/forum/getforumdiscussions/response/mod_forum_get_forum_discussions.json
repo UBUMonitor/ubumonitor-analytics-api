@@ -15,7 +15,8 @@
           "itemid": {
             "nullable": true,
             "description": "item id",
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           },
           "item": {
             "nullable": true,
@@ -45,11 +46,13 @@
         "properties": {
           "timeend": {
             "description": "Time discussion ends",
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           },
           "parent": {
             "description": "Parent id",
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           },
           "pinned": {
             "description": "Is the discussion pinned",
@@ -82,7 +85,8 @@
                 "timemodified": {
                   "nullable": true,
                   "description": "Time modified",
-                  "type": "integer"
+                  "type": "integer",
+                  "format": "int64"
                 },
                 "icon": {
                   "nullable": true,
@@ -122,11 +126,13 @@
           },
           "discussion": {
             "description": "Discussion id",
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           },
           "userid": {
             "description": "User who started the discussion id",
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           },
           "messagetrust": {
             "description": "Can we trust?",
@@ -151,11 +157,13 @@
           },
           "modified": {
             "description": "Time modified",
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           },
           "id": {
             "description": "Post id",
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           },
           "locked": {
             "description": "Is the discussion locked",
@@ -180,11 +188,13 @@
           },
           "created": {
             "description": "Creation time",
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           },
           "groupid": {
             "description": "Group id",
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           },
           "messageformat": {
             "description": "message format (1 = HTML, 0 = MOODLE, 2 = PLAIN, or 4 = MARKDOWN)",
@@ -237,7 +247,8 @@
                 "timemodified": {
                   "nullable": true,
                   "description": "Time modified",
-                  "type": "integer"
+                  "type": "integer",
+                  "format": "int64"
                 },
                 "icon": {
                   "nullable": true,
@@ -282,7 +293,8 @@
           },
           "timemodified": {
             "description": "Time modified",
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           },
           "numunread": {
             "description": "The number of unread discussions",
@@ -302,11 +314,13 @@
           },
           "usermodified": {
             "description": "The id of the user who last modified",
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           },
           "timestart": {
             "description": "Time discussion can start",
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           }
         },
         "required": [

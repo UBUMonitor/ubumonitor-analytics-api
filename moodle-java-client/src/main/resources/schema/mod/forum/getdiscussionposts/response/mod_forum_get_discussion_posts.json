@@ -24,10 +24,12 @@
             "properties": {
               "scaleid": {
                 "nullable": true,
-                "type": "integer"
+                "type": "integer",
+                "format": "int64"
               },
               "itemid": {
-                "type": "integer"
+                "type": "integer",
+                "format": "int64"
               },
               "canrate": {
                 "nullable": true,
@@ -55,7 +57,8 @@
               },
               "userid": {
                 "nullable": true,
-                "type": "integer"
+                "type": "integer",
+                "format": "int64"
               },
               "aggregate": {
                 "nullable": true,
@@ -79,11 +82,13 @@
                 "type": "string"
               },
               "id": {
-                "type": "integer"
+                "type": "integer",
+                "format": "int64"
               },
               "courseid": {
                 "nullable": true,
-                "type": "integer"
+                "type": "integer",
+                "format": "int64"
               },
               "items": {
                 "nullable": true,
@@ -107,7 +112,8 @@
           }
         },
         "contextid": {
-          "type": "integer"
+          "type": "integer",
+          "format": "int64"
         },
         "ratingarea": {
           "type": "string"
@@ -120,7 +126,8 @@
     },
     "discussionid": {
       "description": "Discussion id",
-      "type": "integer"
+      "type": "integer",
+      "format": "int64"
     },
     "warnings": {
       "nullable": true,
@@ -132,7 +139,8 @@
         "properties": {
           "itemid": {
             "nullable": true,
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           },
           "item": {
             "nullable": true,
@@ -219,7 +227,8 @@
                   "type": "string"
                 },
                 "contextid": {
-                  "type": "integer"
+                  "type": "integer",
+                  "format": "int64"
                 },
                 "filesize": {
                   "type": "integer"
@@ -229,7 +238,8 @@
                   "type": "string"
                 },
                 "itemid": {
-                  "type": "integer"
+                  "type": "integer",
+                  "format": "int64"
                 },
                 "license": {
                   "type": "string"
@@ -251,7 +261,8 @@
                   "type": "string"
                 },
                 "timecreated": {
-                  "type": "integer"
+                  "type": "integer",
+                  "format": "int64"
                 },
                 "filenameshort": {
                   "type": "string"
@@ -263,7 +274,8 @@
                   "type": "boolean"
                 },
                 "timemodified": {
-                  "type": "integer"
+                  "type": "integer",
+                  "format": "int64"
                 },
                 "html": {
                   "type": "object",
@@ -330,14 +342,16 @@
                       "type": "string"
                     },
                     "id": {
-                      "type": "integer"
+                      "type": "integer",
+                      "format": "int64"
                     }
                   }
                 }
               },
               "id": {
                 "nullable": true,
-                "type": "integer"
+                "type": "integer",
+                "format": "int64"
               },
               "fullname": {
                 "nullable": true,
@@ -399,7 +413,8 @@
                   "type": "string"
                 },
                 "contextid": {
-                  "type": "integer"
+                  "type": "integer",
+                  "format": "int64"
                 },
                 "filesize": {
                   "type": "integer"
@@ -409,7 +424,8 @@
                   "type": "string"
                 },
                 "itemid": {
-                  "type": "integer"
+                  "type": "integer",
+                  "format": "int64"
                 },
                 "license": {
                   "type": "string"
@@ -421,7 +437,8 @@
                   "type": "string"
                 },
                 "timecreated": {
-                  "type": "integer"
+                  "type": "integer",
+                  "format": "int64"
                 },
                 "filenameshort": {
                   "type": "string"
@@ -433,7 +450,8 @@
                   "type": "boolean"
                 },
                 "timemodified": {
-                  "type": "integer"
+                  "type": "integer",
+                  "format": "int64"
                 },
                 "isdir": {
                   "type": "boolean"
@@ -454,7 +472,8 @@
           },
           "parentid": {
             "nullable": true,
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           },
           "tags": {
             "nullable": true,
@@ -476,13 +495,15 @@
                   "type": "boolean"
                 },
                 "tagid": {
-                  "type": "integer"
+                  "type": "integer",
+                  "format": "int64"
                 },
                 "displayname": {
                   "type": "string"
                 },
                 "id": {
-                  "type": "integer"
+                  "type": "integer",
+                  "format": "int64"
                 },
                 "isstandard": {
                   "type": "boolean"
@@ -556,13 +577,15 @@
           },
           "timecreated": {
             "description": "Timestamp in seconds",
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           },
           "isprivatereply": {
             "type": "boolean"
           },
           "discussionid": {
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           },
           "messagetext": {
             "description": "message text parsed",
@@ -570,7 +593,8 @@
           },
           "timemodified": {
             "description": "Timestamp in seconds",
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           },
           "html": {
             "title": "Post HTML",
@@ -592,7 +616,8 @@
           },
           "id": {
             "description": "id",
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           },
           "haswordcount": {
             "type": "boolean"
@@ -601,10 +626,12 @@
       }
     },
     "courseid": {
-      "type": "integer"
+      "type": "integer",
+      "format": "int64"
     },
     "forumid": {
-      "type": "integer"
+      "type": "integer",
+      "format": "int64"
     }
   },
   "required": [
