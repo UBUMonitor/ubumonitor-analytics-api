@@ -6,21 +6,21 @@ import java.net.URI;
 /** Stores and looks up active application sessions. */
 public interface SessionStorePort {
   /**
-   * @param jwt application session token
+   * @param token application session token
    * @param sessionData session state to store
    */
-  void saveSession(String jwt, SessionData sessionData);
+  void saveSession(String token, SessionData sessionData);
 
   /**
-   * @param jwt application session token
+   * @param token application session token
    * @return matching session state, or {@code null} when absent
    */
-  SessionData getSession(String jwt);
+  SessionData getSession(String token);
 
   /**
-   * @param jwt application session token to invalidate
+   * @param token application session token to invalidate
    */
-  void invalidateSession(String jwt);
+  void invalidateSession(String token);
 
   /**
    * @param host Moodle site URI

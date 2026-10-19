@@ -1,0 +1,25 @@
+CourseGradesValuesResponse:
+    type: object
+    properties:
+      grades:
+        type: array
+        items:
+          title: CourseGradesValuesResponseRow
+          type: object
+          properties:
+            gradeItemId:
+              type: integer
+              description: Unique identifier for the grade item
+            userId:
+              type: integer
+              description: Unique identifier for the user
+            grade:
+              type: number
+              format: double
+              nullable: true
+              description: The grade value for the user in the specified grade item
+            percentage:
+              type: number
+              format: double
+              nullable: true
+              description: The percentage grade for the user in the specified grade item

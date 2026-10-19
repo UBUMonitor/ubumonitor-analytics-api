@@ -1,0 +1,22 @@
+get:
+  tags:
+    - CourseGrades
+  summary: Get course grades
+  operationId: GetCourseGradesInfo
+  description: Retrieves the grade information for users enrolled in a specific course. This endpoint provides details about the users enrolled in the course, including their roles and grade status. It allows clients to access up-to-date grade information for a particular course on the Moodle site.
+  parameters:
+    - name: courseId
+      in: path
+      description: The unique identifier of the course for which to retrieve grades.
+      required: true
+      schema:
+        type: integer
+  responses:
+    '200':
+      description: Successful retrieval of grades. The response includes the grade information for users grades in the specified course.
+      content:
+        application/json:
+          schema:
+            $ref: '../../../components/schemas/courses/grades/info/response.yaml#/CourseGradeItemsResponse'
+    '401':
+      $ref: '../../../openapi.yaml#/components/responses/unauthorized_401'

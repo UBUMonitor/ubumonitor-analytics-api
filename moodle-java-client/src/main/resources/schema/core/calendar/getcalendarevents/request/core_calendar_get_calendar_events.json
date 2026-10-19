@@ -1,79 +1,75 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "GetCalendarEventsRequest",
-  "description": "Get calendar events",
-  "type": "object",
   "extends": {
     "$ref": "../../../../common/moodle_webservice_request.json"
   },
+  "description": "Get calendar events",
+  "title": "GetCalendarEventsRequest",
+  "type": "object",
   "properties": {
-    "wsfunction": {
-      "type": "string",
-      "default": "core_calendar_get_calendar_events"
-    },
     "args": {
       "type": "object",
       "title": "GetCalendarEventsArgs",
       "properties": {
+        "options": {
+          "description": "Event options",
+          "type": "object",
+          "title": "EventOptions",
+          "properties": {
+            "timeend": {
+              "description": "Time to which the events should be returned. We treat 0 and null as no end",
+              "type": "integer"
+            },
+            "siteevents": {
+              "description": "Set to true to return site events",
+              "type": "integer"
+            },
+            "userevents": {
+              "description": "Set to true to return current user's user events",
+              "type": "integer"
+            },
+            "ignorehidden": {
+              "description": "Ignore hidden events or not",
+              "type": "integer"
+            },
+            "timestart": {
+              "description": "Time from which events should be returned",
+              "type": "integer"
+            }
+          }
+        },
         "events": {
+          "description": "Event details",
           "type": "object",
           "title": "EventDetails",
-          "description": "Event details",
           "properties": {
-            "eventids": {
+            "categoryids": {
+              "description": "List of category IDs",
               "type": "array",
-              "description": "List of event IDs",
               "items": {
                 "type": "integer"
               }
             },
             "courseids": {
-              "type": "array",
               "description": "List of course IDs",
+              "type": "array",
               "items": {
                 "type": "integer"
               }
             },
             "groupids": {
-              "type": "array",
               "description": "List of group IDs",
-              "items": {
-                "type": "integer"
-              }
-            },
-            "categoryids": {
               "type": "array",
-              "description": "List of category IDs",
               "items": {
                 "type": "integer"
               }
-            }
-          }
-        },
-        "options": {
-          "type": "object",
-          "title": "EventOptions",
-          "description": "Event options",
-          "properties": {
-            "userevents": {
-              "type": "integer",
-              "description": "Set to true to return current user's user events"
             },
-            "siteevents": {
-              "type": "integer",
-              "description": "Set to true to return site events"
-            },
-            "timestart": {
-              "type": "integer",
-              "description": "Time from which events should be returned"
-            },
-            "timeend": {
-              "type": "integer",
-              "description": "Time to which the events should be returned. We treat 0 and null as no end"
-            },
-            "ignorehidden": {
-              "type": "integer",
-              "description": "Ignore hidden events or not"
+            "eventids": {
+              "description": "List of event IDs",
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
             }
           }
         }
@@ -82,6 +78,10 @@
         "courseid",
         "userid"
       ]
+    },
+    "wsfunction": {
+      "default": "core_calendar_get_calendar_events",
+      "type": "string"
     }
   }
 }

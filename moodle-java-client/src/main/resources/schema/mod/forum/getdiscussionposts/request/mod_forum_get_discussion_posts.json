@@ -1,32 +1,35 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "GetDiscussionPostsRequest",
-  "description": "Returns a list of forum posts for a discussion.",
-  "type": "object",
   "extends": {
     "$ref": "../../../../common/moodle_webservice_request.json"
   },
+  "description": "Returns a list of forum posts for a discussion.",
+  "title": "GetDiscussionPostsRequest",
+  "type": "object",
   "properties": {
-    "wsfunction": {
-      "type": "string",
-      "default": "mod_forum_get_discussion_posts"
-    },
     "args": {
       "type": "object",
       "title": "GetDiscussionPostsArgs",
       "properties": {
+        "sortdirection": {
+          "description": "Sort direction: ASC or DESC",
+          "type": "string",
+          "enum": [
+            "ASC",
+            "DESC"
+          ]
+        },
+        "includeinlineattachments": {
+          "description": "Whether inline attachments should be included or not",
+          "type": "integer"
+        },
         "discussionid": {
-          "type": "integer",
-          "description": "Discussion id"
+          "description": "Discussion id",
+          "type": "integer"
         },
         "sortby": {
-          "type": "string",
           "description": "Sort by this element: id, created or modified",
-          "enum": [
-            "id",
-            "created",
-            "modified"
-          ],
+          "type": "string",
           "javaEnums": [
             {
               "name": "ID"
@@ -37,24 +40,21 @@
             {
               "name": "MODIFIED"
             }
-          ]
-        },
-        "sortdirection": {
-          "type": "string",
-          "description": "Sort direction: ASC or DESC",
+          ],
           "enum": [
-            "ASC",
-            "DESC"
+            "id",
+            "created",
+            "modified"
           ]
-        },
-        "includeinlineattachments": {
-          "type": "integer",
-          "description": "Whether inline attachments should be included or not"
         }
       },
       "required": [
         "discussionid"
       ]
+    },
+    "wsfunction": {
+      "default": "mod_forum_get_discussion_posts",
+      "type": "string"
     }
   }
 }

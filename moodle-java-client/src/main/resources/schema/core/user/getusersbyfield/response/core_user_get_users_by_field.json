@@ -6,222 +6,85 @@
     "title": "GetUsersByFieldResponse",
     "type": "object",
     "properties": {
-      "id": {
-        "type": "integer",
-        "description": "ID of the user"
-      },
-      "username": {
-        "type": "string",
-        "description": "The username",
-        "nullable": true
+      "country": {
+        "nullable": true,
+        "description": "Home country code of the user, such as AU or CZ",
+        "type": "string"
       },
       "firstname": {
-        "type": "string",
+        "nullable": true,
         "description": "The first name(s) of the user",
-        "nullable": true
-      },
-      "lastname": {
-        "type": "string",
-        "description": "The family name of the user",
-        "nullable": true
-      },
-      "fullname": {
-        "type": "string",
-        "description": "The fullname of the user"
-      },
-      "email": {
-        "type": "string",
-        "format": "email",
-        "description": "An email address - allow email as root@localhost",
-        "nullable": true
-      },
-      "address": {
-        "type": "string",
-        "description": "Postal address",
-        "nullable": true
-      },
-      "phone1": {
-        "type": "string",
-        "description": "Phone 1",
-        "nullable": true
-      },
-      "phone2": {
-        "type": "string",
-        "description": "Phone 2",
-        "nullable": true
-      },
-      "department": {
-        "type": "string",
-        "description": "Department",
-        "nullable": true
-      },
-      "institution": {
-        "type": "string",
-        "description": "Institution",
-        "nullable": true
-      },
-      "idnumber": {
-        "type": "string",
-        "description": "An arbitrary ID code number perhaps from the institution",
-        "nullable": true
-      },
-      "interests": {
-        "type": "string",
-        "description": "User interests (separated by commas)",
-        "nullable": true
-      },
-      "firstaccess": {
-        "type": "integer",
-        "description": "First access to the site (0 if never)",
-        "nullable": true
-      },
-      "lastaccess": {
-        "type": "integer",
-        "description": "Last access to the site (0 if never)",
-        "nullable": true
+        "type": "string"
       },
       "auth": {
-        "type": "string",
+        "nullable": true,
         "description": "Auth plugins include manual, ldap, etc",
-        "nullable": true
-      },
-      "suspended": {
-        "type": "boolean",
-        "description": "Suspend user account, either false to enable user login or true to disable it",
-        "nullable": true
-      },
-      "confirmed": {
-        "type": "boolean",
-        "description": "Active user: 1 if confirmed, 0 otherwise",
-        "nullable": true
-      },
-      "lang": {
-        "type": "string",
-        "description": "Language code such as 'en', must exist on server",
-        "nullable": true
-      },
-      "calendartype": {
-        "type": "string",
-        "description": "Calendar type such as 'gregorian', must exist on server",
-        "nullable": true
-      },
-      "theme": {
-        "type": "string",
-        "description": "Theme name such as 'standard', must exist on server",
-        "nullable": true
-      },
-      "timezone": {
-        "type": "string",
-        "description": "Timezone code such as Australia/Perth, or 99 for default",
-        "nullable": true
-      },
-      "mailformat": {
-        "type": "integer",
-        "description": "Mail format code is 0 for plain text, 1 for HTML etc",
-        "nullable": true,
-        "enum": [
-          0,
-          1,
-          2,
-          4
-        ],
-        "javaEnums": [
-          {
-            "name": "MOODLE"
-          },
-          {
-            "name": "HTML"
-          },
-          {
-            "name": "PLAIN"
-          },
-          {
-            "name": "MARKDOWN"
-          }
-        ]
-      },
-      "trackforums": {
-        "type": "integer",
-        "description": "Whether the user is tracking forums",
-        "nullable": true
-      },
-      "description": {
-        "type": "string",
-        "description": "User profile description",
-        "nullable": true
-      },
-      "descriptionformat": {
-        "type": "integer",
-        "description": "int format (1 = HTML, 0 = MOODLE, 2 = PLAIN, or 4 = MARKDOWN)",
-        "nullable": true,
-        "enum": [
-          0,
-          1,
-          2,
-          4
-        ],
-        "javaEnums": [
-          {
-            "name": "MOODLE"
-          },
-          {
-            "name": "HTML"
-          },
-          {
-            "name": "PLAIN"
-          },
-          {
-            "name": "MARKDOWN"
-          }
-        ]
+        "type": "string"
       },
       "city": {
-        "type": "string",
+        "nullable": true,
         "description": "Home city of the user",
-        "nullable": true
+        "type": "string"
       },
-      "country": {
-        "type": "string",
-        "description": "Home country code of the user, such as AU or CZ",
-        "nullable": true
+      "timezone": {
+        "nullable": true,
+        "description": "Timezone code such as Australia/Perth, or 99 for default",
+        "type": "string"
       },
-      "profileimageurlsmall": {
-        "type": "string",
-        "description": "User image profile URL - small version"
+      "idnumber": {
+        "nullable": true,
+        "description": "An arbitrary ID code number perhaps from the institution",
+        "type": "string"
       },
-      "profileimageurl": {
-        "type": "string",
-        "description": "User image profile URL - big version"
+      "phone2": {
+        "nullable": true,
+        "description": "Phone 2",
+        "type": "string"
+      },
+      "description": {
+        "nullable": true,
+        "description": "User profile description",
+        "type": "string"
+      },
+      "firstaccess": {
+        "nullable": true,
+        "description": "First access to the site (0 if never)",
+        "type": "integer"
+      },
+      "confirmed": {
+        "nullable": true,
+        "description": "Active user: 1 if confirmed, 0 otherwise",
+        "type": "boolean"
       },
       "customfields": {
-        "title": "Custom Fields",
-        "description": "User custom fields (also known as user profile fields)",
-        "type": "array",
         "nullable": true,
+        "description": "User custom fields (also known as user profile fields)",
+        "title": "Custom Fields",
+        "type": "array",
         "items": {
           "title": "Custom Field",
           "type": "object",
           "properties": {
+            "name": {
+              "description": "The name of the custom field",
+              "type": "string"
+            },
             "type": {
-              "type": "string",
-              "description": "The type of the custom field - text field, checkbox..."
+              "description": "The type of the custom field - text field, checkbox...",
+              "type": "string"
             },
             "value": {
-              "type": "string",
-              "description": "The value of the custom field (as stored in the database)"
+              "description": "The value of the custom field (as stored in the database)",
+              "type": "string"
             },
             "displayvalue": {
-              "type": "string",
+              "nullable": true,
               "description": "The value of the custom field for display",
-              "nullable": true
-            },
-            "name": {
-              "type": "string",
-              "description": "The name of the custom field"
+              "type": "string"
             },
             "shortname": {
-              "type": "string",
-              "description": "The shortname of the custom field - to be able to build the field class in the code"
+              "description": "The shortname of the custom field - to be able to build the field class in the code",
+              "type": "string"
             }
           },
           "required": [
@@ -232,22 +95,91 @@
           ]
         }
       },
-      "preferences": {
-        "title": "Preferences",
-        "description": "User preferences",
-        "type": "array",
+      "phone1": {
         "nullable": true,
+        "description": "Phone 1",
+        "type": "string"
+      },
+      "trackforums": {
+        "nullable": true,
+        "description": "Whether the user is tracking forums",
+        "type": "integer"
+      },
+      "profileimageurlsmall": {
+        "description": "User image profile URL - small version",
+        "type": "string"
+      },
+      "institution": {
+        "nullable": true,
+        "description": "Institution",
+        "type": "string"
+      },
+      "theme": {
+        "nullable": true,
+        "description": "Theme name such as 'standard', must exist on server",
+        "type": "string"
+      },
+      "id": {
+        "description": "ID of the user",
+        "type": "integer"
+      },
+      "department": {
+        "nullable": true,
+        "description": "Department",
+        "type": "string"
+      },
+      "lang": {
+        "nullable": true,
+        "description": "Language code such as 'en', must exist on server",
+        "type": "string"
+      },
+      "email": {
+        "nullable": true,
+        "format": "email",
+        "description": "An email address - allow email as root@localhost",
+        "type": "string"
+      },
+      "mailformat": {
+        "nullable": true,
+        "description": "Mail format code is 0 for plain text, 1 for HTML etc",
+        "type": "integer",
+        "javaEnums": [
+          {
+            "name": "MOODLE"
+          },
+          {
+            "name": "HTML"
+          },
+          {
+            "name": "PLAIN"
+          },
+          {
+            "name": "MARKDOWN"
+          }
+        ],
+        "enum": [
+          0,
+          1,
+          2,
+          4
+        ]
+      },
+      "preferences": {
+        "nullable": true,
+        "description": "User preferences",
+        "title": "Preferences",
+        "type": "array",
         "items": {
           "title": "Preference",
           "type": "object",
           "properties": {
             "name": {
-              "type": "string",
-              "description": "The name of the preference"
+              "description": "The name of the preference",
+              "type": "string"
             },
             "value": {
-              "type": "string",
-              "description": "The value of the preference"
+              "description": "The value of the preference",
+              "type": "string"
             }
           },
           "required": [
@@ -255,6 +187,74 @@
             "value"
           ]
         }
+      },
+      "address": {
+        "nullable": true,
+        "description": "Postal address",
+        "type": "string"
+      },
+      "suspended": {
+        "nullable": true,
+        "description": "Suspend user account, either false to enable user login or true to disable it",
+        "type": "boolean"
+      },
+      "lastname": {
+        "nullable": true,
+        "description": "The family name of the user",
+        "type": "string"
+      },
+      "lastaccess": {
+        "nullable": true,
+        "description": "Last access to the site (0 if never)",
+        "type": "integer"
+      },
+      "calendartype": {
+        "nullable": true,
+        "description": "Calendar type such as 'gregorian', must exist on server",
+        "type": "string"
+      },
+      "descriptionformat": {
+        "nullable": true,
+        "description": "int format (1 = HTML, 0 = MOODLE, 2 = PLAIN, or 4 = MARKDOWN)",
+        "type": "integer",
+        "javaEnums": [
+          {
+            "name": "MOODLE"
+          },
+          {
+            "name": "HTML"
+          },
+          {
+            "name": "PLAIN"
+          },
+          {
+            "name": "MARKDOWN"
+          }
+        ],
+        "enum": [
+          0,
+          1,
+          2,
+          4
+        ]
+      },
+      "fullname": {
+        "description": "The fullname of the user",
+        "type": "string"
+      },
+      "profileimageurl": {
+        "description": "User image profile URL - big version",
+        "type": "string"
+      },
+      "interests": {
+        "nullable": true,
+        "description": "User interests (separated by commas)",
+        "type": "string"
+      },
+      "username": {
+        "nullable": true,
+        "description": "The username",
+        "type": "string"
       }
     },
     "required": [

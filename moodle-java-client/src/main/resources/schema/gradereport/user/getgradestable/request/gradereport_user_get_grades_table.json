@@ -1,38 +1,38 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "GetGradesTableRequest",
-  "description": "Get the user/s report grades table for a course",
-  "type": "object",
   "extends": {
     "$ref": "../../../../common/moodle_webservice_request.json"
   },
+  "description": "Get the user/s report grades table for a course",
+  "title": "GetGradesTableRequest",
+  "type": "object",
   "properties": {
-    "wsfunction": {
-      "type": "string",
-      "default": "gradereport_user_get_grades_table"
-    },
     "args": {
       "type": "object",
       "title": "GetGradesTableArgs",
       "properties": {
+        "groupid": {
+          "nullable": true,
+          "description": "Get users from this group only",
+          "type": "integer"
+        },
         "courseid": {
-          "type": "integer",
-          "description": "Course Id"
+          "description": "Course Id",
+          "type": "integer"
         },
         "userid": {
-          "type": "integer",
+          "nullable": true,
           "description": "Return grades only for this user",
-          "nullable": true
-        },
-        "groupid": {
-          "type": "integer",
-          "description": "Get users from this group only",
-          "nullable": true
+          "type": "integer"
         }
       },
       "required": [
         "userid"
       ]
+    },
+    "wsfunction": {
+      "default": "gradereport_user_get_grades_table",
+      "type": "string"
     }
   }
 }

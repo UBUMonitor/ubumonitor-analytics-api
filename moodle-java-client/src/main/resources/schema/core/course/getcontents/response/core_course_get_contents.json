@@ -13,31 +13,37 @@
       "modules"
     ],
     "properties": {
-      "id": {
-        "type": "integer",
-        "description": "Section ID"
+      "summary": {
+        "description": "Section description",
+        "type": "string"
       },
-      "name": {
-        "type": "string",
-        "description": "Section name"
+      "itemid": {
+        "nullable": true,
+        "description": "Optional item id the delegate component can use to identify its instance",
+        "type": "integer"
+      },
+      "component": {
+        "nullable": true,
+        "description": "The delegate component of this section if any",
+        "type": "string"
       },
       "visible": {
-        "type": "boolean",
         "nullable": true,
-        "description": "Is the section visible"
+        "description": "Is the section visible",
+        "type": "boolean"
       },
-      "summary": {
-        "type": "string",
-        "description": "Section description"
+      "name": {
+        "description": "Section name",
+        "type": "string"
+      },
+      "availabilityinfo": {
+        "nullable": true,
+        "description": "Availability information.",
+        "type": "string"
       },
       "summaryformat": {
+        "description": "Summary format (1 = HTML, 0 = MOODLE, 2 = PLAIN, 4 = MARKDOWN)",
         "type": "integer",
-        "enum": [
-          0,
-          1,
-          2,
-          4
-        ],
         "javaEnums": [
           {
             "name": "MOODLE"
@@ -52,41 +58,35 @@
             "name": "MARKDOWN"
           }
         ],
-        "description": "Summary format (1 = HTML, 0 = MOODLE, 2 = PLAIN, 4 = MARKDOWN)"
+        "enum": [
+          0,
+          1,
+          2,
+          4
+        ]
       },
       "section": {
-        "type": "integer",
         "nullable": true,
-        "description": "Section number inside the course"
+        "description": "Section number inside the course",
+        "type": "integer"
       },
       "hiddenbynumsections": {
-        "type": "boolean",
         "nullable": true,
-        "description": "Whether this section is hidden in the course format"
+        "description": "Whether this section is hidden in the course format",
+        "type": "boolean"
+      },
+      "id": {
+        "description": "Section ID",
+        "type": "integer"
       },
       "uservisible": {
-        "type": "boolean",
         "nullable": true,
-        "description": "Is the section visible for the user?"
-      },
-      "availabilityinfo": {
-        "type": "string",
-        "nullable": true,
-        "description": "Availability information."
-      },
-      "component": {
-        "type": "string",
-        "nullable": true,
-        "description": "The delegate component of this section if any"
-      },
-      "itemid": {
-        "type": "integer",
-        "nullable": true,
-        "description": "Optional item id the delegate component can use to identify its instance"
+        "description": "Is the section visible for the user?",
+        "type": "boolean"
       },
       "modules": {
-        "type": "array",
         "description": "List of modules in the section",
+        "type": "array",
         "items": {
           "type": "object",
           "title": "Module",
@@ -101,181 +101,46 @@
             "completiondata"
           ],
           "properties": {
-            "id": {
-              "type": "integer",
-              "description": "Activity ID"
-            },
-            "url": {
-              "type": "string",
-              "format": "uri",
-              "nullable": true,
-              "description": "Activity URL"
-            },
-            "name": {
-              "type": "string",
-              "description": "Activity module name"
-            },
             "instance": {
-              "type": "integer",
               "nullable": true,
-              "description": "Instance ID"
-            },
-            "contextid": {
-              "type": "integer",
-              "nullable": true,
-              "description": "Activity context ID"
-            },
-            "description": {
-              "type": "string",
-              "nullable": true,
-              "description": "Activity description"
-            },
-            "visible": {
-              "type": "boolean",
-              "nullable": true,
-              "description": "Is the module visible"
-            },
-            "uservisible": {
-              "type": "boolean",
-              "nullable": true,
-              "description": "Is the module visible for the user?"
-            },
-            "availabilityinfo": {
-              "type": "string",
-              "nullable": true,
-              "description": "Availability information for the module"
-            },
-            "visibleoncoursepage": {
-              "type": "boolean",
-              "nullable": true,
-              "description": "Is the module visible on the course page"
-            },
-            "modicon": {
-              "type": "string",
-              "format": "uri",
-              "description": "Activity icon URL"
-            },
-            "modname": {
-              "type": "string",
-              "description": "Activity module type"
+              "description": "Instance ID",
+              "type": "integer"
             },
             "purpose": {
-              "type": "string",
-              "description": "The module purpose"
-            },
-            "branded": {
-              "type": "boolean",
-              "nullable": true,
-              "description": "Whether the module is branded or not"
-            },
-            "modplural": {
-              "type": "string",
-              "description": "Activity module plural name"
-            },
-            "availability": {
-              "type": "string",
-              "nullable": true,
-              "description": "Module availability settings"
+              "description": "The module purpose",
+              "type": "string"
             },
             "indent": {
-              "type": "integer",
-              "description": "Number of indentation in the site"
+              "description": "Number of indentation in the site",
+              "type": "integer"
             },
-            "onclick": {
-              "type": "string",
+            "description": {
               "nullable": true,
-              "description": "Onclick action"
+              "description": "Activity description",
+              "type": "string"
             },
-            "afterlink": {
-              "type": "string",
+            "contextid": {
               "nullable": true,
-              "description": "After link info to be displayed"
+              "description": "Activity context ID",
+              "type": "integer"
             },
-            "activitybadge": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "nullable": true,
-                "title": "ActivityBadge",
-                "description": "Activity badge to display near the name",
-                "properties": {
-                  "badgecontent": {
-                    "type": "string",
-                    "nullable": true,
-                    "description": "The content to be displayed in the activity badge"
-                  },
-                  "badgestyle": {
-                    "type": "string",
-                    "nullable": true,
-                    "description": "The style for the activity badge"
-                  },
-                  "badgeurl": {
-                    "type": "string",
-                    "format": "uri",
-                    "nullable": true,
-                    "description": "Optional URL to redirect the user when badge is clicked"
-                  },
-                  "badgeelementid": {
-                    "type": "string",
-                    "nullable": true,
-                    "description": "Optional ID for module to add code for badge"
-                  },
-                  "badgeextraattributes": {
-                    "type": "array",
-                    "nullable": true,
-                    "description": "Optional array of extra HTML attributes to add to badge element",
-                    "items": {
-                      "type": "object",
-                      "title": "BadgeAttribute",
-                      "properties": {
-                        "name": {
-                          "type": "string",
-                          "nullable": true,
-                          "description": "Attribute name"
-                        },
-                        "value": {
-                          "type": "string",
-                          "nullable": true,
-                          "description": "Attribute value"
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            "customdata": {
-              "type": "string",
+            "availability": {
               "nullable": true,
-              "description": "Custom data (JSON encoded)"
+              "description": "Module availability settings",
+              "type": "string"
             },
-            "noviewlink": {
-              "type": "boolean",
+            "branded": {
               "nullable": true,
-              "description": "Whether the module has no view page"
+              "description": "Whether the module is branded or not",
+              "type": "boolean"
             },
-            "completion": {
-              "type": "integer",
-              "enum": [
-                0,
-                1,
-                2
-              ],
-              "javaEnums": [
-                {
-                  "name": "NONE"
-                },
-                {
-                  "name": "MANUAL"
-                },
-                {
-                  "name": "AUTOMATIC"
-                }
-              ],
-              "nullable": true,
-              "description": "Type of completion tracking: 0 = none, 1 = manual, 2 = automatic"
+            "modicon": {
+              "format": "uri",
+              "description": "Activity icon URL",
+              "type": "string"
             },
             "completiondata": {
+              "description": "Detailed completion information for the module",
               "type": "object",
               "title": "CompletionData",
               "required": [
@@ -289,44 +154,32 @@
                 "uservisible",
                 "details"
               ],
-              "description": "Detailed completion information for the module",
               "properties": {
-                "state": {
-                  "type": "integer",
-                  "description": "Overall completion state of this module"
-                },
-                "timecompleted": {
-                  "type": "integer",
-                  "description": "Course completion timestamp"
-                },
-                "overrideby": {
-                  "type": "integer",
-                  "description": "User ID that has overridden the completion state"
-                },
-                "valueused": {
-                  "type": "boolean",
-                  "description": "True if module is used in a condition"
-                },
                 "hascompletion": {
-                  "type": "boolean",
-                  "description": "Whether this activity module has completion enabled"
-                },
-                "isautomatic": {
-                  "type": "boolean",
-                  "description": "Whether completion is tracked automatically"
+                  "description": "Whether this activity module has completion enabled",
+                  "type": "boolean"
                 },
                 "istrackeduser": {
-                  "type": "boolean",
-                  "description": "Whether completion is being tracked for this user"
+                  "description": "Whether completion is being tracked for this user",
+                  "type": "boolean"
                 },
-                "uservisible": {
-                  "type": "boolean",
-                  "description": "Whether this activity is visible to the user"
+                "valueused": {
+                  "description": "True if module is used in a condition",
+                  "type": "boolean"
+                },
+                "timecompleted": {
+                  "description": "Course completion timestamp",
+                  "type": "integer"
+                },
+                "isoverallcomplete": {
+                  "nullable": true,
+                  "description": "Whether the overall completion state should be marked complete",
+                  "type": "boolean"
                 },
                 "details": {
+                  "description": "Array of completion details containing description and status",
                   "type": "array",
                   "title": "CompletionDetail",
-                  "description": "Array of completion details containing description and status",
                   "items": {
                     "type": "object",
                     "required": [
@@ -335,8 +188,8 @@
                     ],
                     "properties": {
                       "rulename": {
-                        "type": "string",
-                        "description": "Rule name"
+                        "description": "Rule name",
+                        "type": "string"
                       },
                       "rulevalue": {
                         "type": "object",
@@ -346,30 +199,177 @@
                           "description"
                         ],
                         "properties": {
-                          "status": {
-                            "type": "integer",
-                            "description": "Rule status"
-                          },
                           "description": {
-                            "type": "string",
-                            "description": "Rule description"
+                            "description": "Rule description",
+                            "type": "string"
+                          },
+                          "status": {
+                            "description": "Rule status",
+                            "type": "integer"
                           }
                         }
                       }
                     }
                   }
                 },
-                "isoverallcomplete": {
-                  "type": "boolean",
-                  "nullable": true,
-                  "description": "Whether the overall completion state should be marked complete"
+                "state": {
+                  "description": "Overall completion state of this module",
+                  "type": "integer"
+                },
+                "overrideby": {
+                  "description": "User ID that has overridden the completion state",
+                  "type": "integer"
+                },
+                "isautomatic": {
+                  "description": "Whether completion is tracked automatically",
+                  "type": "boolean"
+                },
+                "uservisible": {
+                  "description": "Whether this activity is visible to the user",
+                  "type": "boolean"
                 }
               }
             },
-            "downloadcontent": {
-              "type": "boolean",
+            "id": {
+              "description": "Activity ID",
+              "type": "integer"
+            },
+            "customdata": {
               "nullable": true,
-              "description": "Whether the module content can be downloaded"
+              "description": "Custom data (JSON encoded)",
+              "type": "string"
+            },
+            "uservisible": {
+              "nullable": true,
+              "description": "Is the module visible for the user?",
+              "type": "boolean"
+            },
+            "afterlink": {
+              "nullable": true,
+              "description": "After link info to be displayed",
+              "type": "string"
+            },
+            "completion": {
+              "nullable": true,
+              "description": "Type of completion tracking: 0 = none, 1 = manual, 2 = automatic",
+              "type": "integer",
+              "javaEnums": [
+                {
+                  "name": "NONE"
+                },
+                {
+                  "name": "MANUAL"
+                },
+                {
+                  "name": "AUTOMATIC"
+                }
+              ],
+              "enum": [
+                0,
+                1,
+                2
+              ]
+            },
+            "visible": {
+              "nullable": true,
+              "description": "Is the module visible",
+              "type": "boolean"
+            },
+            "onclick": {
+              "nullable": true,
+              "description": "Onclick action",
+              "type": "string"
+            },
+            "modname": {
+              "description": "Activity module type",
+              "type": "string"
+            },
+            "visibleoncoursepage": {
+              "nullable": true,
+              "description": "Is the module visible on the course page",
+              "type": "boolean"
+            },
+            "activitybadge": {
+              "type": "array",
+              "items": {
+                "nullable": true,
+                "description": "Activity badge to display near the name",
+                "type": "object",
+                "title": "ActivityBadge",
+                "properties": {
+                  "badgeelementid": {
+                    "nullable": true,
+                    "description": "Optional ID for module to add code for badge",
+                    "type": "string"
+                  },
+                  "badgeurl": {
+                    "nullable": true,
+                    "format": "uri",
+                    "description": "Optional URL to redirect the user when badge is clicked",
+                    "type": "string"
+                  },
+                  "badgecontent": {
+                    "nullable": true,
+                    "description": "The content to be displayed in the activity badge",
+                    "type": "string"
+                  },
+                  "badgestyle": {
+                    "nullable": true,
+                    "description": "The style for the activity badge",
+                    "type": "string"
+                  },
+                  "badgeextraattributes": {
+                    "nullable": true,
+                    "description": "Optional array of extra HTML attributes to add to badge element",
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "title": "BadgeAttribute",
+                      "properties": {
+                        "name": {
+                          "nullable": true,
+                          "description": "Attribute name",
+                          "type": "string"
+                        },
+                        "value": {
+                          "nullable": true,
+                          "description": "Attribute value",
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "noviewlink": {
+              "nullable": true,
+              "description": "Whether the module has no view page",
+              "type": "boolean"
+            },
+            "url": {
+              "nullable": true,
+              "format": "uri",
+              "description": "Activity URL",
+              "type": "string"
+            },
+            "name": {
+              "description": "Activity module name",
+              "type": "string"
+            },
+            "availabilityinfo": {
+              "nullable": true,
+              "description": "Availability information for the module",
+              "type": "string"
+            },
+            "modplural": {
+              "description": "Activity module plural name",
+              "type": "string"
+            },
+            "downloadcontent": {
+              "nullable": true,
+              "description": "Whether the module content can be downloaded",
+              "type": "boolean"
             }
           }
         }

@@ -39,6 +39,10 @@ get:
         ETag:
           schema:
             type: string
+        Cache-Control:
+          description: Cached images must be revalidated with their ETag before reuse.
+          schema:
+            type: string
       content:
         image/jpeg:
 
@@ -67,3 +71,11 @@ get:
             format: binary
     '304':
       description: Not Modified
+      headers:
+        ETag:
+          schema:
+            type: string
+        Cache-Control:
+          description: Cached images must be revalidated with their ETag before reuse.
+          schema:
+            type: string

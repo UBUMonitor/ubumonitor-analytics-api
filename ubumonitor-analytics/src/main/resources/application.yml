@@ -1,7 +1,9 @@
 spring:
 
-  config:
-    import: classpath:application-moodlerules.yml
+  jmx:
+    enabled: false
+  lifecycle:
+    timeout-per-shutdown-phase: 5s
   jackson:
     default-property-inclusion: non_null
     mapper:
@@ -9,14 +11,13 @@ spring:
   threads:
     virtual:
       enabled: true
-  devtools:
-    restart:
-      enabled: false
   autoconfigure:
     exclude:
       - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
       - org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration
   main:
+    banner-mode: off
+    lazy-initialization: true
     allow-bean-definition-overriding: true
   servlet:
     multipart:
@@ -29,26 +30,27 @@ spring:
       imperative:
         cookie-handling: enabled
 
-
+  datasource:
+    hikari:
+      maximum-pool-size: 2
+      minimum-idle: 1
 openapi:
   uBUMonitorAnalytics:
     base-path: /api
 
 server:
+  address: 127.0.0.1
   port: 9090
   tomcat:
     max-swallow-size: -1
     max-http-form-post-size: 100MB
+    threads:
+      max: 4
+      min-spare: 1
 
 springdoc:
   api-docs:
     enabled: false
-org:
-  jooq:
-    Constants=OFF
-jwt:
-  expiration-time-in-seconds: 0
-
 moodle:
   api:
     base-url: ${MOODLE_ADAPTER_API_BASE_URL:http://localhost:8080}
@@ -60,17 +62,3 @@ moodle:
 logging:
   level:
     root: INFO
-    es.ubu.lsi.moodle.utils: TRACE
-    es.ubu.lsi.ubumonitoranalytics.features.auth.infrastructure.out.moodle.MoodleClientAdapter: TRACE
-    es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.moodle.RestClientHttpTransport: TRACE
-    org.zalando.logbook: TRACE
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health
-  endpoint:
-    health:
-      probes:
-        enabled: true

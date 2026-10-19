@@ -1,0 +1,11 @@
+get:
+  tags:
+    - Health
+  summary: Check service health
+  operationId: CheckHealth
+  description: Checks the health status of the service.
+  responses:
+    '204':
+      description: The service is healthy and operational.
+    '503':
+      description: The backend is not yet ready.

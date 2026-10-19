@@ -1,63 +1,7 @@
 {
-  "auth": {
-    "request": {
-      "method": "POST",
-      "path": "/login/token.php",
-      "body": {
-        "baseurl": "${MOODLE_HOST}",
-      "username": "teacher",
-      "password": "wiremock-password",
-      "service": "moodle_mobile_app"
-      }
-    },
-    "expectedResponse": {
-      "status": 200,
-      "body": {
-        "token": "wiremock-token"
-      }
-    }
-  },
-  "moodleMocks": [
-    {
-      "request": {
-        "method": "POST",
-        "path": "/login/token.php",
-        "body": "baseurl=${MOODLE_HOST}&username=teacher&password=wiremock-password&service=moodle_mobile_app"
-      },
-      "response": {
-        "body": {
-          "token": "wiremock-token"
-        }
-      }
-    },
-    {
-      "request": {
-        "method": "POST",
-        "path": "/webservice/rest/server.php",
-        "body": "wsfunction=core_user_get_users_by_field&field=id&values%5B0%5D=13&moodlewsrestformat=json&wstoken=wiremock-token"
-      },
-      "response": {
-        "body": [
-          {
-            "id": 13,
-            "username": "teacher",
-            "firstname": "Jeffrey",
-            "lastname": "Sanders",
-            "fullname": "Jeffrey Sanders",
-            "email": "jeffreysanders199@example.com",
-            "department": "Senior staff, SE",
-            "city": "Orange City",
-            "country": "AU",
-            "customfields": [],
-            "preferences": []
-          }
-        ]
-      }
-    }
-  ],
   "request": {
-    "method": "CLIENT",
     "path": "coreUser.getUsersByField",
+    "method": "CLIENT",
     "body": {
       "args": {
         "field": "id",
@@ -68,21 +12,77 @@
     }
   },
   "expectedResponse": {
-    "status": 200,
     "body": [
       {
-        "id": 13,
-        "username": "teacher",
-        "firstname": "Jeffrey",
-        "lastname": "Sanders",
-        "fullname": "Jeffrey Sanders",
-        "email": "jeffreysanders199@example.com",
-        "department": "Senior staff, SE",
-        "city": "Orange City",
         "country": "AU",
+        "firstname": "Jeffrey",
+        "preferences": [],
+        "city": "Orange City",
+        "id": 13,
+        "fullname": "Jeffrey Sanders",
+        "department": "Senior staff, SE",
         "customfields": [],
-        "preferences": []
+        "email": "jeffreysanders199@example.com",
+        "username": "teacher",
+        "lastname": "Sanders"
       }
-    ]
-  }
+    ],
+    "status": 200
+  },
+  "auth": {
+    "request": {
+      "path": "/login/token.php",
+      "method": "POST",
+      "body": {
+        "password": "wiremock-password",
+        "baseurl": "${MOODLE_HOST}",
+        "service": "moodle_mobile_app",
+        "username": "teacher"
+      }
+    },
+    "expectedResponse": {
+      "body": {
+        "token": "wiremock-token"
+      },
+      "status": 200
+    }
+  },
+  "moodleMocks": [
+    {
+      "request": {
+        "path": "/login/token.php",
+        "method": "POST",
+        "body": "password=wiremock-password&baseurl=${MOODLE_HOST}&service=moodle_mobile_app&username=teacher"
+      },
+      "response": {
+        "body": {
+          "token": "wiremock-token"
+        }
+      }
+    },
+    {
+      "request": {
+        "path": "/webservice/rest/server.php",
+        "method": "POST",
+        "body": "wsfunction=core_user_get_users_by_field&field=id&values%5B0%5D=13&moodlewsrestformat=json&wstoken=wiremock-token"
+      },
+      "response": {
+        "body": [
+          {
+            "country": "AU",
+            "firstname": "Jeffrey",
+            "preferences": [],
+            "city": "Orange City",
+            "id": 13,
+            "fullname": "Jeffrey Sanders",
+            "department": "Senior staff, SE",
+            "customfields": [],
+            "email": "jeffreysanders199@example.com",
+            "username": "teacher",
+            "lastname": "Sanders"
+          }
+        ]
+      }
+    }
+  ]
 }

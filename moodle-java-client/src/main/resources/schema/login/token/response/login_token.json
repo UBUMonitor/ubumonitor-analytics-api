@@ -3,13 +3,27 @@
   "title": "LoginTokenResponse",
   "type": "object",
   "properties": {
-    "token": {
-      "type": "string",
-      "format": "sf-token"
+    "stacktrace": {
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "privatetoken": {
-      "type": "string",
-      "format": "sf-token"
+      "format": "sf-token",
+      "type": "string"
+    },
+    "debuginfo": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "reproductionlink": {
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "error": {
       "type": "string"
@@ -17,14 +31,9 @@
     "errorcode": {
       "type": "string"
     },
-    "stacktrace": {
-      "type": ["string", "null"]
-    },
-    "debuginfo": {
-      "type": ["string", "null"]
-    },
-    "reproductionlink": {
-      "type": ["string", "null"]
+    "token": {
+      "format": "sf-token",
+      "type": "string"
     }
   }
 }

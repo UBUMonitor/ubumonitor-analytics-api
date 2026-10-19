@@ -1,0 +1,54 @@
+get:
+  tags:
+    - Users
+  summary: Get users Word document with enrollment images
+  operationId: getUsersEnrollmentImagesDocument
+  description: Retrieves the enrollment images for users
+  parameters:
+    - name: userIds
+      in: query
+      description: List of user IDs to filter the results. If provided, only the specified users will have their grades included in the response.
+      required: true
+      explode: false
+      schema:
+        type: array
+        minItems: 1
+        items:
+          type: integer
+    - name: defaultImagePath
+      in: query
+      description: The path to the default image file to use.
+      required: false
+      schema:
+        type: string
+    - name: useDefaultPhoto
+      in: query
+      description: Whether to use the default photo.
+      required: false
+      schema:
+        type: boolean
+    - name: headerText
+      in: query
+      description: The text to include in the header of the document.
+      required: false
+      schema:
+        type: string
+        default: "UBUMonitor Analytics"
+    - name: fileName
+      in: query
+      description: The name of the file to be generated.
+      required: false
+      schema:
+        type: string
+        default: "enrollment_images.docx"
+
+  responses:
+    '200':
+      description: Word document containing the enrollment images for users enrolled in the specified course.
+      content:
+        application/vnd.openxmlformats-officedocument.wordprocessingml.document:
+          schema:
+            type: string
+            format: binary
+    '401':
+      $ref: '../../../openapi.yaml#/components/responses/unauthorized_401'

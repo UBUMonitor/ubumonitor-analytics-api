@@ -3,13 +3,13 @@ package es.ubu.lsi.ubumonitoranalytics.features.auth.application.service;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.application.port.in.AuthUseCase;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.application.port.out.MoodleApiPort;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.application.port.out.SessionPort;
-import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.JwtToken;
+import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.SessionToken;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.auth.AuthInput;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.exception.UnauthorizedException;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.database.TenantDatabasePort;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
+import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.concurrent.AsyncOperations;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -22,7 +22,7 @@ public class AuthService implements AuthUseCase {
   private final SessionPort sessionPort;
   private final MoodleApiPort moodleApiPort;
   private final TenantDatabasePort tenantDatabasePort;
-  private final ExecutorService executor;
+  private final AsyncOperations asyncOperations;
 
   /**
    * Authenticates with an existing Moodle token and associates a web client with the session.
@@ -32,12 +32,12 @@ public class AuthService implements AuthUseCase {
    * @throws UnauthorizedException when Moodle does not resolve the token to a username
    */
   @Override
-  public JwtToken loginByToken(AuthInput authInput) {
-    JwtToken jwtToken = sessionPort.generateSession(authInput, null);
+  public SessionToken loginByToken(AuthInput authInput) {
+    SessionToken sessionToken = sessionPort.generateSession(authInput, null);
     String username = moodleApiPort.usernameByToken(authInput);
 
     if (username == null || username.isEmpty()) {
-      sessionPort.invalidateSession(jwtToken);
+      sessionPort.invalidateSession(sessionToken);
       throw new UnauthorizedException("Invalid token.");
     }
 
@@ -46,7 +46,7 @@ public class AuthService implements AuthUseCase {
 
     RestClient restClient = moodleApiPort.getRestClientFromCookies(authInput);
 
-    return sessionPort.updateSession(authInput, jwtToken, restClient);
+    return sessionPort.updateSession(authInput, sessionToken, restClient);
   }
 
   /**
@@ -54,21 +54,25 @@ public class AuthService implements AuthUseCase {
    *
    * @param authInput Moodle username, password, and site
    * @return the application session token
+   * @throws UnauthorizedException when Moodle rejects the credentials
    */
   @Override
-  public JwtToken loginByCredentials(AuthInput authInput) {
-
-    initializeTenantDatabaseAsync(authInput);
+  public SessionToken loginByCredentials(AuthInput authInput) {
 
     CompletableFuture<String> moodleTokenFuture =
-        CompletableFuture.supplyAsync(() -> fetchMoodleToken(authInput), executor);
+        asyncOperations.supplyAsync(() -> fetchMoodleToken(authInput));
     CompletableFuture<RestClient> restClientFuture =
-        CompletableFuture.supplyAsync(() -> fetchRestClient(authInput), executor);
+        asyncOperations.supplyAsync(() -> fetchRestClient(authInput));
 
     String moodleToken = moodleTokenFuture.join();
+    if (moodleToken == null || moodleToken.isBlank()) {
+      throw new UnauthorizedException("Invalid Moodle credentials.");
+    }
+
     RestClient restClient = restClientFuture.join();
 
     authInput.setMoodleToken(moodleToken);
+    initializeTenantDatabase(authInput);
     return sessionPort.generateSession(authInput, restClient);
   }
 
@@ -88,20 +92,26 @@ public class AuthService implements AuthUseCase {
    * @return the application session token
    */
   @Override
-  public JwtToken loginOffline(AuthInput authInput) {
+  public SessionToken loginOffline(AuthInput authInput) {
 
     initializeTenantDatabaseAsync(authInput);
     return sessionPort.generateSession(authInput, null);
   }
 
   private void initializeTenantDatabaseAsync(AuthInput authInput) {
-    SessionData tenantSession =
-        SessionData.builder()
-            .host(authInput.getHost())
-            .username(authInput.getUsername())
-            .dbPassword(authInput.getDbPassword())
-            .build();
-    tenantDatabasePort.initializeTenantAsync(tenantSession);
+    tenantDatabasePort.initializeTenantAsync(toTenantSession(authInput));
+  }
+
+  private void initializeTenantDatabase(AuthInput authInput) {
+    tenantDatabasePort.initializeTenant(toTenantSession(authInput));
+  }
+
+  private SessionData toTenantSession(AuthInput authInput) {
+    return SessionData.builder()
+        .host(authInput.getHost())
+        .username(authInput.getUsername())
+        .dbPassword(authInput.getDbPassword())
+        .build();
   }
 
   /**
@@ -111,7 +121,7 @@ public class AuthService implements AuthUseCase {
    * @return the application session token
    */
   @Override
-  public JwtToken loginBySSO(AuthInput authInput) {
+  public SessionToken loginBySSO(AuthInput authInput) {
 
     return loginByToken(authInput);
   }

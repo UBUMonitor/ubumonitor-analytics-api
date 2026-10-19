@@ -3,9 +3,153 @@
   "title": "GetDiscussionPostsResponse",
   "type": "object",
   "properties": {
+    "ratinginfo": {
+      "nullable": true,
+      "title": "Rating Info",
+      "type": "object",
+      "properties": {
+        "component": {
+          "type": "string"
+        },
+        "canviewall": {
+          "nullable": true,
+          "type": "boolean"
+        },
+        "ratings": {
+          "nullable": true,
+          "type": "array",
+          "items": {
+            "title": "Rating",
+            "type": "object",
+            "properties": {
+              "scaleid": {
+                "nullable": true,
+                "type": "integer"
+              },
+              "itemid": {
+                "type": "integer"
+              },
+              "canrate": {
+                "nullable": true,
+                "type": "boolean"
+              },
+              "canviewaggregate": {
+                "nullable": true,
+                "type": "boolean"
+              },
+              "aggregatelabel": {
+                "nullable": true,
+                "type": "string"
+              },
+              "aggregatestr": {
+                "nullable": true,
+                "type": "string"
+              },
+              "count": {
+                "nullable": true,
+                "type": "integer"
+              },
+              "rating": {
+                "nullable": true,
+                "type": "integer"
+              },
+              "userid": {
+                "nullable": true,
+                "type": "integer"
+              },
+              "aggregate": {
+                "nullable": true,
+                "type": "number"
+              }
+            }
+          }
+        },
+        "scales": {
+          "nullable": true,
+          "type": "array",
+          "items": {
+            "title": "Scale",
+            "type": "object",
+            "properties": {
+              "max": {
+                "type": "integer"
+              },
+              "name": {
+                "nullable": true,
+                "type": "string"
+              },
+              "id": {
+                "type": "integer"
+              },
+              "courseid": {
+                "nullable": true,
+                "type": "integer"
+              },
+              "items": {
+                "nullable": true,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              },
+              "isnumeric": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "contextid": {
+          "type": "integer"
+        },
+        "ratingarea": {
+          "type": "string"
+        },
+        "canviewany": {
+          "nullable": true,
+          "type": "boolean"
+        }
+      }
+    },
     "discussionid": {
-      "type": "integer",
-      "description": "Discussion id"
+      "description": "Discussion id",
+      "type": "integer"
+    },
+    "warnings": {
+      "nullable": true,
+      "title": "Warnings",
+      "type": "array",
+      "items": {
+        "title": "Warning",
+        "type": "object",
+        "properties": {
+          "itemid": {
+            "nullable": true,
+            "type": "integer"
+          },
+          "item": {
+            "nullable": true,
+            "type": "string"
+          },
+          "warningcode": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "warningcode",
+          "message"
+        ]
+      }
     },
     "posts": {
       "type": "array",
@@ -13,34 +157,201 @@
         "title": "Post",
         "type": "object",
         "properties": {
-          "id": {
-            "type": "integer",
-            "description": "id"
+          "wordcount": {
+            "nullable": true,
+            "type": "integer"
+          },
+          "capabilities": {
+            "title": "Capabilities",
+            "type": "object",
+            "properties": {
+              "controlreadstatus": {
+                "type": "boolean"
+              },
+              "view": {
+                "type": "boolean"
+              },
+              "split": {
+                "type": "boolean"
+              },
+              "edit": {
+                "type": "boolean"
+              },
+              "reply": {
+                "type": "boolean"
+              },
+              "selfenrol": {
+                "type": "boolean"
+              },
+              "delete": {
+                "type": "boolean"
+              },
+              "export": {
+                "type": "boolean"
+              },
+              "canreplyprivately": {
+                "type": "boolean"
+              }
+            }
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "title": "Attachment",
+              "type": "object",
+              "properties": {
+                "timecreatedformatted": {
+                  "type": "string"
+                },
+                "filesizeformatted": {
+                  "type": "string"
+                },
+                "author": {
+                  "type": "string"
+                },
+                "timemodifiedformatted": {
+                  "type": "string"
+                },
+                "filearea": {
+                  "type": "string"
+                },
+                "icon": {
+                  "type": "string"
+                },
+                "contextid": {
+                  "type": "integer"
+                },
+                "filesize": {
+                  "type": "integer"
+                },
+                "url": {
+                  "format": "uri",
+                  "type": "string"
+                },
+                "itemid": {
+                  "type": "integer"
+                },
+                "license": {
+                  "type": "string"
+                },
+                "component": {
+                  "type": "string"
+                },
+                "urls": {
+                  "type": "object",
+                  "properties": {
+                    "export": {
+                      "nullable": true,
+                      "format": "uri",
+                      "type": "string"
+                    }
+                  }
+                },
+                "filename": {
+                  "type": "string"
+                },
+                "timecreated": {
+                  "type": "integer"
+                },
+                "filenameshort": {
+                  "type": "string"
+                },
+                "filepath": {
+                  "type": "string"
+                },
+                "isimage": {
+                  "type": "boolean"
+                },
+                "timemodified": {
+                  "type": "integer"
+                },
+                "html": {
+                  "type": "object",
+                  "properties": {
+                    "plagiarism": {
+                      "nullable": true,
+                      "type": "string"
+                    }
+                  }
+                },
+                "isdir": {
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "charcount": {
+            "nullable": true,
+            "type": "integer"
+          },
+          "unread": {
+            "nullable": true,
+            "type": "boolean"
           },
           "subject": {
-            "type": "string",
-            "description": "subject"
+            "description": "subject",
+            "type": "string"
           },
-          "replysubject": {
-            "type": "string",
-            "description": "replysubject"
-          },
-          "message": {
-            "type": "string",
-            "description": "message"
-          },
-          "messagetext": {
-            "type": "string",
-            "description": "message text parsed"
+          "author": {
+            "title": "Author",
+            "type": "object",
+            "properties": {
+              "urls": {
+                "type": "object",
+                "properties": {
+                  "profile": {
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "profileimage": {
+                    "nullable": true,
+                    "format": "uri",
+                    "type": "string"
+                  }
+                }
+              },
+              "groups": {
+                "nullable": true,
+                "type": "array",
+                "items": {
+                  "title": "Group",
+                  "type": "object",
+                  "properties": {
+                    "urls": {
+                      "type": "object",
+                      "properties": {
+                        "image": {
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              },
+              "id": {
+                "nullable": true,
+                "type": "integer"
+              },
+              "fullname": {
+                "nullable": true,
+                "type": "string"
+              },
+              "isdeleted": {
+                "nullable": true,
+                "type": "boolean"
+              }
+            }
           },
           "messageformat": {
+            "description": "message format (1 = HTML, 0 = MOODLE, 2 = PLAIN, or 4 = MARKDOWN)",
             "type": "integer",
-            "enum": [
-              0,
-              1,
-              2,
-              4
-            ],
             "javaEnums": [
               {
                 "name": "MOODLE"
@@ -55,556 +366,245 @@
                 "name": "MARKDOWN"
               }
             ],
-            "description": "message format (1 = HTML, 0 = MOODLE, 2 = PLAIN, or 4 = MARKDOWN)"
+            "enum": [
+              0,
+              1,
+              2,
+              4
+            ]
           },
-          "author": {
-            "title": "Author",
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "integer",
-                "nullable": true
-              },
-              "fullname": {
-                "type": "string",
-                "nullable": true
-              },
-              "isdeleted": {
-                "type": "boolean",
-                "nullable": true
-              },
-              "groups": {
-                "type": "array",
-                "nullable": true,
-                "items": {
-                  "title": "Group",
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "integer"
-                    },
-                    "name": {
-                      "type": "string"
-                    },
-                    "urls": {
-                      "type": "object",
-                      "properties": {
-                        "image": {
-                          "type": "string",
-                          "nullable": true
-                        }
-                      }
-                    }
-                  }
-                }
-              },
-              "urls": {
-                "type": "object",
-                "properties": {
-                  "profile": {
-                    "type": "string",
-                    "nullable": true
-                  },
-                  "profileimage": {
-                    "type": "string",
-                    "format": "uri",
-                    "nullable": true
-                  }
+          "messageinlinefiles": {
+            "nullable": true,
+            "type": "array",
+            "items": {
+              "title": "Inline File",
+              "type": "object",
+              "properties": {
+                "timecreatedformatted": {
+                  "type": "string"
+                },
+                "filesizeformatted": {
+                  "type": "string"
+                },
+                "author": {
+                  "type": "string"
+                },
+                "timemodifiedformatted": {
+                  "type": "string"
+                },
+                "filearea": {
+                  "type": "string"
+                },
+                "icon": {
+                  "type": "string"
+                },
+                "contextid": {
+                  "type": "integer"
+                },
+                "filesize": {
+                  "type": "integer"
+                },
+                "url": {
+                  "format": "uri",
+                  "type": "string"
+                },
+                "itemid": {
+                  "type": "integer"
+                },
+                "license": {
+                  "type": "string"
+                },
+                "component": {
+                  "type": "string"
+                },
+                "filename": {
+                  "type": "string"
+                },
+                "timecreated": {
+                  "type": "integer"
+                },
+                "filenameshort": {
+                  "type": "string"
+                },
+                "filepath": {
+                  "type": "string"
+                },
+                "isimage": {
+                  "type": "boolean"
+                },
+                "timemodified": {
+                  "type": "integer"
+                },
+                "isdir": {
+                  "type": "boolean"
                 }
               }
             }
           },
-          "discussionid": {
-            "type": "integer"
+          "message": {
+            "description": "message",
+            "type": "string"
           },
-          "hasparent": {
-            "type": "boolean"
-          },
-          "parentid": {
-            "type": "integer",
-            "nullable": true
-          },
-          "timecreated": {
-            "type": "integer",
-            "description": "Timestamp in seconds"
-          },
-          "timemodified": {
-            "type": "integer",
-            "description": "Timestamp in seconds"
-          },
-          "unread": {
-            "type": "boolean",
-            "nullable": true
+          "replysubject": {
+            "description": "replysubject",
+            "type": "string"
           },
           "isdeleted": {
             "type": "boolean"
           },
-          "isprivatereply": {
-            "type": "boolean"
+          "parentid": {
+            "nullable": true,
+            "type": "integer"
           },
-          "haswordcount": {
-            "type": "boolean"
-          },
-          "wordcount": {
-            "type": "integer",
-            "nullable": true
-          },
-          "charcount": {
-            "type": "integer",
-            "nullable": true
-          },
-          "capabilities": {
-            "title": "Capabilities",
-            "type": "object",
-            "properties": {
-              "view": {
-                "type": "boolean"
-              },
-              "edit": {
-                "type": "boolean"
-              },
-              "delete": {
-                "type": "boolean"
-              },
-              "split": {
-                "type": "boolean"
-              },
-              "reply": {
-                "type": "boolean"
-              },
-              "selfenrol": {
-                "type": "boolean"
-              },
-              "export": {
-                "type": "boolean"
-              },
-              "controlreadstatus": {
-                "type": "boolean"
-              },
-              "canreplyprivately": {
-                "type": "boolean"
+          "tags": {
+            "nullable": true,
+            "type": "array",
+            "items": {
+              "title": "Tag",
+              "type": "object",
+              "properties": {
+                "urls": {
+                  "type": "object",
+                  "properties": {
+                    "view": {
+                      "format": "uri",
+                      "type": "string"
+                    }
+                  }
+                },
+                "flag": {
+                  "type": "boolean"
+                },
+                "tagid": {
+                  "type": "integer"
+                },
+                "displayname": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "integer"
+                },
+                "isstandard": {
+                  "type": "boolean"
+                }
               }
             }
+          },
+          "hasparent": {
+            "type": "boolean"
           },
           "urls": {
             "title": "Post URLs",
             "type": "object",
             "properties": {
               "view": {
-                "type": "string",
+                "nullable": true,
                 "format": "uri",
-                "nullable": true
-              },
-              "viewisolated": {
-                "type": "string",
-                "format": "uri",
-                "nullable": true
-              },
-              "viewparent": {
-                "type": "string",
-                "format": "uri",
-                "nullable": true
-              },
-              "edit": {
-                "type": "string",
-                "format": "uri",
-                "nullable": true
-              },
-              "delete": {
-                "type": "string",
-                "format": "uri",
-                "nullable": true
+                "type": "string"
               },
               "split": {
-                "type": "string",
+                "nullable": true,
                 "format": "uri",
-                "nullable": true
+                "type": "string"
               },
-              "reply": {
-                "type": "string",
+              "viewisolated": {
+                "nullable": true,
                 "format": "uri",
-                "nullable": true
+                "type": "string"
               },
-              "export": {
-                "type": "string",
+              "edit": {
+                "nullable": true,
                 "format": "uri",
-                "nullable": true
+                "type": "string"
               },
               "markasread": {
-                "type": "string",
+                "nullable": true,
                 "format": "uri",
-                "nullable": true
+                "type": "string"
+              },
+              "reply": {
+                "nullable": true,
+                "format": "uri",
+                "type": "string"
               },
               "markasunread": {
-                "type": "string",
+                "nullable": true,
                 "format": "uri",
-                "nullable": true
+                "type": "string"
+              },
+              "viewparent": {
+                "nullable": true,
+                "format": "uri",
+                "type": "string"
+              },
+              "delete": {
+                "nullable": true,
+                "format": "uri",
+                "type": "string"
+              },
+              "export": {
+                "nullable": true,
+                "format": "uri",
+                "type": "string"
               },
               "discuss": {
-                "type": "string",
+                "nullable": true,
                 "format": "uri",
-                "nullable": true
+                "type": "string"
               }
             }
           },
-          "attachments": {
-            "type": "array",
-            "items": {
-              "title": "Attachment",
-              "type": "object",
-              "properties": {
-                "contextid": {
-                  "type": "integer"
-                },
-                "component": {
-                  "type": "string"
-                },
-                "filearea": {
-                  "type": "string"
-                },
-                "itemid": {
-                  "type": "integer"
-                },
-                "filepath": {
-                  "type": "string"
-                },
-                "filename": {
-                  "type": "string"
-                },
-                "isdir": {
-                  "type": "boolean"
-                },
-                "isimage": {
-                  "type": "boolean"
-                },
-                "timemodified": {
-                  "type": "integer"
-                },
-                "timecreated": {
-                  "type": "integer"
-                },
-                "filesize": {
-                  "type": "integer"
-                },
-                "author": {
-                  "type": "string"
-                },
-                "license": {
-                  "type": "string"
-                },
-                "filenameshort": {
-                  "type": "string"
-                },
-                "filesizeformatted": {
-                  "type": "string"
-                },
-                "icon": {
-                  "type": "string"
-                },
-                "timecreatedformatted": {
-                  "type": "string"
-                },
-                "timemodifiedformatted": {
-                  "type": "string"
-                },
-                "url": {
-                  "type": "string",
-                  "format": "uri"
-                },
-                "urls": {
-                  "type": "object",
-                  "properties": {
-                    "export": {
-                      "type": "string",
-                      "format": "uri",
-                      "nullable": true
-                    }
-                  }
-                },
-                "html": {
-                  "type": "object",
-                  "properties": {
-                    "plagiarism": {
-                      "type": "string",
-                      "nullable": true
-                    }
-                  }
-                }
-              }
-            }
+          "timecreated": {
+            "description": "Timestamp in seconds",
+            "type": "integer"
           },
-          "messageinlinefiles": {
-            "type": "array",
-            "nullable": true,
-            "items": {
-              "title": "Inline File",
-              "type": "object",
-              "properties": {
-                "contextid": {
-                  "type": "integer"
-                },
-                "component": {
-                  "type": "string"
-                },
-                "filearea": {
-                  "type": "string"
-                },
-                "itemid": {
-                  "type": "integer"
-                },
-                "filepath": {
-                  "type": "string"
-                },
-                "filename": {
-                  "type": "string"
-                },
-                "isdir": {
-                  "type": "boolean"
-                },
-                "isimage": {
-                  "type": "boolean"
-                },
-                "timemodified": {
-                  "type": "integer"
-                },
-                "timecreated": {
-                  "type": "integer"
-                },
-                "filesize": {
-                  "type": "integer"
-                },
-                "author": {
-                  "type": "string"
-                },
-                "license": {
-                  "type": "string"
-                },
-                "filenameshort": {
-                  "type": "string"
-                },
-                "filesizeformatted": {
-                  "type": "string"
-                },
-                "icon": {
-                  "type": "string"
-                },
-                "timecreatedformatted": {
-                  "type": "string"
-                },
-                "timemodifiedformatted": {
-                  "type": "string"
-                },
-                "url": {
-                  "type": "string",
-                  "format": "uri"
-                }
-              }
-            }
+          "isprivatereply": {
+            "type": "boolean"
           },
-          "tags": {
-            "type": "array",
-            "nullable": true,
-            "items": {
-              "title": "Tag",
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "integer"
-                },
-                "tagid": {
-                  "type": "integer"
-                },
-                "isstandard": {
-                  "type": "boolean"
-                },
-                "displayname": {
-                  "type": "string"
-                },
-                "flag": {
-                  "type": "boolean"
-                },
-                "urls": {
-                  "type": "object",
-                  "properties": {
-                    "view": {
-                      "type": "string",
-                      "format": "uri"
-                    }
-                  }
-                }
-              }
-            }
+          "discussionid": {
+            "type": "integer"
+          },
+          "messagetext": {
+            "description": "message text parsed",
+            "type": "string"
+          },
+          "timemodified": {
+            "description": "Timestamp in seconds",
+            "type": "integer"
           },
           "html": {
             "title": "Post HTML",
             "type": "object",
             "properties": {
               "rating": {
-                "type": "string",
-                "nullable": true
-              },
-              "taglist": {
-                "type": "string",
-                "nullable": true
+                "nullable": true,
+                "type": "string"
               },
               "authorsubheading": {
-                "type": "string",
-                "nullable": true
+                "nullable": true,
+                "type": "string"
+              },
+              "taglist": {
+                "nullable": true,
+                "type": "string"
               }
             }
+          },
+          "id": {
+            "description": "id",
+            "type": "integer"
+          },
+          "haswordcount": {
+            "type": "boolean"
           }
         }
       }
-    },
-    "forumid": {
-      "type": "integer"
     },
     "courseid": {
       "type": "integer"
     },
-    "ratinginfo": {
-      "title": "Rating Info",
-      "type": "object",
-      "nullable": true,
-      "properties": {
-        "contextid": {
-          "type": "integer"
-        },
-        "component": {
-          "type": "string"
-        },
-        "ratingarea": {
-          "type": "string"
-        },
-        "canviewall": {
-          "type": "boolean",
-          "nullable": true
-        },
-        "canviewany": {
-          "type": "boolean",
-          "nullable": true
-        },
-        "scales": {
-          "type": "array",
-          "nullable": true,
-          "items": {
-            "title": "Scale",
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "integer"
-              },
-              "courseid": {
-                "type": "integer",
-                "nullable": true
-              },
-              "name": {
-                "type": "string",
-                "nullable": true
-              },
-              "max": {
-                "type": "integer"
-              },
-              "isnumeric": {
-                "type": "boolean"
-              },
-              "items": {
-                "type": "array",
-                "nullable": true,
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "value": {
-                      "type": "integer"
-                    },
-                    "name": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "ratings": {
-          "type": "array",
-          "nullable": true,
-          "items": {
-            "title": "Rating",
-            "type": "object",
-            "properties": {
-              "itemid": {
-                "type": "integer"
-              },
-              "scaleid": {
-                "type": "integer",
-                "nullable": true
-              },
-              "userid": {
-                "type": "integer",
-                "nullable": true
-              },
-              "aggregate": {
-                "type": "number",
-                "nullable": true
-              },
-              "aggregatestr": {
-                "type": "string",
-                "nullable": true
-              },
-              "aggregatelabel": {
-                "type": "string",
-                "nullable": true
-              },
-              "count": {
-                "type": "integer",
-                "nullable": true
-              },
-              "rating": {
-                "type": "integer",
-                "nullable": true
-              },
-              "canrate": {
-                "type": "boolean",
-                "nullable": true
-              },
-              "canviewaggregate": {
-                "type": "boolean",
-                "nullable": true
-              }
-            }
-          }
-        }
-      }
-    },
-    "warnings": {
-      "title": "Warnings",
-      "type": "array",
-      "nullable": true,
-      "items": {
-        "title": "Warning",
-        "type": "object",
-        "properties": {
-          "item": {
-            "type": "string",
-            "nullable": true
-          },
-          "itemid": {
-            "type": "integer",
-            "nullable": true
-          },
-          "warningcode": {
-            "type": "string"
-          },
-          "message": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "warningcode",
-          "message"
-        ]
-      }
+    "forumid": {
+      "type": "integer"
     }
   },
   "required": [

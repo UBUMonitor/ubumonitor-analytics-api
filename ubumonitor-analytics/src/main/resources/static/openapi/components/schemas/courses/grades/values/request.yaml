@@ -1,0 +1,19 @@
+CourseGradesValuesRequest:
+  type: object
+
+  properties:
+
+    gradeItemIds:
+      type: array
+      required: true
+      minItems: 1
+      items:
+        type: integer
+      description: List of grade item identifiers to include in the grade value lookup.
+    userIds:
+      type: array
+      required: true
+      minItems: 1
+      items:
+        type: integer
+      description: List of user identifiers to include in the grade value lookup.

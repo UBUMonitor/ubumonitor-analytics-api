@@ -1,60 +1,31 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "GetSiteInfoResponse",
   "description": "Return some site info / user info / list web service functions",
+  "title": "GetSiteInfoResponse",
   "type": "object",
   "properties": {
-    "sitename": {
-      "type": "string",
-      "description": "Site name"
-    },
-    "username": {
-      "type": "string",
-      "description": "Username"
+    "sitecalendartype": {
+      "nullable": true,
+      "description": "Calendar type set in the site",
+      "type": "string"
     },
     "firstname": {
-      "type": "string",
-      "description": "First name"
-    },
-    "lastname": {
-      "type": "string",
-      "description": "Last name"
-    },
-    "fullname": {
-      "type": "string",
-      "description": "User full name"
-    },
-    "lang": {
-      "type": "string",
-      "description": "Current language"
-    },
-    "userid": {
-      "type": "integer",
-      "description": "User id"
-    },
-    "siteurl": {
-      "type": "string",
-      "format": "uri",
-      "description": "Site URL"
-    },
-    "userpictureurl": {
-      "type": "string",
-      "format": "uri",
-      "description": "The user profile picture URL (public URL; use webservice/pluginfile.php with token for private access)"
+      "description": "First name",
+      "type": "string"
     },
     "functions": {
-      "type": "array",
       "description": "Functions that are available",
+      "type": "array",
       "items": {
         "type": "object",
         "properties": {
           "name": {
-            "type": "string",
-            "description": "Function name"
+            "description": "Function name",
+            "type": "string"
           },
           "version": {
-            "type": "string",
-            "description": "Version number of the component"
+            "description": "Version number of the component",
+            "type": "string"
           }
         },
         "required": [
@@ -63,45 +34,77 @@
         ]
       }
     },
-    "downloadfiles": {
-      "type": "integer",
-      "description": "1 if users are allowed to download files, 0 if not",
-      "nullable": true
+    "release": {
+      "nullable": true,
+      "description": "Moodle release number",
+      "type": "string"
+    },
+    "userhomepage": {
+      "nullable": true,
+      "description": "Default home page: 0 for site home, 1 for dashboard",
+      "type": "integer"
+    },
+    "userid": {
+      "description": "User id",
+      "type": "integer"
     },
     "uploadfiles": {
-      "type": "integer",
+      "nullable": true,
       "description": "1 if users are allowed to upload files, 0 if not",
-      "nullable": true
+      "type": "integer"
     },
-    "release": {
-      "type": "string",
-      "description": "Moodle release number",
-      "nullable": true
+    "userprivateaccesskey": {
+      "nullable": true,
+      "description": "Private user access key for fetching files",
+      "type": "string"
     },
-    "version": {
-      "type": "string",
-      "description": "Moodle version number",
-      "nullable": true
+    "policyagreed": {
+      "nullable": true,
+      "description": "Whether user accepted all policies",
+      "type": "integer"
     },
-    "mobilecssurl": {
-      "type": "string",
-      "description": "Mobile custom CSS theme",
-      "nullable": true
+    "usersessionscount": {
+      "nullable": true,
+      "description": "Number of active sessions for current user",
+      "type": "integer"
+    },
+    "sitename": {
+      "description": "Site name",
+      "type": "string"
+    },
+    "siteid": {
+      "nullable": true,
+      "description": "Site course ID",
+      "type": "integer"
+    },
+    "userhomepageurl": {
+      "nullable": true,
+      "description": "URL of default home page when userhomepage is 4 (HOMEPAGE_URL)",
+      "type": "string"
+    },
+    "theme": {
+      "nullable": true,
+      "description": "Current theme for the user",
+      "type": "string"
+    },
+    "lang": {
+      "description": "Current language",
+      "type": "string"
     },
     "advancedfeatures": {
-      "type": "array",
-      "description": "Advanced features availability",
       "nullable": true,
+      "description": "Advanced features availability",
+      "type": "array",
       "items": {
         "type": "object",
         "properties": {
           "name": {
-            "type": "string",
-            "description": "Feature name"
+            "description": "Feature name",
+            "type": "string"
           },
           "value": {
-            "type": "integer",
-            "description": "Feature value. Usually 1 means enabled."
+            "description": "Feature value. Usually 1 means enabled.",
+            "type": "integer"
           }
         },
         "required": [
@@ -110,75 +113,72 @@
         ]
       }
     },
-    "usercanmanageownfiles": {
-      "type": "boolean",
-      "description": "True if the user can manage his own files",
-      "nullable": true
-    },
-    "userquota": {
-      "type": "integer",
-      "description": "User quota (bytes). 0 means ignore quota",
-      "nullable": true
-    },
-    "usermaxuploadfilesize": {
-      "type": "integer",
-      "description": "User max upload file size (bytes). -1 means ignore limit",
-      "nullable": true
-    },
-    "userhomepage": {
-      "type": "integer",
-      "description": "Default home page: 0 for site home, 1 for dashboard",
-      "nullable": true
-    },
-    "userhomepageurl": {
-      "type": "string",
-      "description": "URL of default home page when userhomepage is 4 (HOMEPAGE_URL)",
-      "nullable": true
-    },
-    "userprivateaccesskey": {
-      "type": "string",
-      "description": "Private user access key for fetching files",
-      "nullable": true
-    },
-    "siteid": {
-      "type": "integer",
-      "description": "Site course ID",
-      "nullable": true
-    },
-    "sitecalendartype": {
-      "type": "string",
-      "description": "Calendar type set in the site",
-      "nullable": true
-    },
     "usercalendartype": {
-      "type": "string",
+      "nullable": true,
       "description": "Calendar type used by the user",
-      "nullable": true
+      "type": "string"
     },
     "userissiteadmin": {
-      "type": "boolean",
+      "nullable": true,
       "description": "Whether the user is a site admin",
-      "nullable": true
+      "type": "boolean"
     },
-    "theme": {
-      "type": "string",
-      "description": "Current theme for the user",
-      "nullable": true
+    "userpictureurl": {
+      "format": "uri",
+      "description": "The user profile picture URL (public URL; use webservice/pluginfile.php with token for private access)",
+      "type": "string"
+    },
+    "siteurl": {
+      "format": "uri",
+      "description": "Site URL",
+      "type": "string"
+    },
+    "mobilecssurl": {
+      "nullable": true,
+      "description": "Mobile custom CSS theme",
+      "type": "string"
+    },
+    "usercanmanageownfiles": {
+      "nullable": true,
+      "description": "True if the user can manage his own files",
+      "type": "boolean"
+    },
+    "downloadfiles": {
+      "nullable": true,
+      "description": "1 if users are allowed to download files, 0 if not",
+      "type": "integer"
+    },
+    "version": {
+      "nullable": true,
+      "description": "Moodle version number",
+      "type": "string"
+    },
+    "lastname": {
+      "description": "Last name",
+      "type": "string"
     },
     "limitconcurrentlogins": {
-      "type": "integer",
+      "nullable": true,
       "description": "Number of concurrent sessions allowed",
-      "nullable": true
+      "type": "integer"
     },
-    "usersessionscount": {
-      "type": "integer",
-      "description": "Number of active sessions for current user",
-      "nullable": true
+    "userquota": {
+      "nullable": true,
+      "description": "User quota (bytes). 0 means ignore quota",
+      "type": "integer"
     },
-    "policyagreed": {
-      "type": "integer",
-      "description": "Whether user accepted all policies",
-      "nullable": true
+    "usermaxuploadfilesize": {
+      "nullable": true,
+      "description": "User max upload file size (bytes). -1 means ignore limit",
+      "type": "integer"
+    },
+    "fullname": {
+      "description": "User full name",
+      "type": "string"
+    },
+    "username": {
+      "description": "Username",
+      "type": "string"
     }
   },
   "required": [

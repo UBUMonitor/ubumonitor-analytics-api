@@ -8,7 +8,7 @@
 
     <groupId>es.ubu.lsi</groupId>
     <artifactId>ubumonitor-parent</artifactId>
-    <version>0.0.4</version>
+    <version>0.0.5-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>ubumonitor</name>
@@ -30,23 +30,18 @@
                         <removeUnusedImports/>
                         <googleJavaFormat/>
                     </java>
-                    <formats>
-                        <format>
-                            <includes>
-                                <include>**/*.json</include>
-                                <include>**/*.xml</include>
-                            </includes>
-                            <excludes>
-                                <exclude>**/target/**</exclude>
-                            </excludes>
-
-
-                            <indent>
-                                <spaces>true</spaces>
-                                <spacesPerTab>2</spacesPerTab>
-                            </indent>
-                        </format>
-                    </formats>
+                    <json>
+                        <includes>
+                            <include>src/**/*.json</include>
+                        </includes>
+                        <excludes>
+                            <exclude>**/target/**</exclude>
+                        </excludes>
+                        <gson>
+                            <sortByKeys>false</sortByKeys>
+                            <indentSpaces>2</indentSpaces>
+                        </gson>
+                    </json>
                 </configuration>
 
                 <executions>

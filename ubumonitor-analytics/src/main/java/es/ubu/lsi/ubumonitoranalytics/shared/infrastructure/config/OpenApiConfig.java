@@ -44,7 +44,7 @@ public class OpenApiConfig {
                     new SecurityScheme()
                         .type(SecurityScheme.Type.HTTP)
                         .scheme("bearer")
-                        .bearerFormat("JWT")))
+                        .bearerFormat("Opaque session token")))
         .addSecurityItem(new SecurityRequirement().addList(securitySchemeName));
   }
 }

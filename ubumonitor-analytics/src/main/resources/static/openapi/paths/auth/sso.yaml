@@ -3,7 +3,7 @@ post:
   operationId: AuthSSO
   summary: Authenticate with an SSO launch credential
   description: |
-    Receives a Moodle site URL, an SSO launch credential, and the database encryption key. Returns an application JWT for subsequent authenticated requests.
+    Receives a Moodle site URL, an SSO launch credential, and the database encryption key. Returns an opaque Bearer session token for subsequent authenticated requests.
   requestBody:
     required: true
     content:
@@ -14,7 +14,7 @@ post:
   security: [ ]
   responses:
     '200':
-      description: JWT token retrieved successfully
+      description: Session token retrieved successfully
       content:
         application/json:
           schema:

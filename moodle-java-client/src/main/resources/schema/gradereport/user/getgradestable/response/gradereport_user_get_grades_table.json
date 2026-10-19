@@ -4,336 +4,336 @@
   "type": "object",
   "properties": {
     "tables": {
-      "type": "array",
-      "description": "list of tables",
       "nullable": true,
+      "description": "list of tables",
+      "type": "array",
       "items": {
         "type": "object",
         "title": "Table",
         "properties": {
-          "courseid": {
-            "type": "integer",
-            "description": "course id",
-            "nullable": true
-          },
-          "userid": {
-            "type": "integer",
-            "description": "user id",
-            "nullable": true
-          },
           "userfullname": {
-            "type": "string",
+            "nullable": true,
             "description": "user fullname",
-            "nullable": true
-          },
-          "maxdepth": {
-            "type": "integer",
-            "description": "table max depth (needed for printing it)",
-            "nullable": true
+            "type": "string"
           },
           "tabledata": {
-            "type": "array",
-            "description": "table",
             "nullable": true,
+            "description": "table",
+            "type": "array",
             "items": {
               "type": "object",
               "title": "Table Data Item",
               "properties": {
-                "itemname": {
-                  "type": "object",
-                  "title": "Itemname",
-                  "description": "The item returned data",
+                "feedback": {
                   "nullable": true,
+                  "description": "feedback column",
+                  "type": "object",
+                  "title": "Feedback",
                   "properties": {
-                    "class": {
-                      "type": "string",
-                      "description": "class",
-                      "nullable": true
+                    "headers": {
+                      "nullable": true,
+                      "description": "headers",
+                      "type": "string"
                     },
-                    "colspan": {
-                      "type": "integer",
-                      "description": "col span",
-                      "nullable": true
+                    "class": {
+                      "nullable": true,
+                      "description": "class",
+                      "type": "string"
                     },
                     "content": {
-                      "type": "string",
+                      "nullable": true,
                       "description": "cell content",
-                      "nullable": true
-                    },
-                    "id": {
-                      "type": "string",
-                      "description": "id",
-                      "nullable": true
+                      "type": "string"
                     }
                   }
                 },
                 "leader": {
+                  "nullable": true,
+                  "description": "The item returned data",
                   "type": "object",
                   "title": "Leader",
-                  "description": "The item returned data",
-                  "nullable": true,
                   "properties": {
-                    "class": {
-                      "type": "string",
-                      "description": "class",
-                      "nullable": true
-                    },
                     "rowspan": {
-                      "type": "integer",
+                      "nullable": true,
                       "description": "row span",
-                      "nullable": true
-                    }
-                  }
-                },
-                "weight": {
-                  "type": "object",
-                  "title": "Weight",
-                  "description": "weight column",
-                  "nullable": true,
-                  "properties": {
+                      "type": "integer"
+                    },
                     "class": {
-                      "type": "string",
+                      "nullable": true,
                       "description": "class",
-                      "nullable": true
-                    },
-                    "content": {
-                      "type": "string",
-                      "description": "cell content",
-                      "nullable": true
-                    },
-                    "headers": {
-                      "type": "string",
-                      "description": "headers",
-                      "nullable": true
-                    }
-                  }
-                },
-                "grade": {
-                  "type": "object",
-                  "title": "Grade",
-                  "description": "grade column",
-                  "nullable": true,
-                  "properties": {
-                    "class": {
-                      "type": "string",
-                      "description": "class",
-                      "nullable": true
-                    },
-                    "content": {
-                      "type": "string",
-                      "description": "cell content",
-                      "nullable": true
-                    },
-                    "headers": {
-                      "type": "string",
-                      "description": "headers",
-                      "nullable": true
-                    }
-                  }
-                },
-                "range": {
-                  "type": "object",
-                  "title": "Range",
-                  "description": "range column",
-                  "nullable": true,
-                  "properties": {
-                    "class": {
-                      "type": "string",
-                      "description": "class",
-                      "nullable": true
-                    },
-                    "content": {
-                      "type": "string",
-                      "description": "cell content",
-                      "nullable": true
-                    },
-                    "headers": {
-                      "type": "string",
-                      "description": "headers",
-                      "nullable": true
-                    }
-                  }
-                },
-                "percentage": {
-                  "type": "object",
-                  "title": "Percentage",
-                  "description": "percentage column",
-                  "nullable": true,
-                  "properties": {
-                    "class": {
-                      "type": "string",
-                      "description": "class",
-                      "nullable": true
-                    },
-                    "content": {
-                      "type": "string",
-                      "description": "cell content",
-                      "nullable": true
-                    },
-                    "headers": {
-                      "type": "string",
-                      "description": "headers",
-                      "nullable": true
-                    }
-                  }
-                },
-                "lettergrade": {
-                  "type": "object",
-                  "title": "Lettergrade",
-                  "description": "lettergrade column",
-                  "nullable": true,
-                  "properties": {
-                    "class": {
-                      "type": "string",
-                      "description": "class",
-                      "nullable": true
-                    },
-                    "content": {
-                      "type": "string",
-                      "description": "cell content",
-                      "nullable": true
-                    },
-                    "headers": {
-                      "type": "string",
-                      "description": "headers",
-                      "nullable": true
-                    }
-                  }
-                },
-                "rank": {
-                  "type": "object",
-                  "title": "Rank",
-                  "description": "rank column",
-                  "nullable": true,
-                  "properties": {
-                    "class": {
-                      "type": "string",
-                      "description": "class",
-                      "nullable": true
-                    },
-                    "content": {
-                      "type": "string",
-                      "description": "cell content",
-                      "nullable": true
-                    },
-                    "headers": {
-                      "type": "string",
-                      "description": "headers",
-                      "nullable": true
+                      "type": "string"
                     }
                   }
                 },
                 "average": {
+                  "nullable": true,
+                  "description": "average column",
                   "type": "object",
                   "title": "Average",
-                  "description": "average column",
-                  "nullable": true,
                   "properties": {
+                    "headers": {
+                      "nullable": true,
+                      "description": "headers",
+                      "type": "string"
+                    },
                     "class": {
-                      "type": "string",
+                      "nullable": true,
                       "description": "class",
-                      "nullable": true
+                      "type": "string"
                     },
                     "content": {
-                      "type": "string",
+                      "nullable": true,
                       "description": "cell content",
-                      "nullable": true
-                    },
-                    "headers": {
-                      "type": "string",
-                      "description": "headers",
-                      "nullable": true
-                    }
-                  }
-                },
-                "feedback": {
-                  "type": "object",
-                  "title": "Feedback",
-                  "description": "feedback column",
-                  "nullable": true,
-                  "properties": {
-                    "class": {
-                      "type": "string",
-                      "description": "class",
-                      "nullable": true
-                    },
-                    "content": {
-                      "type": "string",
-                      "description": "cell content",
-                      "nullable": true
-                    },
-                    "headers": {
-                      "type": "string",
-                      "description": "headers",
-                      "nullable": true
-                    }
-                  }
-                },
-                "contributiontocoursetotal": {
-                  "type": "object",
-                  "title": "Contribution to course total",
-                  "description": "contributiontocoursetotal column",
-                  "nullable": true,
-                  "properties": {
-                    "class": {
-                      "type": "string",
-                      "description": "class",
-                      "nullable": true
-                    },
-                    "content": {
-                      "type": "string",
-                      "description": "cell content",
-                      "nullable": true
-                    },
-                    "headers": {
-                      "type": "string",
-                      "description": "headers",
-                      "nullable": true
+                      "type": "string"
                     }
                   }
                 },
                 "parentcategories": {
-                  "type": "array",
                   "nullable": true,
+                  "type": "array",
                   "items": {
-                    "type": "integer",
+                    "nullable": true,
                     "description": "Parent grade category ID.",
-                    "nullable": true
+                    "type": "integer"
+                  }
+                },
+                "itemname": {
+                  "nullable": true,
+                  "description": "The item returned data",
+                  "type": "object",
+                  "title": "Itemname",
+                  "properties": {
+                    "colspan": {
+                      "nullable": true,
+                      "description": "col span",
+                      "type": "integer"
+                    },
+                    "id": {
+                      "nullable": true,
+                      "description": "id",
+                      "type": "string"
+                    },
+                    "class": {
+                      "nullable": true,
+                      "description": "class",
+                      "type": "string"
+                    },
+                    "content": {
+                      "nullable": true,
+                      "description": "cell content",
+                      "type": "string"
+                    }
+                  }
+                },
+                "contributiontocoursetotal": {
+                  "nullable": true,
+                  "description": "contributiontocoursetotal column",
+                  "type": "object",
+                  "title": "Contribution to course total",
+                  "properties": {
+                    "headers": {
+                      "nullable": true,
+                      "description": "headers",
+                      "type": "string"
+                    },
+                    "class": {
+                      "nullable": true,
+                      "description": "class",
+                      "type": "string"
+                    },
+                    "content": {
+                      "nullable": true,
+                      "description": "cell content",
+                      "type": "string"
+                    }
+                  }
+                },
+                "grade": {
+                  "nullable": true,
+                  "description": "grade column",
+                  "type": "object",
+                  "title": "Grade",
+                  "properties": {
+                    "headers": {
+                      "nullable": true,
+                      "description": "headers",
+                      "type": "string"
+                    },
+                    "class": {
+                      "nullable": true,
+                      "description": "class",
+                      "type": "string"
+                    },
+                    "content": {
+                      "nullable": true,
+                      "description": "cell content",
+                      "type": "string"
+                    }
+                  }
+                },
+                "percentage": {
+                  "nullable": true,
+                  "description": "percentage column",
+                  "type": "object",
+                  "title": "Percentage",
+                  "properties": {
+                    "headers": {
+                      "nullable": true,
+                      "description": "headers",
+                      "type": "string"
+                    },
+                    "class": {
+                      "nullable": true,
+                      "description": "class",
+                      "type": "string"
+                    },
+                    "content": {
+                      "nullable": true,
+                      "description": "cell content",
+                      "type": "string"
+                    }
+                  }
+                },
+                "weight": {
+                  "nullable": true,
+                  "description": "weight column",
+                  "type": "object",
+                  "title": "Weight",
+                  "properties": {
+                    "headers": {
+                      "nullable": true,
+                      "description": "headers",
+                      "type": "string"
+                    },
+                    "class": {
+                      "nullable": true,
+                      "description": "class",
+                      "type": "string"
+                    },
+                    "content": {
+                      "nullable": true,
+                      "description": "cell content",
+                      "type": "string"
+                    }
+                  }
+                },
+                "range": {
+                  "nullable": true,
+                  "description": "range column",
+                  "type": "object",
+                  "title": "Range",
+                  "properties": {
+                    "headers": {
+                      "nullable": true,
+                      "description": "headers",
+                      "type": "string"
+                    },
+                    "class": {
+                      "nullable": true,
+                      "description": "class",
+                      "type": "string"
+                    },
+                    "content": {
+                      "nullable": true,
+                      "description": "cell content",
+                      "type": "string"
+                    }
+                  }
+                },
+                "rank": {
+                  "nullable": true,
+                  "description": "rank column",
+                  "type": "object",
+                  "title": "Rank",
+                  "properties": {
+                    "headers": {
+                      "nullable": true,
+                      "description": "headers",
+                      "type": "string"
+                    },
+                    "class": {
+                      "nullable": true,
+                      "description": "class",
+                      "type": "string"
+                    },
+                    "content": {
+                      "nullable": true,
+                      "description": "cell content",
+                      "type": "string"
+                    }
+                  }
+                },
+                "lettergrade": {
+                  "nullable": true,
+                  "description": "lettergrade column",
+                  "type": "object",
+                  "title": "Lettergrade",
+                  "properties": {
+                    "headers": {
+                      "nullable": true,
+                      "description": "headers",
+                      "type": "string"
+                    },
+                    "class": {
+                      "nullable": true,
+                      "description": "class",
+                      "type": "string"
+                    },
+                    "content": {
+                      "nullable": true,
+                      "description": "cell content",
+                      "type": "string"
+                    }
                   }
                 }
               }
             }
+          },
+          "courseid": {
+            "nullable": true,
+            "description": "course id",
+            "type": "integer"
+          },
+          "userid": {
+            "nullable": true,
+            "description": "user id",
+            "type": "integer"
+          },
+          "maxdepth": {
+            "nullable": true,
+            "description": "table max depth (needed for printing it)",
+            "type": "integer"
           }
         }
       }
     },
     "warnings": {
-      "type": "array",
-      "description": "list of warnings",
       "nullable": true,
+      "description": "list of warnings",
+      "type": "array",
       "items": {
         "type": "object",
         "title": "Warning",
         "properties": {
-          "item": {
-            "type": "string",
-            "description": "item",
-            "nullable": true
-          },
           "itemid": {
-            "type": "integer",
+            "nullable": true,
             "description": "item id",
-            "nullable": true
+            "type": "integer"
+          },
+          "item": {
+            "nullable": true,
+            "description": "item",
+            "type": "string"
           },
           "warningcode": {
-            "type": "string",
+            "nullable": true,
             "description": "the warning code can be used by the client app to implement specific behaviour",
-            "nullable": true
+            "type": "string"
           },
           "message": {
-            "type": "string",
+            "nullable": true,
             "description": "untranslated english message to explain the warning",
-            "nullable": true
+            "type": "string"
           }
         }
       }
