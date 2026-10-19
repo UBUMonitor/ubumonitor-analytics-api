@@ -27,12 +27,12 @@ class GradesSavePersistenceAdapterTest {
     try (var connection = DriverManager.getConnection("jdbc:h2:mem:grades-sync-test", "sa", "")) {
       DSLContext dsl = DSL.using(connection, SQLDialect.H2);
       createTables(dsl);
-      insertGrade(dsl, 11, 7);
-      insertGrade(dsl, 12, 7);
-      insertGrade(dsl, 13, 8);
-      insertUserGrade(dsl, 11, 21, 40);
-      insertUserGrade(dsl, 12, 21, 50);
-      insertUserGrade(dsl, 13, 21, 60);
+      insertGrade(dsl, 11L, 7L);
+      insertGrade(dsl, 12L, 7L);
+      insertGrade(dsl, 13L, 8L);
+      insertUserGrade(dsl, 11L, 21L, 40);
+      insertUserGrade(dsl, 12L, 21L, 50);
+      insertUserGrade(dsl, 13L, 21L, 60);
 
       Jooq jooq = mock(Jooq.class);
       when(jooq.dsl()).thenReturn(dsl);
@@ -41,45 +41,46 @@ class GradesSavePersistenceAdapterTest {
               jooq, Mappers.getMapper(GradesSavePersistenceMapper.class));
 
       CourseGrade currentGrades = new CourseGrade();
-      currentGrades.setCourseId(7);
-      currentGrades.setGradeItems(java.util.List.of(gradeItem(11), gradeItem(14)));
-      currentGrades.setUserGrades(java.util.List.of(userGrade(11, 21, 75), userGrade(14, 21, 90)));
+      currentGrades.setCourseId(7L);
+      currentGrades.setGradeItems(java.util.List.of(gradeItem(11L), gradeItem(14L)));
+      currentGrades.setUserGrades(
+          java.util.List.of(userGrade(11L, 21L, 75), userGrade(14L, 21L, 90)));
 
       adapter.saveCourseGradeItemsPersistence(currentGrades);
 
-      assertTrue(dsl.selectFrom(GRADES).where(GRADES.ID.eq(11)).fetchOne().getActive());
-      assertFalse(dsl.selectFrom(GRADES).where(GRADES.ID.eq(12)).fetchOne().getActive());
-      assertTrue(dsl.selectFrom(GRADES).where(GRADES.ID.eq(13)).fetchOne().getActive());
-      assertTrue(dsl.selectFrom(GRADES).where(GRADES.ID.eq(14)).fetchOne().getActive());
+      assertTrue(dsl.selectFrom(GRADES).where(GRADES.ID.eq(11L)).fetchOne().getActive());
+      assertFalse(dsl.selectFrom(GRADES).where(GRADES.ID.eq(12L)).fetchOne().getActive());
+      assertTrue(dsl.selectFrom(GRADES).where(GRADES.ID.eq(13L)).fetchOne().getActive());
+      assertTrue(dsl.selectFrom(GRADES).where(GRADES.ID.eq(14L)).fetchOne().getActive());
 
       assertEquals(
           0,
           dsl.selectFrom(USERS_GRADES)
-              .where(USERS_GRADES.GRADE_ID.eq(11))
+              .where(USERS_GRADES.GRADE_ID.eq(11L))
               .fetchOne()
               .getGrade()
               .compareTo(BigDecimal.valueOf(75)));
       assertFalse(
-          dsl.selectFrom(USERS_GRADES).where(USERS_GRADES.GRADE_ID.eq(12)).fetchOne().getActive());
+          dsl.selectFrom(USERS_GRADES).where(USERS_GRADES.GRADE_ID.eq(12L)).fetchOne().getActive());
       assertTrue(
-          dsl.selectFrom(USERS_GRADES).where(USERS_GRADES.GRADE_ID.eq(13)).fetchOne().getActive());
+          dsl.selectFrom(USERS_GRADES).where(USERS_GRADES.GRADE_ID.eq(13L)).fetchOne().getActive());
       assertTrue(
-          dsl.selectFrom(USERS_GRADES).where(USERS_GRADES.GRADE_ID.eq(14)).fetchOne().getActive());
+          dsl.selectFrom(USERS_GRADES).where(USERS_GRADES.GRADE_ID.eq(14L)).fetchOne().getActive());
 
       CourseGrade emptyGrades = new CourseGrade();
-      emptyGrades.setCourseId(7);
+      emptyGrades.setCourseId(7L);
       emptyGrades.setGradeItems(java.util.List.of());
       emptyGrades.setUserGrades(java.util.List.of());
 
       adapter.saveCourseGradeItemsPersistence(emptyGrades);
 
-      assertFalse(dsl.selectFrom(GRADES).where(GRADES.ID.eq(11)).fetchOne().getActive());
-      assertFalse(dsl.selectFrom(GRADES).where(GRADES.ID.eq(14)).fetchOne().getActive());
+      assertFalse(dsl.selectFrom(GRADES).where(GRADES.ID.eq(11L)).fetchOne().getActive());
+      assertFalse(dsl.selectFrom(GRADES).where(GRADES.ID.eq(14L)).fetchOne().getActive());
       assertFalse(
-          dsl.selectFrom(USERS_GRADES).where(USERS_GRADES.GRADE_ID.eq(11)).fetchOne().getActive());
-      assertTrue(dsl.selectFrom(GRADES).where(GRADES.ID.eq(13)).fetchOne().getActive());
+          dsl.selectFrom(USERS_GRADES).where(USERS_GRADES.GRADE_ID.eq(11L)).fetchOne().getActive());
+      assertTrue(dsl.selectFrom(GRADES).where(GRADES.ID.eq(13L)).fetchOne().getActive());
       assertTrue(
-          dsl.selectFrom(USERS_GRADES).where(USERS_GRADES.GRADE_ID.eq(13)).fetchOne().getActive());
+          dsl.selectFrom(USERS_GRADES).where(USERS_GRADES.GRADE_ID.eq(13L)).fetchOne().getActive());
     }
   }
 
@@ -87,34 +88,34 @@ class GradesSavePersistenceAdapterTest {
     dsl.execute(
         """
         CREATE TABLE GRADES (
-          ID INT PRIMARY KEY,
-          PARENT_ID INT,
-          COURSE_ID INT NOT NULL,
+          ID BIGINT PRIMARY KEY,
+          PARENT_ID BIGINT,
+          COURSE_ID BIGINT NOT NULL,
           NAME VARCHAR(255),
           ITEM_TYPE VARCHAR(50),
           GRADE_MIN DECIMAL(15, 5),
           GRADE_MAX DECIMAL(15, 5),
           ACTIVE BOOLEAN NOT NULL DEFAULT TRUE,
-          CREATED_AT TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
-          UPDATED_AT TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL
+          CREATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+          UPDATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
         )
         """);
     dsl.execute(
         """
         CREATE TABLE USERS_GRADES (
-          GRADE_ID INT NOT NULL,
-          USER_ID INT NOT NULL,
+          GRADE_ID BIGINT NOT NULL,
+          USER_ID BIGINT NOT NULL,
           GRADE DECIMAL(15, 5),
           PERCENTAGE DECIMAL(5, 2),
           ACTIVE BOOLEAN NOT NULL DEFAULT TRUE,
-          CREATED_AT TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
-          UPDATED_AT TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+          CREATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+          UPDATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
           PRIMARY KEY (GRADE_ID, USER_ID)
         )
         """);
   }
 
-  private void insertGrade(DSLContext dsl, int gradeId, int courseId) {
+  private void insertGrade(DSLContext dsl, long gradeId, long courseId) {
     dsl.insertInto(GRADES)
         .set(GRADES.ID, gradeId)
         .set(GRADES.COURSE_ID, courseId)
@@ -122,7 +123,7 @@ class GradesSavePersistenceAdapterTest {
         .execute();
   }
 
-  private void insertUserGrade(DSLContext dsl, int gradeId, int userId, int grade) {
+  private void insertUserGrade(DSLContext dsl, long gradeId, long userId, int grade) {
     dsl.insertInto(USERS_GRADES)
         .set(USERS_GRADES.GRADE_ID, gradeId)
         .set(USERS_GRADES.USER_ID, userId)
@@ -131,7 +132,7 @@ class GradesSavePersistenceAdapterTest {
         .execute();
   }
 
-  private GradeItem gradeItem(int id) {
+  private GradeItem gradeItem(long id) {
     GradeItem gradeItem = new GradeItem();
     gradeItem.setId(id);
     gradeItem.setName("Grade " + id);
@@ -140,7 +141,7 @@ class GradesSavePersistenceAdapterTest {
     return gradeItem;
   }
 
-  private UserGrade userGrade(int gradeItemId, int userId, int grade) {
+  private UserGrade userGrade(long gradeItemId, long userId, int grade) {
     UserGrade userGrade = new UserGrade();
     userGrade.setGradeItemId(gradeItemId);
     userGrade.setUserId(userId);

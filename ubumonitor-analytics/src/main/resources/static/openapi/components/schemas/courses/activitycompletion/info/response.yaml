@@ -1,0 +1,7 @@
+CourseActivityCompletionResponse:
+  type: object
+  properties:
+    statuses:
+      type: integer
+      format: int64
+      description: The number of completed activities in the course.

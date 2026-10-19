@@ -20,7 +20,8 @@
       "itemid": {
         "nullable": true,
         "description": "Optional item id the delegate component can use to identify its instance",
-        "type": "integer"
+        "type": "integer",
+        "format": "int64"
       },
       "component": {
         "nullable": true,
@@ -77,7 +78,8 @@
       },
       "id": {
         "description": "Section ID",
-        "type": "integer"
+        "type": "integer",
+        "format": "int64"
       },
       "uservisible": {
         "nullable": true,
@@ -104,7 +106,8 @@
             "instance": {
               "nullable": true,
               "description": "Instance ID",
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             },
             "purpose": {
               "description": "The module purpose",
@@ -122,7 +125,8 @@
             "contextid": {
               "nullable": true,
               "description": "Activity context ID",
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             },
             "availability": {
               "nullable": true,
@@ -169,7 +173,8 @@
                 },
                 "timecompleted": {
                   "description": "Course completion timestamp",
-                  "type": "integer"
+                  "type": "integer",
+                  "format": "int64"
                 },
                 "isoverallcomplete": {
                   "nullable": true,
@@ -218,7 +223,8 @@
                 },
                 "overrideby": {
                   "description": "User ID that has overridden the completion state",
-                  "type": "integer"
+                  "type": "integer",
+                  "format": "int64"
                 },
                 "isautomatic": {
                   "description": "Whether completion is tracked automatically",
@@ -232,7 +238,8 @@
             },
             "id": {
               "description": "Activity ID",
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             },
             "customdata": {
               "nullable": true,

@@ -6,15 +6,15 @@ import lombok.Data;
 @Data
 public class FetchLogLine {
 
-  private Integer id; // ID
+  private Long id; // ID
   private LocalDateTime timestamp; // LOGGED_AT
 
-  private Integer courseId; // COURSE_ID
+  private Long courseId; // COURSE_ID
 
-  private Integer userId; // USER_ID
+  private Long userId; // USER_ID
   private String userFullName; // USER_FULL_NAME
 
-  private Integer moduleId; // MODULE_ID
+  private Long moduleId; // MODULE_ID
   private String moduleName; // MODULE_NAME
 
   private Integer componentId; // COMPONENT_ID

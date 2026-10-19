@@ -24,7 +24,7 @@ public class CourseLogsInfoAdapter implements CourseLogsInfoPort {
   private final Jooq jooq;
 
   @Override
-  public CourseLogsInfoResult getCourseLogsInfo(Integer courseId) {
+  public CourseLogsInfoResult getCourseLogsInfo(Long courseId) {
     var pairs =
         jooq.dsl()
             .selectDistinct(LOGS.COMPONENT_ID, LOGS.EVENT_ID)

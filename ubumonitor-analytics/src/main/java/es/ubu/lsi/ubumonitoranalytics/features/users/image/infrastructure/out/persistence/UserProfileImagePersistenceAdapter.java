@@ -18,7 +18,7 @@ public class UserProfileImagePersistenceAdapter implements UserProfileImagePersi
   private final UserImageMapper userImageMapper;
 
   @Override
-  public String getImageHash(Integer userId) {
+  public String getImageHash(Long userId) {
     return jooq.dsl()
         .select(USERS_IMAGES.IMAGE_HASH)
         .from(USERS_IMAGES)
@@ -27,7 +27,7 @@ public class UserProfileImagePersistenceAdapter implements UserProfileImagePersi
   }
 
   @Override
-  public UserImage fetchUserImage(Integer userId) {
+  public UserImage fetchUserImage(Long userId) {
     UsersImagesRecord dto = jooq.dsl().fetchOne(USERS_IMAGES, USERS_IMAGES.USER_ID.eq(userId));
 
     return userImageMapper.toDomain(dto);

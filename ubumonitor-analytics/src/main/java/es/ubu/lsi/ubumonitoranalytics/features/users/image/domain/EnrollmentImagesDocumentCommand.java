@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 public class EnrollmentImagesDocumentCommand {
-  private List<Integer> userIds;
+  private List<Long> userIds;
   private String headerText;
   private File defaultImagePath;
   private boolean useDefaultPhoto;

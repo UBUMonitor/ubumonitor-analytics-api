@@ -28,7 +28,7 @@ public interface EnrolledUsersMapper {
   @Mapping(target = "actualCourseId", source = "courseId")
   @Mapping(target = "users", source = "users")
   UsersResponse toDomain(
-      List<GetEnrolledUsersResponseApi> users, Integer courseId, @Context Integer contextCourseId);
+      List<GetEnrolledUsersResponseApi> users, Long courseId, @Context Long contextCourseId);
 
   @Mapping(target = "courses", source = "dto", qualifiedByName = "courses")
   @Mapping(target = "firstName", source = "firstname")
@@ -41,7 +41,7 @@ public interface EnrolledUsersMapper {
   @Mapping(target = "userPicture.url", source = "profileimageurl", qualifiedByName = "profileUrl")
   @Mapping(target = "lastAccess", source = "lastaccess")
   @Mapping(target = "firstAccess", source = "firstaccess")
-  User toUserDomain(GetEnrolledUsersResponseApi dto, @Context Integer courseId);
+  User toUserDomain(GetEnrolledUsersResponseApi dto, @Context Long courseId);
 
   @Mapping(
       target = "lastCourseAccess",
@@ -52,7 +52,7 @@ public interface EnrolledUsersMapper {
   UserCourse toUserCourseDomain(
       GetEnrolledUsersResponseApi dto,
       @Context EnrolledcourseApi enrolledcourseApi,
-      @Context Integer courseId);
+      @Context Long courseId);
 
   @Mapping(target = "id", source = "id")
   @Mapping(target = "fullName", source = "fullname")
@@ -78,7 +78,7 @@ public interface EnrolledUsersMapper {
 
   @Named("courses")
   default List<UserCourse> courses(
-      GetEnrolledUsersResponseApi getEnrolledUsersResponseApi, @Context Integer courseId) {
+      GetEnrolledUsersResponseApi getEnrolledUsersResponseApi, @Context Long courseId) {
     if (getEnrolledUsersResponseApi.getEnrolledcourses() == null) {
       return List.of();
     }
@@ -91,8 +91,8 @@ public interface EnrolledUsersMapper {
   default OffsetDateTime lastCourseAccess(
       Integer lastCourseAccess,
       @Context EnrolledcourseApi enrolledcourseApi,
-      @Context Integer courseId) {
-    if (courseId.equals(enrolledcourseApi.getId())) {
+      @Context Long courseId) {
+    if (courseId.equals(enrolledcourseApi.getId().longValue())) {
       return MapperUtils.unixToOffsetDateTime(lastCourseAccess);
     }
     return null;

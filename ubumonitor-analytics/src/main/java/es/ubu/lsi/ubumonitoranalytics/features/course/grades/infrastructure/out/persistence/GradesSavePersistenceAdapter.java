@@ -10,7 +10,7 @@ import es.ubu.lsi.ubumonitoranalytics.features.course.grades.domain.model.UserGr
 import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.GradesRecord;
 import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.UsersGradesRecord;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
 import lombok.RequiredArgsConstructor;
@@ -25,15 +25,15 @@ public class GradesSavePersistenceAdapter implements GradesSavePersistencePort {
 
   @Override
   public void saveCourseGradeItemsPersistence(CourseGrade courseGrade) {
-    Integer courseId = courseGrade.getCourseId();
-    OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
+    Long courseId = courseGrade.getCourseId();
+    LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
 
     deactivateExisting(courseId, now);
     upsertGradeItems(courseGrade.getGradeItems(), courseId, now);
     upsertUserGrades(courseGrade.getUserGrades(), now);
   }
 
-  private void deactivateExisting(Integer courseId, OffsetDateTime now) {
+  private void deactivateExisting(Long courseId, LocalDateTime now) {
     jooq.dsl()
         .update(USERS_GRADES)
         .set(USERS_GRADES.ACTIVE, false)
@@ -56,24 +56,24 @@ public class GradesSavePersistenceAdapter implements GradesSavePersistencePort {
         .execute();
   }
 
-  private void upsertGradeItems(List<GradeItem> gradeItems, Integer courseId, OffsetDateTime now) {
+  private void upsertGradeItems(List<GradeItem> gradeItems, Long courseId, LocalDateTime now) {
     if (gradeItems == null || gradeItems.isEmpty()) {
       return;
     }
 
-    Set<Integer> incomingIds = new HashSet<>();
+    Set<Long> incomingIds = new HashSet<>();
     for (GradeItem gradeItem : gradeItems) {
       incomingIds.add(Objects.requireNonNull(gradeItem.getId(), "gradeItem id must not be null"));
     }
 
-    Set<Integer> persistedIds = new HashSet<>();
+    Set<Long> persistedIds = new HashSet<>();
     List<GradeItem> pending = new ArrayList<>(gradeItems);
     while (!pending.isEmpty()) {
       List<GradeItem> nextPending = new ArrayList<>();
       List<GradesRecord> records = new ArrayList<>();
 
       for (GradeItem gradeItem : pending) {
-        Integer parentId = gradeItem.getParentId();
+        Long parentId = gradeItem.getParentId();
         if (parentId != null
             && incomingIds.contains(parentId)
             && !persistedIds.contains(parentId)) {
@@ -99,7 +99,7 @@ public class GradesSavePersistenceAdapter implements GradesSavePersistencePort {
     }
   }
 
-  private void upsertUserGrades(List<UserGrade> userGrades, OffsetDateTime now) {
+  private void upsertUserGrades(List<UserGrade> userGrades, LocalDateTime now) {
     if (userGrades == null || userGrades.isEmpty()) {
       return;
     }

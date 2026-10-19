@@ -1,0 +1,25 @@
+post:
+  tags:
+    - CourseActivityCompletion
+  summary: Synchronize course activity completion information
+  operationId: SyncCourseActivityCompletion
+  description: Retrieves the latest activity completion information for the specified course from Moodle and stores it in the local tenant database.
+  parameters:
+    - name: courseId
+      in: path
+      description: The unique identifier of the course for which to synchronize activity completion information.
+      required: true
+      schema:
+        type: integer
+        format: int64
+  responses:
+    '200':
+      description: Successful synchronization of activity completion information. The response includes the updated activity completion information for the user's courses.
+      content:
+        application/json:
+          schema:
+            $ref: '../../../components/schemas/courses/activitycompletion/info/response.yaml#/CourseActivityCompletionResponse'
+    '401':
+      $ref: '../../../openapi.yaml#/components/responses/unauthorized_401'
+
+

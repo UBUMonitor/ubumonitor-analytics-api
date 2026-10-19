@@ -148,5 +148,8 @@ paths:
   /courses/{courseId}/logs/statistics:
     $ref: './paths/courses/courselogs/statistics.yaml'
 
+  /courses/{courseId}/activitycompletion/sync:
+    $ref: './paths/courses/activitycompletion/sync.yaml'
+
   /users/images/document:
     $ref: './paths/users/images/document.yaml'

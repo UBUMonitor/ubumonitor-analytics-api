@@ -11,5 +11,5 @@ public interface UserRolePersistencePort {
    * @param users users and their role data
    * @param courseId Moodle course identifier
    */
-  void syncUserRoles(List<Integer> userIds, List<User> users, Integer courseId);
+  void syncUserRoles(List<Long> userIds, List<User> users, Long courseId);
 }

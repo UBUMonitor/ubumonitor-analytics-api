@@ -5,11 +5,11 @@ import lombok.Data;
 
 @Data
 public class GradeItem {
-  private Integer id;
-  private Integer parentId;
+  private Long id;
+  private Long parentId;
   private String name;
   private String itemType;
-  private Integer itemInstance;
+  private Long itemInstance;
   private BigDecimal gradeMin;
   private BigDecimal gradeMax;
 }

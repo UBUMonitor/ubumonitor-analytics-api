@@ -23,7 +23,7 @@ public class CourseEnrollmentsApiDelegateImpl implements CourseEnrollmentsApiDel
   private final CurrentSessionContext currentSessionContext;
 
   @Override
-  public ResponseEntity<CourseEnrollmentsResponseDto> syncCourseUsersEnrollments(Integer courseId) {
+  public ResponseEntity<CourseEnrollmentsResponseDto> syncCourseUsersEnrollments(Long courseId) {
     UsersResponse usersResponse = syncCourseEnrollmentsUseCase.syncCourseEnrollments(courseId);
     SessionData sessionData = currentSessionContext.getSessionData();
     return ResponseEntity.ok(
@@ -31,8 +31,7 @@ public class CourseEnrollmentsApiDelegateImpl implements CourseEnrollmentsApiDel
   }
 
   @Override
-  public ResponseEntity<CourseEnrollmentsResponseDto> getCourseUsersEnrollmentsInfo(
-      Integer courseId) {
+  public ResponseEntity<CourseEnrollmentsResponseDto> getCourseUsersEnrollmentsInfo(Long courseId) {
     UsersResponse usersResponse = getCourseEnrollmentsUseCase.getCourseEnrollment(courseId);
     SessionData sessionData = currentSessionContext.getSessionData();
 

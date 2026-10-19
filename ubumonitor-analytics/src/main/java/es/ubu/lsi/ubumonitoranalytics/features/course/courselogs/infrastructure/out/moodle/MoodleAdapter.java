@@ -22,8 +22,7 @@ import org.springframework.web.client.RestClient;
 public class MoodleAdapter implements MoodlePort {
 
   @Override
-  public void downloadAllLogs(
-      Integer courseId, RestClient restClient, Consumer<CSVRecord> consumer) {
+  public void downloadAllLogs(Long courseId, RestClient restClient, Consumer<CSVRecord> consumer) {
 
     restClient
         .get()
@@ -47,7 +46,7 @@ public class MoodleAdapter implements MoodlePort {
 
   @Override
   public void downloadPartialLogs(
-      Integer courseId, long since, RestClient restClient, Consumer<CSVRecord> consumer) {
+      Long courseId, long since, RestClient restClient, Consumer<CSVRecord> consumer) {
     restClient
         .get()
         .uri(

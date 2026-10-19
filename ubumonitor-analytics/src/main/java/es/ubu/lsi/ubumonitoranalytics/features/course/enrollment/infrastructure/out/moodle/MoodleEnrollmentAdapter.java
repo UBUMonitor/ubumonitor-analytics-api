@@ -29,7 +29,7 @@ public class MoodleEnrollmentAdapter implements EnrollmentFetchPort {
   private final AsyncOperations asyncOperations;
 
   @Override
-  public UsersResponse fetchCourseEnrolledUsers(Integer courseId, String token) {
+  public UsersResponse fetchCourseEnrolledUsers(Long courseId, String token) {
     GetEnrolledUsersRequestApi request = new GetEnrolledUsersRequestApi();
     request.setArgs(new GetEnrolledUsersArgsApi());
     request.getArgs().setCourseid(courseId);

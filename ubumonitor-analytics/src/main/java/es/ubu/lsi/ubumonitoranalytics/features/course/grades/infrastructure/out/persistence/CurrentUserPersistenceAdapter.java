@@ -13,11 +13,11 @@ public class CurrentUserPersistenceAdapter implements CurrentUserPersistencePort
   private final Jooq jooq;
 
   @Override
-  public Integer getUserId(String userName) {
+  public Long getUserId(String userName) {
     return jooq.dsl()
         .select(SITES.USER_ID)
         .from(SITES)
         .where(SITES.USER_NAME.eq(userName))
-        .fetchOneInto(Integer.class);
+        .fetchOneInto(Long.class);
   }
 }

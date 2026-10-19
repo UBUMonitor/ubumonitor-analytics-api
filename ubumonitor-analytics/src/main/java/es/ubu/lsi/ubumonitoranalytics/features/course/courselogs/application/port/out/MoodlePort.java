@@ -12,7 +12,7 @@ public interface MoodlePort {
    * @param restClient authenticated Moodle web client
    * @param consumer receives each parsed CSV record
    */
-  void downloadAllLogs(Integer courseId, RestClient restClient, Consumer<CSVRecord> consumer);
+  void downloadAllLogs(Long courseId, RestClient restClient, Consumer<CSVRecord> consumer);
 
   /**
    * Downloads records created since the supplied timestamp.
@@ -23,5 +23,5 @@ public interface MoodlePort {
    * @param consumer receives each parsed CSV record
    */
   void downloadPartialLogs(
-      Integer courseId, long since, RestClient restClient, Consumer<CSVRecord> consumer);
+      Long courseId, long since, RestClient restClient, Consumer<CSVRecord> consumer);
 }

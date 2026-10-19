@@ -25,5 +25,5 @@ public interface FetchCourseLogsUseCase {
    * @param courseId Moodle course identifier
    * @return available log columns and filter values
    */
-  CourseLogsInfoResult getCourseLogsInfo(Integer courseId);
+  CourseLogsInfoResult getCourseLogsInfo(Long courseId);
 }

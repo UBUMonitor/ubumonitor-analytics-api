@@ -206,7 +206,8 @@
           "itemid": {
             "nullable": true,
             "description": "Item id.",
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           },
           "item": {
             "nullable": true,

@@ -9,5 +9,5 @@ public interface GetCourseEnrollmentsUseCase {
    * @param courseId Moodle course identifier
    * @return users and enrollment details for the course
    */
-  UsersResponse getCourseEnrollment(Integer courseId);
+  UsersResponse getCourseEnrollment(Long courseId);
 }

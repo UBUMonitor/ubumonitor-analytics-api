@@ -22,7 +22,7 @@ public class SyncCourseContentService implements SyncCourseContentUseCase {
    */
   @Transactional
   @Override
-  public CourseContent syncCourseContent(Integer courseId) {
+  public CourseContent syncCourseContent(Long courseId) {
     CourseContent content = fetchCourseContentPort.fetchCourseContent(courseId);
     persistencePort.save(content);
 

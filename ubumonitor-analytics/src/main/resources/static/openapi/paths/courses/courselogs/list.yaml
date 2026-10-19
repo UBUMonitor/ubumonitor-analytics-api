@@ -13,6 +13,7 @@ post:
       required: true
       schema:
         type: integer
+        format: int64
       description: Course identifier
 
 

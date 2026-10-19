@@ -18,6 +18,7 @@ get:
       required: true
       schema:
         type: integer
+        format: int64
     - name: host
       in: query
       description: Moodle site URL.

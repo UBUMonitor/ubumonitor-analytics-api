@@ -14,9 +14,11 @@ CourseGradeItemsResponse:
         properties:
           id:
             type: integer
+            format: int64
             description: Unique identifier for the grade item
           parentId:
             type: integer
+            format: int64
             description: Unique identifier for the parent grade item, if applicable
           name:
             type: string

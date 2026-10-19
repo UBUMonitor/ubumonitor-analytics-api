@@ -11,7 +11,7 @@ public interface LogPersistencePort {
   /**
    * @param courseId Moodle course identifier
    */
-  void createIfNotExists(Integer courseId);
+  void createIfNotExists(Long courseId);
 
   /**
    * @return component and event identifiers with their compiled parsing rules
@@ -32,5 +32,5 @@ public interface LogPersistencePort {
    * @param courseId Moodle course identifier
    * @return timestamp of the latest stored log, or {@code null} when none exists
    */
-  LocalDateTime getLastDateTime(Integer courseId);
+  LocalDateTime getLastDateTime(Long courseId);
 }

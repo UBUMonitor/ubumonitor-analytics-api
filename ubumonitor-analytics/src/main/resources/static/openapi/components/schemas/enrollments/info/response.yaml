@@ -20,6 +20,7 @@ EnrollmentsResponse:
         properties:
           id:
             type: integer
+            format: int64
             description: The unique identifier of the course.
           fullName:
             type: string

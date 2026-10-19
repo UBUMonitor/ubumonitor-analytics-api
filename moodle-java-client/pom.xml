@@ -110,6 +110,9 @@
           <usePrimitives>false</usePrimitives>
           <generateBuilders>false</generateBuilders>
           <classNameSuffix>Api</classNameSuffix>
+          <formatTypeMapping>
+            <int64>java.lang.Long</int64>
+          </formatTypeMapping>
         </configuration>
         <executions>
           <execution>

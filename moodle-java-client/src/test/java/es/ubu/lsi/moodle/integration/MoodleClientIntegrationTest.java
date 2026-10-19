@@ -16,8 +16,10 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
@@ -102,10 +104,7 @@ class MoodleClientIntegrationTest {
           OBJECT_MAPPER.treeToValue(
               requestDefinition.path("body"), operation.getParameterTypes()[0]);
       JsonNode response = OBJECT_MAPPER.valueToTree(operation.invoke(api, apiRequest));
-      assertEquals(
-          testCase.path("expectedResponse").path("body"),
-          response,
-          "Unexpected response body for " + fixture);
+      assertJsonEquals(testCase.path("expectedResponse").path("body"), response, "$");
       assertTrue(
           wireMock.getAllServeEvents().stream()
               .allMatch(
@@ -116,6 +115,43 @@ class MoodleClientIntegrationTest {
     } finally {
       wireMock.stop();
     }
+  }
+
+  private void assertJsonEquals(JsonNode expected, JsonNode actual, String path) {
+    if (expected.isNumber() && actual.isNumber()) {
+      assertEquals(
+          0,
+          expected.decimalValue().compareTo(actual.decimalValue()),
+          "Unexpected number at " + path + ": expected " + expected + " but was " + actual);
+      return;
+    }
+
+    if (expected.isObject()) {
+      assertTrue(actual.isObject(), "Expected an object at " + path + " but was " + actual);
+      Set<String> expectedFields = new HashSet<>();
+      expected.properties().forEach(entry -> expectedFields.add(entry.getKey()));
+      Set<String> actualFields = new HashSet<>();
+      actual.properties().forEach(entry -> actualFields.add(entry.getKey()));
+      assertEquals(expectedFields, actualFields, "Unexpected object fields at " + path);
+      expected
+          .properties()
+          .forEach(
+              entry ->
+                  assertJsonEquals(
+                      entry.getValue(), actual.get(entry.getKey()), path + "." + entry.getKey()));
+      return;
+    }
+
+    if (expected.isArray()) {
+      assertTrue(actual.isArray(), "Expected an array at " + path + " but was " + actual);
+      assertEquals(expected.size(), actual.size(), "Unexpected array length at " + path);
+      for (int index = 0; index < expected.size(); index++) {
+        assertJsonEquals(expected.get(index), actual.get(index), path + "[" + index + "]");
+      }
+      return;
+    }
+
+    assertEquals(expected, actual, "Unexpected value at " + path);
   }
 
   private void configureMock(WireMockServer wireMock, JsonNode mockDefinition, String moodleHost) {

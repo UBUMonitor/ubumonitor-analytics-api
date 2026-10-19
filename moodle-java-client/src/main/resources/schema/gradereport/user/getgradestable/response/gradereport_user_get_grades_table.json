@@ -94,7 +94,8 @@
                   "items": {
                     "nullable": true,
                     "description": "Parent grade category ID.",
-                    "type": "integer"
+                    "type": "integer",
+                    "format": "int64"
                   }
                 },
                 "itemname": {
@@ -292,12 +293,14 @@
           "courseid": {
             "nullable": true,
             "description": "course id",
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           },
           "userid": {
             "nullable": true,
             "description": "user id",
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           },
           "maxdepth": {
             "nullable": true,
@@ -318,7 +321,8 @@
           "itemid": {
             "nullable": true,
             "description": "item id",
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           },
           "item": {
             "nullable": true,

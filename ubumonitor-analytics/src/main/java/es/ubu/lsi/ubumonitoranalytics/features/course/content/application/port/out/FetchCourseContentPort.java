@@ -8,5 +8,5 @@ public interface FetchCourseContentPort {
    * @param courseId Moodle course identifier
    * @return the course sections and modules returned by Moodle
    */
-  CourseContent fetchCourseContent(Integer courseId);
+  CourseContent fetchCourseContent(Long courseId);
 }

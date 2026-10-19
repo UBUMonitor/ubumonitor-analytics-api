@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface GradesUseCase {
 
-  List<GradeItem> sync(Integer courseId);
+  List<GradeItem> sync(Long courseId);
 
-  List<GradeItem> getGradeItems(Integer courseId);
+  List<GradeItem> getGradeItems(Long courseId);
 
-  List<UserGrade> getUserGrades(Integer courseId);
+  List<UserGrade> getUserGrades(Long courseId);
 }

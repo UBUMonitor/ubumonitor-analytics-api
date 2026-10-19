@@ -21,11 +21,11 @@ public interface FetchCourseContentAdapaterMapper {
   @Mapping(target = "wsfunction", ignore = true)
   @Mapping(target = "args.options", ignore = true)
   @Mapping(target = "args.courseid", source = "courseId")
-  GetCourseContentsRequestApi toRequest(Integer courseId);
+  GetCourseContentsRequestApi toRequest(Long courseId);
 
   @Mapping(target = "courseId", source = "courseId")
   @Mapping(target = "sections", source = "contents")
-  CourseContent toDomain(List<GetCourseContentsResponseApi> contents, Integer courseId);
+  CourseContent toDomain(List<GetCourseContentsResponseApi> contents, Long courseId);
 
   @Mapping(target = "id", source = "id")
   @Mapping(target = "position", source = "section")

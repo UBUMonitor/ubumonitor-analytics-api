@@ -20,7 +20,7 @@ public class GetCourseEnrollmentsService implements GetCourseEnrollmentsUseCase 
    */
   @Override
   @Transactional(readOnly = true)
-  public UsersResponse getCourseEnrollment(Integer courseId) {
+  public UsersResponse getCourseEnrollment(Long courseId) {
     return enrollmentGetPersistencePort.getCourseEnrollment(courseId);
   }
 }

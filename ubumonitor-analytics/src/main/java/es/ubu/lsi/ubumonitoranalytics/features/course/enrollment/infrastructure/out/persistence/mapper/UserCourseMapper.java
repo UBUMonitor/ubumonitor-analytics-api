@@ -45,6 +45,7 @@ public interface UserCourseMapper {
 
   @Mapping(target = "updatedAt", ignore = true)
   @Mapping(target = "createdAt", ignore = true)
+  @Mapping(target = "courseId", ignore = true)
   void toGroupsRecord(Group group, @MappingTarget GroupsRecord r);
 
   @Mapping(target = "updatedAt", ignore = true)

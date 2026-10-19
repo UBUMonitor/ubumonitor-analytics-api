@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class EnrollmentUserImage {
-  private Integer id;
+  private Long id;
   private String fullName;
   private UserImage userImage;
 }

@@ -16,7 +16,8 @@
           "itemid": {
             "nullable": true,
             "description": "Item ID",
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           },
           "item": {
             "nullable": true,
@@ -47,11 +48,13 @@
         "properties": {
           "repeatid": {
             "description": "Repeat ID",
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           },
           "instance": {
             "description": "Instance ID",
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           },
           "visible": {
             "description": "Visible",
@@ -59,7 +62,8 @@
           },
           "groupid": {
             "description": "Group ID",
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           },
           "format": {
             "description": "Description format (1 = HTML, 0 = MOODLE, 2 = PLAIN, or 4 = MARKDOWN)",
@@ -92,7 +96,8 @@
           },
           "userid": {
             "description": "User ID",
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           },
           "uuid": {
             "nullable": true,
@@ -109,7 +114,8 @@
           },
           "timemodified": {
             "description": "Time modified",
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           },
           "name": {
             "description": "Event name",
@@ -126,25 +132,30 @@
           },
           "id": {
             "description": "Event ID",
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           },
           "timestart": {
             "description": "Timestart",
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           },
           "subscriptionid": {
             "nullable": true,
             "description": "Subscription ID",
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           },
           "courseid": {
             "description": "Course ID",
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           },
           "categoryid": {
             "nullable": true,
             "description": "Category ID (only for category events)",
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           }
         },
         "required": [

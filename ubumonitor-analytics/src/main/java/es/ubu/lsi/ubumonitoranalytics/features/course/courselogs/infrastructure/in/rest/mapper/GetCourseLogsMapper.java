@@ -14,8 +14,7 @@ import org.mapstruct.Mapping;
 @Mapper(config = GlobalMapperConfig.class)
 public interface GetCourseLogsMapper {
 
-  CourseLogsInfoRequest toDomain(
-      Integer courseId, CourseLogsListRequestDto courseLogsInfoRequestDto);
+  CourseLogsInfoRequest toDomain(Long courseId, CourseLogsListRequestDto courseLogsInfoRequestDto);
 
   @Mapping(target = "content", source = "logs")
   @Mapping(target = "page", source = "fetchCourseLogsResult")
