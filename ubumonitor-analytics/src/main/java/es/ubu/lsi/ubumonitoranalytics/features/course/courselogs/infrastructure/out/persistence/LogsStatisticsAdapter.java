@@ -246,7 +246,7 @@ public class LogsStatisticsAdapter implements LogsStatisticsPort {
 
   public static Field<Integer> dayOfWeekField(Field<?> timestamp, Integer weekStartsOn) {
     int startDay = weekStartsOn == null ? 1 : weekStartsOn;
-    Field<Integer> isoDayOfWeek = DSL.field("DAY_OF_WEEK({0})", Integer.class, timestamp);
+    Field<Integer> isoDayOfWeek = DSL.field("ISO_DAY_OF_WEEK({0})", Integer.class, timestamp);
 
     return DSL.field("MOD({0} - {1} + 7, 7) + 1", Integer.class, isoDayOfWeek, DSL.val(startDay))
         .as(TIME_BUCKET);
