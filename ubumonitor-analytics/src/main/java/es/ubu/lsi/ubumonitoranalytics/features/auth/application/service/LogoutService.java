@@ -27,7 +27,7 @@ public class LogoutService implements LogoutUseCase {
       if (sessionData != null) {
 
         tenantDatabasePort.clearAll();
-        sessionStorePort.invalidateSession(sessionData.getJwt());
+        sessionStorePort.invalidateSession(sessionData.getToken());
       }
     } finally {
       currentSessionContext.clear();

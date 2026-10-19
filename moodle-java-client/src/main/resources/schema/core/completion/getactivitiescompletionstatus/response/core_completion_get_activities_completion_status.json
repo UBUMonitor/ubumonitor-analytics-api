@@ -3,60 +3,77 @@
   "title": "GetActivitiesCompletionStatusResponse",
   "type": "object",
   "properties": {
-    "statuses": {
+    "warnings": {
+      "nullable": true,
+      "description": "list of warnings",
       "type": "array",
+      "items": {
+        "type": "object",
+        "title": "Warning",
+        "properties": {
+          "itemid": {
+            "nullable": true,
+            "description": "item id",
+            "type": "integer"
+          },
+          "item": {
+            "nullable": true,
+            "description": "item",
+            "type": "string"
+          },
+          "warningcode": {
+            "description": "warning code",
+            "type": "string"
+          },
+          "message": {
+            "description": "untranslated english message",
+            "type": "string"
+          }
+        },
+        "required": [
+          "warningcode",
+          "message"
+        ]
+      }
+    },
+    "statuses": {
       "description": "List of activities status",
+      "type": "array",
       "items": {
         "type": "object",
         "title": "ActivityCompletionStatus",
         "properties": {
-          "cmid": {
-            "type": "integer",
-            "description": "course module ID"
+          "instance": {
+            "description": "instance ID",
+            "type": "integer"
+          },
+          "istrackeduser": {
+            "description": "Whether completion is tracked for this user",
+            "type": "boolean"
+          },
+          "valueused": {
+            "description": "Whether the completion status affects availability of another activity",
+            "type": "boolean"
           },
           "modname": {
-            "type": "string",
-            "description": "activity module name"
-          },
-          "instance": {
-            "type": "integer",
-            "description": "instance ID"
-          },
-          "state": {
-            "type": "integer",
-            "enum": [
-              0,
-              1,
-              2,
-              3
-            ],
-            "javaEnums": [
-              {
-                "name": "INCOMPLETE"
-              },
-              {
-                "name": "COMPLETE"
-              },
-              {
-                "name": "PASS"
-              },
-              {
-                "name": "FAIL"
-              }
-            ],
-            "description": "Completion state: 0 incomplete, 1 complete, 2 pass, 3 fail"
+            "description": "activity module name",
+            "type": "string"
           },
           "timecompleted": {
-            "type": "integer",
-            "description": "timestamp for completed activity"
+            "description": "timestamp for completed activity",
+            "type": "integer"
+          },
+          "cmid": {
+            "description": "course module ID",
+            "type": "integer"
+          },
+          "isautomatic": {
+            "description": "Whether completion is tracked automatically",
+            "type": "boolean"
           },
           "tracking": {
+            "description": "type of tracking: 0 none, 1 manual, 2 automatic",
             "type": "integer",
-            "enum": [
-              0,
-              1,
-              2
-            ],
             "javaEnums": [
               {
                 "name": "NONE"
@@ -68,56 +85,43 @@
                 "name": "AUTOMATIC"
               }
             ],
-            "description": "type of tracking: 0 none, 1 manual, 2 automatic"
-          },
-          "overrideby": {
-            "type": "integer",
-            "nullable": true,
-            "description": "User id who overrode the status, or null"
-          },
-          "valueused": {
-            "type": "boolean",
-            "description": "Whether the completion status affects availability of another activity"
+            "enum": [
+              0,
+              1,
+              2
+            ]
           },
           "hascompletion": {
-            "type": "boolean",
-            "description": "Whether this activity has completion enabled"
+            "description": "Whether this activity has completion enabled",
+            "type": "boolean"
           },
-          "isautomatic": {
-            "type": "boolean",
-            "description": "Whether completion is tracked automatically"
-          },
-          "istrackeduser": {
-            "type": "boolean",
-            "description": "Whether completion is tracked for this user"
-          },
-          "uservisible": {
-            "type": "boolean",
-            "description": "Whether this activity is visible to the user"
+          "isoverallcomplete": {
+            "description": "Whether overall completion should be marked as complete",
+            "type": "boolean"
           },
           "details": {
-            "type": "array",
-            "description": "Completion status details",
             "default": [],
+            "description": "Completion status details",
+            "type": "array",
             "items": {
               "type": "object",
               "title": "CompletionDetail",
               "properties": {
                 "rulename": {
-                  "type": "string",
-                  "description": "Rule name"
+                  "description": "Rule name",
+                  "type": "string"
                 },
                 "rulevalue": {
                   "type": "object",
                   "title": "CompletionRuleValue",
                   "properties": {
-                    "status": {
-                      "type": "integer",
-                      "description": "Completion status"
-                    },
                     "description": {
-                      "type": "string",
-                      "description": "Completion description"
+                      "description": "Completion description",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "Completion status",
+                      "type": "integer"
                     }
                   },
                   "required": [
@@ -132,9 +136,38 @@
               ]
             }
           },
-          "isoverallcomplete": {
-            "type": "boolean",
-            "description": "Whether overall completion should be marked as complete"
+          "state": {
+            "description": "Completion state: 0 incomplete, 1 complete, 2 pass, 3 fail",
+            "type": "integer",
+            "javaEnums": [
+              {
+                "name": "INCOMPLETE"
+              },
+              {
+                "name": "COMPLETE"
+              },
+              {
+                "name": "PASS"
+              },
+              {
+                "name": "FAIL"
+              }
+            ],
+            "enum": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          "overrideby": {
+            "nullable": true,
+            "description": "User id who overrode the status, or null",
+            "type": "integer"
+          },
+          "uservisible": {
+            "description": "Whether this activity is visible to the user",
+            "type": "boolean"
           }
         },
         "required": [
@@ -151,39 +184,6 @@
           "uservisible",
           "details",
           "isoverallcomplete"
-        ]
-      }
-    },
-    "warnings": {
-      "type": "array",
-      "nullable": true,
-      "description": "list of warnings",
-      "items": {
-        "type": "object",
-        "title": "Warning",
-        "properties": {
-          "item": {
-            "type": "string",
-            "nullable": true,
-            "description": "item"
-          },
-          "itemid": {
-            "type": "integer",
-            "nullable": true,
-            "description": "item id"
-          },
-          "warningcode": {
-            "type": "string",
-            "description": "warning code"
-          },
-          "message": {
-            "type": "string",
-            "description": "untranslated english message"
-          }
-        },
-        "required": [
-          "warningcode",
-          "message"
         ]
       }
     }

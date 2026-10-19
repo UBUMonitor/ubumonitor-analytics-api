@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.database.TenantDatabasePort;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.DatabaseCreationException;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
+import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.concurrent.AsyncOperations;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.moodle.config.MoodleConfig;
 import es.ubu.lsi.ubumonitoranalytics.util.DatabaseUtil;
 import java.io.IOException;
@@ -15,11 +16,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
 import java.util.stream.Stream;
 import javax.sql.DataSource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.flywaydb.core.Flyway;
 import org.jooq.Configuration;
@@ -34,31 +34,44 @@ import org.springframework.stereotype.Component;
 /** Caches tenant data sources and creates a jOOQ context for each access. */
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class JooqProvider implements TenantDatabasePort {
 
   private final MoodleConfig moodleConfig;
-  private final ExecutorService executor;
+  private final AsyncOperations asyncOperations;
 
   // Cache DataSource instances only; DSLContext instances are request-scoped.
-  private final ConcurrentHashMap<String, DataSource> dataSourceCache;
+  private final ConcurrentHashMap<String, DataSource> dataSourceCache = new ConcurrentHashMap<>();
 
   private final Set<String> migratedTenants = ConcurrentHashMap.newKeySet();
 
-  public JooqProvider(MoodleConfig moodleConfig, ExecutorService executor) {
+  /** Validates the supplied database password and initializes the tenant data source and schema. */
+  @Override
+  public void initializeTenant(SessionData session) {
 
-    this.moodleConfig = moodleConfig;
-    this.executor = executor;
+    if (session == null) {
+      return;
+    }
 
-    this.dataSourceCache = new ConcurrentHashMap<>();
+    DatabaseUtil.createAndInitializeDatabase(
+        moodleConfig.getDb().getJdbcUrlTemplate(),
+        moodleConfig.getDb().getBasePath(),
+        session.getHost(),
+        session.getUsername(),
+        session.getDbPassword());
+    getDataSource(session);
   }
 
   /** Starts tenant datasource creation and Flyway migration without blocking session creation. */
   @Override
   public void initializeTenantAsync(SessionData session) {
 
-    if (session == null) return;
+    if (session == null) {
+      return;
+    }
 
-    CompletableFuture.runAsync(() -> getDataSource(session), executor)
+    asyncOperations
+        .runAsync(() -> getDataSource(session))
         .exceptionally(
             exception -> {
               log.error(

@@ -5,158 +5,95 @@
     "title": "GetEnrolledUsersResponse",
     "type": "object",
     "properties": {
-      "id": {
-        "type": "integer",
-        "description": "ID of the user"
-      },
-      "username": {
-        "type": "string",
-        "description": "Username policy is defined in Moodle security config",
-        "nullable": true
+      "country": {
+        "nullable": true,
+        "description": "Home country code of the user, such as AU or CZ",
+        "type": "string"
       },
       "firstname": {
-        "type": "string",
+        "nullable": true,
         "description": "The first name(s) of the user",
-        "nullable": true
-      },
-      "lastname": {
-        "type": "string",
-        "description": "The family name of the user",
-        "nullable": true
-      },
-      "fullname": {
-        "type": "string",
-        "description": "The fullname of the user"
-      },
-      "email": {
-        "type": "string",
-        "description": "An email address - allow email as root@localhost",
-        "nullable": true
-      },
-      "address": {
-        "type": "string",
-        "description": "Postal address",
-        "nullable": true
-      },
-      "phone1": {
-        "type": "string",
-        "description": "Phone 1",
-        "nullable": true
-      },
-      "phone2": {
-        "type": "string",
-        "description": "Phone 2",
-        "nullable": true
-      },
-      "department": {
-        "type": "string",
-        "description": "Department",
-        "nullable": true
-      },
-      "institution": {
-        "type": "string",
-        "description": "Institution",
-        "nullable": true
-      },
-      "idnumber": {
-        "type": "string",
-        "description": "An arbitrary ID code number perhaps from the institution",
-        "nullable": true
-      },
-      "interests": {
-        "type": "string",
-        "description": "User interests (separated by commas)",
-        "nullable": true
-      },
-      "firstaccess": {
-        "type": "integer",
-        "description": "First access to the site (0 if never)",
-        "nullable": true
-      },
-      "lastaccess": {
-        "type": "integer",
-        "description": "Last access to the site (0 if never)",
-        "nullable": true
-      },
-      "lastcourseaccess": {
-        "type": "integer",
-        "description": "Last access to the course (0 if never)",
-        "nullable": true
-      },
-      "description": {
-        "type": "string",
-        "description": "User profile description",
-        "nullable": true
-      },
-      "descriptionformat": {
-        "type": "integer",
-        "enum": [
-          0,
-          1,
-          2,
-          4
-        ],
-        "javaEnums": [
-          {
-            "name": "MOODLE"
-          },
-          {
-            "name": "HTML"
-          },
-          {
-            "name": "PLAIN"
-          },
-          {
-            "name": "MARKDOWN"
-          }
-        ],
-        "description": "Description format (1 = HTML, 0 = MOODLE, 2 = PLAIN, or 4 = MARKDOWN)",
-        "nullable": true
+        "type": "string"
       },
       "city": {
-        "type": "string",
-        "description": "Home city of the user",
-        "nullable": true
-      },
-      "country": {
-        "type": "string",
-        "description": "Home country code of the user, such as AU or CZ",
-        "nullable": true
-      },
-      "profileimageurlsmall": {
-        "type": "string",
-        "format": "uri",
-        "description": "User image profile URL - small version",
-        "nullable": true
-      },
-      "profileimageurl": {
-        "type": "string",
-        "format": "uri",
-        "description": "User image profile URL - big version",
-        "nullable": true
-      },
-      "customfields": {
-        "type": "array",
-        "description": "User custom fields (also known as user profile fields)",
         "nullable": true,
+        "description": "Home city of the user",
+        "type": "string"
+      },
+      "idnumber": {
+        "nullable": true,
+        "description": "An arbitrary ID code number perhaps from the institution",
+        "type": "string"
+      },
+      "roles": {
+        "nullable": true,
+        "description": "User roles",
+        "type": "array",
         "items": {
           "type": "object",
           "properties": {
-            "type": {
-              "type": "string",
-              "description": "The type of the custom field - text field, checkbox..."
-            },
-            "value": {
-              "type": "string",
-              "description": "The value of the custom field"
+            "roleid": {
+              "description": "Role id",
+              "type": "integer"
             },
             "name": {
-              "type": "string",
-              "description": "The name of the custom field"
+              "description": "Role name",
+              "type": "string"
+            },
+            "sortorder": {
+              "description": "Role sortorder",
+              "type": "integer"
             },
             "shortname": {
-              "type": "string",
-              "description": "The shortname of the custom field - to build the field class in code"
+              "description": "Role shortname",
+              "type": "string"
+            }
+          },
+          "required": [
+            "roleid",
+            "name",
+            "shortname",
+            "sortorder"
+          ]
+        }
+      },
+      "phone2": {
+        "nullable": true,
+        "description": "Phone 2",
+        "type": "string"
+      },
+      "description": {
+        "nullable": true,
+        "description": "User profile description",
+        "type": "string"
+      },
+      "firstaccess": {
+        "nullable": true,
+        "description": "First access to the site (0 if never)",
+        "type": "integer"
+      },
+      "customfields": {
+        "nullable": true,
+        "description": "User custom fields (also known as user profile fields)",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "description": "The name of the custom field",
+              "type": "string"
+            },
+            "type": {
+              "description": "The type of the custom field - text field, checkbox...",
+              "type": "string"
+            },
+            "value": {
+              "description": "The value of the custom field",
+              "type": "string"
+            },
+            "shortname": {
+              "description": "The shortname of the custom field - to build the field class in code",
+              "type": "string"
             }
           },
           "required": [
@@ -167,33 +104,108 @@
           ]
         }
       },
-      "groups": {
-        "type": "array",
-        "description": "User groups",
+      "phone1": {
         "nullable": true,
+        "description": "Phone 1",
+        "type": "string"
+      },
+      "profileimageurlsmall": {
+        "nullable": true,
+        "format": "uri",
+        "description": "User image profile URL - small version",
+        "type": "string"
+      },
+      "institution": {
+        "nullable": true,
+        "description": "Institution",
+        "type": "string"
+      },
+      "enrolledcourses": {
+        "nullable": true,
+        "description": "Courses where the user is enrolled",
+        "type": "array",
         "items": {
           "type": "object",
           "properties": {
             "id": {
-              "type": "integer",
-              "description": "Group id"
+              "description": "Id of the course",
+              "type": "integer"
             },
+            "fullname": {
+              "description": "Fullname of the course",
+              "type": "string"
+            },
+            "shortname": {
+              "description": "Shortname of the course",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "fullname",
+            "shortname"
+          ]
+        }
+      },
+      "id": {
+        "description": "ID of the user",
+        "type": "integer"
+      },
+      "department": {
+        "nullable": true,
+        "description": "Department",
+        "type": "string"
+      },
+      "email": {
+        "nullable": true,
+        "description": "An email address - allow email as root@localhost",
+        "type": "string"
+      },
+      "preferences": {
+        "nullable": true,
+        "description": "User preferences",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
             "name": {
-              "type": "string",
-              "description": "Group name"
+              "description": "The name of the preference",
+              "type": "string"
+            },
+            "value": {
+              "description": "The value of the preference",
+              "type": "string"
+            }
+          },
+          "required": [
+            "name",
+            "value"
+          ]
+        }
+      },
+      "address": {
+        "nullable": true,
+        "description": "Postal address",
+        "type": "string"
+      },
+      "groups": {
+        "nullable": true,
+        "description": "User groups",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "description": "Group name",
+              "type": "string"
             },
             "description": {
-              "type": "string",
-              "description": "Group description"
+              "description": "Group description",
+              "type": "string"
             },
             "descriptionformat": {
+              "description": "Description format (1 = HTML, 0 = MOODLE, 2 = PLAIN, or 4 = MARKDOWN)",
               "type": "integer",
-              "enum": [
-                0,
-                1,
-                2,
-                4
-              ],
               "javaEnums": [
                 {
                   "name": "MOODLE"
@@ -208,7 +220,16 @@
                   "name": "MARKDOWN"
                 }
               ],
-              "description": "Description format (1 = HTML, 0 = MOODLE, 2 = PLAIN, or 4 = MARKDOWN)"
+              "enum": [
+                0,
+                1,
+                2,
+                4
+              ]
+            },
+            "id": {
+              "description": "Group id",
+              "type": "integer"
             }
           },
           "required": [
@@ -219,86 +240,65 @@
           ]
         }
       },
-      "roles": {
-        "type": "array",
-        "description": "User roles",
+      "lastcourseaccess": {
         "nullable": true,
-        "items": {
-          "type": "object",
-          "properties": {
-            "roleid": {
-              "type": "integer",
-              "description": "Role id"
-            },
-            "name": {
-              "type": "string",
-              "description": "Role name"
-            },
-            "shortname": {
-              "type": "string",
-              "description": "Role shortname"
-            },
-            "sortorder": {
-              "type": "integer",
-              "description": "Role sortorder"
-            }
-          },
-          "required": [
-            "roleid",
-            "name",
-            "shortname",
-            "sortorder"
-          ]
-        }
+        "description": "Last access to the course (0 if never)",
+        "type": "integer"
       },
-      "preferences": {
-        "type": "array",
-        "description": "User preferences",
+      "lastname": {
         "nullable": true,
-        "items": {
-          "type": "object",
-          "properties": {
-            "name": {
-              "type": "string",
-              "description": "The name of the preference"
-            },
-            "value": {
-              "type": "string",
-              "description": "The value of the preference"
-            }
-          },
-          "required": [
-            "name",
-            "value"
-          ]
-        }
+        "description": "The family name of the user",
+        "type": "string"
       },
-      "enrolledcourses": {
-        "type": "array",
-        "description": "Courses where the user is enrolled",
+      "lastaccess": {
         "nullable": true,
-        "items": {
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "integer",
-              "description": "Id of the course"
-            },
-            "fullname": {
-              "type": "string",
-              "description": "Fullname of the course"
-            },
-            "shortname": {
-              "type": "string",
-              "description": "Shortname of the course"
-            }
+        "description": "Last access to the site (0 if never)",
+        "type": "integer"
+      },
+      "descriptionformat": {
+        "nullable": true,
+        "description": "Description format (1 = HTML, 0 = MOODLE, 2 = PLAIN, or 4 = MARKDOWN)",
+        "type": "integer",
+        "javaEnums": [
+          {
+            "name": "MOODLE"
           },
-          "required": [
-            "id",
-            "fullname",
-            "shortname"
-          ]
-        }
+          {
+            "name": "HTML"
+          },
+          {
+            "name": "PLAIN"
+          },
+          {
+            "name": "MARKDOWN"
+          }
+        ],
+        "enum": [
+          0,
+          1,
+          2,
+          4
+        ]
+      },
+      "fullname": {
+        "description": "The fullname of the user",
+        "type": "string"
+      },
+      "profileimageurl": {
+        "nullable": true,
+        "format": "uri",
+        "description": "User image profile URL - big version",
+        "type": "string"
+      },
+      "interests": {
+        "nullable": true,
+        "description": "User interests (separated by commas)",
+        "type": "string"
+      },
+      "username": {
+        "nullable": true,
+        "description": "Username policy is defined in Moodle security config",
+        "type": "string"
       }
     },
     "required": [

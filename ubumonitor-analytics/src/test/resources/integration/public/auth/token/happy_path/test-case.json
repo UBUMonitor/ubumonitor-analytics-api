@@ -33,6 +33,9 @@
   },
   "expectedResponse": {
     "status": 200,
-    "body": {"tokenType": "Bearer", "accessToken": "${JWT}"}
+    "body": {
+      "tokenType": "Bearer",
+      "accessToken": "${JWT}"
+    }
   }
 }

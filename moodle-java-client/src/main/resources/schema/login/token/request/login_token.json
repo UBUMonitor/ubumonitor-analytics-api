@@ -3,21 +3,25 @@
   "title": "LoginTokenRequest",
   "type": "object",
   "properties": {
+    "password": {
+      "format": "password",
+      "type": "string"
+    },
     "baseurl": {
-      "type": "string",
-      "format": "uri"
+      "format": "uri",
+      "type": "string"
+    },
+    "service": {
+      "default": "moodle_mobile_app",
+      "type": "string"
     },
     "username": {
       "type": "string"
-    },
-    "password": {
-      "type": "string",
-      "format": "password"
-    },
-    "service": {
-      "type": "string",
-      "default": "moodle_mobile_app"
     }
   },
-  "required": ["baseurl", "username", "password"]
+  "required": [
+    "baseurl",
+    "username",
+    "password"
+  ]
 }

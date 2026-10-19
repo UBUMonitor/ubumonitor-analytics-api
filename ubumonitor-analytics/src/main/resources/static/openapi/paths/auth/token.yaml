@@ -3,7 +3,7 @@ post:
   operationId: AuthToken
   summary: Authenticate with a Moodle token
   description: |
-    Receives a Moodle site URL, an existing Moodle web-service token, and the database encryption key. Returns an application JWT for subsequent authenticated requests.
+    Receives a Moodle site URL, an existing Moodle web-service token, and the database encryption key. Returns an opaque Bearer session token for subsequent authenticated requests.
   requestBody:
     required: true
     content:
@@ -14,7 +14,7 @@ post:
   security: [ ]
   responses:
     '200':
-      description: JWT token retrieved successfully
+      description: Session token retrieved successfully
       content:
         application/json:
           schema:

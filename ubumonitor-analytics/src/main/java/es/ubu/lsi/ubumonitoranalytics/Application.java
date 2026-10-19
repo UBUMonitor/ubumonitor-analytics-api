@@ -10,6 +10,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 @EnableWebSecurity
 public class Application {
 
+  static {
+    System.setProperty("org.jooq.no-logo", "true");
+    System.setProperty("org.jooq.no-tips", "true");
+  }
+
   /**
    * Application entry point. This method is automatically called by the JVM when the application
    * starts. It initializes the Spring Boot application context and starts the embedded Tomcat

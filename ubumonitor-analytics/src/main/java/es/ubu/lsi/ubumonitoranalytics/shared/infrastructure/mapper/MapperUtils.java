@@ -1,5 +1,6 @@
 package es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.net.URI;
@@ -8,6 +9,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.Locale;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
 import org.jsoup.Jsoup;
@@ -233,5 +235,23 @@ public class MapperUtils {
 
   public String map(URI uri) {
     return uri == null ? null : uri.toString();
+  }
+
+  public static BigDecimal toBigDecimal(Double value) {
+    return value == null ? null : BigDecimal.valueOf(value);
+  }
+
+  public static File toFile(String path) {
+    if (path == null) {
+      return null;
+    }
+    return new File(path);
+  }
+
+  public Locale toLocale(String localeString) {
+    if (localeString == null || localeString.isEmpty()) {
+      return null;
+    }
+    return Locale.forLanguageTag(localeString);
   }
 }

@@ -1,0 +1,32 @@
+post:
+  tags:
+    - CourseLogs
+  operationId: GetCourseLogsStatistics
+  summary: Get course log statistics
+  description: Get aggregated course log statistics
+
+  parameters:
+    - name: courseId
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: Course identifier
+
+
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../../components/schemas/courses/courselogs/statistics/request.yaml#/CourseLogsStatisticsRequest'
+  responses:
+    "200":
+      description: Logs retrieved successfully
+      content:
+        application/json:
+          schema:
+            $ref: '../../../components/schemas/courses/courselogs/statistics/response.yaml#/CourseLogsStatisticsResponse'
+
+    '401':
+      $ref: '../../../openapi.yaml#/components/responses/unauthorized_401'

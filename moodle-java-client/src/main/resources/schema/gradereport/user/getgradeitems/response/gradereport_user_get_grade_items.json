@@ -4,224 +4,70 @@
   "type": "object",
   "properties": {
     "usergrades": {
-      "type": "array",
-      "description": "list of user grades",
       "nullable": true,
+      "description": "list of user grades",
+      "type": "array",
       "items": {
         "type": "object",
         "title": "UserGrade",
         "properties": {
-          "courseid": {
-            "type": "integer",
-            "description": "course id",
-            "nullable": true
-          },
           "courseidnumber": {
-            "type": "string",
+            "nullable": true,
             "description": "course idnumber",
-            "nullable": true
-          },
-          "userid": {
-            "type": "integer",
-            "description": "user id",
-            "nullable": true
+            "type": "string"
           },
           "userfullname": {
-            "type": "string",
+            "nullable": true,
             "description": "user fullname",
-            "nullable": true
-          },
-          "useridnumber": {
-            "type": "string",
-            "description": "user idnumber",
-            "nullable": true
-          },
-          "maxdepth": {
-            "type": "integer",
-            "description": "table max depth (needed for printing it)",
-            "nullable": true
+            "type": "string"
           },
           "gradeitems": {
-            "type": "array",
-            "description": "Grade items",
             "nullable": true,
+            "description": "Grade items",
+            "type": "array",
             "items": {
               "type": "object",
               "title": "GradeItem",
               "properties": {
-                "id": {
-                  "type": "integer",
-                  "description": "Grade item id",
-                  "nullable": true
-                },
-                "itemname": {
-                  "type": "string",
-                  "description": "Grade item name",
-                  "nullable": true
-                },
-                "itemtype": {
-                  "type": "string",
-                  "description": "Grade item type",
-                  "nullable": true
-                },
-                "itemmodule": {
-                  "type": "string",
-                  "description": "Grade item module",
-                  "nullable": true
-                },
-                "iteminstance": {
-                  "type": "integer",
-                  "description": "Grade item instance",
-                  "nullable": true
-                },
-                "itemnumber": {
-                  "type": "integer",
-                  "description": "Grade item item number",
-                  "nullable": true
-                },
-                "idnumber": {
-                  "type": "string",
-                  "description": "Grade item idnumber",
-                  "nullable": true
-                },
-                "categoryid": {
-                  "type": "integer",
-                  "description": "Grade item category id",
-                  "nullable": true
-                },
-                "outcomeid": {
-                  "type": "integer",
-                  "description": "Outcome id",
-                  "nullable": true
-                },
                 "scaleid": {
-                  "type": "integer",
+                  "nullable": true,
                   "description": "Scale id",
-                  "nullable": true
-                },
-                "locked": {
-                  "type": "boolean",
-                  "description": "Grade item for user locked?",
-                  "nullable": true
-                },
-                "cmid": {
-                  "type": "integer",
-                  "description": "Course module id (if type mod)",
-                  "nullable": true
-                },
-                "weightraw": {
-                  "type": "number",
-                  "description": "Weight raw",
-                  "nullable": true
-                },
-                "weightformatted": {
-                  "type": "string",
-                  "description": "Weight",
-                  "nullable": true
-                },
-                "status": {
-                  "type": "string",
-                  "description": "Status",
-                  "nullable": true
-                },
-                "graderaw": {
-                  "type": "number",
-                  "description": "Grade raw",
-                  "nullable": true
-                },
-                "gradedatesubmitted": {
-                  "type": "integer",
-                  "description": "Grade submit date",
-                  "nullable": true
-                },
-                "gradedategraded": {
-                  "type": "integer",
-                  "description": "Grade graded date",
-                  "nullable": true
-                },
-                "gradehiddenbydate": {
-                  "type": "boolean",
-                  "description": "Grade hidden by date?",
-                  "nullable": true
-                },
-                "gradeneedsupdate": {
-                  "type": "boolean",
-                  "description": "Grade needs update?",
-                  "nullable": true
-                },
-                "gradeishidden": {
-                  "type": "boolean",
-                  "description": "Grade is hidden?",
-                  "nullable": true
+                  "type": "integer"
                 },
                 "gradeislocked": {
-                  "type": "boolean",
+                  "nullable": true,
                   "description": "Grade is locked?",
-                  "nullable": true
+                  "type": "boolean"
                 },
-                "gradeisoverridden": {
-                  "type": "boolean",
-                  "description": "Grade overridden?",
-                  "nullable": true
+                "itemnumber": {
+                  "nullable": true,
+                  "description": "Grade item item number",
+                  "type": "integer"
                 },
-                "gradeformatted": {
-                  "type": "string",
-                  "description": "The grade formatted",
-                  "nullable": true
-                },
-                "grademin": {
-                  "type": "number",
-                  "description": "Grade min",
-                  "nullable": true
-                },
-                "grademax": {
-                  "type": "number",
-                  "description": "Grade max",
-                  "nullable": true
-                },
-                "rangeformatted": {
-                  "type": "string",
-                  "description": "Range formatted",
-                  "nullable": true
+                "idnumber": {
+                  "nullable": true,
+                  "description": "Grade item idnumber",
+                  "type": "string"
                 },
                 "percentageformatted": {
-                  "type": "string",
+                  "nullable": true,
                   "description": "Percentage",
-                  "nullable": true
+                  "type": "string"
                 },
-                "lettergradeformatted": {
-                  "type": "string",
-                  "description": "Letter grade",
-                  "nullable": true
+                "outcomeid": {
+                  "nullable": true,
+                  "description": "Outcome id",
+                  "type": "integer"
                 },
-                "rank": {
-                  "type": "integer",
-                  "description": "Rank in the course",
-                  "nullable": true
-                },
-                "numusers": {
-                  "type": "integer",
-                  "description": "Num users in course",
-                  "nullable": true
-                },
-                "averageformatted": {
-                  "type": "string",
-                  "description": "Grade average",
-                  "nullable": true
-                },
-                "feedback": {
-                  "type": "string",
-                  "description": "Grade feedback",
-                  "nullable": true
+                "gradeishidden": {
+                  "nullable": true,
+                  "description": "Grade is hidden?",
+                  "type": "boolean"
                 },
                 "feedbackformat": {
+                  "nullable": true,
+                  "description": "feedback format (1 = HTML, 0 = MOODLE, 2 = PLAIN, or 4 = MARKDOWN)",
                   "type": "integer",
-                  "enum": [
-                    0,
-                    1,
-                    2,
-                    4
-                  ],
                   "javaEnums": [
                     {
                       "name": "MOODLE"
@@ -236,42 +82,201 @@
                       "name": "MARKDOWN"
                     }
                   ],
-                  "description": "feedback format (1 = HTML, 0 = MOODLE, 2 = PLAIN, or 4 = MARKDOWN)",
-                  "nullable": true
+                  "enum": [
+                    0,
+                    1,
+                    2,
+                    4
+                  ]
+                },
+                "grademin": {
+                  "nullable": true,
+                  "description": "Grade min",
+                  "type": "number"
+                },
+                "feedback": {
+                  "nullable": true,
+                  "description": "Grade feedback",
+                  "type": "string"
+                },
+                "iteminstance": {
+                  "nullable": true,
+                  "description": "Grade item instance",
+                  "type": "integer"
+                },
+                "rank": {
+                  "nullable": true,
+                  "description": "Rank in the course",
+                  "type": "integer"
+                },
+                "id": {
+                  "nullable": true,
+                  "description": "Grade item id",
+                  "type": "integer"
+                },
+                "locked": {
+                  "nullable": true,
+                  "description": "Grade item for user locked?",
+                  "type": "boolean"
+                },
+                "categoryid": {
+                  "nullable": true,
+                  "description": "Grade item category id",
+                  "type": "integer"
+                },
+                "numusers": {
+                  "nullable": true,
+                  "description": "Num users in course",
+                  "type": "integer"
+                },
+                "weightformatted": {
+                  "nullable": true,
+                  "description": "Weight",
+                  "type": "string"
+                },
+                "parentcategoryid": {
+                  "nullable": true,
+                  "description": "Parent category id",
+                  "type": "integer"
+                },
+                "itemname": {
+                  "nullable": true,
+                  "description": "Grade item name",
+                  "type": "string"
+                },
+                "gradedatesubmitted": {
+                  "nullable": true,
+                  "description": "Grade submit date",
+                  "type": "integer"
+                },
+                "graderaw": {
+                  "nullable": true,
+                  "description": "Grade raw",
+                  "type": "number"
+                },
+                "gradeisoverridden": {
+                  "nullable": true,
+                  "description": "Grade overridden?",
+                  "type": "boolean"
+                },
+                "rangeformatted": {
+                  "nullable": true,
+                  "description": "Range formatted",
+                  "type": "string"
+                },
+                "lettergradeformatted": {
+                  "nullable": true,
+                  "description": "Letter grade",
+                  "type": "string"
+                },
+                "cmid": {
+                  "nullable": true,
+                  "description": "Course module id (if type mod)",
+                  "type": "integer"
+                },
+                "gradeformatted": {
+                  "nullable": true,
+                  "description": "The grade formatted",
+                  "type": "string"
+                },
+                "gradedategraded": {
+                  "nullable": true,
+                  "description": "Grade graded date",
+                  "type": "integer"
+                },
+                "itemtype": {
+                  "nullable": true,
+                  "description": "Grade item type",
+                  "type": "string"
+                },
+                "itemmodule": {
+                  "nullable": true,
+                  "description": "Grade item module",
+                  "type": "string"
+                },
+                "averageformatted": {
+                  "nullable": true,
+                  "description": "Grade average",
+                  "type": "string"
+                },
+                "weightraw": {
+                  "nullable": true,
+                  "description": "Weight raw",
+                  "type": "number"
+                },
+                "gradehiddenbydate": {
+                  "nullable": true,
+                  "description": "Grade hidden by date?",
+                  "type": "boolean"
+                },
+                "gradeneedsupdate": {
+                  "nullable": true,
+                  "description": "Grade needs update?",
+                  "type": "boolean"
+                },
+                "grademax": {
+                  "nullable": true,
+                  "description": "Grade max",
+                  "type": "number"
+                },
+                "status": {
+                  "nullable": true,
+                  "description": "Status",
+                  "type": "string"
                 }
               }
             }
+          },
+          "useridnumber": {
+            "nullable": true,
+            "description": "user idnumber",
+            "type": "string"
+          },
+          "courseid": {
+            "nullable": true,
+            "description": "course id",
+            "type": "integer"
+          },
+          "userid": {
+            "nullable": true,
+            "description": "user id",
+            "type": "integer"
+          },
+          "maxdepth": {
+            "nullable": true,
+            "description": "table max depth (needed for printing it)",
+            "type": "integer"
           }
         }
       }
     },
     "warnings": {
-      "type": "array",
-      "description": "list of warnings",
       "nullable": true,
+      "description": "list of warnings",
+      "type": "array",
       "items": {
         "type": "object",
         "title": "Warning",
         "properties": {
-          "item": {
-            "type": "string",
-            "description": "item",
-            "nullable": true
-          },
           "itemid": {
-            "type": "integer",
+            "nullable": true,
             "description": "item id",
-            "nullable": true
+            "type": "integer"
+          },
+          "item": {
+            "nullable": true,
+            "description": "item",
+            "type": "string"
           },
           "warningcode": {
-            "type": "string",
+            "nullable": true,
             "description": "the warning code can be used by the client app to implement specific behaviour",
-            "nullable": true
+            "type": "string"
           },
           "message": {
-            "type": "string",
+            "nullable": true,
             "description": "untranslated english message to explain the warning",
-            "nullable": true
+            "type": "string"
           }
         }
       }

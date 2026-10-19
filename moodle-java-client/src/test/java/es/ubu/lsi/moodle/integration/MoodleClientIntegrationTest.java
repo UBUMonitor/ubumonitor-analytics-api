@@ -11,6 +11,7 @@ import es.ubu.lsi.moodle.json.JacksonMapper;
 import es.ubu.lsi.moodle.model.login.token.request.LoginTokenRequestApi;
 import java.lang.reflect.Method;
 import java.net.URI;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -45,9 +46,20 @@ class MoodleClientIntegrationTest {
 
     return fixtures.stream()
         .map(
-            fixture ->
-                DynamicTest.dynamicTest(
-                    fixture.getParent().getFileName().toString(), () -> runFixture(fixture)));
+            fixture -> {
+              String fixtureName =
+                  fixtureDirectory.relativize(fixture).toString().replace('\\', '/');
+              return DynamicTest.dynamicTest(
+                  fixtureName,
+                  () -> {
+                    try {
+                      runFixture(fixture);
+                    } catch (Exception exception) {
+                      throw new AssertionError(
+                          "Integration fixture failed: " + fixtureName, exception);
+                    }
+                  });
+            });
   }
 
   private void runFixture(Path fixture) throws Exception {
@@ -114,13 +126,21 @@ class MoodleClientIntegrationTest {
             urlEqualTo(requestDefinition.path("path").asString()));
     JsonNode body = requestDefinition.path("body");
     assertFalse(body.isMissingNode(), "Every Moodle mock request must define a body");
-    mapping.withRequestBody(
-        body.isString()
-            ? equalTo(
-                body.asString()
-                    .replace(
-                        "${MOODLE_HOST}", URLEncoder.encode(moodleHost, StandardCharsets.UTF_8)))
-            : equalToJson(body.toString(), false, false));
+    if (body.isString()) {
+      String expectedBody =
+          body.asString()
+              .replace("${MOODLE_HOST}", URLEncoder.encode(moodleHost, StandardCharsets.UTF_8));
+      for (String parameter : expectedBody.split("&")) {
+        int separator = parameter.indexOf('=');
+        assertTrue(separator > 0, "Form body parameters must use key=value format");
+        String name = URLDecoder.decode(parameter.substring(0, separator), StandardCharsets.UTF_8);
+        String value =
+            URLDecoder.decode(parameter.substring(separator + 1), StandardCharsets.UTF_8);
+        mapping.withFormParam(name, equalTo(value));
+      }
+    } else {
+      mapping.withRequestBody(equalToJson(body.toString(), false, false));
+    }
 
     JsonNode response = mockDefinition.path("response");
     wireMock.stubFor(

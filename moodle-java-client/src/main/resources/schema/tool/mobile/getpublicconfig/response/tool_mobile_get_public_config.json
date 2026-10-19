@@ -1,32 +1,94 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "GetPublicConfigResponse",
   "description": "Response of the tool_mobile_get_public_config function. Returns a list of the site public settings, those not requiring authentication.",
+  "title": "GetPublicConfigResponse",
   "type": "object",
   "properties": {
-    "wwwroot": {
-      "type": "string",
-      "description": "Site URL."
+    "country": {
+      "nullable": true,
+      "description": "Default site country.",
+      "type": "string"
     },
-    "httpswwwroot": {
-      "type": "string",
-      "description": "Site https URL (if httpslogin is enabled)."
+    "langmenu": {
+      "nullable": true,
+      "description": "Whether the language menu should be displayed.",
+      "type": "integer"
     },
-    "sitename": {
-      "type": "string",
-      "description": "Site name."
+    "langlist": {
+      "nullable": true,
+      "description": "Languages on language menu.",
+      "type": "string"
     },
-    "guestlogin": {
-      "type": "integer",
-      "description": "Whether guest login is enabled."
+    "supportavailability": {
+      "nullable": true,
+      "description": "Determines who has access to contact site support.",
+      "type": "integer"
+    },
+    "enablewebservices": {
+      "description": "Whether Web Services are enabled.",
+      "type": "integer"
+    },
+    "enablemobilewebservice": {
+      "description": "Whether the Mobile service is enabled.",
+      "type": "integer"
+    },
+    "tool_mobile_qrcodetype": {
+      "nullable": true,
+      "description": "QR login configuration.",
+      "type": "integer"
+    },
+    "tool_mobile_iosappid": {
+      "nullable": true,
+      "description": "iOS app's unique identifier.",
+      "type": "string"
+    },
+    "locale": {
+      "nullable": true,
+      "description": "Sitewide locale.",
+      "type": "string"
+    },
+    "tool_mobile_setuplink": {
+      "nullable": true,
+      "description": "App download page.",
+      "type": "string"
+    },
+    "logourl": {
+      "nullable": true,
+      "description": "The site logo URL.",
+      "type": "string"
+    },
+    "identityproviders": {
+      "nullable": true,
+      "description": "Identity providers.",
+      "title": "identityproviders",
+      "type": "array",
+      "items": {
+        "title": "identityprovider",
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "The identity provider name.",
+            "type": "string"
+          },
+          "iconurl": {
+            "description": "The icon URL for the provider.",
+            "type": "string"
+          },
+          "url": {
+            "description": "The URL of the provider.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "iconurl",
+          "url"
+        ]
+      }
     },
     "rememberusername": {
+      "description": "Values: 0 for No, 1 for Yes, 2 for optional.",
       "type": "integer",
-      "enum": [
-        0,
-        1,
-        2
-      ],
       "javaEnums": [
         {
           "name": "DISABLED"
@@ -38,61 +100,47 @@
           "name": "OPTIONAL"
         }
       ],
-      "description": "Values: 0 for No, 1 for Yes, 2 for optional."
+      "enum": [
+        0,
+        1,
+        2
+      ]
     },
-    "authloginviaemail": {
-      "type": "integer",
-      "description": "Whether log in via email is enabled."
-    },
-    "registerauth": {
-      "type": "string",
-      "description": "Authentication method for user registration."
+    "autolang": {
+      "nullable": true,
+      "description": "Whether to detect default language from browser setting.",
+      "type": "integer"
     },
     "forgottenpasswordurl": {
-      "type": "string",
-      "description": "Forgotten password URL."
-    },
-    "authinstructions": {
-      "type": "string",
-      "description": "Authentication instructions."
+      "description": "Forgotten password URL.",
+      "type": "string"
     },
     "authnoneenabled": {
-      "type": "integer",
-      "description": "Whether auth none is enabled."
+      "description": "Whether auth none is enabled.",
+      "type": "integer"
     },
-    "enablewebservices": {
-      "type": "integer",
-      "description": "Whether Web Services are enabled."
+    "sitename": {
+      "description": "Site name.",
+      "type": "string"
     },
-    "enablemobilewebservice": {
-      "type": "integer",
-      "description": "Whether the Mobile service is enabled."
-    },
-    "maintenanceenabled": {
-      "type": "integer",
-      "description": "Whether site maintenance is enabled."
-    },
-    "maintenancemessage": {
-      "type": "string",
-      "description": "Maintenance message."
-    },
-    "logourl": {
-      "type": "string",
+    "agedigitalconsentverification": {
       "nullable": true,
-      "description": "The site logo URL."
+      "description": "Whether age digital consent verification is enabled.",
+      "type": "boolean"
     },
-    "compactlogourl": {
-      "type": "string",
+    "lang": {
       "nullable": true,
-      "description": "The site compact logo URL."
+      "description": "Default language for the site.",
+      "type": "string"
+    },
+    "tool_mobile_androidappid": {
+      "nullable": true,
+      "description": "Android app's unique identifier.",
+      "type": "string"
     },
     "typeoflogin": {
+      "description": "The type of login. 1 for app, 2 for browser, 3 for embedded.",
       "type": "integer",
-      "enum": [
-        1,
-        2,
-        3
-      ],
       "javaEnums": [
         {
           "name": "APP"
@@ -104,158 +152,74 @@
           "name": "EMBEDDED"
         }
       ],
-      "description": "The type of login. 1 for app, 2 for browser, 3 for embedded."
+      "enum": [
+        1,
+        2,
+        3
+      ]
+    },
+    "maintenancemessage": {
+      "description": "Maintenance message.",
+      "type": "string"
     },
     "launchurl": {
-      "type": "string",
       "nullable": true,
-      "description": "SSO login launch URL."
+      "description": "SSO login launch URL.",
+      "type": "string"
     },
-    "mobilecssurl": {
-      "type": "string",
-      "nullable": true,
-      "description": "Mobile custom CSS theme."
+    "wwwroot": {
+      "description": "Site URL.",
+      "type": "string"
+    },
+    "maintenanceenabled": {
+      "description": "Whether site maintenance is enabled.",
+      "type": "integer"
     },
     "tool_mobile_disabledfeatures": {
-      "type": "string",
       "nullable": true,
-      "description": "Disabled features in the app."
+      "description": "Disabled features in the app.",
+      "type": "string"
     },
-    "identityproviders": {
-      "title": "identityproviders",
-      "type": "array",
+    "mobilecssurl": {
       "nullable": true,
-      "description": "Identity providers.",
-      "items": {
-        "title": "identityprovider",
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "The identity provider name."
-          },
-          "iconurl": {
-            "type": "string",
-            "description": "The icon URL for the provider."
-          },
-          "url": {
-            "type": "string",
-            "description": "The URL of the provider."
-          }
-        },
-        "required": [
-          "name",
-          "iconurl",
-          "url"
-        ]
-      }
+      "description": "Mobile custom CSS theme.",
+      "type": "string"
     },
-    "country": {
-      "type": "string",
+    "compactlogourl": {
       "nullable": true,
-      "description": "Default site country."
+      "description": "The site compact logo URL.",
+      "type": "string"
     },
-    "agedigitalconsentverification": {
-      "type": "boolean",
-      "description": "Whether age digital consent verification is enabled.",
-      "nullable": true
-    },
-    "supportname": {
-      "type": "string",
-      "nullable": true,
-      "description": "Site support contact name (only if age verification is enabled)."
-    },
-    "supportemail": {
-      "type": "string",
-      "nullable": true,
-      "description": "Site support contact email (only if age verification is enabled)."
-    },
-    "supportpage": {
-      "type": "string",
-      "nullable": true,
-      "description": "Site support page link."
-    },
-    "supportavailability": {
-      "type": "integer",
-      "nullable": true,
-      "description": "Determines who has access to contact site support."
-    },
-    "autolang": {
-      "type": "integer",
-      "nullable": true,
-      "description": "Whether to detect default language from browser setting."
-    },
-    "lang": {
-      "type": "string",
-      "nullable": true,
-      "description": "Default language for the site."
-    },
-    "langmenu": {
-      "type": "integer",
-      "nullable": true,
-      "description": "Whether the language menu should be displayed."
-    },
-    "langlist": {
-      "type": "string",
-      "nullable": true,
-      "description": "Languages on language menu."
-    },
-    "locale": {
-      "type": "string",
-      "nullable": true,
-      "description": "Sitewide locale."
-    },
-    "tool_mobile_minimumversion": {
-      "type": "string",
-      "nullable": true,
-      "description": "Minimum required version to access."
-    },
-    "tool_mobile_iosappid": {
-      "type": "string",
-      "nullable": true,
-      "description": "iOS app's unique identifier."
-    },
-    "tool_mobile_androidappid": {
-      "type": "string",
-      "nullable": true,
-      "description": "Android app's unique identifier."
-    },
-    "tool_mobile_setuplink": {
-      "type": "string",
-      "nullable": true,
-      "description": "App download page."
-    },
-    "tool_mobile_qrcodetype": {
-      "type": "integer",
-      "nullable": true,
-      "description": "QR login configuration."
+    "authinstructions": {
+      "description": "Authentication instructions.",
+      "type": "string"
     },
     "warnings": {
-      "title": "warnings",
-      "type": "array",
       "nullable": true,
       "description": "List of warnings.",
+      "title": "warnings",
+      "type": "array",
       "items": {
         "title": "warning",
         "type": "object",
         "properties": {
-          "item": {
-            "type": "string",
-            "nullable": true,
-            "description": "Item."
-          },
           "itemid": {
-            "type": "integer",
             "nullable": true,
-            "description": "Item id."
+            "description": "Item id.",
+            "type": "integer"
+          },
+          "item": {
+            "nullable": true,
+            "description": "Item.",
+            "type": "string"
           },
           "warningcode": {
-            "type": "string",
-            "description": "The warning code can be used by the client app to implement specific behaviour."
+            "description": "The warning code can be used by the client app to implement specific behaviour.",
+            "type": "string"
           },
           "message": {
-            "type": "string",
-            "description": "Untranslated english message to explain the warning."
+            "description": "Untranslated english message to explain the warning.",
+            "type": "string"
           }
         },
         "required": [
@@ -264,9 +228,45 @@
         ]
       }
     },
+    "authloginviaemail": {
+      "description": "Whether log in via email is enabled.",
+      "type": "integer"
+    },
+    "supportname": {
+      "nullable": true,
+      "description": "Site support contact name (only if age verification is enabled).",
+      "type": "string"
+    },
+    "supportpage": {
+      "nullable": true,
+      "description": "Site support page link.",
+      "type": "string"
+    },
+    "httpswwwroot": {
+      "description": "Site https URL (if httpslogin is enabled).",
+      "type": "string"
+    },
+    "supportemail": {
+      "nullable": true,
+      "description": "Site support contact email (only if age verification is enabled).",
+      "type": "string"
+    },
     "showloginform": {
-      "type": "integer",
-      "description": "Display default login form."
+      "description": "Display default login form.",
+      "type": "integer"
+    },
+    "tool_mobile_minimumversion": {
+      "nullable": true,
+      "description": "Minimum required version to access.",
+      "type": "string"
+    },
+    "registerauth": {
+      "description": "Authentication method for user registration.",
+      "type": "string"
+    },
+    "guestlogin": {
+      "description": "Whether guest login is enabled.",
+      "type": "integer"
     }
   },
   "required": [

@@ -1,7 +1,4 @@
 spring:
-  devtools:
-    restart:
-      enabled: true
 
   h2:
     console:
@@ -9,6 +6,7 @@ spring:
       path: /h2-console
 
 springdoc:
+
   api-docs:
     enabled: true
     path:  /v3/api-docs
@@ -19,8 +17,6 @@ springdoc:
     url: /v3/api-docs
     tags-sorter: method
 
-jwt:
-  secret: 3f8d9c7a1b2e4f6d8a0c9e1b3d5f7a9c6e2d4b8f0a1c3e5d7f9b2a4c6e8d0f1
 
 logging:
   level:

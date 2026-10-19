@@ -15,35 +15,35 @@ public class ConcurrentHashMapSessionStoreAdapter implements SessionStorePort {
   private final ConcurrentHashMap<String, SessionData> sessionCache = new ConcurrentHashMap<>();
 
   /**
-   * Stores session data under its application JWT.
+   * Stores session data under its opaque application session token.
    *
-   * @param jwt application session token
+   * @param token application session token
    * @param sessionData data associated with the session
    */
   @Override
-  public void saveSession(String jwt, SessionData sessionData) {
-    sessionCache.put(jwt, sessionData);
+  public void saveSession(String token, SessionData sessionData) {
+    sessionCache.put(token, sessionData);
   }
 
   /**
-   * Looks up session data by application JWT.
+   * Looks up session data by application session token.
    *
-   * @param jwt application session token
+   * @param token application session token
    * @return stored session data, or {@code null} when absent
    */
   @Override
-  public SessionData getSession(String jwt) {
-    return sessionCache.get(jwt);
+  public SessionData getSession(String token) {
+    return sessionCache.get(token);
   }
 
   /**
    * Removes a session from the in-memory store.
    *
-   * @param jwt application session token
+   * @param token application session token
    */
   @Override
-  public void invalidateSession(String jwt) {
-    sessionCache.remove(jwt);
+  public void invalidateSession(String token) {
+    sessionCache.remove(token);
   }
 
   /**

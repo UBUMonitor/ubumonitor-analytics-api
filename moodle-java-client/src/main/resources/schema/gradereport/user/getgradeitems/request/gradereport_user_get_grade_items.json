@@ -1,38 +1,38 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "GetGradeItemsRequest",
-  "description": "Returns the complete list of grade items for users in a course",
-  "type": "object",
   "extends": {
     "$ref": "../../../../common/moodle_webservice_request.json"
   },
+  "description": "Returns the complete list of grade items for users in a course",
+  "title": "GetGradeItemsRequest",
+  "type": "object",
   "properties": {
-    "wsfunction": {
-      "type": "string",
-      "default": "gradereport_user_get_grade_items"
-    },
     "args": {
       "type": "object",
       "title": "GetGradeItemsArgs",
       "properties": {
+        "groupid": {
+          "nullable": true,
+          "description": "Get users from this group only",
+          "type": "integer"
+        },
         "courseid": {
-          "type": "integer",
-          "description": "Course Id"
+          "description": "Course Id",
+          "type": "integer"
         },
         "userid": {
-          "type": "integer",
+          "nullable": true,
           "description": "Return grades only for this user",
-          "nullable": true
-        },
-        "groupid": {
-          "type": "integer",
-          "description": "Get users from this group only",
-          "nullable": true
+          "type": "integer"
         }
       },
       "required": [
         "userid"
       ]
+    },
+    "wsfunction": {
+      "default": "gradereport_user_get_grade_items",
+      "type": "string"
     }
   }
 }

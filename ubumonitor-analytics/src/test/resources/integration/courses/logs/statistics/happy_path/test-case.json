@@ -1,0 +1,37 @@
+{
+  "databaseSetup": [
+    "INSERT INTO USERS (ID, FULL_NAME, FIRST_NAME, LAST_NAME, EMAIL) VALUES (13, 'Jeffrey Sanders', 'Jeffrey', 'Sanders', 'jeffrey@example.com')",
+    "INSERT INTO COURSES (ID, FULL_NAME, SHORT_NAME) VALUES (2, 'Algebra', 'ALG2')",
+    "INSERT INTO LOGS (LOGGED_AT, USER_ID, COURSE_ID, COMPONENT_ID, EVENT_ID, MODULE_ID, ORIGIN_ID, IP_ADDRESS) VALUES (TIMESTAMP '2026-01-01 12:00:00', 13, 2, 29, 55, NULL, 1, '192.0.2.13')"
+  ],
+  "request": {
+    "method": "POST",
+    "path": "/api/courses/2/logs/statistics",
+    "headers": {
+      "Authorization": "******"
+    },
+    "body": {
+      "groupBy": [
+        "COMPONENT_ID"
+      ],
+      "fields": [
+        "COMPONENT_NAME"
+      ]
+    }
+  },
+  "expectedResponse": {
+    "status": 200,
+    "body": {
+      "rows": [
+        {
+          "component": {
+            "id": 29,
+            "name": "Assignment"
+          },
+          "value": 1
+        }
+      ]
+    }
+  },
+  "authFixture": "classpath:/integration/shared/teacher-token-auth.json"
+}

@@ -6,49 +6,19 @@
     "title": "GetUsersCoursesResponse",
     "type": "object",
     "properties": {
-      "id": {
-        "type": "integer",
-        "description": "id of course"
-      },
-      "shortname": {
-        "type": "string",
-        "description": "short name of course"
-      },
-      "fullname": {
-        "type": "string",
-        "description": "long name of course"
-      },
-      "displayname": {
-        "type": "string",
-        "description": "course display name for lists",
-        "nullable": true
-      },
-      "enrolledusercount": {
-        "type": "integer",
-        "description": "Number of enrolled users in this course",
-        "nullable": true
+      "hidden": {
+        "nullable": true,
+        "description": "If the user hide the course from the dashboard",
+        "type": "boolean"
       },
       "idnumber": {
-        "type": "string",
-        "description": "id number of course"
-      },
-      "visible": {
-        "type": "integer",
-        "description": "1 means visible, 0 means not yet visible course"
-      },
-      "summary": {
-        "type": "string",
-        "description": "summary",
-        "nullable": true
+        "description": "id number of course",
+        "type": "string"
       },
       "summaryformat": {
+        "nullable": true,
+        "description": "summary format (1 = HTML, 0 = MOODLE, 2 = PLAIN, 4 = MARKDOWN)",
         "type": "integer",
-        "enum": [
-          0,
-          1,
-          2,
-          4
-        ],
         "javaEnums": [
           {
             "name": "MOODLE"
@@ -63,19 +33,103 @@
             "name": "MARKDOWN"
           }
         ],
-        "description": "summary format (1 = HTML, 0 = MOODLE, 2 = PLAIN, 4 = MARKDOWN)",
-        "nullable": true
+        "enum": [
+          0,
+          1,
+          2,
+          4
+        ]
+      },
+      "startdate": {
+        "nullable": true,
+        "description": "Timestamp when the course start",
+        "type": "integer"
+      },
+      "showgrades": {
+        "nullable": true,
+        "description": "true if grades are shown, otherwise false",
+        "type": "boolean"
+      },
+      "enrolledusercount": {
+        "nullable": true,
+        "description": "Number of enrolled users in this course",
+        "type": "integer"
+      },
+      "completionhascriteria": {
+        "nullable": true,
+        "description": "If completion criteria is set",
+        "type": "boolean"
+      },
+      "id": {
+        "description": "id of course",
+        "type": "integer"
+      },
+      "lang": {
+        "nullable": true,
+        "description": "forced course language",
+        "type": "string"
+      },
+      "summary": {
+        "nullable": true,
+        "description": "summary",
+        "type": "string"
+      },
+      "overviewfiles": {
+        "nullable": true,
+        "description": "Overview files attached to this course",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "isexternalfile": {
+              "nullable": true,
+              "type": "integer"
+            },
+            "filename": {
+              "nullable": true,
+              "type": "string"
+            },
+            "filepath": {
+              "nullable": true,
+              "type": "string"
+            },
+            "timemodified": {
+              "nullable": true,
+              "type": "integer"
+            },
+            "icon": {
+              "nullable": true,
+              "type": "string"
+            },
+            "fileurl": {
+              "nullable": true,
+              "format": "uri",
+              "type": "string"
+            },
+            "mimetype": {
+              "nullable": true,
+              "type": "string"
+            },
+            "filesize": {
+              "nullable": true,
+              "type": "integer"
+            },
+            "repositorytype": {
+              "nullable": true,
+              "type": "string"
+            }
+          },
+          "required": []
+        }
+      },
+      "visible": {
+        "description": "1 means visible, 0 means not yet visible course",
+        "type": "integer"
       },
       "format": {
-        "type": "string",
+        "nullable": true,
         "description": "course format: weeks, topics, social, site",
-        "enum": [
-          "weeks",
-          "topics",
-          "social",
-          "site",
-          "singleactivity"
-        ],
+        "type": "string",
         "javaEnums": [
           {
             "name": "WEEKS"
@@ -93,144 +147,90 @@
             "name": "SINGLE_ACTIVITY"
           }
         ],
-        "nullable": true
-      },
-      "courseimage": {
-        "type": "string",
-        "format": "uri",
-        "description": "The course image URL",
-        "nullable": true
-      },
-      "showgrades": {
-        "type": "boolean",
-        "description": "true if grades are shown, otherwise false",
-        "nullable": true
-      },
-      "lang": {
-        "type": "string",
-        "description": "forced course language",
-        "nullable": true
-      },
-      "enablecompletion": {
-        "type": "boolean",
-        "description": "true if completion is enabled, otherwise false",
-        "nullable": true
-      },
-      "completionhascriteria": {
-        "type": "boolean",
-        "description": "If completion criteria is set",
-        "nullable": true
-      },
-      "completionusertracked": {
-        "type": "boolean",
-        "description": "If the user is completion tracked",
-        "nullable": true
-      },
-      "category": {
-        "type": "integer",
-        "description": "course category id",
-        "nullable": true
-      },
-      "progress": {
-        "type": "number",
-        "description": "Progress percentage",
-        "nullable": true
-      },
-      "completed": {
-        "type": "boolean",
-        "description": "Whether the course is completed",
-        "nullable": true
-      },
-      "startdate": {
-        "type": "integer",
-        "description": "Timestamp when the course start",
-        "nullable": true
-      },
-      "enddate": {
-        "type": "integer",
-        "description": "Timestamp when the course end",
-        "nullable": true
-      },
-      "marker": {
-        "type": "integer",
-        "description": "Course section marker",
-        "nullable": true
-      },
-      "lastaccess": {
-        "type": "integer",
-        "description": "Last access to the course (timestamp)",
-        "nullable": true
-      },
-      "isfavourite": {
-        "type": "boolean",
-        "description": "If the user marked this course a favourite",
-        "nullable": true
-      },
-      "hidden": {
-        "type": "boolean",
-        "description": "If the user hide the course from the dashboard",
-        "nullable": true
-      },
-      "overviewfiles": {
-        "type": "array",
-        "description": "Overview files attached to this course",
-        "nullable": true,
-        "items": {
-          "type": "object",
-          "properties": {
-            "filename": {
-              "type": "string",
-              "nullable": true
-            },
-            "filepath": {
-              "type": "string",
-              "nullable": true
-            },
-            "filesize": {
-              "type": "integer",
-              "nullable": true
-            },
-            "fileurl": {
-              "type": "string",
-              "format": "uri",
-              "nullable": true
-            },
-            "timemodified": {
-              "type": "integer",
-              "nullable": true
-            },
-            "mimetype": {
-              "type": "string",
-              "nullable": true
-            },
-            "isexternalfile": {
-              "type": "integer",
-              "nullable": true
-            },
-            "repositorytype": {
-              "type": "string",
-              "nullable": true
-            },
-            "icon": {
-              "type": "string",
-              "nullable": true
-            }
-          },
-          "required": []
-        }
-      },
-      "showactivitydates": {
-        "type": "boolean",
-        "description": "Whether the activity dates are shown or not"
+        "enum": [
+          "weeks",
+          "topics",
+          "social",
+          "site",
+          "singleactivity"
+        ]
       },
       "showcompletionconditions": {
-        "type": "boolean",
-        "description": "Whether the activity completion conditions are shown or not"
+        "description": "Whether the activity completion conditions are shown or not",
+        "type": "boolean"
+      },
+      "completed": {
+        "nullable": true,
+        "description": "Whether the course is completed",
+        "type": "boolean"
+      },
+      "shortname": {
+        "description": "short name of course",
+        "type": "string"
+      },
+      "enablecompletion": {
+        "nullable": true,
+        "description": "true if completion is enabled, otherwise false",
+        "type": "boolean"
+      },
+      "isfavourite": {
+        "nullable": true,
+        "description": "If the user marked this course a favourite",
+        "type": "boolean"
+      },
+      "lastaccess": {
+        "nullable": true,
+        "description": "Last access to the course (timestamp)",
+        "type": "integer"
+      },
+      "showactivitydates": {
+        "description": "Whether the activity dates are shown or not",
+        "type": "boolean"
+      },
+      "enddate": {
+        "nullable": true,
+        "description": "Timestamp when the course end",
+        "type": "integer"
+      },
+      "courseimage": {
+        "nullable": true,
+        "format": "uri",
+        "description": "The course image URL",
+        "type": "string"
+      },
+      "marker": {
+        "nullable": true,
+        "description": "Course section marker",
+        "type": "integer"
+      },
+      "displayname": {
+        "nullable": true,
+        "description": "course display name for lists",
+        "type": "string"
       },
       "timemodified": {
-        "type": "integer",
+        "nullable": true,
         "description": "Last time course settings were updated (timestamp)",
-        "nullable": true
+        "type": "integer"
+      },
+      "completionusertracked": {
+        "nullable": true,
+        "description": "If the user is completion tracked",
+        "type": "boolean"
+      },
+      "progress": {
+        "nullable": true,
+        "description": "Progress percentage",
+        "type": "number"
+      },
+      "fullname": {
+        "description": "long name of course",
+        "type": "string"
+      },
+      "category": {
+        "nullable": true,
+        "description": "course category id",
+        "type": "integer"
       }
     },
     "required": [

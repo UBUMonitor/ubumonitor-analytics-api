@@ -3,6 +3,8 @@ package es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.rest.exception;
 import es.ubu.lsi.moodle.exception.MoodleUnauthorizedException;
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.ErrorResponseDto;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.exception.*;
+import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.DatabaseCreationException;
+import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.InvalidDatabaseEncryptionKeyException;
 import java.util.StringJoiner;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.Ordered;
@@ -31,14 +33,8 @@ public class GlobalExceptionHandler {
   private final ErrorResponseFactory factory;
 
   /** Handles application bad-request errors. */
-  @ExceptionHandler(BadRequestException.class)
+  @ExceptionHandler({BadRequestException.class, HttpMessageNotReadableException.class})
   public ResponseEntity<ErrorResponseDto> badRequest(BadRequestException ex) {
-    return response(HttpStatus.BAD_REQUEST, "BAD_REQUEST", ex.getMessage(), ex);
-  }
-
-  /** Handles malformed request bodies. */
-  @ExceptionHandler(HttpMessageNotReadableException.class)
-  public ResponseEntity<ErrorResponseDto> notReadable(HttpMessageNotReadableException ex) {
     return response(HttpStatus.BAD_REQUEST, "BAD_REQUEST", ex.getMessage(), ex);
   }
 
@@ -48,10 +44,10 @@ public class GlobalExceptionHandler {
     return response(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED", ex.getMessage(), ex);
   }
 
-  /** Handles authentication failures from the Moodle client. */
+  /** Handles authentication failures returned by Moodle. */
   @ExceptionHandler(MoodleUnauthorizedException.class)
   public ResponseEntity<ErrorResponseDto> moodleUnauthorized(MoodleUnauthorizedException ex) {
-    return response(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED", ex.getMessage(), ex);
+    return response(HttpStatus.UNAUTHORIZED, "MOODLE_UNAUTHORIZED", ex.getMessage(), ex);
   }
 
   /** Handles application not-found errors. */
@@ -64,6 +60,23 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(ConflictException.class)
   public ResponseEntity<ErrorResponseDto> conflict(ConflictException ex) {
     return response(HttpStatus.CONFLICT, "CONFLICT", ex.getMessage(), ex);
+  }
+
+  /** Handles tenant database creation failures. */
+  @ExceptionHandler(DatabaseCreationException.class)
+  public ResponseEntity<ErrorResponseDto> databaseCreation(DatabaseCreationException ex) {
+    return response(HttpStatus.INTERNAL_SERVER_ERROR, "DATABASE_ERROR", ex.getMessage(), ex);
+  }
+
+  /** Handles tenant database passwords that cannot open an encrypted database. */
+  @ExceptionHandler(InvalidDatabaseEncryptionKeyException.class)
+  public ResponseEntity<ErrorResponseDto> invalidDatabaseEncryptionKey(
+      InvalidDatabaseEncryptionKeyException ex) {
+    return response(
+        HttpStatus.UNAUTHORIZED,
+        "INVALID_DATABASE_ENCRYPTION_KEY",
+        "The database password is incorrect.",
+        ex);
   }
 
   /** Handles bean-validation failures and collects field messages. */

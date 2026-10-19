@@ -1,7 +1,10 @@
 package es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security.config;
 
+import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.SessionStorePort;
+import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security.ApiAuthenticationEntryPoint;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security.CurrentSessionClearFilter;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security.SessionAwareJwtAuthenticationConverter;
+import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
+import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.SessionAuthenticationFilter;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -24,8 +27,10 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @RequiredArgsConstructor
 public class DevSecurityConfig {
 
-  private final SessionAwareJwtAuthenticationConverter sessionConverter;
+  private final SessionStorePort sessionStore;
+  private final CurrentSessionContext currentSessionContext;
   private final CurrentSessionClearFilter currentSessionClearFilter;
+  private final ApiAuthenticationEntryPoint apiAuthenticationEntryPoint;
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -45,15 +50,13 @@ public class DevSecurityConfig {
                     .authenticated()
                     .anyRequest()
                     .permitAll())
-
+        .exceptionHandling(
+            exceptions -> exceptions.authenticationEntryPoint(apiAuthenticationEntryPoint))
         // Keep API authentication stateless.
         .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
-        // OAuth2 + JWT
-        .oauth2ResourceServer(
-            oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(sessionConverter)))
-
-        // filtros custom
+        .addFilterBefore(
+            new SessionAuthenticationFilter(sessionStore, currentSessionContext),
+            UsernamePasswordAuthenticationFilter.class)
         .addFilterAfter(currentSessionClearFilter, UsernamePasswordAuthenticationFilter.class);
 
     return http.build();

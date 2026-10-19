@@ -53,10 +53,13 @@ LogEvent:
   type: object
   required:
     - id
+    - code
     - name
   properties:
     id:
       type: integer
+    code:
+      type: string
     name:
       type: string
 
@@ -64,9 +67,12 @@ LogComponent:
   type: object
   required:
     - id
+    - code
     - name
   properties:
     id:
       type: integer
+    code:
+      type: string
     name:
       type: string

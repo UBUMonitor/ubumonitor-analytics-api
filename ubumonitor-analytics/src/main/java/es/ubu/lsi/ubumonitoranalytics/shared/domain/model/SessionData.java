@@ -13,7 +13,7 @@ import org.springframework.web.client.RestClient;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SessionData {
-  private String jwt;
+  private String token;
   private String username;
   private String password;
   private URI host;

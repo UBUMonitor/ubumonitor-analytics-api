@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.UUID;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -56,6 +57,28 @@ class MoodleAnalyticsIntegrationTest {
   @DynamicPropertySource
   static void configureTestDatabase(DynamicPropertyRegistry registry) {
     registry.add("moodle.db.base-path", () -> TEST_DATABASE_PATH);
+  }
+
+  @Test
+  void unauthenticatedProtectedRequestReturnsStandardErrorResponse() throws IOException {
+    ResponseEntity<String> response =
+        RestClient.create("http://localhost:" + port)
+            .get()
+            .uri("/api/users/images/document?userIds=13,14")
+            .retrieve()
+            .onStatus(HttpStatusCode::isError, (_, _) -> {})
+            .toEntity(String.class);
+
+    assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    JsonNode body = OBJECT_MAPPER.readTree(response.getBody());
+    assertEquals("UNAUTHORIZED", body.path("code").asText());
+    assertEquals(
+        "Authentication is required to access this resource.", body.path("message").asText());
+    assertTrue(body.hasNonNull("timestamp"));
+    assertTrue(body.hasNonNull("traceId"));
+    assertTrue(body.path("errors").isArray());
+    assertFalse(body.has("status"));
+    assertFalse(body.has("path"));
   }
 
   @TestFactory
