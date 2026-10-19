@@ -53,7 +53,7 @@ public class LogPersistenceAdapter implements LogPersistencePort {
                 LOGS_EVENTS.ID,
                 LOGS_EVENTS.CODE,
                 LOGS_EVENTS.NAME,
-                LOGS_COMPONENTS_EVENTS.GROK_PATTERN_EN)
+                LOGS_COMPONENTS_EVENTS.PATTERN)
             .from(LOGS_COMPONENTS)
             .leftJoin(LOGS_COMPONENTS_EVENTS)
             .on(LOGS_COMPONENTS.ID.eq(LOGS_COMPONENTS_EVENTS.COMPONENT_ID))
@@ -76,7 +76,7 @@ public class LogPersistenceAdapter implements LogPersistencePort {
               eventId,
               record.get(LOGS_EVENTS.CODE),
               record.get(LOGS_EVENTS.NAME),
-              record.get(LOGS_COMPONENTS_EVENTS.GROK_PATTERN_EN)));
+              record.get(LOGS_COMPONENTS_EVENTS.PATTERN)));
     }
 
     return moodleRulesConfig.compileRules(rules);
@@ -99,7 +99,7 @@ public class LogPersistenceAdapter implements LogPersistencePort {
         dsl.batch(
             dsl.insertInto(
                     LOGS,
-                    LOGS.TIMESTAMP,
+                    LOGS.LOGGED_AT,
                     LOGS.USER_ID,
                     LOGS.COURSE_ID,
                     LOGS.COMPONENT_ID,
@@ -126,7 +126,7 @@ public class LogPersistenceAdapter implements LogPersistencePort {
   @Override
   public LocalDateTime getLastDateTime(Integer courseId) {
     return jooq.dsl()
-        .select(DSL.max(LOGS.TIMESTAMP))
+        .select(DSL.max(LOGS.LOGGED_AT))
         .from(LOGS)
         .where(LOGS.COURSE_ID.eq(courseId))
         .fetchOneInto(LocalDateTime.class);

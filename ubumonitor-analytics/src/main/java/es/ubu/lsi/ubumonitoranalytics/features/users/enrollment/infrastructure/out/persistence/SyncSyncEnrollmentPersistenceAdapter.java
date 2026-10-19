@@ -12,7 +12,8 @@ import es.ubu.lsi.ubumonitoranalytics.features.users.enrollment.infrastructure.o
 import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.CoursesRecord;
 import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.UsersCoursesRecord;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.jooq.impl.DSL;
@@ -28,7 +29,7 @@ public class SyncSyncEnrollmentPersistenceAdapter implements SyncEnrollmentPersi
 
   @Override
   public void sync(UserEnrolledCourses userEnrolledCourses) {
-    LocalDateTime now = LocalDateTime.now();
+    OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
     upsertUser(userEnrolledCourses.getUserId());
     deactivateActualUsersCourses(userEnrolledCourses.getUserId());
 
@@ -45,13 +46,13 @@ public class SyncSyncEnrollmentPersistenceAdapter implements SyncEnrollmentPersi
     jooq.dsl()
         .update(USERS_COURSES)
         .set(USERS_COURSES.ACTIVE, false)
-        .set(USERS_COURSES.UPDATED_AT, DSL.currentLocalDateTime())
+        .set(USERS_COURSES.UPDATED_AT, DSL.currentOffsetDateTime())
         .where(USERS_COURSES.USER_ID.eq(userId))
         .and(USERS_COURSES.ACTIVE.eq(true))
         .execute();
   }
 
-  private void upsertCourses(UserEnrolledCourses userEnrolledCourses, LocalDateTime now) {
+  private void upsertCourses(UserEnrolledCourses userEnrolledCourses, OffsetDateTime now) {
     List<CoursesRecord> records =
         userEnrolledCourses.getEnrolledCourses().stream()
             .map(Enrollment::getCourse)
@@ -61,14 +62,14 @@ public class SyncSyncEnrollmentPersistenceAdapter implements SyncEnrollmentPersi
     jooq.dsl().batchMerge(records).execute();
   }
 
-  private CoursesRecord toCoursesRecord(Course course, LocalDateTime now) {
+  private CoursesRecord toCoursesRecord(Course course, OffsetDateTime now) {
     CoursesRecord r = jooq.dsl().newRecord(COURSES);
     mapper.toRecord(course, r);
     r.setUpdatedAt(now);
     return r;
   }
 
-  private void upsertUserCourses(UserEnrolledCourses userEnrolledCourses, LocalDateTime now) {
+  private void upsertUserCourses(UserEnrolledCourses userEnrolledCourses, OffsetDateTime now) {
     List<UsersCoursesRecord> records =
         userEnrolledCourses.getEnrolledCourses().stream()
             .map(e -> toUserCoursesRecord(userEnrolledCourses.getUserId(), e, now))
@@ -78,7 +79,7 @@ public class SyncSyncEnrollmentPersistenceAdapter implements SyncEnrollmentPersi
   }
 
   private UsersCoursesRecord toUserCoursesRecord(
-      Integer userId, Enrollment enrollment, LocalDateTime now) {
+      Integer userId, Enrollment enrollment, OffsetDateTime now) {
     UsersCoursesRecord r = jooq.dsl().newRecord(USERS_COURSES);
     mapper.toRecord(enrollment, r);
     r.setCourseId(enrollment.getCourse().getId());

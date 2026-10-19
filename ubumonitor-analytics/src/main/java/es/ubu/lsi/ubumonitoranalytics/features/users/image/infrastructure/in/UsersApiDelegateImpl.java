@@ -5,15 +5,14 @@ import es.ubu.lsi.ubumonitoranalytics.features.users.image.appication.port.in.Ge
 import es.ubu.lsi.ubumonitoranalytics.features.users.image.appication.port.in.GetUserProfileImageUseCase;
 import es.ubu.lsi.ubumonitoranalytics.features.users.image.domain.EnrollmentImagesDocumentCommand;
 import es.ubu.lsi.ubumonitoranalytics.features.users.image.domain.model.UserImage;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
-
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 /** Implements the generated REST operation for user profile images. */
 @Component
@@ -49,7 +48,11 @@ public class UsersApiDelegateImpl implements UsersApiDelegate {
 
   @Override
   public ResponseEntity<Resource> getUsersEnrollmentImagesDocument(
-      List<Integer> userIds, String defaultImagePath, Boolean useDefaultPhoto, String headerText, String fileName) {
+      List<Integer> userIds,
+      String defaultImagePath,
+      Boolean useDefaultPhoto,
+      String headerText,
+      String fileName) {
 
     EnrollmentImagesDocumentCommand command =
         enrollmentImagesDocumentCommandMapper.toDomain(
@@ -59,9 +62,7 @@ public class UsersApiDelegateImpl implements UsersApiDelegate {
 
     HttpHeaders headers = new HttpHeaders();
     headers.setContentDisposition(
-        ContentDisposition.attachment()
-            .filename(fileName, StandardCharsets.UTF_8)
-            .build());
+        ContentDisposition.attachment().filename(fileName, StandardCharsets.UTF_8).build());
 
     return ResponseEntity.ok().headers(headers).body(new ByteArrayResource(docx));
   }

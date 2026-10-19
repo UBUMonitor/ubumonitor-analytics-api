@@ -10,7 +10,6 @@ import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Users.USERS;
 
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.port.out.FetchLogPersistencePort;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.list.*;
-import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.list.*;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
 import java.util.*;
 import lombok.RequiredArgsConstructor;
@@ -140,10 +139,10 @@ public class FetchSavedLogPersistenceAdapter implements FetchLogPersistencePort 
 
     if (timeRange != null) {
       if (timeRange.getFrom() != null) {
-        conditions.add(LOGS.TIMESTAMP.greaterOrEqual(timeRange.getFrom()));
+        conditions.add(LOGS.LOGGED_AT.greaterOrEqual(timeRange.getFrom()));
       }
       if (timeRange.getTo() != null) {
-        conditions.add(LOGS.TIMESTAMP.lessOrEqual(timeRange.getTo()));
+        conditions.add(LOGS.LOGGED_AT.lessOrEqual(timeRange.getTo()));
       }
     }
 
@@ -184,7 +183,7 @@ public class FetchSavedLogPersistenceAdapter implements FetchLogPersistencePort 
 
   private List<SortField<?>> buildSortFields(List<CourseLogsInfoRequestSortItem> sortList) {
     if (sortList == null || sortList.isEmpty()) {
-      return List.of(LOGS.TIMESTAMP.asc());
+      return List.of(LOGS.LOGGED_AT.asc());
     }
 
     return sortList.stream()
@@ -232,7 +231,7 @@ public class FetchSavedLogPersistenceAdapter implements FetchLogPersistencePort 
   private Field<?> fieldFor(LogViewColumn column) {
     return switch (column) {
       case ID -> LOGS.ID;
-      case TIMESTAMP -> LOGS.TIMESTAMP;
+      case TIMESTAMP -> LOGS.LOGGED_AT.as("TIMESTAMP");
       case COURSE_ID -> LOGS.COURSE_ID;
       case USER_ID -> LOGS.USER_ID;
       case MODULE_ID -> LOGS.MODULE_ID;

@@ -7,7 +7,7 @@ import lombok.Data;
 public class FetchLogLine {
 
   private Integer id; // ID
-  private LocalDateTime timestamp; // TIMESTAMP
+  private LocalDateTime timestamp; // LOGGED_AT
 
   private Integer courseId; // COURSE_ID
 

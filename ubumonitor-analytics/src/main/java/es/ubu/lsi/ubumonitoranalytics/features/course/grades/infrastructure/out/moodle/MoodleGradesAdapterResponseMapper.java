@@ -24,12 +24,9 @@ public interface MoodleGradesAdapterResponseMapper {
   @Mapping(target = "courseId", source = "courseId")
   @Mapping(target = "gradeItems", source = "getGradeItemsResponseApi")
   CourseGrade toCourseGradeItems(
-      Integer courseId,
-      GetGradeItemsResponseApi getGradeItemsResponseApi,
-      @Context Integer actualUserId);
+      Integer courseId, GetGradeItemsResponseApi getGradeItemsResponseApi);
 
-  default List<GradeItem> toGradeItems(
-      GetGradeItemsResponseApi getGradeItemsResponseApi, @Context Integer actualUserId) {
+  default List<GradeItem> toGradeItems(GetGradeItemsResponseApi getGradeItemsResponseApi) {
     if (getGradeItemsResponseApi == null) {
       return List.of();
     }
@@ -38,15 +35,15 @@ public interface MoodleGradesAdapterResponseMapper {
       return List.of();
     }
 
-    return userGrades.stream()
-        .filter(userGrade -> Objects.equals(userGrade.getUserid(), actualUserId))
-        .findFirst()
-        .map(
-            userGrade ->
-                userGrade.getGradeitems().stream()
-                    .map(gradeItem -> toGradeItem(gradeItem, userGrade.getGradeitems()))
-                    .toList())
-        .orElseGet(List::of);
+    for (UserGradeApi userGrade : userGrades) {
+      if (userGrade == null || userGrade.getGradeitems() == null) {
+        continue;
+      }
+      return userGrade.getGradeitems().stream()
+          .map(gradeItem -> toGradeItem(gradeItem, userGrade.getGradeitems()))
+          .toList();
+    }
+    return List.of();
   }
 
   @Mapping(target = "itemInstance", source = "iteminstance")

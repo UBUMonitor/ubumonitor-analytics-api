@@ -18,6 +18,10 @@ CourseGradeItemsResponse:
           parentId:
             type: integer
             description: Unique identifier for the parent grade item, if applicable
+          name:
+            type: string
+            nullable: true
+            description: Name of the grade item
           gradeMin:
             type: number
             format: double

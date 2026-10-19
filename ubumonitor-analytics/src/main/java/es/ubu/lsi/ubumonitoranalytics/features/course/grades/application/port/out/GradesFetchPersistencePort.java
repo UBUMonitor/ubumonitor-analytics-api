@@ -1,8 +1,12 @@
 package es.ubu.lsi.ubumonitoranalytics.features.course.grades.application.port.out;
 
-import es.ubu.lsi.ubumonitoranalytics.features.course.grades.domain.model.CourseGrade;
+import es.ubu.lsi.ubumonitoranalytics.features.course.grades.domain.model.GradeItem;
+import es.ubu.lsi.ubumonitoranalytics.features.course.grades.domain.model.UserGrade;
+import java.util.List;
 
 public interface GradesFetchPersistencePort {
 
-    CourseGrade fetchCourseGradeItemsPersistence(Integer courseId);
+  List<GradeItem> fetchCourseGradeItemsPersistence(Integer courseId);
+
+  List<UserGrade> fetchCourseUserGradesPersistence(Integer courseId);
 }

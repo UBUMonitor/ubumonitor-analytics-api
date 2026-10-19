@@ -1,10 +1,14 @@
 package es.ubu.lsi.ubumonitoranalytics.features.course.grades.application.port.in;
 
-import es.ubu.lsi.ubumonitoranalytics.features.course.grades.domain.model.CourseGrade;
+import es.ubu.lsi.ubumonitoranalytics.features.course.grades.domain.model.GradeItem;
+import es.ubu.lsi.ubumonitoranalytics.features.course.grades.domain.model.UserGrade;
+import java.util.List;
 
 public interface GradesUseCase {
 
-  CourseGrade sync(Integer courseId);
+  List<GradeItem> sync(Integer courseId);
 
-  CourseGrade get(Integer courseId);
+  List<GradeItem> getGradeItems(Integer courseId);
+
+  List<UserGrade> getUserGrades(Integer courseId);
 }

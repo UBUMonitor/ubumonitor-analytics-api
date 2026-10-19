@@ -31,8 +31,7 @@ public class MoodleGradesApiAdapter implements GradesApiPort {
         client.gradeReportUser().getGradeItems(getGradeItemsRequestApi);
 
     CourseGrade courseGrade =
-        moodleGradesAdapterResponseMapper.toCourseGradeItems(
-            courseId, getGradeItemsResponseApi, actualUserId);
+        moodleGradesAdapterResponseMapper.toCourseGradeItems(courseId, getGradeItemsResponseApi);
 
     fillCategoryParentIds(courseGrade, actualUserId);
 

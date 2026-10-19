@@ -26,7 +26,8 @@ import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.UsersImagesRecord;
 import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.UsersRecord;
 import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.UsersRolesRecord;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -41,7 +42,7 @@ public class UserCoursePersistenceAdapter implements UserCoursePersistencePort {
 
   @Override
   public void sync(UsersResponse usersResponse) {
-    LocalDateTime now = LocalDateTime.now();
+    OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
 
     upsertUsers(usersResponse, now);
     upsertCourses(usersResponse, now);
@@ -58,7 +59,7 @@ public class UserCoursePersistenceAdapter implements UserCoursePersistencePort {
     upsertUsersRoles(usersResponse, now);
   }
 
-  private void upsertUsers(UsersResponse usersResponse, LocalDateTime now) {
+  private void upsertUsers(UsersResponse usersResponse, OffsetDateTime now) {
     List<UsersRecord> records =
         usersResponse.getUsers().stream().map(u -> toUsersRecord(u, now)).toList();
 
@@ -70,7 +71,7 @@ public class UserCoursePersistenceAdapter implements UserCoursePersistencePort {
     jooq.dsl().batchMerge(imagesRecords).execute();
   }
 
-  private UsersImagesRecord toUsersImagesRecord(User user, LocalDateTime now) {
+  private UsersImagesRecord toUsersImagesRecord(User user, OffsetDateTime now) {
     UsersImagesRecord r = jooq.dsl().newRecord(USERS_IMAGES);
 
     mapper.toUsersImagesRecord(user.getUserPicture(), r);
@@ -79,14 +80,14 @@ public class UserCoursePersistenceAdapter implements UserCoursePersistencePort {
     return r;
   }
 
-  public UsersRecord toUsersRecord(User user, LocalDateTime now) {
+  public UsersRecord toUsersRecord(User user, OffsetDateTime now) {
     UsersRecord r = jooq.dsl().newRecord(USERS);
     mapper.toUsersRecord(user, r);
     r.setUpdatedAt(now);
     return r;
   }
 
-  private void upsertCourses(UsersResponse usersResponse, LocalDateTime now) {
+  private void upsertCourses(UsersResponse usersResponse, OffsetDateTime now) {
     List<CoursesRecord> records =
         usersResponse.getUsers().stream()
             .map(User::getCourses)
@@ -98,14 +99,14 @@ public class UserCoursePersistenceAdapter implements UserCoursePersistencePort {
     jooq.dsl().batchMerge(records).execute();
   }
 
-  private CoursesRecord toCoursesRecord(Course course, LocalDateTime now) {
+  private CoursesRecord toCoursesRecord(Course course, OffsetDateTime now) {
     CoursesRecord r = jooq.dsl().newRecord(COURSES);
     mapper.toCoursesRecord(course, r);
     r.setUpdatedAt(now);
     return r;
   }
 
-  private void upsertGroups(UsersResponse usersResponse, LocalDateTime now) {
+  private void upsertGroups(UsersResponse usersResponse, OffsetDateTime now) {
 
     List<GroupsRecord> records =
         usersResponse.getUsers().stream()
@@ -118,14 +119,14 @@ public class UserCoursePersistenceAdapter implements UserCoursePersistencePort {
     jooq.dsl().batchMerge(records).execute();
   }
 
-  private GroupsRecord toGroupsRecord(Group group, LocalDateTime now) {
+  private GroupsRecord toGroupsRecord(Group group, OffsetDateTime now) {
     GroupsRecord r = jooq.dsl().newRecord(GROUPS);
     mapper.toGroupsRecord(group, r);
     r.setUpdatedAt(now);
     return r;
   }
 
-  private void upsertRoles(UsersResponse usersResponse, LocalDateTime now) {
+  private void upsertRoles(UsersResponse usersResponse, OffsetDateTime now) {
 
     List<RolesRecord> records =
         usersResponse.getUsers().stream()
@@ -138,14 +139,14 @@ public class UserCoursePersistenceAdapter implements UserCoursePersistencePort {
     jooq.dsl().batchMerge(records).execute();
   }
 
-  private RolesRecord toRolesRecord(Role role, LocalDateTime now) {
+  private RolesRecord toRolesRecord(Role role, OffsetDateTime now) {
     RolesRecord r = jooq.dsl().newRecord(ROLES);
     mapper.toRolesRecord(role, r);
     r.setUpdatedAt(now);
     return r;
   }
 
-  private void deactivateActualUsersCourses(List<Integer> userIds, LocalDateTime now) {
+  private void deactivateActualUsersCourses(List<Integer> userIds, OffsetDateTime now) {
     jooq.dsl()
         .update(USERS_COURSES)
         .set(USERS_COURSES.ACTIVE, false)
@@ -155,7 +156,7 @@ public class UserCoursePersistenceAdapter implements UserCoursePersistencePort {
         .execute();
   }
 
-  private void deactivateActualUsersGroups(List<Integer> userIds, LocalDateTime now) {
+  private void deactivateActualUsersGroups(List<Integer> userIds, OffsetDateTime now) {
     jooq.dsl()
         .update(USERS_GROUPS)
         .set(USERS_GROUPS.ACTIVE, false)
@@ -165,7 +166,7 @@ public class UserCoursePersistenceAdapter implements UserCoursePersistencePort {
         .execute();
   }
 
-  private void deactivateActualUsersRoles(List<Integer> userIds, LocalDateTime now) {
+  private void deactivateActualUsersRoles(List<Integer> userIds, OffsetDateTime now) {
     jooq.dsl()
         .update(USERS_ROLES)
         .set(USERS_ROLES.ACTIVE, false)
@@ -175,7 +176,7 @@ public class UserCoursePersistenceAdapter implements UserCoursePersistencePort {
         .execute();
   }
 
-  private void upsertUsersCourses(UsersResponse usersResponse, LocalDateTime now) {
+  private void upsertUsersCourses(UsersResponse usersResponse, OffsetDateTime now) {
 
     List<UsersCoursesRecord> records =
         usersResponse.getUsers().stream()
@@ -189,7 +190,7 @@ public class UserCoursePersistenceAdapter implements UserCoursePersistencePort {
   }
 
   private UsersCoursesRecord toUsersCoursesRecord(
-      UserCourse userCourse, Integer userId, LocalDateTime now) {
+      UserCourse userCourse, Integer userId, OffsetDateTime now) {
     UsersCoursesRecord r = jooq.dsl().newRecord(USERS_COURSES);
 
     mapper.toUsersCoursesRecord(userCourse, r);
@@ -200,7 +201,7 @@ public class UserCoursePersistenceAdapter implements UserCoursePersistencePort {
     return r;
   }
 
-  private void upsertUsersGroups(UsersResponse usersResponse, LocalDateTime now) {
+  private void upsertUsersGroups(UsersResponse usersResponse, OffsetDateTime now) {
 
     List<UsersGroupsRecord> records =
         usersResponse.getUsers().stream()
@@ -217,7 +218,7 @@ public class UserCoursePersistenceAdapter implements UserCoursePersistencePort {
   }
 
   private UsersGroupsRecord toUsersGroupsRecord(
-      Group group, Integer userId, Integer actualCourseId, LocalDateTime now) {
+      Group group, Integer userId, Integer actualCourseId, OffsetDateTime now) {
     UsersGroupsRecord r = jooq.dsl().newRecord(USERS_GROUPS);
 
     mapper.toUsersGroupsRecord(group, r);
@@ -230,7 +231,7 @@ public class UserCoursePersistenceAdapter implements UserCoursePersistencePort {
     return r;
   }
 
-  private void upsertUsersRoles(UsersResponse usersResponse, LocalDateTime now) {
+  private void upsertUsersRoles(UsersResponse usersResponse, OffsetDateTime now) {
 
     List<UsersRolesRecord> records =
         usersResponse.getUsers().stream()
@@ -247,7 +248,7 @@ public class UserCoursePersistenceAdapter implements UserCoursePersistencePort {
   }
 
   private UsersRolesRecord toUsersRolesRecord(
-      Role role, Integer userId, Integer actualCourseId, LocalDateTime now) {
+      Role role, Integer userId, Integer actualCourseId, OffsetDateTime now) {
     UsersRolesRecord r = jooq.dsl().newRecord(USERS_ROLES);
 
     mapper.toUsersRolesRecord(role, r);

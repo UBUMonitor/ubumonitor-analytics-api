@@ -4,5 +4,5 @@ import es.ubu.lsi.ubumonitoranalytics.features.course.grades.domain.model.Course
 
 public interface GradesSavePersistencePort {
 
-    CourseGrade saveCourseGradeItemsPersistence(CourseGrade courseGrade);
+  void saveCourseGradeItemsPersistence(CourseGrade courseGrade);
 }

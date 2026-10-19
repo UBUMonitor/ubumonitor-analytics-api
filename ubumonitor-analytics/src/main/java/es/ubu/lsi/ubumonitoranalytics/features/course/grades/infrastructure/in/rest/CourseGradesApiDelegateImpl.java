@@ -17,7 +17,8 @@ public class CourseGradesApiDelegateImpl implements CourseGradesApiDelegate {
 
   @Override
   public ResponseEntity<CourseGradeItemsResponseDto> getCourseGradesInfo(Integer courseId) {
-    return ResponseEntity.ok(courseGradesMapper.toResponseDto(gradesUseCase.get(courseId)));
+    return ResponseEntity.ok(
+        courseGradesMapper.toResponseDto(gradesUseCase.getGradeItems(courseId)));
   }
 
   @Override

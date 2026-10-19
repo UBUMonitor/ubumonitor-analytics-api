@@ -15,6 +15,7 @@ public interface SyncEnrollmentPersistenceAdapterMapper {
 
   @Mapping(target = "updatedAt", ignore = true)
   @Mapping(target = "createdAt", ignore = true)
+  @Mapping(target = "sourceModifiedAt", source = "timeModified")
   void toRecord(Course course, @MappingTarget CoursesRecord coursesRecord);
 
   @Mapping(target = "userId", ignore = true)

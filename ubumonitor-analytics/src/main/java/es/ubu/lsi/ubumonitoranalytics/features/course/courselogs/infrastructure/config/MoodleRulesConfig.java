@@ -50,6 +50,12 @@ public class MoodleRulesConfig {
       }
       MoodleLogCatalog.Key key =
           new MoodleLogCatalog.Key(rule.getComponentName(), rule.getEventName());
+      MoodleLogCatalog.Entry existing = compiledRules.get(key);
+      if (existing != null) {
+        List<Grok> combinedGroks = new ArrayList<>(existing.getGroks());
+        combinedGroks.addAll(groks);
+        groks = combinedGroks;
+      }
       compiledRules.put(
           key, new MoodleLogCatalog.Entry(rule.getComponentId(), rule.getEventId(), groks));
     }

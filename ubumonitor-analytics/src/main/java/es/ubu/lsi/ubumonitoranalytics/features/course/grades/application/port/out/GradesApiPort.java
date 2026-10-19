@@ -4,5 +4,4 @@ import es.ubu.lsi.ubumonitoranalytics.features.course.grades.domain.model.Course
 
 public interface GradesApiPort {
   CourseGrade fetchCourseGradeItems(Integer courseId, Integer actualUserId);
-
 }

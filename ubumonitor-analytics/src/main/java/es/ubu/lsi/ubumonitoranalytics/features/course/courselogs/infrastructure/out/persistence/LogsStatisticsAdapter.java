@@ -10,7 +10,6 @@ import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Users.USERS;
 
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.port.out.LogsStatisticsPort;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.statistics.*;
-import es.ubu.lsi.ubumonitoranalytics.features.courselogs.domain.model.statistics.*;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
 import java.util.*;
 import lombok.RequiredArgsConstructor;
@@ -236,16 +235,16 @@ public class LogsStatisticsAdapter implements LogsStatisticsPort {
   private Field<?> resolveIntervalField(TimeInterval interval, Integer weekStartsOn) {
 
     if (interval == TimeInterval.DAY_OF_WEEK) {
-      return dayOfWeekField(LOGS.TIMESTAMP, weekStartsOn);
+      return dayOfWeekField(LOGS.LOGGED_AT, weekStartsOn);
     }
 
     return DSL.field(
             "FORMATDATETIME({0}, {1})",
-            String.class, LOGS.TIMESTAMP, DSL.inline(interval.pattern()))
+            String.class, LOGS.LOGGED_AT, DSL.inline(interval.pattern()))
         .as(TIME_BUCKET);
   }
 
-  static Field<Integer> dayOfWeekField(Field<?> timestamp, Integer weekStartsOn) {
+  public static Field<Integer> dayOfWeekField(Field<?> timestamp, Integer weekStartsOn) {
     int startDay = weekStartsOn == null ? 1 : weekStartsOn;
     Field<Integer> isoDayOfWeek = DSL.field("DAY_OF_WEEK({0})", Integer.class, timestamp);
 
@@ -324,10 +323,10 @@ public class LogsStatisticsAdapter implements LogsStatisticsPort {
     var timeRange = request.getTimeRange();
     if (timeRange != null) {
       if (timeRange.getFrom() != null) {
-        conditions.add(LOGS.TIMESTAMP.greaterOrEqual(timeRange.getFrom()));
+        conditions.add(LOGS.LOGGED_AT.greaterOrEqual(timeRange.getFrom()));
       }
       if (timeRange.getTo() != null) {
-        conditions.add(LOGS.TIMESTAMP.lessOrEqual(timeRange.getTo()));
+        conditions.add(LOGS.LOGGED_AT.lessOrEqual(timeRange.getTo()));
       }
     }
 
