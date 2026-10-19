@@ -11,11 +11,11 @@ public interface ImportCourseLogsUseCase {
    * @param file uploaded CSV file
    * @return import statistics and updated log information
    */
-  ProcessLogsResult process(Integer course, MultipartFile file);
+  ProcessLogsResult process(Long course, MultipartFile file);
 
   /**
    * @param course course identifier
    * @return synchronization statistics and updated log information
    */
-  ProcessLogsResult sync(Integer course);
+  ProcessLogsResult sync(Long course);
 }

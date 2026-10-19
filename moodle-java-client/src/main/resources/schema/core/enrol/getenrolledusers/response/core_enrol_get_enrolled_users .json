@@ -34,7 +34,8 @@
           "properties": {
             "roleid": {
               "description": "Role id",
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             },
             "name": {
               "description": "Role name",
@@ -70,7 +71,8 @@
       "firstaccess": {
         "nullable": true,
         "description": "First access to the site (0 if never)",
-        "type": "integer"
+        "type": "integer",
+        "format": "int64"
       },
       "customfields": {
         "nullable": true,
@@ -129,7 +131,8 @@
           "properties": {
             "id": {
               "description": "Id of the course",
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             },
             "fullname": {
               "description": "Fullname of the course",
@@ -149,7 +152,8 @@
       },
       "id": {
         "description": "ID of the user",
-        "type": "integer"
+        "type": "integer",
+        "format": "int64"
       },
       "department": {
         "nullable": true,
@@ -229,7 +233,8 @@
             },
             "id": {
               "description": "Group id",
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             }
           },
           "required": [
@@ -243,7 +248,8 @@
       "lastcourseaccess": {
         "nullable": true,
         "description": "Last access to the course (0 if never)",
-        "type": "integer"
+        "type": "integer",
+        "format": "int64"
       },
       "lastname": {
         "nullable": true,
@@ -253,7 +259,8 @@
       "lastaccess": {
         "nullable": true,
         "description": "Last access to the site (0 if never)",
-        "type": "integer"
+        "type": "integer",
+        "format": "int64"
       },
       "descriptionformat": {
         "nullable": true,

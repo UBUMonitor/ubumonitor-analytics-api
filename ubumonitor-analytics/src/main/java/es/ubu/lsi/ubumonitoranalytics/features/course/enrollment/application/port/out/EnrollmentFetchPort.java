@@ -10,5 +10,5 @@ public interface EnrollmentFetchPort {
    * @param token Moodle web-service token
    * @return users enrolled in the course
    */
-  UsersResponse fetchCourseEnrolledUsers(Integer courseId, String token);
+  UsersResponse fetchCourseEnrolledUsers(Long courseId, String token);
 }

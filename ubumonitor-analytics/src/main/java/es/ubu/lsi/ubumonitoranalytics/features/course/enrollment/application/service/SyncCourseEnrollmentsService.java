@@ -25,7 +25,7 @@ public class SyncCourseEnrollmentsService implements SyncCourseEnrollmentsUseCas
    */
   @Override
   @Transactional
-  public UsersResponse syncCourseEnrollments(Integer courseId) {
+  public UsersResponse syncCourseEnrollments(Long courseId) {
     UsersResponse usersResponse =
         enrollmentFetchPort.fetchCourseEnrolledUsers(
             courseId, currentSessionContext.getSessionData().getMoodleToken());

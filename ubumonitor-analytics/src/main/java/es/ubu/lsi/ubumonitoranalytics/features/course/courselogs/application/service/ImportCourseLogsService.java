@@ -61,7 +61,7 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
   @Override
   @Transactional
   @SneakyThrows
-  public ProcessLogsResult process(Integer courseId, MultipartFile file) {
+  public ProcessLogsResult process(Long courseId, MultipartFile file) {
 
     return processStream(
         courseId, file.getInputStream(), logPersistencePort.getLastDateTime(courseId));
@@ -77,7 +77,7 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
   @Override
   @Transactional
   @SneakyThrows
-  public ProcessLogsResult sync(Integer courseId) {
+  public ProcessLogsResult sync(Long courseId) {
 
     SessionData sessionData = currentSessionContext.getSessionData();
 
@@ -142,7 +142,7 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
   // CORE PIPELINE (REUSE)
   // =========================
   private ProcessLogsResult processStream(
-      Integer courseId, InputStream inputStream, LocalDateTime lastLogDateTime) {
+      Long courseId, InputStream inputStream, LocalDateTime lastLogDateTime) {
 
     MoodleLogCatalog logCatalog = logPersistencePort.getMoodleLogCatalog();
     Map<String, Byte> logOrigins = logPersistencePort.getLogOrigins();
@@ -190,7 +190,7 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
   // RECORD HANDLER
   // =========================
   private void handleRecord(
-      Integer courseId,
+      Long courseId,
       CSVRecord csvRecord,
       LocalDateTime lastLogDateTime,
       Map<MoodleLogCatalog.Key, MoodleLogCatalog.Entry> logEvents,

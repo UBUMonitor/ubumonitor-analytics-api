@@ -65,6 +65,7 @@ UserInfo:
   properties:
     id:
       type: integer
+      format: int64
       description: The unique identifier of the user.
     username:
       type: string

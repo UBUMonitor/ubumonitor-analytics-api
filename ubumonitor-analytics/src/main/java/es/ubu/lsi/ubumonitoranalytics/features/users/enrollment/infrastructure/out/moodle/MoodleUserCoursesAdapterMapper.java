@@ -17,11 +17,11 @@ public interface MoodleUserCoursesAdapterMapper {
   @Mapping(target = "wsfunction", ignore = true)
   @Mapping(target = "args.userid", source = "userId")
   @Mapping(target = "args.returnusercount", constant = "0")
-  GetUsersCoursesRequestApi toRequest(Integer userId);
+  GetUsersCoursesRequestApi toRequest(Long userId);
 
   @Mapping(target = "userId", source = "userId")
   @Mapping(target = "enrolledCourses", source = "response")
-  UserEnrolledCourses toDomain(Integer userId, List<GetUsersCoursesResponseApi> response);
+  UserEnrolledCourses toDomain(Long userId, List<GetUsersCoursesResponseApi> response);
 
   @Mapping(target = "lastCourseAccess", source = "lastaccess")
   @Mapping(target = "course", source = "getUsersCoursesResponseApi")

@@ -107,6 +107,7 @@ CourseLogsStatisticsRequest:
           type: array
           items:
             type: integer
+            format: int64
         nullable: true
         default: null
 
@@ -114,6 +115,7 @@ CourseLogsStatisticsRequest:
           type: array
           items:
             type: integer
+            format: int64
           nullable: true
           default: null
 
@@ -121,6 +123,7 @@ CourseLogsStatisticsRequest:
           type: array
           items:
             type: integer
+            format: int64
           nullable: true
           default: null
 
@@ -128,6 +131,7 @@ CourseLogsStatisticsRequest:
           type: array
           items:
             type: integer
+            format: int64
           nullable: true
           default: null
 
@@ -135,6 +139,7 @@ CourseLogsStatisticsRequest:
           type: array
           items:
             type: integer
+            format: int64
           nullable: true
           default: null
 
@@ -149,5 +154,6 @@ CourseLogsStatisticsRequest:
           type: array
           items:
             type: integer
+            format: int64
           nullable: true
           default: null

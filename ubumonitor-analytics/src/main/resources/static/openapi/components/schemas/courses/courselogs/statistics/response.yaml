@@ -22,6 +22,7 @@ CourseLogsStatisticsResponse:
             properties:
               id:
                 type: integer
+                format: int64
                 example: 4521
               fullName:
                 type: string
@@ -32,6 +33,7 @@ CourseLogsStatisticsResponse:
             properties:
               id:
                 type: integer
+                format: int64
                 example: 874
               name:
                 type: string
@@ -42,6 +44,7 @@ CourseLogsStatisticsResponse:
             properties:
               id:
                 type: integer
+                format: int64
                 example: 2
               name:
                 type: string
@@ -52,6 +55,7 @@ CourseLogsStatisticsResponse:
             properties:
               id:
                 type: integer
+                format: int64
                 example: 15
               name:
                 type: string
@@ -62,6 +66,7 @@ CourseLogsStatisticsResponse:
             properties:
               id:
                 type: integer
+                format: int64
                 example: 1
               name:
                 type: string
@@ -74,9 +79,11 @@ CourseLogsStatisticsResponse:
 
           courseId:
             type: integer
+            format: int64
             example: 105
           sectionId:
             type: integer
+            format: int64
             example: 3
 
           sectionName:

@@ -16,7 +16,8 @@
           "type": "integer"
         },
         "userid": {
-          "type": "integer"
+          "type": "integer",
+          "format": "int64"
         }
       },
       "required": [

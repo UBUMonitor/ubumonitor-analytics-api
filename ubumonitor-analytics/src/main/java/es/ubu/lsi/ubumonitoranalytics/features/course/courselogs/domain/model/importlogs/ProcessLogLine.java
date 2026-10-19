@@ -8,9 +8,9 @@ public class ProcessLogLine {
   private LocalDateTime time;
   private Short componentId;
   private Short eventId;
-  private Integer courseId;
-  private Integer userId;
-  private Integer moduleId;
+  private Long courseId;
+  private Long userId;
+  private Long moduleId;
   private Byte originId;
   private String ipAddress;
 }

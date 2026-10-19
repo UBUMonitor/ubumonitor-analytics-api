@@ -8,5 +8,5 @@ public interface CourseLogsInfoPort {
    * @param courseId Moodle course identifier
    * @return log metadata for the course
    */
-  CourseLogsInfoResult getCourseLogsInfo(Integer courseId);
+  CourseLogsInfoResult getCourseLogsInfo(Long courseId);
 }

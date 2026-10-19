@@ -23,8 +23,7 @@ public interface MoodleGradesAdapterResponseMapper {
   @Mapping(target = "userGrades", source = "getGradeItemsResponseApi")
   @Mapping(target = "courseId", source = "courseId")
   @Mapping(target = "gradeItems", source = "getGradeItemsResponseApi")
-  CourseGrade toCourseGradeItems(
-      Integer courseId, GetGradeItemsResponseApi getGradeItemsResponseApi);
+  CourseGrade toCourseGradeItems(Long courseId, GetGradeItemsResponseApi getGradeItemsResponseApi);
 
   default List<GradeItem> toGradeItems(GetGradeItemsResponseApi getGradeItemsResponseApi) {
     if (getGradeItemsResponseApi == null) {
@@ -56,7 +55,7 @@ public interface MoodleGradesAdapterResponseMapper {
   GradeItem toGradeItem(GradeItemApi gradeItemApi, @Context List<GradeItemApi> allGradeItems);
 
   @Named("parentId")
-  default Integer parentId(GradeItemApi gradeItemApi, @Context List<GradeItemApi> allGradeItems) {
+  default Long parentId(GradeItemApi gradeItemApi, @Context List<GradeItemApi> allGradeItems) {
     if ("category".equals(gradeItemApi.getItemtype())) {
       return allGradeItems.stream()
           .filter(
@@ -65,6 +64,7 @@ public interface MoodleGradesAdapterResponseMapper {
                       anotherGradeItem.getCategoryid(), gradeItemApi.getParentcategoryid()))
           .findAny()
           .map(GradeItemApi::getId)
+          .map(Long::valueOf)
           .orElse(null);
     }
     return allGradeItems.stream()
@@ -73,6 +73,7 @@ public interface MoodleGradesAdapterResponseMapper {
                 Objects.equals(anotherGradeItem.getIteminstance(), gradeItemApi.getCategoryid()))
         .findAny()
         .map(GradeItemApi::getId)
+        .map(Long::valueOf)
         .orElse(null);
   }
 

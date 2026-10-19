@@ -18,7 +18,8 @@
           "properties": {
             "timeend": {
               "description": "Time to which the events should be returned. We treat 0 and null as no end",
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             },
             "siteevents": {
               "description": "Set to true to return site events",
@@ -34,7 +35,8 @@
             },
             "timestart": {
               "description": "Time from which events should be returned",
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             }
           }
         },

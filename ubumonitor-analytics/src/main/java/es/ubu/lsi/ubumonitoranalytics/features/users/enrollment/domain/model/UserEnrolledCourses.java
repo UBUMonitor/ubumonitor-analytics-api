@@ -7,6 +7,6 @@ import lombok.Data;
 @Data
 @Builder
 public class UserEnrolledCourses {
-  private Integer userId;
+  private Long userId;
   private List<Enrollment> enrolledCourses;
 }

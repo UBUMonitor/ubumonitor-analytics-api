@@ -9,5 +9,5 @@ public interface GetCourseContentPersistenceUseCase {
    * @param courseId Moodle course identifier
    * @return locally stored course sections and modules
    */
-  CourseContent getCourseContent(Integer courseId);
+  CourseContent getCourseContent(Long courseId);
 }

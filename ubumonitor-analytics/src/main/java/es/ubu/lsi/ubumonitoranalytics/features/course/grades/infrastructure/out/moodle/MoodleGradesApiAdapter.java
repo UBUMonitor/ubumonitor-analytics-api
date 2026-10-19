@@ -22,7 +22,7 @@ public class MoodleGradesApiAdapter implements GradesApiPort {
   private final MoodleGradesAdapterTableResponseMapper moodleGradesAdapterTableResponseMapper;
 
   @Override
-  public CourseGrade fetchCourseGradeItems(Integer courseId, Integer actualUserId) {
+  public CourseGrade fetchCourseGradeItems(Long courseId, Long actualUserId) {
 
     GetGradeItemsRequestApi getGradeItemsRequestApi =
         moodleGradesAdapterRequestMapper.toRequest(courseId);
@@ -42,7 +42,7 @@ public class MoodleGradesApiAdapter implements GradesApiPort {
    * Recently added parentcategory field for category items <a
    * href="https://moodle.atlassian.net/browse/MDL-64304">...</a>
    */
-  private void fillCategoryParentIds(CourseGrade courseGrade, Integer userId) {
+  private void fillCategoryParentIds(CourseGrade courseGrade, Long userId) {
     List<GradeItem> categoriesNoParent =
         courseGrade.getGradeItems().stream()
             .filter(

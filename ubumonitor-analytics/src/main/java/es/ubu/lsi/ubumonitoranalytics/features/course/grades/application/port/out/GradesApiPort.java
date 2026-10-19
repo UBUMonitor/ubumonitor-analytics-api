@@ -3,5 +3,5 @@ package es.ubu.lsi.ubumonitoranalytics.features.course.grades.application.port.o
 import es.ubu.lsi.ubumonitoranalytics.features.course.grades.domain.model.CourseGrade;
 
 public interface GradesApiPort {
-  CourseGrade fetchCourseGradeItems(Integer courseId, Integer actualUserId);
+  CourseGrade fetchCourseGradeItems(Long courseId, Long actualUserId);
 }

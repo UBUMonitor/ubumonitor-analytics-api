@@ -20,7 +20,7 @@ public class GetCourseContentService implements GetCourseContentUseCase {
    */
   @Override
   @Transactional(readOnly = true)
-  public CourseContent getCourseContent(Integer courseId) {
+  public CourseContent getCourseContent(Long courseId) {
     return getCourseContentPersistenceUseCase.getCourseContent(courseId);
   }
 }

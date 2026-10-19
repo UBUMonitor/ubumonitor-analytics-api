@@ -30,14 +30,14 @@ public class EnrollmentGetPersistenceAdapter implements EnrollmentGetPersistence
   private final EnrollmentCourseEnrollmentsMapper mapper;
 
   @Override
-  public UsersResponse getCourseEnrollment(Integer courseId) {
-    Map<Integer, User> users = fetchUsers(courseId);
+  public UsersResponse getCourseEnrollment(Long courseId) {
+    Map<Long, User> users = fetchUsers(courseId);
 
-    List<Integer> userIds = new ArrayList<>(users.keySet());
+    List<Long> userIds = new ArrayList<>(users.keySet());
 
-    Map<Integer, List<UserCourse>> userCourses = fetchCourses(userIds);
-    Map<Integer, List<Group>> userGroups = fetchGroups(userIds);
-    Map<Integer, List<Role>> userRoles = fetchRoles(userIds);
+    Map<Long, List<UserCourse>> userCourses = fetchCourses(userIds);
+    Map<Long, List<Group>> userGroups = fetchGroups(userIds);
+    Map<Long, List<Role>> userRoles = fetchRoles(userIds);
 
     // Assemble the final response.
     for (User user : users.values()) {
@@ -52,7 +52,7 @@ public class EnrollmentGetPersistenceAdapter implements EnrollmentGetPersistence
         .build();
   }
 
-  private Map<Integer, User> fetchUsers(Integer courseId) {
+  private Map<Long, User> fetchUsers(Long courseId) {
 
     return jooq.dsl()
         .select(USERS.fields())
@@ -64,7 +64,7 @@ public class EnrollmentGetPersistenceAdapter implements EnrollmentGetPersistence
         .fetchMap(USERS.ID, r -> mapper.toUserDomain(r.into(USERS)));
   }
 
-  private Map<Integer, List<UserCourse>> fetchCourses(List<Integer> userIds) {
+  private Map<Long, List<UserCourse>> fetchCourses(List<Long> userIds) {
 
     return jooq.dsl()
         .select(
@@ -81,7 +81,7 @@ public class EnrollmentGetPersistenceAdapter implements EnrollmentGetPersistence
         .fetchGroups(r -> r.get(USERS_COURSES.USER_ID), mapper::toUserCourseDomain);
   }
 
-  private Map<Integer, List<Group>> fetchGroups(List<Integer> userIds) {
+  private Map<Long, List<Group>> fetchGroups(List<Long> userIds) {
 
     return jooq.dsl()
         .select(USERS_GROUPS.USER_ID, GROUPS.ID, GROUPS.NAME)
@@ -93,7 +93,7 @@ public class EnrollmentGetPersistenceAdapter implements EnrollmentGetPersistence
         .fetchGroups(r -> r.get(USERS_GROUPS.USER_ID), r -> mapper.toGroupDomain(r.into(GROUPS)));
   }
 
-  private Map<Integer, List<Role>> fetchRoles(List<Integer> userIds) {
+  private Map<Long, List<Role>> fetchRoles(List<Long> userIds) {
 
     return jooq.dsl()
         .select(USERS_ROLES.USER_ID, ROLES.ID, ROLES.NAME)

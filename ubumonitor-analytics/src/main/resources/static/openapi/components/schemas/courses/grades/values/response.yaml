@@ -9,9 +9,11 @@ CourseGradesValuesResponse:
           properties:
             gradeItemId:
               type: integer
+              format: int64
               description: Unique identifier for the grade item
             userId:
               type: integer
+              format: int64
               description: Unique identifier for the user
             grade:
               type: number

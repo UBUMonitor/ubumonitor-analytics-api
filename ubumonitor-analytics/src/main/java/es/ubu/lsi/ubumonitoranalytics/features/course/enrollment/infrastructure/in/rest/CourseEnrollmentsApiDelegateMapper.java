@@ -22,7 +22,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 public interface CourseEnrollmentsApiDelegateMapper {
 
   CourseEnrollmentsResponseDto toDto(
-      UsersResponse usersResponse, @Context Integer courseId, @Context SessionData sessionData);
+      UsersResponse usersResponse, @Context Long courseId, @Context SessionData sessionData);
 
   @Mapping(target = "imageUrl", source = "user.id", qualifiedByName = "imageUrl")
   @Mapping(
@@ -30,11 +30,10 @@ public interface CourseEnrollmentsApiDelegateMapper {
       source = "user.courses",
       qualifiedByName = "lastCourseAccess")
   UserEnrollmentInfoDto toUserEnrollmentInfoDto(
-      User user, @Context Integer courseId, @Context SessionData sessionData);
+      User user, @Context Long courseId, @Context SessionData sessionData);
 
   @Named("lastCourseAccess")
-  default OffsetDateTime mapLastCourseAccess(
-      List<UserCourse> userCourses, @Context Integer courseId) {
+  default OffsetDateTime mapLastCourseAccess(List<UserCourse> userCourses, @Context Long courseId) {
     return userCourses.stream()
         .filter(uc -> courseId.equals(uc.getCourse().getId()))
         .findFirst()
@@ -46,7 +45,7 @@ public interface CourseEnrollmentsApiDelegateMapper {
   UserEnrollmentInfoCoursesInnerDto toUserEnrollmentInfoCoursesInnerDto(UserCourse userCourse);
 
   @Named("imageUrl")
-  default URI mapImageUrl(Integer userId, @Context SessionData sessionData) {
+  default URI mapImageUrl(Long userId, @Context SessionData sessionData) {
     if (userId == null) {
       return null;
     }

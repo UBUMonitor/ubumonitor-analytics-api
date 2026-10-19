@@ -43,7 +43,8 @@
       "startdate": {
         "nullable": true,
         "description": "Timestamp when the course start",
-        "type": "integer"
+        "type": "integer",
+        "format": "int64"
       },
       "showgrades": {
         "nullable": true,
@@ -62,7 +63,8 @@
       },
       "id": {
         "description": "id of course",
-        "type": "integer"
+        "type": "integer",
+        "format": "int64"
       },
       "lang": {
         "nullable": true,
@@ -95,7 +97,8 @@
             },
             "timemodified": {
               "nullable": true,
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             },
             "icon": {
               "nullable": true,
@@ -181,7 +184,8 @@
       "lastaccess": {
         "nullable": true,
         "description": "Last access to the course (timestamp)",
-        "type": "integer"
+        "type": "integer",
+        "format": "int64"
       },
       "showactivitydates": {
         "description": "Whether the activity dates are shown or not",
@@ -190,7 +194,8 @@
       "enddate": {
         "nullable": true,
         "description": "Timestamp when the course end",
-        "type": "integer"
+        "type": "integer",
+        "format": "int64"
       },
       "courseimage": {
         "nullable": true,
@@ -211,7 +216,8 @@
       "timemodified": {
         "nullable": true,
         "description": "Last time course settings were updated (timestamp)",
-        "type": "integer"
+        "type": "integer",
+        "format": "int64"
       },
       "completionusertracked": {
         "nullable": true,
@@ -230,7 +236,8 @@
       "category": {
         "nullable": true,
         "description": "course category id",
-        "type": "integer"
+        "type": "integer",
+        "format": "int64"
       }
     },
     "required": [

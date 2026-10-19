@@ -47,7 +47,8 @@
             "timemodified": {
               "nullable": true,
               "description": "Time modified",
-              "type": "integer"
+              "type": "integer",
+              "format": "int64"
             },
             "icon": {
               "nullable": true,
@@ -88,7 +89,8 @@
       },
       "assesstimefinish": {
         "description": "Assess finish time",
-        "type": "integer"
+        "type": "integer",
+        "format": "int64"
       },
       "numdiscussions": {
         "nullable": true,
@@ -101,7 +103,8 @@
       },
       "course": {
         "description": "Course id",
-        "type": "integer"
+        "type": "integer",
+        "format": "int64"
       },
       "istracked": {
         "nullable": true,
@@ -115,7 +118,8 @@
       },
       "id": {
         "description": "Forum id",
-        "type": "integer"
+        "type": "integer",
+        "format": "int64"
       },
       "forcesubscribe": {
         "description": "Force users to subscribe",
@@ -148,11 +152,13 @@
       },
       "assesstimestart": {
         "description": "Assess start time",
-        "type": "integer"
+        "type": "integer",
+        "format": "int64"
       },
       "cmid": {
         "description": "Course module id",
-        "type": "integer"
+        "type": "integer",
+        "format": "int64"
       },
       "warnafter": {
         "description": "Post threshold for warning",
@@ -199,11 +205,13 @@
       "duedate": {
         "nullable": true,
         "description": "duedate for the user",
-        "type": "integer"
+        "type": "integer",
+        "format": "int64"
       },
       "timemodified": {
         "description": "Time modified",
-        "type": "integer"
+        "type": "integer",
+        "format": "int64"
       },
       "completionposts": {
         "description": "Student must post discussions or replies",
@@ -224,7 +232,8 @@
       "cutoffdate": {
         "nullable": true,
         "description": "cutoffdate for the user",
-        "type": "integer"
+        "type": "integer",
+        "format": "int64"
       }
     },
     "required": [

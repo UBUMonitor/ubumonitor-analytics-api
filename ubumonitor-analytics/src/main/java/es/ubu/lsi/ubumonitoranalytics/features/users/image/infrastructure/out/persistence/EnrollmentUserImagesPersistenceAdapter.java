@@ -23,9 +23,9 @@ public class EnrollmentUserImagesPersistenceAdapter implements EnrollmentUserIma
   @Override
   public List<EnrollmentUserImage> getCourseEnrollmentImages(
       EnrollmentImagesDocumentCommand command) {
-    List<Integer> userIds = command.getUserIds();
+    List<Long> userIds = command.getUserIds();
 
-    Map<Integer, EnrollmentUserImage> byId =
+    Map<Long, EnrollmentUserImage> byId =
         jooq
             .dsl()
             .select(USERS.ID, USERS.FULL_NAME, USERS_IMAGES.IMAGE_DATA, USERS_IMAGES.CONTENT_TYPE)
@@ -44,9 +44,9 @@ public class EnrollmentUserImagesPersistenceAdapter implements EnrollmentUserIma
   public List<EnrollmentUserImage> getCourseEnrollmentImages(
       EnrollmentImagesDocumentCommand command, byte[] imageData, String contentType) {
 
-    List<Integer> userIds = command.getUserIds();
+    List<Long> userIds = command.getUserIds();
 
-    Map<Integer, EnrollmentUserImage> byId =
+    Map<Long, EnrollmentUserImage> byId =
         jooq
             .dsl()
             .select(USERS.ID, USERS.FULL_NAME)

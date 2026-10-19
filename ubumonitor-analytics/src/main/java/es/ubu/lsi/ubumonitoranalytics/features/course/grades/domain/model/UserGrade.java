@@ -5,8 +5,8 @@ import lombok.Data;
 
 @Data
 public class UserGrade {
-  private Integer userId;
-  private Integer gradeItemId;
+  private Long userId;
+  private Long gradeItemId;
   private BigDecimal gradeRaw;
   private BigDecimal gradePercentageRaw;
 }

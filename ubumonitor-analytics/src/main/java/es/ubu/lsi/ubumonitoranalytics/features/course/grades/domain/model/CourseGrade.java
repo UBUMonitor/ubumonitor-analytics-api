@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class CourseGrade {
-  private Integer courseId;
+  private Long courseId;
   private List<GradeItem> gradeItems;
   private List<UserGrade> userGrades;
 }

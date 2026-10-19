@@ -60,7 +60,7 @@ public class FetchCourseLogsService implements FetchCourseLogsUseCase {
    */
   @Override
   @Transactional(readOnly = true)
-  public CourseLogsInfoResult getCourseLogsInfo(Integer courseId) {
+  public CourseLogsInfoResult getCourseLogsInfo(Long courseId) {
     return courseLogsInfoPort.getCourseLogsInfo(courseId);
   }
 }

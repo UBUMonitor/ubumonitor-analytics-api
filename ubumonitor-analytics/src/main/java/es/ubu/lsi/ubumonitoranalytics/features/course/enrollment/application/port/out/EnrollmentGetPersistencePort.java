@@ -9,5 +9,5 @@ public interface EnrollmentGetPersistencePort {
    * @param courseId Moodle course identifier
    * @return users and enrollment details stored for the course
    */
-  UsersResponse getCourseEnrollment(Integer courseId);
+  UsersResponse getCourseEnrollment(Long courseId);
 }

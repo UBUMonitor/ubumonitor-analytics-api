@@ -26,7 +26,7 @@ public class UsersApiDelegateImpl implements UsersApiDelegate {
 
   @Override
   public ResponseEntity<Resource> getUserImagesProfile(
-      Integer userId, URI host, String username, String ifNoneMatch) {
+      Long userId, URI host, String username, String ifNoneMatch) {
     UserImage userImage =
         getUserProfileImageUseCase.getUserImage(userId, host, username, ifNoneMatch);
     CacheControl cacheControl = CacheControl.noCache().cachePublic();
@@ -48,7 +48,7 @@ public class UsersApiDelegateImpl implements UsersApiDelegate {
 
   @Override
   public ResponseEntity<Resource> getUsersEnrollmentImagesDocument(
-      List<Integer> userIds,
+      List<Long> userIds,
       String defaultImagePath,
       Boolean useDefaultPhoto,
       String headerText,

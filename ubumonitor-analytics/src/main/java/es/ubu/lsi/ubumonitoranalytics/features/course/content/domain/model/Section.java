@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class Section {
 
-  private Integer id;
+  private Long id;
   private Integer position;
   private String name;
   private String summary;

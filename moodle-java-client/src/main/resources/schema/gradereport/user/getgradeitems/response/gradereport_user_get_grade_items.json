@@ -32,7 +32,8 @@
                 "scaleid": {
                   "nullable": true,
                   "description": "Scale id",
-                  "type": "integer"
+                  "type": "integer",
+                  "format": "int64"
                 },
                 "gradeislocked": {
                   "nullable": true,
@@ -57,7 +58,8 @@
                 "outcomeid": {
                   "nullable": true,
                   "description": "Outcome id",
-                  "type": "integer"
+                  "type": "integer",
+                  "format": "int64"
                 },
                 "gradeishidden": {
                   "nullable": true,
@@ -102,7 +104,8 @@
                 "iteminstance": {
                   "nullable": true,
                   "description": "Grade item instance",
-                  "type": "integer"
+                  "type": "integer",
+                  "format": "int64"
                 },
                 "rank": {
                   "nullable": true,
@@ -112,7 +115,8 @@
                 "id": {
                   "nullable": true,
                   "description": "Grade item id",
-                  "type": "integer"
+                  "type": "integer",
+                  "format": "int64"
                 },
                 "locked": {
                   "nullable": true,
@@ -122,7 +126,8 @@
                 "categoryid": {
                   "nullable": true,
                   "description": "Grade item category id",
-                  "type": "integer"
+                  "type": "integer",
+                  "format": "int64"
                 },
                 "numusers": {
                   "nullable": true,
@@ -137,7 +142,8 @@
                 "parentcategoryid": {
                   "nullable": true,
                   "description": "Parent category id",
-                  "type": "integer"
+                  "type": "integer",
+                  "format": "int64"
                 },
                 "itemname": {
                   "nullable": true,
@@ -147,7 +153,8 @@
                 "gradedatesubmitted": {
                   "nullable": true,
                   "description": "Grade submit date",
-                  "type": "integer"
+                  "type": "integer",
+                  "format": "int64"
                 },
                 "graderaw": {
                   "nullable": true,
@@ -172,7 +179,8 @@
                 "cmid": {
                   "nullable": true,
                   "description": "Course module id (if type mod)",
-                  "type": "integer"
+                  "type": "integer",
+                  "format": "int64"
                 },
                 "gradeformatted": {
                   "nullable": true,
@@ -182,7 +190,8 @@
                 "gradedategraded": {
                   "nullable": true,
                   "description": "Grade graded date",
-                  "type": "integer"
+                  "type": "integer",
+                  "format": "int64"
                 },
                 "itemtype": {
                   "nullable": true,
@@ -235,12 +244,14 @@
           "courseid": {
             "nullable": true,
             "description": "course id",
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           },
           "userid": {
             "nullable": true,
             "description": "user id",
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           },
           "maxdepth": {
             "nullable": true,
@@ -261,7 +272,8 @@
           "itemid": {
             "nullable": true,
             "description": "item id",
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           },
           "item": {
             "nullable": true,

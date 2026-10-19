@@ -17,7 +17,8 @@
         },
         "groupid": {
           "description": "Group id",
-          "type": "integer"
+          "type": "integer",
+          "format": "int64"
         },
         "sortorder": {
           "description": "sort by this element: numreplies, , created or timemodified",
@@ -57,7 +58,8 @@
         },
         "forumid": {
           "description": "Forum Id",
-          "type": "integer"
+          "type": "integer",
+          "format": "int64"
         }
       },
       "required": [

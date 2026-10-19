@@ -9,5 +9,5 @@ public interface SyncCourseEnrollmentsUseCase {
    * @param courseId Moodle course identifier
    * @return the synchronized users and enrollment details
    */
-  UsersResponse syncCourseEnrollments(Integer courseId);
+  UsersResponse syncCourseEnrollments(Long courseId);
 }

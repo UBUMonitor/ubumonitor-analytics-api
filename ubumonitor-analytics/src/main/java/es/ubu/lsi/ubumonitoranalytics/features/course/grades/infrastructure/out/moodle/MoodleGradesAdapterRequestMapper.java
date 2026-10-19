@@ -11,10 +11,10 @@ public interface MoodleGradesAdapterRequestMapper {
 
   @Mapping(target = "wsfunction", ignore = true)
   @Mapping(target = "args.courseid", source = "courseId")
-  GetGradeItemsRequestApi toRequest(Integer courseId);
+  GetGradeItemsRequestApi toRequest(Long courseId);
 
   @Mapping(target = "wsfunction", ignore = true)
   @Mapping(target = "args.courseid", source = "courseId")
   @Mapping(target = "args.userid", source = "userId")
-  GetGradesTableRequestApi toGradesTableRequest(Integer courseId, Integer userId);
+  GetGradesTableRequestApi toGradesTableRequest(Long courseId, Long userId);
 }

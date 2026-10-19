@@ -29,7 +29,7 @@ public interface GetCourseLogsStatisticsMapper {
       source = "courseLogsStatisticsRequestDto.weekStartsOn",
       defaultValue = "1")
   CourseLogsStatisticsRequest toDomain(
-      Integer courseId, CourseLogsStatisticsRequestDto courseLogsStatisticsRequestDto);
+      Long courseId, CourseLogsStatisticsRequestDto courseLogsStatisticsRequestDto);
 
   CourseLogsStatisticsResponseDto toDto(CourseLogsStatisticsResult result);
 

@@ -33,7 +33,7 @@ public class CourseLogsApiDelegateImpl implements CourseLogsApiDelegate {
   private final ColumnInfoMapper columnInfoMapper;
 
   @Override
-  public ResponseEntity<CourseLogsResponseDto> syncCourseLogs(Integer courseId) {
+  public ResponseEntity<CourseLogsResponseDto> syncCourseLogs(Long courseId) {
 
     ProcessLogsResult processLogsResult = importCourseLogsUseCase.sync(courseId);
 
@@ -41,8 +41,7 @@ public class CourseLogsApiDelegateImpl implements CourseLogsApiDelegate {
   }
 
   @Override
-  public ResponseEntity<CourseLogsResponseDto> importCourseLogs(
-      Integer courseId, MultipartFile file) {
+  public ResponseEntity<CourseLogsResponseDto> importCourseLogs(Long courseId, MultipartFile file) {
 
     ProcessLogsResult processLogsResult = importCourseLogsUseCase.process(courseId, file);
 
@@ -50,14 +49,14 @@ public class CourseLogsApiDelegateImpl implements CourseLogsApiDelegate {
   }
 
   @Override
-  public ResponseEntity<CourseLogsResponseDto> getCourseLogsInfo(Integer courseId) {
+  public ResponseEntity<CourseLogsResponseDto> getCourseLogsInfo(Long courseId) {
     CourseLogsInfoResult courseLogsInfoResult = fetchCourseLogsUseCase.getCourseLogsInfo(courseId);
     return ResponseEntity.ok(columnInfoMapper.toDto(courseLogsInfoResult));
   }
 
   @Override
   public ResponseEntity<CourseLogsListResponseDto> getCourseLogsList(
-      Integer courseId, CourseLogsListRequestDto courseLogsListRequestDto) {
+      Long courseId, CourseLogsListRequestDto courseLogsListRequestDto) {
     CourseLogsInfoRequest courseLogsInfoRequest =
         getCourseLogsMapper.toDomain(courseId, courseLogsListRequestDto);
 
@@ -69,7 +68,7 @@ public class CourseLogsApiDelegateImpl implements CourseLogsApiDelegate {
 
   @Override
   public ResponseEntity<CourseLogsStatisticsResponseDto> getCourseLogsStatistics(
-      Integer courseId, CourseLogsStatisticsRequestDto courseLogsStatisticsRequestDto) {
+      Long courseId, CourseLogsStatisticsRequestDto courseLogsStatisticsRequestDto) {
 
     CourseLogsStatisticsRequest courseLogsStatisticsRequest =
         getCourseLogsStatisticsMapper.toDomain(courseId, courseLogsStatisticsRequestDto);

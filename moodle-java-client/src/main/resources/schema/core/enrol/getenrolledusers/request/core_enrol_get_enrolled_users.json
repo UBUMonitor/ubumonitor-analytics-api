@@ -43,7 +43,8 @@
         },
         "courseid": {
           "description": "course id",
-          "type": "integer"
+          "type": "integer",
+          "format": "int64"
         }
       },
       "required": [

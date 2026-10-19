@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class CourseLogsStatisticsRequest {
 
-  private Integer courseId;
+  private Long courseId;
 
   private CourseLogsStatisticsRequestTimeRange timeRange;
 

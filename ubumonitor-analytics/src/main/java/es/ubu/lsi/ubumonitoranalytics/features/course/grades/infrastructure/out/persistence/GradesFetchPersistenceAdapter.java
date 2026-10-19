@@ -19,7 +19,7 @@ public class GradesFetchPersistenceAdapter implements GradesFetchPersistencePort
   private final GradesFetchPersistenceMapper mapper;
 
   @Override
-  public List<GradeItem> fetchCourseGradeItemsPersistence(Integer courseId) {
+  public List<GradeItem> fetchCourseGradeItemsPersistence(Long courseId) {
     return jooq.dsl()
         .selectFrom(GRADES)
         .where(GRADES.COURSE_ID.eq(courseId).and(GRADES.ACTIVE.isTrue()))
@@ -28,7 +28,7 @@ public class GradesFetchPersistenceAdapter implements GradesFetchPersistencePort
   }
 
   @Override
-  public List<UserGrade> fetchCourseUserGradesPersistence(Integer courseId) {
+  public List<UserGrade> fetchCourseUserGradesPersistence(Long courseId) {
     return jooq.dsl()
         .select(USERS_GRADES.fields())
         .from(USERS_GRADES)

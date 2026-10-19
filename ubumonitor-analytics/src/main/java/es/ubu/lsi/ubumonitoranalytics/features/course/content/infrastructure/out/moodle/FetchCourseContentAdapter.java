@@ -18,7 +18,7 @@ public class FetchCourseContentAdapter implements FetchCourseContentPort {
   private final FetchCourseContentAdapaterMapper fetchCourseContentAdapaterMapper;
 
   @Override
-  public CourseContent fetchCourseContent(Integer courseId) {
+  public CourseContent fetchCourseContent(Long courseId) {
     GetCourseContentsRequestApi request = fetchCourseContentAdapaterMapper.toRequest(courseId);
     List<GetCourseContentsResponseApi> response = client.coreCourse().getContents(request);
     return fetchCourseContentAdapaterMapper.toDomain(response, courseId);

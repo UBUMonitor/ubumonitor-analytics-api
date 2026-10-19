@@ -14,7 +14,8 @@
           "itemid": {
             "nullable": true,
             "description": "item id",
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           },
           "item": {
             "nullable": true,
@@ -45,7 +46,8 @@
         "properties": {
           "instance": {
             "description": "instance ID",
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           },
           "istrackeduser": {
             "description": "Whether completion is tracked for this user",
@@ -61,11 +63,13 @@
           },
           "timecompleted": {
             "description": "timestamp for completed activity",
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           },
           "cmid": {
             "description": "course module ID",
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           },
           "isautomatic": {
             "description": "Whether completion is tracked automatically",
@@ -163,7 +167,8 @@
           "overrideby": {
             "nullable": true,
             "description": "User id who overrode the status, or null",
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           },
           "uservisible": {
             "description": "Whether this activity is visible to the user",

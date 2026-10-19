@@ -16,10 +16,10 @@ public interface MoodleGradesAdapterTableResponseMapper {
   String CATEGORY_PREFIX = "cat_";
 
   default void fillParent(GetGradesTableResponseApi response, List<GradeItem> categories) {
-    Set<Integer> knownIds =
+    Set<Long> knownIds =
         categories.stream().map(GradeItem::getItemInstance).collect(Collectors.toSet());
 
-    Map<Integer, Integer> parentIds = new HashMap<>();
+    Map<Long, Long> parentIds = new HashMap<>();
     firstTableData(response).stream()
         .filter(this::isCategory)
         .forEach(row -> parentIds.put(parseId(row), findParentId(row, knownIds)));
@@ -44,18 +44,19 @@ public interface MoodleGradesAdapterTableResponseMapper {
   }
 
   /** El id tiene el formato "cat_82_13": tipo (cat/item), id del elemento y id de usuario. */
-  default Integer parseId(TableDataItemApi row) {
+  default Long parseId(TableDataItemApi row) {
     try {
-      return Integer.valueOf(row.getItemname().getId().split("_")[1]);
+      return Long.valueOf(row.getItemname().getId().split("_")[1]);
     } catch (NumberFormatException | ArrayIndexOutOfBoundsException _) {
-      return 0;
+      return 0L;
     }
   }
 
-  default Integer findParentId(TableDataItemApi row, Set<Integer> knownIds) {
+  default Long findParentId(TableDataItemApi row, Set<Long> knownIds) {
     return Optional.ofNullable(row.getParentcategories())
         .filter(e -> !e.isEmpty())
         .flatMap(parents -> parents.stream().findFirst())
+        .map(Long::valueOf)
         .filter(knownIds::contains)
         .orElse(null);
   }

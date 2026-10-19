@@ -21,7 +21,7 @@ public class LogParserService {
       DateTimeFormatter.ofPattern("d/MM/yy, HH:mm:ss");
 
   public ProcessLogLine processRow(
-      Integer courseId,
+      Long courseId,
       CSVRecord row,
       Map<MoodleLogCatalog.Key, MoodleLogCatalog.Entry> logEvents,
       Map<String, Byte> logOrigins) {
@@ -91,12 +91,12 @@ public class LogParserService {
   private void applyCapturedData(Map<String, Object> grokResult, ProcessLogLine processLogLine) {
     Object userId = grokResult.get("user_id");
     if (userId != null) {
-      processLogLine.setUserId((Integer) userId);
+      processLogLine.setUserId(((Number) userId).longValue());
     }
 
     Object moduleId = grokResult.get("course_module_id");
     if (moduleId != null) {
-      processLogLine.setModuleId((Integer) moduleId);
+      processLogLine.setModuleId(((Number) moduleId).longValue());
     }
   }
 }

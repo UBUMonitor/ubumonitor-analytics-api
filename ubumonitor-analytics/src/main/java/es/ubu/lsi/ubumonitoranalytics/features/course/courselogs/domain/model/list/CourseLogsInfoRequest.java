@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class CourseLogsInfoRequest {
-  private Integer courseId;
+  private Long courseId;
   private CourseLogsInfoRequestTimeRange timeRange;
   private CourseLogsInfoRequestFilters filters;
   private List<LogViewColumn> fields;
