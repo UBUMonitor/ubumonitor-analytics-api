@@ -6,9 +6,10 @@ import es.ubu.lsi.ubumonitoranalytics.features.users.enrollment.domain.model.Cou
 import es.ubu.lsi.ubumonitoranalytics.features.users.enrollment.domain.model.Enrollment;
 import es.ubu.lsi.ubumonitoranalytics.features.users.enrollment.domain.model.UserEnrolledCourses;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.GlobalMapperConfig;
-import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+
+import java.util.List;
 
 /** Maps Moodle user-course responses to application enrollment models. */
 @Mapper(config = GlobalMapperConfig.class)
@@ -28,6 +29,7 @@ public interface MoodleUserCoursesAdapterMapper {
   @Mapping(target = "isFavourite", source = "isfavourite")
   Enrollment toDomainEnrolledCourse(GetUsersCoursesResponseApi getUsersCoursesResponseApi);
 
+  @Mapping(target = "hasBeenLoaded", ignore = true)
   @Mapping(target = "shortName", source = "shortname")
   @Mapping(target = "timeModified", source = "timemodified")
   @Mapping(target = "startDate", source = "startdate")

@@ -2,6 +2,7 @@ package es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.rest.exception;
 
 import es.ubu.lsi.moodle.exception.MoodleUnauthorizedException;
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.ErrorResponseDto;
+import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.exception.MoodleLogExportException;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.exception.*;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.DatabaseCreationException;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.InvalidDatabaseEncryptionKeyException;
@@ -48,6 +49,12 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(MoodleUnauthorizedException.class)
   public ResponseEntity<ErrorResponseDto> moodleUnauthorized(MoodleUnauthorizedException ex) {
     return response(HttpStatus.UNAUTHORIZED, "MOODLE_UNAUTHORIZED", ex.getMessage(), ex);
+  }
+
+  /** Handles invalid responses from Moodle's course log export. */
+  @ExceptionHandler(MoodleLogExportException.class)
+  public ResponseEntity<ErrorResponseDto> moodleLogExport(MoodleLogExportException ex) {
+    return response(HttpStatus.INTERNAL_SERVER_ERROR, "UNKNOWN_ERROR", ex.getMessage(), ex);
   }
 
   /** Handles application not-found errors. */

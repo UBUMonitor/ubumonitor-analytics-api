@@ -47,6 +47,7 @@ public interface SiteInfoApiAdapterMapper {
       GetSiteInfoResponseApi getSiteInfoResponseApi,
       GetPublicConfigResponseApi getPublicConfigResponseApi);
 
+  @Mapping(target = "timeZone", ignore = true)
   @Mapping(target = "id", source = "userid")
   @Mapping(target = "userPicture.url", source = "userpictureurl")
   @Mapping(target = "userPicture.data", ignore = true)

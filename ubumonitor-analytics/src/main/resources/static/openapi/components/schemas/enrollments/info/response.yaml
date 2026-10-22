@@ -43,3 +43,6 @@ EnrollmentsResponse:
             type: string
             format: date-time
             description: The date and time when the enrollment information was last modified.
+          hasBeenLoaded:
+            type: boolean
+            description: Indicates whether the enrollment information has been loaded into the system.

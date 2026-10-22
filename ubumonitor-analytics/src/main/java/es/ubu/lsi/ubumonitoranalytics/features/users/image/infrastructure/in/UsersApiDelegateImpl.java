@@ -49,14 +49,14 @@ public class UsersApiDelegateImpl implements UsersApiDelegate {
   @Override
   public ResponseEntity<Resource> getUsersEnrollmentImagesDocument(
       List<Long> userIds,
-      String defaultImagePath,
+      URI defaultImageUri,
       Boolean useDefaultPhoto,
       String headerText,
       String fileName) {
 
     EnrollmentImagesDocumentCommand command =
         enrollmentImagesDocumentCommandMapper.toDomain(
-            userIds, defaultImagePath, useDefaultPhoto, headerText);
+            userIds, defaultImageUri, useDefaultPhoto, headerText);
 
     byte[] docx = generateEnrollmentImagesDocumentUseCase.generateEnrollmentImagesDocument(command);
 

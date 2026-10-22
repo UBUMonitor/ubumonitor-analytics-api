@@ -45,6 +45,8 @@ public class UserCoursePersistenceAdapter implements UserCoursePersistencePort {
     upsertUsersCourses(usersResponse, now);
     upsertUsersGroups(usersResponse, now);
     upsertUsersRoles(usersResponse, now);
+
+    setCourseLoaded(usersResponse, now);
   }
 
   private void upsertUsers(UsersResponse usersResponse, LocalDateTime now) {
@@ -247,5 +249,14 @@ public class UserCoursePersistenceAdapter implements UserCoursePersistencePort {
     r.setRoleId(role.getId());
     r.setCourseId(actualCourseId);
     return r;
+  }
+
+  private void setCourseLoaded(UsersResponse usersResponse, LocalDateTime now) {
+    jooq.dsl()
+        .update(COURSES)
+        .set(COURSES.HAS_BEEN_LOADED, true)
+        .set(COURSES.UPDATED_AT, now)
+        .where(COURSES.ID.eq(usersResponse.getActualCourseId()))
+        .execute();
   }
 }

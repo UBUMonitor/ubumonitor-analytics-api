@@ -1,0 +1,43 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/public/sites/databases/info"
+  },
+  "databaseFiles": [
+    "https~school.moodledemo.net~teacher.mv.db",
+    "https~school.moodledemo.net~student.mv.db",
+    "http~school.moodledemo.net~student.mv.db"
+  ],
+  "expectedResponse": {
+    "status": 200,
+    "body": {
+      "databases": [
+        {
+          "moodleUrl": "https://school.moodledemo.net",
+          "users": [
+            {
+              "id": "https~school.moodledemo.net~student",
+              "userName": "student",
+              "location": "${DATABASE_FILE:https~school.moodledemo.net~student.mv.db}"
+            },
+            {
+              "id": "https~school.moodledemo.net~teacher",
+              "userName": "teacher",
+              "location": "${DATABASE_FILE:https~school.moodledemo.net~teacher.mv.db}"
+            }
+          ]
+        },
+        {
+          "moodleUrl": "http://school.moodledemo.net",
+          "users": [
+            {
+              "id": "http~school.moodledemo.net~student",
+              "userName": "student",
+              "location": "${DATABASE_FILE:http~school.moodledemo.net~student.mv.db}"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

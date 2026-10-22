@@ -37,7 +37,12 @@ public class LogParserService {
     Byte originId = logOrigins.get(origin);
 
     if (logEvent == null || originId == null) {
-      log.warn("Missing mapping component='{}', event='{}', origin='{}'", component, event, origin);
+      log.warn(
+          "Missing mapping component='{}', event='{}', origin='{}', description='{}'",
+          component,
+          event,
+          origin,
+          description);
       return null;
     }
 
@@ -61,7 +66,11 @@ public class LogParserService {
       List<Grok> groks) {
 
     if (CollectionUtils.isEmpty(groks)) {
-      log.warn("No Grok rules for component='{}', eventName='{}'", component, eventName);
+      log.warn(
+          "No Grok rules for component='{}', eventName='{}', description='{}'",
+          component,
+          eventName,
+          description);
       return;
     }
 
@@ -85,18 +94,22 @@ public class LogParserService {
       return;
     }
 
-    log.warn("No Grok match found for component='{}', eventName='{}'", component, eventName);
+    log.warn(
+        "No Grok match found for component='{}', eventName='{}', description='{}'",
+        component,
+        eventName,
+        description);
   }
 
   private void applyCapturedData(Map<String, Object> grokResult, ProcessLogLine processLogLine) {
-    Object userId = grokResult.get("user_id");
+    Long userId = (Long) grokResult.get("user_id");
     if (userId != null) {
-      processLogLine.setUserId(((Number) userId).longValue());
+      processLogLine.setUserId(userId);
     }
 
-    Object moduleId = grokResult.get("course_module_id");
+    Long moduleId = (Long) grokResult.get("course_module_id");
     if (moduleId != null) {
-      processLogLine.setModuleId(((Number) moduleId).longValue());
+      processLogLine.setModuleId(moduleId);
     }
   }
 }

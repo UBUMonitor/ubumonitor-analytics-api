@@ -178,6 +178,11 @@
             <artifactId>java-grok</artifactId>
             <version>0.1.9</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-core</artifactId>
+            <version>4.1.0</version>
+        </dependency>
         <!-- TEST -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

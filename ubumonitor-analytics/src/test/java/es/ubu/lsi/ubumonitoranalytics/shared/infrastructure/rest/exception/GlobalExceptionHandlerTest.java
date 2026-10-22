@@ -3,6 +3,7 @@ package es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.rest.exception;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import es.ubu.lsi.moodle.exception.MoodleUnauthorizedException;
+import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.exception.MoodleLogExportException;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.exception.ErrorResponseFactory;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.exception.UnauthorizedException;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.InvalidDatabaseEncryptionKeyException;
@@ -29,6 +30,16 @@ class GlobalExceptionHandlerTest {
 
     assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
     assertEquals("MOODLE_UNAUTHORIZED", response.getBody().getCode());
+  }
+
+  @Test
+  void mapsMoodleLogExportExceptionToInternalServerErrorResponse() {
+    var response =
+        exceptionHandler.moodleLogExport(new MoodleLogExportException("Unexpected Content-Type"));
+
+    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    assertEquals("UNKNOWN_ERROR", response.getBody().getCode());
+    assertEquals("Unexpected Content-Type", response.getBody().getMessage());
   }
 
   @Test

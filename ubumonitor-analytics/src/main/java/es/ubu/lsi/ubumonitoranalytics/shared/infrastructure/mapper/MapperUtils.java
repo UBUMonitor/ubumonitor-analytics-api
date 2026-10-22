@@ -5,10 +5,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.util.Locale;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
@@ -36,6 +33,12 @@ public class MapperUtils {
 
   public LocalDateTime toLocalDateTime(OffsetDateTime offsetDateTime) {
     return offsetDateTime == null ? null : offsetDateTime.toLocalDateTime();
+  }
+
+  public static LocalDateTime toLocalDateTime(Long timestamp) {
+    return timestamp == null || timestamp == 0L
+        ? null
+        : LocalDateTime.ofInstant(Instant.ofEpochSecond(timestamp), ZoneOffset.UTC);
   }
 
   public OffsetDateTime toOffsetDateTime(LocalDateTime localDateTime) {
@@ -205,7 +208,7 @@ public class MapperUtils {
     return value.intValue();
   }
 
-  public static OffsetDateTime unixToOffsetDateTime(Integer unixTimestamp) {
+  public static OffsetDateTime unixToOffsetDateTime(Long unixTimestamp) {
     if (unixTimestamp == null || unixTimestamp <= 0) {
       return null;
     }
@@ -253,5 +256,19 @@ public class MapperUtils {
       return null;
     }
     return Locale.forLanguageTag(localeString);
+  }
+
+  public ZoneId toZoneId(String zoneIdString) {
+    if (zoneIdString == null || zoneIdString.isEmpty()) {
+      return null;
+    }
+    return ZoneId.of(zoneIdString);
+  }
+
+  public String toZoneIdString(ZoneId zoneId) {
+    if (zoneId == null) {
+      return null;
+    }
+    return zoneId.getId();
   }
 }

@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class Site {
-  private Integer id;
+  private Long id;
   private URI host;
   private String siteName;
   private String versionNumber;

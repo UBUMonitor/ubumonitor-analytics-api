@@ -9,11 +9,7 @@ import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.UsersGroups.USERS_GROUP
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.UsersRoles.USERS_ROLES;
 
 import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.application.port.out.EnrollmentGetPersistencePort;
-import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.Group;
-import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.Role;
-import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.User;
-import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.UserCourse;
-import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.UsersResponse;
+import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.*;
 import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.infrastructure.out.persistence.mapper.EnrollmentCourseEnrollmentsMapper;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
 import java.util.ArrayList;
@@ -72,7 +68,8 @@ public class EnrollmentGetPersistenceAdapter implements EnrollmentGetPersistence
             USERS_COURSES.LAST_COURSE_ACCESS,
             COURSES.ID,
             COURSES.FULL_NAME,
-            COURSES.SHORT_NAME)
+            COURSES.SHORT_NAME,
+            COURSES.HAS_BEEN_LOADED)
         .from(USERS_COURSES)
         .join(COURSES)
         .on(COURSES.ID.eq(USERS_COURSES.COURSE_ID))

@@ -23,8 +23,6 @@ spring:
     multipart:
       max-file-size: 100MB
       max-request-size: 100MB
-  flyway:
-    enabled: false
   http:
     clients:
       imperative:
@@ -44,9 +42,6 @@ server:
   tomcat:
     max-swallow-size: -1
     max-http-form-post-size: 100MB
-    threads:
-      max: 4
-      min-spare: 1
 
 springdoc:
   api-docs:

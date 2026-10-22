@@ -31,7 +31,7 @@ public class SiteInfoApiAdapter implements SiteInfoApiPort {
     CompletableFuture<GetPublicConfigResponseApi> call2 =
         asyncOperations.supplyAsync(
             () -> client.toolMobile().getPublicConfig(new GetPublicConfigRequestApi()));
-    CompletableFuture.allOf(call1, call2).join();
+
     return siteInfoApiAdapterMapper.toDomain(call1.join(), call2.join());
   }
 }

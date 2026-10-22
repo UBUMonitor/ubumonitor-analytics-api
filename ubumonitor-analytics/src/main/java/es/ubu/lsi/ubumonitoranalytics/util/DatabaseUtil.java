@@ -2,6 +2,7 @@ package es.ubu.lsi.ubumonitoranalytics.util;
 
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.DatabaseCreationException;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.InvalidDatabaseEncryptionKeyException;
+import java.io.IOException;
 import java.net.IDN;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -10,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Locale;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,20 +36,15 @@ public class DatabaseUtil {
   }
 
   public static String buildDbFileName(URI host, String username) {
-    return toHostString(host) + "_" + toSafeUserName(username);
+    String scheme = host == null ? null : host.getScheme();
+    String protocolPrefix =
+        scheme == null || scheme.isBlank() ? "" : scheme.toLowerCase(Locale.ROOT) + "~";
+    return protocolPrefix + toHostString(host) + "~" + toSafeUserName(username);
   }
 
   public static String buildJdbcUrl(
       String jdbcTemplate, String basePath, URI host, String username) {
-    String fileName = buildDbFileName(host, username);
-
-    // Normalize the path for the current operating system.
-    String fullPath = Path.of(basePath).resolve(fileName).toAbsolutePath().toString();
-
-    // H2 JDBC URLs are more portable when Windows path separators are normalized.
-    String normalizedPath = fullPath.replace("\\", "/");
-
-    return String.format(jdbcTemplate, normalizedPath);
+    return buildJdbcUrl(jdbcTemplate, basePath, buildDbFileName(host, username));
   }
 
   public static void createAndInitializeDatabase(
@@ -58,6 +55,7 @@ public class DatabaseUtil {
     try {
       Files.createDirectories(dir);
 
+      migrateLegacyDatabase(jdbcTemplate, basePath, host, username, dbPassword);
       String jdbcUrl = DatabaseUtil.buildJdbcUrl(jdbcTemplate, basePath, host, username);
 
       log.info("ABS PATH DB: {}", dir.toAbsolutePath());
@@ -87,5 +85,50 @@ public class DatabaseUtil {
   public static Path getFile(String basePath, URI host, String username) {
     String fileName = DatabaseUtil.buildDbFileName(host, username);
     return Path.of(basePath).resolve(fileName + ".mv.db");
+  }
+
+  private static void migrateLegacyDatabase(
+      String jdbcTemplate, String basePath, URI host, String username, String dbPassword)
+      throws IOException, SQLException {
+    Path databaseFile = getFile(basePath, host, username);
+    if (Files.exists(databaseFile)) {
+      return;
+    }
+
+    for (String legacyFileName : buildLegacyDbFileNames(host, username)) {
+      Path legacyDatabaseFile = Path.of(basePath).resolve(legacyFileName + ".mv.db");
+      if (!Files.exists(legacyDatabaseFile)) {
+        continue;
+      }
+
+      String legacyJdbcUrl = buildJdbcUrl(jdbcTemplate, basePath, legacyFileName);
+      try (var connection =
+              DriverManager.getConnection(legacyJdbcUrl, "sa", dbPassword + " " + dbPassword);
+          var statement = connection.createStatement()) {
+        statement.execute("SHUTDOWN");
+      }
+
+      Files.move(legacyDatabaseFile, databaseFile);
+      return;
+    }
+  }
+
+  private static String[] buildLegacyDbFileNames(URI host, String username) {
+    String hostName = toHostString(host);
+    String safeUserName = toSafeUserName(username);
+    String scheme = host == null ? null : host.getScheme();
+    if (scheme == null || scheme.isBlank()) {
+      return new String[] {hostName + "_" + safeUserName};
+    }
+    return new String[] {
+      scheme.toLowerCase(Locale.ROOT) + "_" + hostName + "_" + safeUserName,
+      hostName + "_" + safeUserName
+    };
+  }
+
+  private static String buildJdbcUrl(String jdbcTemplate, String basePath, String fileName) {
+    String fullPath = Path.of(basePath).resolve(fileName).toAbsolutePath().toString();
+    // H2 JDBC URLs are more portable when Windows path separators are normalized.
+    return String.format(jdbcTemplate, fullPath.replace("\\", "/"));
   }
 }

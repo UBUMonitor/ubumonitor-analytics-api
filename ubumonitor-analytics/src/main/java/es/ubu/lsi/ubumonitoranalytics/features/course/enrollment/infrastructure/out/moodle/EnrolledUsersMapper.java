@@ -4,15 +4,10 @@ import es.ubu.lsi.moodle.model.core.enrol.getenrolledusers.response.Enrolledcour
 import es.ubu.lsi.moodle.model.core.enrol.getenrolledusers.response.GetEnrolledUsersResponseApi;
 import es.ubu.lsi.moodle.model.core.enrol.getenrolledusers.response.GroupApi;
 import es.ubu.lsi.moodle.model.core.enrol.getenrolledusers.response.RoleApi;
-import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.Course;
-import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.Group;
-import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.Role;
-import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.User;
-import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.UserCourse;
-import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.UsersResponse;
+import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.*;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.GlobalMapperConfig;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.MapperUtils;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
@@ -54,6 +49,7 @@ public interface EnrolledUsersMapper {
       @Context EnrolledcourseApi enrolledcourseApi,
       @Context Long courseId);
 
+  @Mapping(target = "hasBeenLoaded", ignore = true)
   @Mapping(target = "id", source = "id")
   @Mapping(target = "fullName", source = "fullname")
   @Mapping(target = "shortName", source = "shortname")
@@ -88,12 +84,10 @@ public interface EnrolledUsersMapper {
   }
 
   @Named("lastCourseAccess")
-  default OffsetDateTime lastCourseAccess(
-      Integer lastCourseAccess,
-      @Context EnrolledcourseApi enrolledcourseApi,
-      @Context Long courseId) {
-    if (courseId.equals(enrolledcourseApi.getId().longValue())) {
-      return MapperUtils.unixToOffsetDateTime(lastCourseAccess);
+  default LocalDateTime lastCourseAccess(
+      Long lastCourseAccess, @Context EnrolledcourseApi enrolledcourseApi, @Context Long courseId) {
+    if (courseId.equals(enrolledcourseApi.getId())) {
+      return MapperUtils.toLocalDateTime(lastCourseAccess);
     }
     return null;
   }

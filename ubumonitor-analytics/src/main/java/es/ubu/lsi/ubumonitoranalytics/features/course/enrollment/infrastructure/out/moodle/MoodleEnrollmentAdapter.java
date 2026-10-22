@@ -12,11 +12,12 @@ import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.UserPicture;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.concurrent.AsyncOperations;
 import es.ubu.lsi.ubumonitoranalytics.util.HashUtil;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.util.MimeType;
 
 /** Fetches course enrollment data and profile images from Moodle. */
 @Component
@@ -50,13 +51,15 @@ public class MoodleEnrollmentAdapter implements EnrollmentFetchPort {
   public void fetchUserImage(UserPicture userPicture, String token) {
     ResponseEntity<byte[]> image =
         moodleDownloaderPort.downloadUserImage(userPicture.getUrl(), token);
-    if (image.getStatusCode().is2xxSuccessful()) {
+
+    MediaType contentType = image.getHeaders().getContentType();
+
+    if (image.getStatusCode().is2xxSuccessful()
+        && contentType != null
+        && MimeType.valueOf("image/*").isCompatibleWith(contentType)) {
       byte[] body = image.getBody();
       userPicture.setData(body);
-      userPicture.setContentType(
-          Optional.ofNullable(image.getHeaders().getContentType())
-              .map(Object::toString)
-              .orElse("image/png"));
+      userPicture.setContentType(contentType.toString());
       String hexHash = HashUtil.imageHash(body);
       userPicture.setHexHash(hexHash);
     }

@@ -71,7 +71,7 @@ public class JooqProvider implements TenantDatabasePort {
     }
 
     asyncOperations
-        .runAsync(() -> getDataSource(session))
+        .runAsync(() -> initializeTenant(session))
         .exceptionally(
             exception -> {
               log.error(

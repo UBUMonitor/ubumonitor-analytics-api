@@ -13,6 +13,7 @@ import org.mapstruct.MappingTarget;
 @Mapper(config = GlobalMapperConfig.class)
 public interface SyncEnrollmentPersistenceAdapterMapper {
 
+  @Mapping(target = "hasBeenLoaded", ignore = true)
   @Mapping(target = "updatedAt", ignore = true)
   @Mapping(target = "createdAt", ignore = true)
   @Mapping(target = "sourceModifiedAt", source = "timeModified")

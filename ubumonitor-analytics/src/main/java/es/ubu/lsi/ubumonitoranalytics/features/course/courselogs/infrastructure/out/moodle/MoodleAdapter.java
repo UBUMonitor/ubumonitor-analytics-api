@@ -1,5 +1,6 @@
 package es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.infrastructure.out.moodle;
 
+import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.exception.MoodleLogExportException;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.port.out.MoodlePort;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,6 +14,8 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.io.input.BOMInputStream;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
@@ -20,6 +23,8 @@ import org.springframework.web.client.RestClient;
 @Component
 @Slf4j
 public class MoodleAdapter implements MoodlePort {
+
+  private static final MediaType CSV_MEDIA_TYPE = new MediaType("text", "csv");
 
   @Override
   public void downloadAllLogs(Long courseId, RestClient restClient, Consumer<CSVRecord> consumer) {
@@ -38,7 +43,7 @@ public class MoodleAdapter implements MoodlePort {
                     .build())
         .exchange(
             (request, response) -> {
-              processCSV(consumer, response.getBody());
+              processCSV(consumer, response);
 
               return null;
             });
@@ -62,14 +67,26 @@ public class MoodleAdapter implements MoodlePort {
                     .build())
         .exchange(
             (request, response) -> {
-              processCSV(consumer, response.getBody());
+              processCSV(consumer, response);
 
               return null;
             });
   }
 
-  private void processCSV(Consumer<CSVRecord> consumer, InputStream inputStream)
+  private void processCSV(Consumer<CSVRecord> consumer, ClientHttpResponse response)
       throws IOException {
+
+    if (!response.getStatusCode().is2xxSuccessful()) {
+      throw new MoodleLogExportException(
+          "Moodle log export returned HTTP status " + response.getStatusCode());
+    }
+
+    MediaType contentType = response.getHeaders().getContentType();
+    if (contentType == null || !CSV_MEDIA_TYPE.isCompatibleWith(contentType)) {
+      throw new MoodleLogExportException(
+          "Moodle log export returned unexpected Content-Type: " + contentType);
+    }
+
     CSVFormat format =
         CSVFormat.DEFAULT
             .builder()
@@ -79,7 +96,7 @@ public class MoodleAdapter implements MoodlePort {
             .setTrim(true)
             .get();
 
-    try (InputStream is = inputStream;
+    try (InputStream is = response.getBody();
         BufferedReader reader = buildReader(is);
         CSVParser parser = format.parse(reader)) {
       for (CSVRecord csvRecord : parser) {

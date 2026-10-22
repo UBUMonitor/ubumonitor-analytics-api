@@ -19,6 +19,7 @@ public interface UserCoursesEnrollmentsMapper {
   @Mapping(target = ".", source = "course")
   CourseInformationDto toCourseInformationDto(Enrollment enrollment);
 
+  @Mapping(target = "hasBeenLoaded", source = "hasBeenLoaded")
   @Mapping(target = "timeModified", source = "timeModified")
   @Mapping(target = "startDate", source = "startDate")
   @Mapping(target = "showGrades", source = "showGrades")

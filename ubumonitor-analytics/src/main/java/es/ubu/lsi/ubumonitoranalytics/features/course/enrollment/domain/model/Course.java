@@ -8,4 +8,5 @@ public class Course {
   private Long id;
   private String fullName;
   private String shortName;
+  private Boolean hasBeenLoaded;
 }

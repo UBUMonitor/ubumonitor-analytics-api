@@ -24,6 +24,7 @@ public interface SitePersistenceAdapterMapper {
   @Mapping(target = "fullName", source = "loggedUser.fullName")
   @Mapping(target = "createdAt", ignore = true)
   @Mapping(target = "updatedAt", ignore = true)
+  @Mapping(target = "timeZone", source = "loggedUser.timeZone")
   SitesRecord toRecord(SiteInfo siteInfo);
 
   @Mapping(target = "site.versionNumber", source = "versionNumber")
