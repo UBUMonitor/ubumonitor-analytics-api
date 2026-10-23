@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -11,6 +12,7 @@ import static org.mockito.Mockito.when;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.application.port.out.MoodleApiPort;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.application.port.out.SessionPort;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.auth.AuthInput;
+import es.ubu.lsi.ubumonitoranalytics.features.sites.application.port.in.SyncSiteInfoUseCase;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.exception.UnauthorizedException;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.database.TenantDatabasePort;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.DatabaseCreationException;
@@ -26,6 +28,7 @@ class AuthServiceTest {
     SessionPort sessionPort = mock(SessionPort.class);
     MoodleApiPort moodleApiPort = mock(MoodleApiPort.class);
     TenantDatabasePort tenantDatabasePort = mock(TenantDatabasePort.class);
+    SyncSiteInfoUseCase syncSiteInfoUseCase = mock(SyncSiteInfoUseCase.class);
     AsyncOperations asyncOperations = new AsyncOperations(Runnable::run);
 
     when(moodleApiPort.login(any())).thenReturn(null);
@@ -33,7 +36,8 @@ class AuthServiceTest {
         .thenReturn(mock(RestClient.class));
 
     AuthService authService =
-        new AuthService(sessionPort, moodleApiPort, tenantDatabasePort, asyncOperations);
+        new AuthService(
+            sessionPort, moodleApiPort, tenantDatabasePort, syncSiteInfoUseCase, asyncOperations);
     AuthInput authInput =
         new AuthInput(
             "teacher",
@@ -53,6 +57,7 @@ class AuthServiceTest {
     SessionPort sessionPort = mock(SessionPort.class);
     MoodleApiPort moodleApiPort = mock(MoodleApiPort.class);
     TenantDatabasePort tenantDatabasePort = mock(TenantDatabasePort.class);
+    SyncSiteInfoUseCase syncSiteInfoUseCase = mock(SyncSiteInfoUseCase.class);
     AsyncOperations asyncOperations = new AsyncOperations(Runnable::run);
     AuthInput authInput =
         new AuthInput(
@@ -71,10 +76,73 @@ class AuthServiceTest {
         .initializeTenant(any());
 
     AuthService authService =
-        new AuthService(sessionPort, moodleApiPort, tenantDatabasePort, asyncOperations);
+        new AuthService(
+            sessionPort, moodleApiPort, tenantDatabasePort, syncSiteInfoUseCase, asyncOperations);
 
     assertThrows(DatabaseCreationException.class, () -> authService.loginByCredentials(authInput));
     verify(tenantDatabasePort).initializeTenant(any());
     verifyNoInteractions(sessionPort);
+  }
+
+  @Test
+  void synchronizesSiteInfoAfterCreatingTenantDatabase() {
+    SessionPort sessionPort = mock(SessionPort.class);
+    MoodleApiPort moodleApiPort = mock(MoodleApiPort.class);
+    TenantDatabasePort tenantDatabasePort = mock(TenantDatabasePort.class);
+    SyncSiteInfoUseCase syncSiteInfoUseCase = mock(SyncSiteInfoUseCase.class);
+    AsyncOperations asyncOperations = new AsyncOperations(Runnable::run);
+    AuthInput authInput =
+        new AuthInput(
+            "teacher",
+            "moodle-password",
+            URI.create("https://moodle.test"),
+            "database-password",
+            null,
+            null);
+
+    when(moodleApiPort.login(authInput)).thenReturn("moodle-token");
+    when(moodleApiPort.loginWeb("teacher", "moodle-password", authInput.getHost()))
+        .thenReturn(mock(RestClient.class));
+    when(tenantDatabasePort.initializeTenant(any())).thenReturn(true);
+
+    AuthService authService =
+        new AuthService(
+            sessionPort, moodleApiPort, tenantDatabasePort, syncSiteInfoUseCase, asyncOperations);
+
+    authService.loginByCredentials(authInput);
+
+    verify(tenantDatabasePort).initializeTenant(any());
+    verify(sessionPort).generateSession(any(), any());
+    verify(syncSiteInfoUseCase).syncSiteInfo();
+  }
+
+  @Test
+  void doesNotSynchronizeSiteInfoWhenTenantDatabaseAlreadyExists() {
+    SessionPort sessionPort = mock(SessionPort.class);
+    MoodleApiPort moodleApiPort = mock(MoodleApiPort.class);
+    TenantDatabasePort tenantDatabasePort = mock(TenantDatabasePort.class);
+    SyncSiteInfoUseCase syncSiteInfoUseCase = mock(SyncSiteInfoUseCase.class);
+    AsyncOperations asyncOperations = new AsyncOperations(Runnable::run);
+    AuthInput authInput =
+        new AuthInput(
+            "teacher",
+            "moodle-password",
+            URI.create("https://moodle.test"),
+            "database-password",
+            null,
+            null);
+
+    when(moodleApiPort.login(authInput)).thenReturn("moodle-token");
+    when(moodleApiPort.loginWeb("teacher", "moodle-password", authInput.getHost()))
+        .thenReturn(mock(RestClient.class));
+    when(tenantDatabasePort.initializeTenant(any())).thenReturn(false);
+
+    AuthService authService =
+        new AuthService(
+            sessionPort, moodleApiPort, tenantDatabasePort, syncSiteInfoUseCase, asyncOperations);
+
+    authService.loginByCredentials(authInput);
+
+    verify(syncSiteInfoUseCase, never()).syncSiteInfo();
   }
 }

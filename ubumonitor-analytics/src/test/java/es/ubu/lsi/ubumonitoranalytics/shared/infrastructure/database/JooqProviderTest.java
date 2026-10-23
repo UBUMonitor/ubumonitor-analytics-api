@@ -38,7 +38,8 @@ class JooqProviderTest {
             config.getDb().getJdbcUrlTemplate(), config.getDb().getBasePath(), host, "teacher");
 
     try {
-      provider.initializeTenant(session);
+      assertTrue(provider.initializeTenant(session));
+      assertFalse(provider.initializeTenant(session));
       session.setDbPassword("wrong-password");
 
       assertThrows(

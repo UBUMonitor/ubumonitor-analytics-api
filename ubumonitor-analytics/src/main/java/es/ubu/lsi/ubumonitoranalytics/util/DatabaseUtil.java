@@ -47,7 +47,7 @@ public class DatabaseUtil {
     return buildJdbcUrl(jdbcTemplate, basePath, buildDbFileName(host, username));
   }
 
-  public static void createAndInitializeDatabase(
+  public static boolean createAndInitializeDatabase(
       String jdbcTemplate, String basePath, URI host, String username, String dbPassword) {
 
     Path dir = Path.of(basePath);
@@ -56,6 +56,7 @@ public class DatabaseUtil {
       Files.createDirectories(dir);
 
       migrateLegacyDatabase(jdbcTemplate, basePath, host, username, dbPassword);
+      boolean databaseCreated = !Files.exists(getFile(basePath, host, username));
       String jdbcUrl = DatabaseUtil.buildJdbcUrl(jdbcTemplate, basePath, host, username);
 
       log.info("ABS PATH DB: {}", dir.toAbsolutePath());
@@ -67,6 +68,7 @@ public class DatabaseUtil {
       try (var _ = DriverManager.getConnection(jdbcUrl, "sa", dbPassword + " " + dbPassword)) {
         log.info("Database ready (H2 auto-create)");
       }
+      return databaseCreated;
 
     } catch (SQLException e) {
       if (e.getSQLState() != null && e.getSQLState().startsWith("28")) {

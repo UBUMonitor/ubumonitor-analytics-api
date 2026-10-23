@@ -49,7 +49,7 @@ public interface EnrolledUsersMapper {
       @Context EnrolledcourseApi enrolledcourseApi,
       @Context Long courseId);
 
-  @Mapping(target = "hasBeenLoaded", ignore = true)
+  @Mapping(target = "lastSync", ignore = true)
   @Mapping(target = "id", source = "id")
   @Mapping(target = "fullName", source = "fullname")
   @Mapping(target = "shortName", source = "shortname")

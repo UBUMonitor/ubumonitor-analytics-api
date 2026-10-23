@@ -14,5 +14,5 @@ public class Course {
   private OffsetDateTime startDate;
   private OffsetDateTime endDate;
   private OffsetDateTime timeModified;
-  private Boolean hasBeenLoaded;
+  private OffsetDateTime lastSync;
 }

@@ -69,7 +69,7 @@ public class EnrollmentGetPersistenceAdapter implements EnrollmentGetPersistence
             COURSES.ID,
             COURSES.FULL_NAME,
             COURSES.SHORT_NAME,
-            COURSES.HAS_BEEN_LOADED)
+            COURSES.LAST_SYNC)
         .from(USERS_COURSES)
         .join(COURSES)
         .on(COURSES.ID.eq(USERS_COURSES.COURSE_ID))

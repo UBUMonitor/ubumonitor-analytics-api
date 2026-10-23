@@ -98,14 +98,14 @@ public class SyncSyncEnrollmentPersistenceAdapter implements SyncEnrollmentPersi
 
     List<Long> courseIds = courses.stream().map(Course::getId).toList();
 
-    Map<Long, Boolean> courseLoadedById =
+    Map<Long, OffsetDateTime> courseLoadedById =
         jooq.dsl()
-            .select(COURSES.ID, COURSES.HAS_BEEN_LOADED)
+            .select(COURSES.ID, COURSES.LAST_SYNC)
             .from(COURSES)
             .where(COURSES.ID.in(courseIds))
-            .fetchMap(COURSES.ID, COURSES.HAS_BEEN_LOADED);
+            .fetchMap(COURSES.ID, COURSES.LAST_SYNC);
 
     courses.forEach(
-        course -> course.setHasBeenLoaded(courseLoadedById.getOrDefault(course.getId(), false)));
+        course -> course.setLastSync(courseLoadedById.getOrDefault(course.getId(), null)));
   }
 }

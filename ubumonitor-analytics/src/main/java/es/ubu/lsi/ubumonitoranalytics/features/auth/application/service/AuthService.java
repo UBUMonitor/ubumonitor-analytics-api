@@ -5,6 +5,7 @@ import es.ubu.lsi.ubumonitoranalytics.features.auth.application.port.out.MoodleA
 import es.ubu.lsi.ubumonitoranalytics.features.auth.application.port.out.SessionPort;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.SessionToken;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.auth.AuthInput;
+import es.ubu.lsi.ubumonitoranalytics.features.sites.application.port.in.SyncSiteInfoUseCase;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.exception.UnauthorizedException;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.database.TenantDatabasePort;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
@@ -22,6 +23,7 @@ public class AuthService implements AuthUseCase {
   private final SessionPort sessionPort;
   private final MoodleApiPort moodleApiPort;
   private final TenantDatabasePort tenantDatabasePort;
+  private final SyncSiteInfoUseCase syncSiteInfoUseCase;
   private final AsyncOperations asyncOperations;
 
   /**
@@ -72,8 +74,12 @@ public class AuthService implements AuthUseCase {
     RestClient restClient = restClientFuture.join();
 
     authInput.setMoodleToken(moodleToken);
-    initializeTenantDatabase(authInput);
-    return sessionPort.generateSession(authInput, restClient);
+    boolean databaseCreated = initializeTenantDatabase(authInput);
+    SessionToken sessionToken = sessionPort.generateSession(authInput, restClient);
+    if (databaseCreated) {
+      syncSiteInfoUseCase.syncSiteInfo();
+    }
+    return sessionToken;
   }
 
   private String fetchMoodleToken(AuthInput authInput) {
@@ -102,8 +108,8 @@ public class AuthService implements AuthUseCase {
     tenantDatabasePort.initializeTenantAsync(toTenantSession(authInput));
   }
 
-  private void initializeTenantDatabase(AuthInput authInput) {
-    tenantDatabasePort.initializeTenant(toTenantSession(authInput));
+  private boolean initializeTenantDatabase(AuthInput authInput) {
+    return tenantDatabasePort.initializeTenant(toTenantSession(authInput));
   }
 
   private SessionData toTenantSession(AuthInput authInput) {

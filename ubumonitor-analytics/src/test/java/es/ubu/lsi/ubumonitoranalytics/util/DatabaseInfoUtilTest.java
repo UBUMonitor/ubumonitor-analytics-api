@@ -42,8 +42,9 @@ class DatabaseInfoUtilTest {
       statement.execute("SHUTDOWN");
     }
 
-    DatabaseUtil.createAndInitializeDatabase(
-        jdbcTemplate, tempDir.toString(), host, "student", password);
+    assertFalse(
+        DatabaseUtil.createAndInitializeDatabase(
+            jdbcTemplate, tempDir.toString(), host, "student", password));
 
     Path newDatabaseFile = DatabaseUtil.getFile(tempDir.toString(), host, "student");
     assertTrue(Files.exists(newDatabaseFile));
@@ -80,8 +81,9 @@ class DatabaseInfoUtilTest {
       statement.execute("SHUTDOWN");
     }
 
-    DatabaseUtil.createAndInitializeDatabase(
-        jdbcTemplate, tempDir.toString(), host, "student", password);
+    assertFalse(
+        DatabaseUtil.createAndInitializeDatabase(
+            jdbcTemplate, tempDir.toString(), host, "student", password));
 
     Path newDatabaseFile = DatabaseUtil.getFile(tempDir.toString(), host, "student");
     assertTrue(Files.exists(newDatabaseFile));

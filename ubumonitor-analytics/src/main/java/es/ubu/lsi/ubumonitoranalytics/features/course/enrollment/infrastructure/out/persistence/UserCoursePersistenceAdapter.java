@@ -254,7 +254,7 @@ public class UserCoursePersistenceAdapter implements UserCoursePersistencePort {
   private void setCourseLoaded(UsersResponse usersResponse, OffsetDateTime now) {
     jooq.dsl()
         .update(COURSES)
-        .set(COURSES.HAS_BEEN_LOADED, true)
+        .set(COURSES.LAST_SYNC, now)
         .set(COURSES.UPDATED_AT, now)
         .where(COURSES.ID.eq(usersResponse.getActualCourseId()))
         .execute();

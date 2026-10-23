@@ -49,19 +49,21 @@ public class JooqProvider implements TenantDatabasePort {
 
   /** Validates the supplied database password and initializes the tenant data source and schema. */
   @Override
-  public void initializeTenant(SessionData session) {
+  public boolean initializeTenant(SessionData session) {
 
     if (session == null) {
-      return;
+      return false;
     }
 
-    DatabaseUtil.createAndInitializeDatabase(
-        moodleConfig.getDb().getJdbcUrlTemplate(),
-        moodleConfig.getDb().getBasePath(),
-        session.getHost(),
-        session.getUsername(),
-        session.getDbPassword());
+    boolean databaseCreated =
+        DatabaseUtil.createAndInitializeDatabase(
+            moodleConfig.getDb().getJdbcUrlTemplate(),
+            moodleConfig.getDb().getBasePath(),
+            session.getHost(),
+            session.getUsername(),
+            session.getDbPassword());
     getDataSource(session);
+    return databaseCreated;
   }
 
   /** Starts tenant datasource creation and Flyway migration without blocking session creation. */
