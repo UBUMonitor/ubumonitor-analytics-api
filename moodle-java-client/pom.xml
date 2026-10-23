@@ -6,7 +6,7 @@
   <parent>
     <groupId>es.ubu.lsi</groupId>
     <artifactId>ubumonitor-parent</artifactId>
-    <version>0.0.7-SNAPSHOT</version>
+    <version>0.0.7</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>moodle-java-client</artifactId>
