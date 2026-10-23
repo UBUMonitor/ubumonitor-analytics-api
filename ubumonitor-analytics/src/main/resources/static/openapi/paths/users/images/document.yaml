@@ -16,12 +16,13 @@ get:
         items:
           type: integer
           format: int64
-    - name: defaultImagePath
+    - name: defaultImageUri
       in: query
       description: The path to the default image file to use.
       required: false
       schema:
         type: string
+        format: uri
     - name: useDefaultPhoto
       in: query
       description: Whether to use the default photo.

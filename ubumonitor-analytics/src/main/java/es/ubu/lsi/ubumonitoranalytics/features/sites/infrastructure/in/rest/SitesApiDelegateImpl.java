@@ -1,8 +1,10 @@
 package es.ubu.lsi.ubumonitoranalytics.features.sites.infrastructure.in.rest;
 
 import es.ubu.lsi.ubumonitoranalytics.api.generated.api.SitesApiDelegate;
+import es.ubu.lsi.ubumonitoranalytics.api.generated.model.DatabasesInfoResponseDto;
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.PublicSiteInfoResponseDto;
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.SiteInfoResponseDto;
+import es.ubu.lsi.ubumonitoranalytics.features.sites.application.port.in.DatabaseInfoUseCase;
 import es.ubu.lsi.ubumonitoranalytics.features.sites.application.port.in.GetPublicSiteInfoUseCase;
 import es.ubu.lsi.ubumonitoranalytics.features.sites.application.port.in.GetSiteInfoUseCase;
 import es.ubu.lsi.ubumonitoranalytics.features.sites.application.port.in.SyncSiteInfoUseCase;
@@ -19,7 +21,9 @@ public class SitesApiDelegateImpl implements SitesApiDelegate {
   private final GetSiteInfoUseCase getSiteInfoUseCase;
   private final SyncSiteInfoUseCase syncSiteInfoUseCase;
   private final GetPublicSiteInfoUseCase getPublicSiteInfoUseCase;
+  private final DatabaseInfoUseCase databaseInfoUseCase;
   private final SiteInfoMapper siteInfoMapper;
+  private final PublicSiteInfoMapper publicSiteInfoMapper;
 
   @Override
   public ResponseEntity<SiteInfoResponseDto> syncSiteInfo() {
@@ -34,6 +38,14 @@ public class SitesApiDelegateImpl implements SitesApiDelegate {
   @Override
   public ResponseEntity<PublicSiteInfoResponseDto> getPublicSiteInfo(URI host) {
     return ResponseEntity.ok(
-        siteInfoMapper.toDto(getPublicSiteInfoUseCase.getPublicSiteInfo(host)));
+        publicSiteInfoMapper.toDto(getPublicSiteInfoUseCase.getPublicSiteInfo(host)));
+  }
+
+  @Override
+  public ResponseEntity<DatabasesInfoResponseDto> listDatabases() {
+    DatabasesInfoResponseDto responseDto = new DatabasesInfoResponseDto();
+    responseDto.databases(
+        siteInfoMapper.toDatabaseHostInfoDto(databaseInfoUseCase.getDatabasesInfo()));
+    return ResponseEntity.ok(responseDto);
   }
 }

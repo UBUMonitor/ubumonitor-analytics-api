@@ -28,6 +28,7 @@ public interface MoodleUserCoursesAdapterMapper {
   @Mapping(target = "isFavourite", source = "isfavourite")
   Enrollment toDomainEnrolledCourse(GetUsersCoursesResponseApi getUsersCoursesResponseApi);
 
+  @Mapping(target = "lastSync", ignore = true)
   @Mapping(target = "shortName", source = "shortname")
   @Mapping(target = "timeModified", source = "timemodified")
   @Mapping(target = "startDate", source = "startdate")

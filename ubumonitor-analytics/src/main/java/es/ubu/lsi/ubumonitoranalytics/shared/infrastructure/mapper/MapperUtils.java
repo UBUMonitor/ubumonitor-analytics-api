@@ -5,10 +5,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.util.Locale;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
@@ -26,6 +23,12 @@ public class MapperUtils {
   private static final Parser MARKDOWN_PARSER = Parser.builder().build();
   private static final HtmlRenderer MARKDOWN_RENDERER = HtmlRenderer.builder().build();
 
+  public static OffsetDateTime toOffsetDateTime(Long timestamp) {
+    return timestamp == null || timestamp == 0L
+        ? null
+        : Instant.ofEpochSecond(timestamp).atOffset(ZoneOffset.UTC);
+  }
+
   public OffsetDateTime toOffsetDateTime(Instant instant) {
     return instant == null ? null : instant.atOffset(ZoneOffset.UTC);
   }
@@ -36,6 +39,12 @@ public class MapperUtils {
 
   public LocalDateTime toLocalDateTime(OffsetDateTime offsetDateTime) {
     return offsetDateTime == null ? null : offsetDateTime.toLocalDateTime();
+  }
+
+  public static LocalDateTime toLocalDateTime(Long timestamp) {
+    return timestamp == null || timestamp == 0L
+        ? null
+        : LocalDateTime.ofInstant(Instant.ofEpochSecond(timestamp), ZoneOffset.UTC);
   }
 
   public OffsetDateTime toOffsetDateTime(LocalDateTime localDateTime) {
@@ -205,14 +214,6 @@ public class MapperUtils {
     return value.intValue();
   }
 
-  public static OffsetDateTime unixToOffsetDateTime(Integer unixTimestamp) {
-    if (unixTimestamp == null || unixTimestamp <= 0) {
-      return null;
-    }
-    Instant instant = Instant.ofEpochSecond(unixTimestamp);
-    return OffsetDateTime.ofInstant(instant, ZoneOffset.UTC);
-  }
-
   public static Integer toUnixTimestamp(OffsetDateTime offsetDateTime) {
     if (offsetDateTime == null) {
       return null;
@@ -253,5 +254,19 @@ public class MapperUtils {
       return null;
     }
     return Locale.forLanguageTag(localeString);
+  }
+
+  public static ZoneId toZoneId(String zoneIdString) {
+    if (zoneIdString == null || zoneIdString.isEmpty()) {
+      return null;
+    }
+    return ZoneId.of(zoneIdString);
+  }
+
+  public static String toZoneIdString(ZoneId zoneId) {
+    if (zoneId == null) {
+      return null;
+    }
+    return zoneId.getId();
   }
 }

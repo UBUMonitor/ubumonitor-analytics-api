@@ -1,11 +1,11 @@
 package es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.importlogs;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import lombok.Data;
 
 @Data
 public class ProcessLogLine {
-  private LocalDateTime time;
+  private Instant time;
   private Short componentId;
   private Short eventId;
   private Long courseId;

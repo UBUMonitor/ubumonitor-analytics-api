@@ -12,9 +12,7 @@ public interface SitePersistenceAdapterMapper {
 
   @Mapping(target = "versionNumber", source = "site.versionNumber")
   @Mapping(target = "userImageUrl", source = "loggedUser.userPicture.url")
-  @Mapping(target = "typeOfLogin", source = "site.typeOfLogin")
   @Mapping(target = "siteName", source = "site.siteName")
-  @Mapping(target = "launchUrl", source = "site.launchUrl")
   @Mapping(target = "id", source = "site.id")
   @Mapping(target = "host", source = "site.host")
   @Mapping(target = "userId", source = "loggedUser.id")
@@ -24,12 +22,11 @@ public interface SitePersistenceAdapterMapper {
   @Mapping(target = "fullName", source = "loggedUser.fullName")
   @Mapping(target = "createdAt", ignore = true)
   @Mapping(target = "updatedAt", ignore = true)
+  @Mapping(target = "timeZone", source = "loggedUser.timeZone")
   SitesRecord toRecord(SiteInfo siteInfo);
 
   @Mapping(target = "site.versionNumber", source = "versionNumber")
-  @Mapping(target = "site.typeOfLogin", source = "typeOfLogin")
   @Mapping(target = "site.siteName", source = "siteName")
-  @Mapping(target = "site.launchUrl", source = "launchUrl")
   @Mapping(target = "site.id", source = "id")
   @Mapping(target = "site.host", source = "host")
   @Mapping(target = "loggedUser.id", source = "userId")
@@ -38,5 +35,6 @@ public interface SitePersistenceAdapterMapper {
   @Mapping(target = "loggedUser.lastName", source = "lastName")
   @Mapping(target = "loggedUser.fullName", source = "fullName")
   @Mapping(target = "loggedUser.userPicture.url", source = "userImageUrl")
+  @Mapping(target = "loggedUser.timeZone", source = "timeZone")
   SiteInfo toDomain(SitesRecord dto);
 }

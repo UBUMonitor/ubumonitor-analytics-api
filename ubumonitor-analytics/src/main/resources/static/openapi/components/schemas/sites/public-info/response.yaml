@@ -3,5 +3,30 @@ PublicSiteInfoResponse:
   required:
     - site
   properties:
-    site:
-      $ref: '../info/response.yaml#/SiteInfo'
+    siteConfig:
+      type: object
+      description: The configuration settings of the Moodle site.
+      properties:
+        typeOfLogin:
+          type: string
+          description: The type of login method used by the Moodle site.
+          enum:
+            - APP
+            - BROWSER
+            - EMBEDDED
+        launchUrl:
+          type: string
+          format: uri
+          description: The SSO login launch URL for the Moodle site, if applicable.
+        enableMobileWebService:
+          type: boolean
+          description: Indicates if the mobile web service is enabled for the Moodle site.
+        enableWebServices:
+          type: boolean
+          description: Indicates if web services are enabled for the Moodle site.
+        maintenanceEnabled:
+          type: boolean
+          description: Indicates if maintenance mode is enabled for the Moodle site.
+        maintenanceMessage:
+          type: string
+          description: The maintenance message for the Moodle site, if applicable.

@@ -43,3 +43,7 @@ EnrollmentsResponse:
             type: string
             format: date-time
             description: The date and time when the enrollment information was last modified.
+          lastSync:
+            type: string
+            format: date-time
+            description: The date and time when the enrollment information was last synchronized.

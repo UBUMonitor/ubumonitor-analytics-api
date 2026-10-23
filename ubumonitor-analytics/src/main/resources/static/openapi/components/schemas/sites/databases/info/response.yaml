@@ -1,0 +1,50 @@
+DatabasesInfoResponse:
+  type: object
+  required:
+    - databases
+  properties:
+    databases:
+      type: array
+      description: Available Moodle hosts and their databases.
+      items:
+        $ref: '#/DatabaseHostInfo'
+
+DatabaseHostInfo:
+  type: object
+  additionalProperties: false
+  required:
+    - moodleUrl
+    - users
+  properties:
+    moodleUrl:
+      type: string
+      format: uri
+      description: URL of the Moodle site.
+      example: https://school.moodledemo.net
+    users:
+      type: array
+      description: Databases available for users on this Moodle site.
+      items:
+        $ref: '#/DatabaseUserInfo'
+
+DatabaseUserInfo:
+  type: object
+  additionalProperties: false
+  required:
+    - id
+    - userName
+    - location
+  properties:
+    id:
+      type: string
+      description: Unique identifier of the database.
+      example: https~school.moodledemo.net~student
+    userName:
+      type: string
+      description: Moodle user the database belongs to.
+      example: student
+    location:
+      type: string
+      format: uri
+      description: Location of the database file, as a `file:` URI.
+      example: file:///data/databases/https~school.moodledemo.net~student.mv.db

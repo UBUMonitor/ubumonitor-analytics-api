@@ -97,6 +97,11 @@ paths:
   /public/users/{userId}/images/profile:
     $ref: "./paths/users/images/profile.yaml"
 
+  /public/sites/databases/info:
+    $ref: './paths/sites/databases.yaml'
+
+  /system/shutdown:
+    $ref: './paths/system/shutdown.yaml'
 
   /auth/logout:
     $ref: './paths/auth/logout.yaml'

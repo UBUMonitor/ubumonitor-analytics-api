@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 public class PublicSiteInfoApiAdapter implements PublicSiteInfoApiPort {
 
   private final Client client;
-  private final SiteInfoApiAdapterMapper siteInfoApiAdapterMapper;
+  private final PublicSiteInfoApiMapper publicSiteInfoApiMapper;
 
   @Override
   public PublicSiteInfo fetchPublicSiteInfo() {
@@ -32,6 +32,6 @@ public class PublicSiteInfoApiAdapter implements PublicSiteInfoApiPort {
       throw new RuntimeException("Error fetching public site info");
     }
 
-    return siteInfoApiAdapterMapper.toDomain(response.getData());
+    return publicSiteInfoApiMapper.toDomain(response.getData());
   }
 }

@@ -6,14 +6,12 @@ import es.ubu.lsi.ubumonitoranalytics.features.users.image.appication.port.out.E
 import es.ubu.lsi.ubumonitoranalytics.features.users.image.domain.EnrollmentImagesDocumentCommand;
 import es.ubu.lsi.ubumonitoranalytics.features.users.image.domain.model.EnrollmentUserImage;
 import es.ubu.lsi.ubumonitoranalytics.util.ImageUtil;
-import java.io.File;
-import java.nio.file.Files;
+import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.FileCopyUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +32,7 @@ public class GenerateEnrollmentImagesDocumentService
       return enrollmentUserImagesPersistencePort.getCourseEnrollmentImages(command);
     }
 
-    if (command.getDefaultImagePath() == null) {
+    if (command.getDefaultImageUri() == null) {
       return enrollmentUserImagesPersistencePort.getCourseEnrollmentImages(
           command, ImageUtil.getPlaceholder(), ImageUtil.getContentType());
     }
@@ -46,10 +44,7 @@ public class GenerateEnrollmentImagesDocumentService
   private List<EnrollmentUserImage> findUsersWithCustomDefaultImage(
       EnrollmentImagesDocumentCommand command) {
 
-    File defaultImage = command.getDefaultImagePath();
-    return enrollmentUserImagesPersistencePort.getCourseEnrollmentImages(
-        command,
-        FileCopyUtils.copyToByteArray(defaultImage),
-        Files.probeContentType(defaultImage.toPath()));
+    URI defaultImage = command.getDefaultImageUri();
+    return enrollmentUserImagesPersistencePort.getCourseEnrollmentImages(command, null, null);
   }
 }

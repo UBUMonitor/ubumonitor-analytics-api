@@ -1,6 +1,6 @@
 package es.ubu.lsi.ubumonitoranalytics.features.users.image.domain;
 
-import java.io.File;
+import java.net.URI;
 import java.util.List;
 import lombok.Data;
 
@@ -8,6 +8,6 @@ import lombok.Data;
 public class EnrollmentImagesDocumentCommand {
   private List<Long> userIds;
   private String headerText;
-  private File defaultImagePath;
+  private URI defaultImageUri;
   private boolean useDefaultPhoto;
 }

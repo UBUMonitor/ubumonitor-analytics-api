@@ -3,6 +3,7 @@ package es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database;
 import com.zaxxer.hikari.HikariDataSource;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.database.TenantDatabasePort;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.DatabaseCreationException;
+import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.DatabaseMigrationValidationException;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.concurrent.AsyncOperations;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.moodle.config.MoodleConfig;
@@ -22,6 +23,7 @@ import javax.sql.DataSource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.flywaydb.core.Flyway;
+import org.flywaydb.core.api.exception.FlywayValidateException;
 import org.jooq.Configuration;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
@@ -47,19 +49,21 @@ public class JooqProvider implements TenantDatabasePort {
 
   /** Validates the supplied database password and initializes the tenant data source and schema. */
   @Override
-  public void initializeTenant(SessionData session) {
+  public boolean initializeTenant(SessionData session) {
 
     if (session == null) {
-      return;
+      return false;
     }
 
-    DatabaseUtil.createAndInitializeDatabase(
-        moodleConfig.getDb().getJdbcUrlTemplate(),
-        moodleConfig.getDb().getBasePath(),
-        session.getHost(),
-        session.getUsername(),
-        session.getDbPassword());
+    boolean databaseCreated =
+        DatabaseUtil.createAndInitializeDatabase(
+            moodleConfig.getDb().getJdbcUrlTemplate(),
+            moodleConfig.getDb().getBasePath(),
+            session.getHost(),
+            session.getUsername(),
+            session.getDbPassword());
     getDataSource(session);
+    return databaseCreated;
   }
 
   /** Starts tenant datasource creation and Flyway migration without blocking session creation. */
@@ -71,7 +75,7 @@ public class JooqProvider implements TenantDatabasePort {
     }
 
     asyncOperations
-        .runAsync(() -> getDataSource(session))
+        .runAsync(() -> initializeTenant(session))
         .exceptionally(
             exception -> {
               log.error(
@@ -107,9 +111,9 @@ public class JooqProvider implements TenantDatabasePort {
   private DataSource createTenantDataSource(SessionData session) {
 
     HikariDataSource ds = new HikariDataSource();
-
+    String jdbcUrl = null;
     try {
-      String jdbcUrl =
+      jdbcUrl =
           DatabaseUtil.buildJdbcUrl(
               moodleConfig.getDb().getJdbcUrlTemplate(),
               moodleConfig.getDb().getBasePath(),
@@ -135,9 +139,12 @@ public class JooqProvider implements TenantDatabasePort {
 
       return ds;
 
+    } catch (FlywayValidateException e) {
+      log.error("Flyway validation failed for tenant {}", jdbcUrl, e);
+      throw new DatabaseMigrationValidationException(jdbcUrl, e);
     } catch (Exception e) {
       ds.close();
-      throw new DatabaseCreationException("Error creating tenant datasource", e);
+      throw new DatabaseCreationException("Error creating tenant datasource " + e.getMessage(), e);
     }
   }
 
@@ -148,22 +155,17 @@ public class JooqProvider implements TenantDatabasePort {
       return;
     }
 
-    String migrationPath = extractMigrationsToTemp();
-    try {
-      log.info("Running Flyway migration for tenant {}", tenantId);
-      Flyway.configure()
-          .dataSource(ds)
-          .locations("filesystem:" + migrationPath)
-          .baselineOnMigrate(true)
-          .validateOnMigrate(true)
-          .load()
-          .migrate();
+    log.info("Running Flyway migration for tenant {}", tenantId);
+    Flyway.configure()
+        .dataSource(ds)
+        .locations("classpath:db/migration")
+        .baselineOnMigrate(true)
+        .validateOnMigrate(true)
+        .load()
+        .migrate();
 
-      migratedTenants.add(tenantId);
-      log.info("Migration completed for tenant {}", tenantId);
-    } finally {
-      deleteDirectory(Path.of(migrationPath));
-    }
+    migratedTenants.add(tenantId);
+    log.info("Migration completed for tenant {}", tenantId);
   }
 
   /** Closes and removes the data source associated with a tenant session. */

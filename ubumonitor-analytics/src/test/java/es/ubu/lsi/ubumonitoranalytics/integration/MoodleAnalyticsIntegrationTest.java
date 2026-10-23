@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.SessionStorePort;
@@ -14,8 +15,11 @@ import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.moodle.config.Moodle
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DynamicTest;
@@ -109,9 +113,13 @@ class MoodleAnalyticsIntegrationTest {
     WireMockServer wireMock = new WireMockServer(0);
     wireMock.start();
     String accessToken = null;
+    List<Path> fixtureDatabaseFiles = List.of();
     try {
+      fixtureDatabaseFiles = createFixtureDatabaseFiles(endpointCase.path("databaseFiles"));
       JsonNode moodleMocks = endpointCase.path("moodleMocks");
-      moodleMocks.forEach(mock -> configureMock(wireMock, mock));
+      for (JsonNode mock : moodleMocks) {
+        configureMock(wireMock, mock);
+      }
       String requestPath =
           request.path("path").asText().replace("${MOODLE_HOST}", wireMock.baseUrl());
       String body = requestBody(request.path("body"));
@@ -138,7 +146,38 @@ class MoodleAnalyticsIntegrationTest {
         sessionStore.invalidateSession(accessToken);
       }
       moodleConfig.getDb().setBasePath(previousDatabasePath);
+      deleteFixtureDatabaseFiles(fixtureDatabaseFiles);
       wireMock.stop();
+    }
+  }
+
+  private List<Path> createFixtureDatabaseFiles(JsonNode databaseFiles) throws IOException {
+    if (!databaseFiles.isArray() || databaseFiles.isEmpty()) {
+      return List.of();
+    }
+
+    Path databaseDirectory =
+        Path.of(moodleConfig.getDb().getBasePath()).toAbsolutePath().normalize();
+    Files.createDirectories(databaseDirectory);
+    List<Path> createdFiles = new ArrayList<>();
+    for (JsonNode databaseFile : databaseFiles) {
+      String fileName = databaseFile.asText();
+      Path relativeFile = Path.of(fileName);
+      if (relativeFile.isAbsolute()
+          || relativeFile.getNameCount() != 1
+          || !relativeFile.getFileName().toString().equals(fileName)) {
+        throw new IllegalArgumentException("Database fixture entries must be file names");
+      }
+      Path file = databaseDirectory.resolve(relativeFile);
+      Files.createFile(file);
+      createdFiles.add(file);
+    }
+    return createdFiles;
+  }
+
+  private void deleteFixtureDatabaseFiles(List<Path> fixtureDatabaseFiles) throws IOException {
+    for (Path fixtureDatabaseFile : fixtureDatabaseFiles) {
+      Files.deleteIfExists(fixtureDatabaseFile);
     }
   }
 
@@ -159,12 +198,16 @@ class MoodleAnalyticsIntegrationTest {
             new PathMatchingResourcePatternResolver().getResource(authFixturePath);
         JsonNode sharedAuthFixtureJson = OBJECT_MAPPER.readTree(sharedAuthFixture.getInputStream());
         authDefinition = sharedAuthFixtureJson.path("auth");
-        sharedAuthFixtureJson.path("moodleMocks").forEach(mock -> configureMock(wireMock, mock));
+        for (JsonNode mock : sharedAuthFixtureJson.path("moodleMocks")) {
+          configureMock(wireMock, mock);
+        }
         if (databaseSetup.isMissingNode() || (databaseSetup.isArray() && databaseSetup.isEmpty())) {
           databaseSetup = sharedAuthFixtureJson.path("databaseSetup");
         }
       }
-      testCase.path("moodleMocks").forEach(mock -> configureMock(wireMock, mock));
+      for (JsonNode mock : testCase.path("moodleMocks")) {
+        configureMock(wireMock, mock);
+      }
       JsonNode authRequest = authDefinition.path("request");
       ObjectNode authBody = authRequest.path("body").deepCopy();
       authBody.put("host", wireMock.baseUrl());
@@ -259,8 +302,51 @@ class MoodleAnalyticsIntegrationTest {
         resolvedExpectedBody.put("accessToken", actualToken);
         expectedBody = resolvedExpectedBody;
       }
+      expectedBody = resolveExpectedDatabaseFiles(expectedBody);
       assertEquals(expectedBody, actualBody);
     }
+  }
+
+  private JsonNode resolveExpectedDatabaseFiles(JsonNode expectedBody) {
+    if (expectedBody.isObject()) {
+      ObjectNode resolved = expectedBody.deepCopy();
+      resolved
+          .properties()
+          .forEach(
+              property ->
+                  resolved.set(
+                      property.getKey(), resolveExpectedDatabaseFiles(property.getValue())));
+      return resolved;
+    }
+    if (expectedBody.isArray()) {
+      ArrayNode resolved = OBJECT_MAPPER.createArrayNode();
+      expectedBody.forEach(value -> resolved.add(resolveExpectedDatabaseFiles(value)));
+      return resolved;
+    }
+    if (!expectedBody.isTextual()) {
+      return expectedBody;
+    }
+
+    String value = expectedBody.asText();
+    String prefix = "${DATABASE_FILE:";
+    if (!value.startsWith(prefix) || !value.endsWith("}")) {
+      return expectedBody;
+    }
+    String fileName = value.substring(prefix.length(), value.length() - 1);
+    Path relativeFile = Path.of(fileName);
+    if (relativeFile.isAbsolute()
+        || relativeFile.getNameCount() != 1
+        || !relativeFile.getFileName().toString().equals(fileName)) {
+      throw new IllegalArgumentException("Expected database placeholder must contain a file name");
+    }
+    String location =
+        Path.of(moodleConfig.getDb().getBasePath())
+            .resolve(relativeFile)
+            .toAbsolutePath()
+            .normalize()
+            .toUri()
+            .toString();
+    return OBJECT_MAPPER.getNodeFactory().textNode(location);
   }
 
   private ResponseEntity<String> exchange(
@@ -349,7 +435,7 @@ class MoodleAnalyticsIntegrationTest {
             });
   }
 
-  private void configureMock(WireMockServer wireMock, JsonNode mockDefinition) {
+  private void configureMock(WireMockServer wireMock, JsonNode mockDefinition) throws IOException {
     JsonNode requestDefinition = mockDefinition.path("request");
     var mapping =
         request(
@@ -367,15 +453,20 @@ class MoodleAnalyticsIntegrationTest {
     }
 
     JsonNode response = mockDefinition.path("response");
+    String responseBody =
+        response.has("bodyFile")
+            ? new PathMatchingResourcePatternResolver()
+                .getResource(response.path("bodyFile").asText())
+                .getContentAsString(StandardCharsets.UTF_8)
+            : response.path("body").isTextual()
+                ? response.path("body").asText()
+                : response.path("body").toString();
     wireMock.stubFor(
         mapping.willReturn(
             aResponse()
                 .withStatus(response.path("status").asInt(200))
                 .withHeader("Content-Type", response.path("contentType").asText("application/json"))
-                .withBody(
-                    response.path("body").isTextual()
-                        ? response.path("body").asText()
-                        : response.path("body").toString())));
+                .withBody(responseBody)));
   }
 
   private String requestBody(JsonNode body) {
