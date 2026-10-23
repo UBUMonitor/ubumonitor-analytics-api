@@ -1,5 +1,8 @@
 {
   "authFixture": "classpath:/integration/shared/teacher-token-auth.json",
+  "databaseSetup": [
+    "INSERT INTO USERS (ID, FULL_NAME, FIRST_NAME, LAST_NAME, EMAIL) VALUES (13, 'Jeffrey Sanders', 'Jeffrey', 'Sanders', 'jeffreysanders199@example.com')"
+  ],
   "moodleMocks": [
     {
       "request": {
@@ -16,7 +19,8 @@
           "fullname": "Jeffrey Sanders",
           "userid": 13,
           "siteid": 1,
-          "version": "2026042000"
+          "version": "2026042000",
+          "siteurl": "https://school.moodledemo.net"
         }
       }
     },
@@ -67,16 +71,15 @@
           "site": {
             "siteName": "Mount Orange",
             "siteVersion": "2026042000",
-            "siteUrl": "https://school.moodledemo.net",
-            "typeOfLogin": "APP",
-            "launchUrl": "https://school.moodledemo.net/admin/tool/mobile/launch.php?service=moodle_mobile_app&urlscheme=moodlemobile&passport=1"
+            "siteUrl": "https://school.moodledemo.net"
           },
           "user": {
             "id": 13,
             "username": "teacher",
             "fullName": "Jeffrey Sanders",
             "firstName": "Jeffrey",
-            "lastName": "Sanders"
+            "lastName": "Sanders",
+            "timeZone": "Etc/GMT-1"
           }
         }
       }

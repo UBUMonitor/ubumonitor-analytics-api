@@ -1,7 +1,6 @@
 package es.ubu.lsi.ubumonitoranalytics.features.sites.infrastructure.in.rest;
 
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.*;
-import es.ubu.lsi.ubumonitoranalytics.features.sites.application.dto.PublicSiteInfo;
 import es.ubu.lsi.ubumonitoranalytics.features.sites.application.dto.SiteInfo;
 import es.ubu.lsi.ubumonitoranalytics.features.sites.domain.model.DatabaseHostInfo;
 import es.ubu.lsi.ubumonitoranalytics.features.sites.domain.model.DatabaseInfo;
@@ -20,10 +19,6 @@ public interface SiteInfoMapper {
   @Mapping(target = "site", source = "site")
   SiteInfoResponseDto toDto(SiteInfo siteInfo);
 
-  PublicSiteInfoResponseDto toDto(PublicSiteInfo publicSiteInfo);
-
-  @Mapping(target = "maintenanceMessage", source = "maintenanceMessage")
-  @Mapping(target = "maintenanceEnabled", source = "maintenanceEnabled")
   @Mapping(target = "siteVersion", source = "versionNumber")
   @Mapping(target = "siteUrl", source = "host")
   SiteInfoDto toSiteInformationDto(Site site);

@@ -117,7 +117,9 @@ class MoodleAnalyticsIntegrationTest {
     try {
       fixtureDatabaseFiles = createFixtureDatabaseFiles(endpointCase.path("databaseFiles"));
       JsonNode moodleMocks = endpointCase.path("moodleMocks");
-      moodleMocks.forEach(mock -> configureMock(wireMock, mock));
+      for (JsonNode mock : moodleMocks) {
+        configureMock(wireMock, mock);
+      }
       String requestPath =
           request.path("path").asText().replace("${MOODLE_HOST}", wireMock.baseUrl());
       String body = requestBody(request.path("body"));
@@ -196,12 +198,16 @@ class MoodleAnalyticsIntegrationTest {
             new PathMatchingResourcePatternResolver().getResource(authFixturePath);
         JsonNode sharedAuthFixtureJson = OBJECT_MAPPER.readTree(sharedAuthFixture.getInputStream());
         authDefinition = sharedAuthFixtureJson.path("auth");
-        sharedAuthFixtureJson.path("moodleMocks").forEach(mock -> configureMock(wireMock, mock));
+        for (JsonNode mock : sharedAuthFixtureJson.path("moodleMocks")) {
+          configureMock(wireMock, mock);
+        }
         if (databaseSetup.isMissingNode() || (databaseSetup.isArray() && databaseSetup.isEmpty())) {
           databaseSetup = sharedAuthFixtureJson.path("databaseSetup");
         }
       }
-      testCase.path("moodleMocks").forEach(mock -> configureMock(wireMock, mock));
+      for (JsonNode mock : testCase.path("moodleMocks")) {
+        configureMock(wireMock, mock);
+      }
       JsonNode authRequest = authDefinition.path("request");
       ObjectNode authBody = authRequest.path("body").deepCopy();
       authBody.put("host", wireMock.baseUrl());
@@ -429,7 +435,7 @@ class MoodleAnalyticsIntegrationTest {
             });
   }
 
-  private void configureMock(WireMockServer wireMock, JsonNode mockDefinition) {
+  private void configureMock(WireMockServer wireMock, JsonNode mockDefinition) throws IOException {
     JsonNode requestDefinition = mockDefinition.path("request");
     var mapping =
         request(
@@ -447,15 +453,20 @@ class MoodleAnalyticsIntegrationTest {
     }
 
     JsonNode response = mockDefinition.path("response");
+    String responseBody =
+        response.has("bodyFile")
+            ? new PathMatchingResourcePatternResolver()
+                .getResource(response.path("bodyFile").asText())
+                .getContentAsString(StandardCharsets.UTF_8)
+            : response.path("body").isTextual()
+                ? response.path("body").asText()
+                : response.path("body").toString();
     wireMock.stubFor(
         mapping.willReturn(
             aResponse()
                 .withStatus(response.path("status").asInt(200))
                 .withHeader("Content-Type", response.path("contentType").asText("application/json"))
-                .withBody(
-                    response.path("body").isTextual()
-                        ? response.path("body").asText()
-                        : response.path("body").toString())));
+                .withBody(responseBody)));
   }
 
   private String requestBody(JsonNode body) {

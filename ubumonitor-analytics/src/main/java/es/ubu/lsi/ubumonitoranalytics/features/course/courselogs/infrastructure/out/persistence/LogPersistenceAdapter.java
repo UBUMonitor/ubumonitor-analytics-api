@@ -6,21 +6,29 @@ import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsComponents.LOGS_COM
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsComponentsEvents.LOGS_COMPONENTS_EVENTS;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsEvents.LOGS_EVENTS;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsOrigins.LOGS_ORIGINS;
+import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Sites.SITES;
 
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.port.out.LogPersistencePort;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.port.out.MoodleLogCatalog;
+import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.importlogs.LogContext;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.importlogs.ProcessLogLine;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.rules.MoodleLogRule;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.infrastructure.config.MoodleRulesConfig;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
+import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.jooq.BatchBindStep;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Component;
 
 /** Stores course log records and provides their lookup metadata. */
@@ -30,6 +38,7 @@ public class LogPersistenceAdapter implements LogPersistencePort {
 
   private final Jooq jooq;
   private final MoodleRulesConfig moodleRulesConfig;
+  private final CurrentSessionContext currentSessionContext;
 
   @Override
   public void createIfNotExists(Long courseId) {
@@ -43,7 +52,75 @@ public class LogPersistenceAdapter implements LogPersistencePort {
   }
 
   @Override
-  public MoodleLogCatalog getMoodleLogCatalog() {
+  public void saveBatch(List<ProcessLogLine> logs) {
+
+    DSLContext dsl = jooq.dsl();
+
+    BatchBindStep batch =
+        dsl.batch(
+            dsl.insertInto(
+                    LOGS,
+                    LOGS.LOGGED_AT,
+                    LOGS.USER_ID,
+                    LOGS.COURSE_ID,
+                    LOGS.COMPONENT_ID,
+                    LOGS.EVENT_ID,
+                    LOGS.MODULE_ID,
+                    LOGS.ORIGIN_ID,
+                    LOGS.IP_ADDRESS)
+                .values((LocalDateTime) null, null, null, null, null, null, null, null));
+    for (ProcessLogLine l : logs) {
+      batch.bind(
+          l.getTime(),
+          l.getUserId(),
+          l.getCourseId(),
+          l.getComponentId(),
+          l.getEventId(),
+          l.getModuleId(),
+          l.getOriginId(),
+          l.getIpAddress());
+    }
+
+    batch.execute();
+  }
+
+  @Override
+  public LogContext getLogContext(Long courseId) {
+    String userName = currentSessionContext.getSessionData().getUsername();
+
+    Instant lastLogTime = getLastLogTime(courseId);
+
+    ZoneId zoneId = getZoneId(userName);
+    MoodleLogCatalog moodleLogCatalog = getMoodleLogCatalog();
+    Map<String, Byte> logOrigins = getLogOrigins();
+    return LogContext.builder()
+        .courseId(courseId)
+        .lastLogTime(lastLogTime)
+        .moodleTimeZone(zoneId)
+        .moodleLogCatalog(moodleLogCatalog)
+        .logOrigins(logOrigins)
+        .build();
+  }
+
+  private @Nullable Instant getLastLogTime(Long courseId) {
+    return jooq.dsl()
+        .select(DSL.max(LOGS.LOGGED_AT))
+        .from(LOGS)
+        .where(LOGS.COURSE_ID.eq(courseId))
+        .fetchOneInto(Instant.class);
+  }
+
+  private @NonNull ZoneId getZoneId(String userName) {
+    return ZoneId.of(
+        Objects.requireNonNull(
+            jooq.dsl()
+                .select(SITES.TIME_ZONE)
+                .from(SITES)
+                .where(SITES.USER_NAME.eq(userName))
+                .fetchOneInto(String.class)));
+  }
+
+  private MoodleLogCatalog getMoodleLogCatalog() {
     var records =
         jooq.dsl()
             .select(
@@ -82,53 +159,10 @@ public class LogPersistenceAdapter implements LogPersistencePort {
     return moodleRulesConfig.compileRules(rules);
   }
 
-  @Override
-  public Map<String, Byte> getLogOrigins() {
+  private Map<String, Byte> getLogOrigins() {
     return jooq.dsl()
         .select(LOGS_ORIGINS.NAME, LOGS_ORIGINS.ID)
         .from(LOGS_ORIGINS)
         .fetchMap(LOGS_ORIGINS.NAME, LOGS_ORIGINS.ID);
-  }
-
-  @Override
-  public void saveBatch(List<ProcessLogLine> logs) {
-
-    DSLContext dsl = jooq.dsl();
-
-    BatchBindStep batch =
-        dsl.batch(
-            dsl.insertInto(
-                    LOGS,
-                    LOGS.LOGGED_AT,
-                    LOGS.USER_ID,
-                    LOGS.COURSE_ID,
-                    LOGS.COMPONENT_ID,
-                    LOGS.EVENT_ID,
-                    LOGS.MODULE_ID,
-                    LOGS.ORIGIN_ID,
-                    LOGS.IP_ADDRESS)
-                .values((LocalDateTime) null, null, null, null, null, null, null, null));
-    for (ProcessLogLine l : logs) {
-      batch.bind(
-          l.getTime(),
-          l.getUserId(),
-          l.getCourseId(),
-          l.getComponentId(),
-          l.getEventId(),
-          l.getModuleId(),
-          l.getOriginId(),
-          l.getIpAddress());
-    }
-
-    batch.execute();
-  }
-
-  @Override
-  public LocalDateTime getLastDateTime(Long courseId) {
-    return jooq.dsl()
-        .select(DSL.max(LOGS.LOGGED_AT))
-        .from(LOGS)
-        .where(LOGS.COURSE_ID.eq(courseId))
-        .fetchOneInto(LocalDateTime.class);
   }
 }

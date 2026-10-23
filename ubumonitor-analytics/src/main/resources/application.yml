@@ -1,5 +1,6 @@
 spring:
-
+  flyway:
+    enabled: false
   jmx:
     enabled: false
   lifecycle:

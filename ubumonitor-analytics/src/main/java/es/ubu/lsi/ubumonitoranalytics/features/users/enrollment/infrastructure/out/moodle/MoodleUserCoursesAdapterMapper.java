@@ -6,10 +6,9 @@ import es.ubu.lsi.ubumonitoranalytics.features.users.enrollment.domain.model.Cou
 import es.ubu.lsi.ubumonitoranalytics.features.users.enrollment.domain.model.Enrollment;
 import es.ubu.lsi.ubumonitoranalytics.features.users.enrollment.domain.model.UserEnrolledCourses;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.GlobalMapperConfig;
+import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-
-import java.util.List;
 
 /** Maps Moodle user-course responses to application enrollment models. */
 @Mapper(config = GlobalMapperConfig.class)

@@ -90,7 +90,7 @@ public class MoodleAdapter implements MoodlePort {
     CSVFormat format =
         CSVFormat.DEFAULT
             .builder()
-            .setHeader() // 👈 usa la primera fila como header real
+            .setHeader() // usa la primera fila como header real
             .setSkipHeaderRecord(true)
             .setIgnoreSurroundingSpaces(true)
             .setTrim(true)

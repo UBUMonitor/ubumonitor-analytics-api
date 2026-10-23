@@ -23,6 +23,7 @@ public class SitesApiDelegateImpl implements SitesApiDelegate {
   private final GetPublicSiteInfoUseCase getPublicSiteInfoUseCase;
   private final DatabaseInfoUseCase databaseInfoUseCase;
   private final SiteInfoMapper siteInfoMapper;
+  private final PublicSiteInfoMapper publicSiteInfoMapper;
 
   @Override
   public ResponseEntity<SiteInfoResponseDto> syncSiteInfo() {
@@ -37,7 +38,7 @@ public class SitesApiDelegateImpl implements SitesApiDelegate {
   @Override
   public ResponseEntity<PublicSiteInfoResponseDto> getPublicSiteInfo(URI host) {
     return ResponseEntity.ok(
-        siteInfoMapper.toDto(getPublicSiteInfoUseCase.getPublicSiteInfo(host)));
+        publicSiteInfoMapper.toDto(getPublicSiteInfoUseCase.getPublicSiteInfo(host)));
   }
 
   @Override

@@ -5,6 +5,7 @@ import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.im
 import io.krakens.grok.api.Grok;
 import io.krakens.grok.api.Match;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,7 @@ public class LogParserService {
 
   public ProcessLogLine processRow(
       Long courseId,
+      ZoneId moodleTimeZone,
       CSVRecord row,
       Map<MoodleLogCatalog.Key, MoodleLogCatalog.Entry> logEvents,
       Map<String, Byte> logOrigins) {
@@ -47,7 +49,8 @@ public class LogParserService {
     }
 
     ProcessLogLine line = new ProcessLogLine();
-    line.setTime(LocalDateTime.parse(time, MOODLE_TIME_FORMATTER));
+    line.setTime(
+        LocalDateTime.parse(time, MOODLE_TIME_FORMATTER).atZone(moodleTimeZone).toInstant());
     line.setCourseId(courseId);
     line.setComponentId(logEvent.getComponentId());
     line.setEventId(logEvent.getEventId());

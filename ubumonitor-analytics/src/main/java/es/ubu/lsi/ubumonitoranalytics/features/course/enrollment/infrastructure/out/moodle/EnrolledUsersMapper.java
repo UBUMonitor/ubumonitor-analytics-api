@@ -7,7 +7,7 @@ import es.ubu.lsi.moodle.model.core.enrol.getenrolledusers.response.RoleApi;
 import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.*;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.GlobalMapperConfig;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.MapperUtils;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
@@ -84,10 +84,10 @@ public interface EnrolledUsersMapper {
   }
 
   @Named("lastCourseAccess")
-  default LocalDateTime lastCourseAccess(
+  default OffsetDateTime lastCourseAccess(
       Long lastCourseAccess, @Context EnrolledcourseApi enrolledcourseApi, @Context Long courseId) {
     if (courseId.equals(enrolledcourseApi.getId())) {
-      return MapperUtils.toLocalDateTime(lastCourseAccess);
+      return MapperUtils.toOffsetDateTime(lastCourseAccess);
     }
     return null;
   }

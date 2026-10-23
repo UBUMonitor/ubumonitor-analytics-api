@@ -9,7 +9,7 @@ import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.Us
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.GlobalMapperConfig;
 import java.net.URI;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
@@ -33,7 +33,7 @@ public interface CourseEnrollmentsApiDelegateMapper {
       User user, @Context Long courseId, @Context SessionData sessionData);
 
   @Named("lastCourseAccess")
-  default LocalDateTime mapLastCourseAccess(List<UserCourse> userCourses, @Context Long courseId) {
+  default OffsetDateTime mapLastCourseAccess(List<UserCourse> userCourses, @Context Long courseId) {
     return userCourses.stream()
         .filter(uc -> courseId.equals(uc.getCourse().getId()))
         .findFirst()

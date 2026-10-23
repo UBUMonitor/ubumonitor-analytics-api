@@ -10,7 +10,7 @@ import es.ubu.lsi.ubumonitoranalytics.features.course.grades.domain.model.UserGr
 import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.GradesRecord;
 import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.UsersGradesRecord;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
 import lombok.RequiredArgsConstructor;
@@ -26,14 +26,14 @@ public class GradesSavePersistenceAdapter implements GradesSavePersistencePort {
   @Override
   public void saveCourseGradeItemsPersistence(CourseGrade courseGrade) {
     Long courseId = courseGrade.getCourseId();
-    LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+    OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
 
     deactivateExisting(courseId, now);
     upsertGradeItems(courseGrade.getGradeItems(), courseId, now);
     upsertUserGrades(courseGrade.getUserGrades(), now);
   }
 
-  private void deactivateExisting(Long courseId, LocalDateTime now) {
+  private void deactivateExisting(Long courseId, OffsetDateTime now) {
     jooq.dsl()
         .update(USERS_GRADES)
         .set(USERS_GRADES.ACTIVE, false)
@@ -56,7 +56,7 @@ public class GradesSavePersistenceAdapter implements GradesSavePersistencePort {
         .execute();
   }
 
-  private void upsertGradeItems(List<GradeItem> gradeItems, Long courseId, LocalDateTime now) {
+  private void upsertGradeItems(List<GradeItem> gradeItems, Long courseId, OffsetDateTime now) {
     if (gradeItems == null || gradeItems.isEmpty()) {
       return;
     }
@@ -99,7 +99,7 @@ public class GradesSavePersistenceAdapter implements GradesSavePersistencePort {
     }
   }
 
-  private void upsertUserGrades(List<UserGrade> userGrades, LocalDateTime now) {
+  private void upsertUserGrades(List<UserGrade> userGrades, OffsetDateTime now) {
     if (userGrades == null || userGrades.isEmpty()) {
       return;
     }

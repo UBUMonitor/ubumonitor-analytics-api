@@ -38,11 +38,9 @@
   "expectedResponse": {
     "status": 200,
     "body": {
-      "site": {
-        "siteName": "Mount Orange",
-        "siteUrl": "https://school.moodledemo.net",
+      "siteConfig": {
         "typeOfLogin": "APP",
-        "launchUrl": "https://school.moodledemo.net/admin/tool/mobile/launch.php?service=moodle_mobile_app&urlscheme=moodlemobile&passport=1",
+        "launchUrl": "https://school.moodledemo.net/admin/tool/mobile/launch.php",
         "enableMobileWebService": true,
         "enableWebServices": true,
         "maintenanceEnabled": false,

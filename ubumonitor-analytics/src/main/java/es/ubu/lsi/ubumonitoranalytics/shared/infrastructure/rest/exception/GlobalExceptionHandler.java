@@ -5,6 +5,7 @@ import es.ubu.lsi.ubumonitoranalytics.api.generated.model.ErrorResponseDto;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.exception.MoodleLogExportException;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.exception.*;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.DatabaseCreationException;
+import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.DatabaseMigrationValidationException;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.InvalidDatabaseEncryptionKeyException;
 import java.util.StringJoiner;
 import lombok.RequiredArgsConstructor;
@@ -72,7 +73,18 @@ public class GlobalExceptionHandler {
   /** Handles tenant database creation failures. */
   @ExceptionHandler(DatabaseCreationException.class)
   public ResponseEntity<ErrorResponseDto> databaseCreation(DatabaseCreationException ex) {
-    return response(HttpStatus.INTERNAL_SERVER_ERROR, "DATABASE_ERROR", ex.getMessage(), ex);
+    return response(
+        HttpStatus.INTERNAL_SERVER_ERROR, "DATABASE_CREATION_ERROR", ex.getMessage(), ex);
+  }
+
+  @ExceptionHandler(DatabaseMigrationValidationException.class)
+  public ResponseEntity<ErrorResponseDto> databaseMigrationValidation(
+      DatabaseMigrationValidationException ex) {
+    return response(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        "DATABASE_MIGRATION_VALIDATION_ERROR",
+        ex.getMessage(),
+        ex);
   }
 
   /** Handles tenant database passwords that cannot open an encrypted database. */

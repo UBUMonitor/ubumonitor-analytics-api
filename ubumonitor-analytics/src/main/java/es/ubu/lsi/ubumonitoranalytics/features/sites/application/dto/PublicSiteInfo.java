@@ -1,6 +1,6 @@
 package es.ubu.lsi.ubumonitoranalytics.features.sites.application.dto;
 
-import es.ubu.lsi.ubumonitoranalytics.features.sites.domain.model.Site;
+import es.ubu.lsi.ubumonitoranalytics.features.sites.domain.model.SiteConfig;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class PublicSiteInfo {
-  private Site site;
+  private SiteConfig siteConfig;
 }

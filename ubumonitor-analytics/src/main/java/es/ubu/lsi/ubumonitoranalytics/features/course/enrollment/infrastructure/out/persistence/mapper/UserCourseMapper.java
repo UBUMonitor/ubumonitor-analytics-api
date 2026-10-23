@@ -35,7 +35,7 @@ public interface UserCourseMapper {
   void toUsersImagesRecord(UserPicture userPicture, @MappingTarget UsersImagesRecord r);
 
   @Mapping(target = "hasBeenLoaded", ignore = true)
-  @Mapping(target = "sourceModifiedAt", ignore = true)
+  @Mapping(target = "timeModified", ignore = true)
   @Mapping(target = "startDate", ignore = true)
   @Mapping(target = "showGrades", ignore = true)
   @Mapping(target = "endDate", ignore = true)

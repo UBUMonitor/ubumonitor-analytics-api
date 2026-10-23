@@ -23,6 +23,12 @@ public class MapperUtils {
   private static final Parser MARKDOWN_PARSER = Parser.builder().build();
   private static final HtmlRenderer MARKDOWN_RENDERER = HtmlRenderer.builder().build();
 
+  public static OffsetDateTime toOffsetDateTime(Long timestamp) {
+    return timestamp == null || timestamp == 0L
+        ? null
+        : Instant.ofEpochSecond(timestamp).atOffset(ZoneOffset.UTC);
+  }
+
   public OffsetDateTime toOffsetDateTime(Instant instant) {
     return instant == null ? null : instant.atOffset(ZoneOffset.UTC);
   }
@@ -208,14 +214,6 @@ public class MapperUtils {
     return value.intValue();
   }
 
-  public static OffsetDateTime unixToOffsetDateTime(Long unixTimestamp) {
-    if (unixTimestamp == null || unixTimestamp <= 0) {
-      return null;
-    }
-    Instant instant = Instant.ofEpochSecond(unixTimestamp);
-    return OffsetDateTime.ofInstant(instant, ZoneOffset.UTC);
-  }
-
   public static Integer toUnixTimestamp(OffsetDateTime offsetDateTime) {
     if (offsetDateTime == null) {
       return null;
@@ -258,14 +256,14 @@ public class MapperUtils {
     return Locale.forLanguageTag(localeString);
   }
 
-  public ZoneId toZoneId(String zoneIdString) {
+  public static ZoneId toZoneId(String zoneIdString) {
     if (zoneIdString == null || zoneIdString.isEmpty()) {
       return null;
     }
     return ZoneId.of(zoneIdString);
   }
 
-  public String toZoneIdString(ZoneId zoneId) {
+  public static String toZoneIdString(ZoneId zoneId) {
     if (zoneId == null) {
       return null;
     }

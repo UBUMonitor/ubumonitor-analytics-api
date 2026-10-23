@@ -3,21 +3,25 @@ package es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.po
 import io.krakens.grok.api.Grok;
 import java.util.List;
 import java.util.Map;
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 /** Event lookup entries containing identifiers and compiled parsing rules. */
-@Value
+@Data
+@AllArgsConstructor
 public class MoodleLogCatalog {
 
   Map<Key, Entry> events;
 
-  @Value
+  @Data
+  @AllArgsConstructor
   public static class Key {
     String componentName;
     String eventName;
   }
 
-  @Value
+  @Data
+  @AllArgsConstructor
   public static class Entry {
     Short componentId;
     Short eventId;

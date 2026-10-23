@@ -28,6 +28,7 @@
         <logbook.version>4.2.0</logbook.version>
         <spring.boot.version>4.1.1</spring.boot.version>
         <start-class>es.ubu.lsi.ubumonitoranalytics.Application</start-class>
+        <flyway.version>12.6.1</flyway.version>
     </properties>
 
     <repositories>
@@ -63,10 +64,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
         <dependency>

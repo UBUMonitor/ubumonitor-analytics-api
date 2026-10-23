@@ -3,8 +3,8 @@ package es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.se
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.port.in.ImportCourseLogsUseCase;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.port.out.CourseLogsInfoPort;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.port.out.LogPersistencePort;
-import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.port.out.MoodleLogCatalog;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.port.out.MoodlePort;
+import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.importlogs.LogContext;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.importlogs.LogImportStats;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.importlogs.ProcessLogLine;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.importlogs.ProcessLogsResult;
@@ -17,11 +17,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import lombok.RequiredArgsConstructor;
@@ -64,7 +62,7 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
   public ProcessLogsResult process(Long courseId, MultipartFile file) {
 
     return processStream(
-        courseId, file.getInputStream(), logPersistencePort.getLastDateTime(courseId));
+        courseId, file.getInputStream(), logPersistencePort.getLogContext(courseId));
   }
 
   // =========================
@@ -83,12 +81,9 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
 
     RestClient restClient = sessionData.getRestClient();
 
-    LocalDateTime lastLogDateTime = logPersistencePort.getLastDateTime(courseId);
-
+    LogContext logContext = logPersistencePort.getLogContext(courseId);
     logPersistencePort.createIfNotExists(courseId);
-
-    MoodleLogCatalog logCatalog = logPersistencePort.getMoodleLogCatalog();
-    Map<String, Byte> logOrigins = logPersistencePort.getLogOrigins();
+    Instant lastLogDateTime = logContext.getLastLogTime();
 
     List<ProcessLogLine> batch = new ArrayList<>(BATCH_SIZE);
 
@@ -97,33 +92,18 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
     AtomicInteger failed = new AtomicInteger(0);
 
     Consumer<CSVRecord> consumer =
-        csvRecord ->
-            handleRecord(
-                courseId,
-                csvRecord,
-                lastLogDateTime,
-                logCatalog.getEvents(),
-                logOrigins,
-                batch,
-                saved,
-                ignored,
-                failed);
+        csvRecord -> handleRecord(csvRecord, logContext, batch, saved, ignored, failed);
 
-    if (lastLogDateTime == null || lastLogDateTime.isBefore(LocalDateTime.now().minusDays(30))) {
+    if (lastLogDateTime == null
+        || lastLogDateTime.isBefore(Instant.now().minus(30, ChronoUnit.DAYS))) {
 
       moodlePort.downloadAllLogs(courseId, restClient, consumer);
 
     } else {
 
       long now = Instant.now().getEpochSecond();
-      ZoneOffset zone = ZoneOffset.UTC;
 
-      Instant lastInstant = lastLogDateTime.toInstant(zone);
-
-      Instant safeStart =
-          lastInstant.atZone(zone).toLocalDate().atStartOfDay(zone).toInstant().minusSeconds(86400);
-
-      long start = safeStart.getEpochSecond();
+      long start = lastLogDateTime.getEpochSecond();
       long step = 86400;
 
       for (long ts = start; ts <= now; ts += step) {
@@ -132,7 +112,7 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
       }
     }
 
-    flushBatch(batch, saved, failed);
+    flushBatch(batch, saved, failed, true);
     CourseLogsInfoResult courseLogsInfoResult = courseLogsInfoPort.getCourseLogsInfo(courseId);
     LogImportStats logImportStats = new LogImportStats(saved.get(), ignored.get(), failed.get());
     return new ProcessLogsResult(logImportStats, courseLogsInfoResult);
@@ -142,11 +122,7 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
   // CORE PIPELINE (REUSE)
   // =========================
   private ProcessLogsResult processStream(
-      Long courseId, InputStream inputStream, LocalDateTime lastLogDateTime) {
-
-    MoodleLogCatalog logCatalog = logPersistencePort.getMoodleLogCatalog();
-    Map<String, Byte> logOrigins = logPersistencePort.getLogOrigins();
-
+      Long courseId, InputStream inputStream, LogContext logContext) {
     logPersistencePort.createIfNotExists(courseId);
 
     List<ProcessLogLine> batch = new ArrayList<>(BATCH_SIZE);
@@ -160,27 +136,16 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
 
       for (CSVRecord csvRecord : parser) {
 
-        handleRecord(
-            courseId,
-            csvRecord,
-            lastLogDateTime,
-            logCatalog.getEvents(),
-            logOrigins,
-            batch,
-            saved,
-            ignored,
-            failed);
+        handleRecord(csvRecord, logContext, batch, saved, ignored, failed);
 
-        if (batch.size() >= BATCH_SIZE) {
-          flushBatch(batch, saved, failed);
-        }
+        flushBatch(batch, saved, failed, false);
       }
 
     } catch (Exception e) {
       log.error("Error processing stream", e);
     }
 
-    flushBatch(batch, saved, failed);
+    flushBatch(batch, saved, failed, true);
     CourseLogsInfoResult courseLogsInfoResult = courseLogsInfoPort.getCourseLogsInfo(courseId);
     LogImportStats logImportStats = new LogImportStats(saved.get(), ignored.get(), failed.get());
     return new ProcessLogsResult(logImportStats, courseLogsInfoResult);
@@ -190,23 +155,26 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
   // RECORD HANDLER
   // =========================
   private void handleRecord(
-      Long courseId,
       CSVRecord csvRecord,
-      LocalDateTime lastLogDateTime,
-      Map<MoodleLogCatalog.Key, MoodleLogCatalog.Entry> logEvents,
-      Map<String, Byte> logOrigins,
+      LogContext logContext,
       List<ProcessLogLine> batch,
       AtomicInteger saved,
       AtomicInteger ignored,
       AtomicInteger failed) {
 
     try {
-      ProcessLogLine line = logParserService.processRow(courseId, csvRecord, logEvents, logOrigins);
+      ProcessLogLine line =
+          logParserService.processRow(
+              logContext.getCourseId(),
+              logContext.getMoodleTimeZone(),
+              csvRecord,
+              logContext.getMoodleLogCatalog().getEvents(),
+              logContext.getLogOrigins());
 
-      if (isValidLog(line, lastLogDateTime)) {
+      if (isValidLog(line, logContext.getLastLogTime())) {
         batch.add(line);
         if (batch.size() >= BATCH_SIZE) {
-          flushBatch(batch, saved, failed);
+          flushBatch(batch, saved, failed, false);
         }
       } else {
         ignored.incrementAndGet();
@@ -221,9 +189,12 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
   // =========================
   // BATCH FLUSH
   // =========================
-  private void flushBatch(List<ProcessLogLine> batch, AtomicInteger saved, AtomicInteger failed) {
+  private void flushBatch(
+      List<ProcessLogLine> batch, AtomicInteger saved, AtomicInteger failed, boolean force) {
 
-    if (batch.isEmpty()) return;
+    if (batch.isEmpty() || (batch.size() < BATCH_SIZE && !force)) {
+      return;
+    }
 
     try {
       logPersistencePort.saveBatch(new ArrayList<>(batch));
@@ -239,7 +210,7 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
   // =========================
   // VALIDATION
   // =========================
-  private boolean isValidLog(ProcessLogLine line, LocalDateTime lastLogDateTime) {
+  private boolean isValidLog(ProcessLogLine line, Instant lastLogDateTime) {
     return line != null && (lastLogDateTime == null || lastLogDateTime.isBefore(line.getTime()));
   }
 
@@ -259,7 +230,7 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
     CSVFormat format =
         CSVFormat.DEFAULT
             .builder()
-            .setHeader() // 👈 usa la primera fila como header real
+            .setHeader() // usa la primera fila como header real
             .setSkipHeaderRecord(true)
             .setIgnoreSurroundingSpaces(true)
             .setTrim(true)

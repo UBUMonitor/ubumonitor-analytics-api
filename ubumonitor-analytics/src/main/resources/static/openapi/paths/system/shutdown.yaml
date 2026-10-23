@@ -1,0 +1,13 @@
+get:
+  tags:
+    - System
+  summary: Shutdown the server
+  operationId: shutdown
+  description: Shuts down the server gracefully.
+  responses:
+    '202':
+      description: The server is shutting down.
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/unauthorized_401'
+
+
