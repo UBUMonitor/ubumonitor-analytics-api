@@ -1,7 +1,6 @@
 package es.ubu.lsi.ubumonitoranalytics.features.course.grades.application.service;
 
 import es.ubu.lsi.ubumonitoranalytics.features.course.grades.application.port.in.GradesUseCase;
-import es.ubu.lsi.ubumonitoranalytics.features.course.grades.application.port.out.CurrentUserPersistencePort;
 import es.ubu.lsi.ubumonitoranalytics.features.course.grades.application.port.out.GradesApiPort;
 import es.ubu.lsi.ubumonitoranalytics.features.course.grades.application.port.out.GradesFetchPersistencePort;
 import es.ubu.lsi.ubumonitoranalytics.features.course.grades.application.port.out.GradesSavePersistencePort;
@@ -18,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class GradesService implements GradesUseCase {
 
-  private final CurrentUserPersistencePort currentUserPersistencePort;
   private final GradesFetchPersistencePort gradesFetchPersistencePort;
   private final GradesSavePersistencePort gradesSavePersistencePort;
   private final CurrentSessionContext currentSessionContext;
@@ -27,8 +25,7 @@ public class GradesService implements GradesUseCase {
   @Override
   @Transactional
   public List<GradeItem> sync(Long courseId) {
-    Long userId =
-        currentUserPersistencePort.getUserId(currentSessionContext.getSessionData().getUsername());
+    Long userId = currentSessionContext.getSessionData().getUserId();
     CourseGrade courseGrade = gradesApiPort.fetchCourseGradeItems(courseId, userId);
     gradesSavePersistencePort.saveCourseGradeItemsPersistence(courseGrade);
     return courseGrade.getGradeItems();
@@ -40,7 +37,9 @@ public class GradesService implements GradesUseCase {
   }
 
   @Override
-  public List<UserGrade> getUserGrades(Long courseId) {
-    return gradesFetchPersistencePort.fetchCourseUserGradesPersistence(courseId);
+  public List<UserGrade> getUserGrades(
+      Long courseId, List<Long> gradeItemsIds, List<Long> userIds) {
+    return gradesFetchPersistencePort.fetchCourseUserGradesPersistence(
+        courseId, gradeItemsIds, userIds);
   }
 }

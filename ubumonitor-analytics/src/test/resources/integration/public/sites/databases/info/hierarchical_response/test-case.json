@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "GET",
-    "path": "/api/public/sites/databases/info"
+    "path": "/api/public/system/databases/info"
   },
   "databaseFiles": [
     "https~school.moodledemo.net~teacher.mv.db",

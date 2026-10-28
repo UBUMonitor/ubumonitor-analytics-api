@@ -26,7 +26,7 @@ public class GetUserCoursesService implements GetUserCoursesUseCase {
   @Transactional(readOnly = true)
   public UserEnrolledCourses getActualUserEnrollments() {
     SessionData sessionData = currentSessionContext.getSessionData();
-    Long userId = persistenceFetchPort.getUserIdByUserName(sessionData.getUsername());
+    Long userId = sessionData.getUserId();
     if (userId == null) {
       throw new EntityNotFoundException("User not found " + sessionData.getUsername());
     }

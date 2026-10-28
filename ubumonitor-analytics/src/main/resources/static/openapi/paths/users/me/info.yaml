@@ -1,0 +1,17 @@
+get:
+  tags:
+    - Users
+  summary: Get site and current-user information
+  operationId: getCurrentUserInfo
+  description: Retrieves the authenticated user's information.
+  responses:
+    '200':
+      description: User information
+      content:
+        application/json:
+          schema:
+            $ref: '../../../components/schemas/users/me/info/response.yaml#/CurrentUserInfoResponse'
+    '401':
+      $ref: '../../../openapi.yaml#/components/responses/unauthorized_401'
+
+

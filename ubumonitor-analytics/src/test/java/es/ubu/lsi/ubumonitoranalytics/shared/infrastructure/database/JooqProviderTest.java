@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.InvalidDatabaseEncryptionKeyException;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.concurrent.AsyncOperations;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.moodle.config.MoodleConfig;
 import es.ubu.lsi.ubumonitoranalytics.util.DatabaseUtil;
 import java.net.URI;
@@ -30,7 +29,7 @@ class JooqProviderTest {
                 tempDir.toString(),
                 "jdbc:h2:file:%s;CIPHER=AES;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1"),
             new MoodleConfig.Api());
-    JooqProvider provider = new JooqProvider(config, new AsyncOperations(Runnable::run));
+    JooqProvider provider = new JooqProvider(config);
     SessionData session =
         SessionData.builder().host(host).username("teacher").dbPassword("correct-password").build();
     String jdbcUrl =
@@ -54,7 +53,7 @@ class JooqProviderTest {
   }
 
   @Test
-  void asynchronouslyMigratesAnExistingDatabaseToTheSchemePrefixedName() throws SQLException {
+  void migratesAnExistingDatabaseToTheSchemePrefixedName() throws SQLException {
     URI host = URI.create("https://moodle.test");
     String username = "teacher";
     String password = "correct-password";
@@ -62,7 +61,7 @@ class JooqProviderTest {
     MoodleConfig config =
         new MoodleConfig(
             new MoodleConfig.Db(tempDir.toString(), jdbcTemplate), new MoodleConfig.Api());
-    JooqProvider provider = new JooqProvider(config, new AsyncOperations(Runnable::run));
+    JooqProvider provider = new JooqProvider(config);
     Path legacyDatabase =
         tempDir.resolve(DatabaseUtil.toHostString(host) + "_" + username + ".mv.db");
     String legacyJdbcUrl =
@@ -84,7 +83,7 @@ class JooqProviderTest {
     }
 
     try {
-      provider.initializeTenantAsync(session);
+      provider.initializeTenant(session);
 
       assertTrue(Files.exists(DatabaseUtil.getFile(tempDir.toString(), host, username)));
       assertFalse(Files.exists(legacyDatabase));

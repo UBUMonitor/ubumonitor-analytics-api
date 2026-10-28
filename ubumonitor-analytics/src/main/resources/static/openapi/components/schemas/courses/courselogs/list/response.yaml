@@ -97,6 +97,13 @@ CourseLogsListResponse:
           moduleName:
             type: string
             description: Name of the module associated with the log
+          sectionId:
+            type: integer
+            format: int64
+            description: ID of the section associated with the log
+          sectionName:
+            type: string
+            description: Name of the section associated with the log
           component:
             type: string
             description: Component associated with the log

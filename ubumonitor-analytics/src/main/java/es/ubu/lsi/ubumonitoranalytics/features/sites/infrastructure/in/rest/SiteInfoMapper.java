@@ -1,13 +1,10 @@
 package es.ubu.lsi.ubumonitoranalytics.features.sites.infrastructure.in.rest;
 
-import es.ubu.lsi.ubumonitoranalytics.api.generated.model.*;
+import es.ubu.lsi.ubumonitoranalytics.api.generated.model.SiteInfoDto;
+import es.ubu.lsi.ubumonitoranalytics.api.generated.model.SiteInfoResponseDto;
 import es.ubu.lsi.ubumonitoranalytics.features.sites.application.dto.SiteInfo;
-import es.ubu.lsi.ubumonitoranalytics.features.sites.domain.model.DatabaseHostInfo;
-import es.ubu.lsi.ubumonitoranalytics.features.sites.domain.model.DatabaseInfo;
-import es.ubu.lsi.ubumonitoranalytics.features.sites.domain.model.LoggedUser;
 import es.ubu.lsi.ubumonitoranalytics.features.sites.domain.model.Site;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.GlobalMapperConfig;
-import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -15,22 +12,14 @@ import org.mapstruct.Mapping;
 @Mapper(config = GlobalMapperConfig.class)
 public interface SiteInfoMapper {
 
-  @Mapping(target = "user", source = "loggedUser")
   @Mapping(target = "site", source = "site")
   SiteInfoResponseDto toDto(SiteInfo siteInfo);
 
-  @Mapping(target = "siteVersion", source = "versionNumber")
-  @Mapping(target = "siteUrl", source = "host")
+  @Mapping(target = "name", source = "siteName")
+  @Mapping(target = "number", source = "versionNumber")
+  @Mapping(target = "url", source = "host")
+  @Mapping(target = "version", source = "version")
+  @Mapping(target = "release", source = "release")
+  @Mapping(target = "id", source = "id")
   SiteInfoDto toSiteInformationDto(Site site);
-
-  UserInfoDto toUserInformationDto(LoggedUser loggedUser);
-
-  List<DatabaseHostInfoDto> toDatabaseHostInfoDto(List<DatabaseHostInfo> databasesInfo);
-
-  @Mapping(target = "location", source = "databaseFile")
-  DatabaseUserInfoDto toDatabaseUserInfoDto(DatabaseInfo databaseInfo);
-
-  @Mapping(target = "moodleUrl", source = "host")
-  @Mapping(target = "users", source = "databases")
-  DatabaseHostInfoDto toDatabaseHostInfoDto(DatabaseHostInfo databaseHostInfo);
 }

@@ -177,7 +177,7 @@ public class LogsStatisticsAdapter implements LogsStatisticsPort {
     }
 
     if (request.getInterval() != null) {
-      innerGroupBy.add(resolveIntervalField(request.getInterval(), request.getWeekStartsOn()));
+      innerGroupBy.add(resolveIntervalField(request.getInterval()));
     }
 
     return innerGroupBy;
@@ -232,10 +232,10 @@ public class LogsStatisticsAdapter implements LogsStatisticsPort {
   // =========================================================
   // TIME BUCKET
   // =========================================================
-  private Field<?> resolveIntervalField(TimeInterval interval, Integer weekStartsOn) {
+  private Field<?> resolveIntervalField(TimeInterval interval) {
 
     if (interval == TimeInterval.DAY_OF_WEEK) {
-      return dayOfWeekField(LOGS.LOGGED_AT, weekStartsOn);
+      return dayOfWeekField(LOGS.LOGGED_AT);
     }
 
     return DSL.field(
@@ -244,12 +244,10 @@ public class LogsStatisticsAdapter implements LogsStatisticsPort {
         .as(TIME_BUCKET);
   }
 
-  public static Field<Integer> dayOfWeekField(Field<?> timestamp, Integer weekStartsOn) {
-    int startDay = weekStartsOn == null ? 1 : weekStartsOn;
+  public static Field<Integer> dayOfWeekField(Field<?> timestamp) {
     Field<Integer> isoDayOfWeek = DSL.field("ISO_DAY_OF_WEEK({0})", Integer.class, timestamp);
 
-    return DSL.field("MOD({0} - {1} + 7, 7) + 1", Integer.class, isoDayOfWeek, DSL.val(startDay))
-        .as(TIME_BUCKET);
+    return DSL.field("MOD({0} - 1 + 7, 7) + 1", Integer.class, isoDayOfWeek).as(TIME_BUCKET);
   }
 
   // =========================================================

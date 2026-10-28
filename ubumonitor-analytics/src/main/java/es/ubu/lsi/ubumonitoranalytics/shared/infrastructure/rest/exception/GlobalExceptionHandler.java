@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
@@ -35,7 +36,11 @@ public class GlobalExceptionHandler {
   private final ErrorResponseFactory factory;
 
   /** Handles application bad-request errors. */
-  @ExceptionHandler({BadRequestException.class, HttpMessageNotReadableException.class})
+  @ExceptionHandler({
+    BadRequestException.class,
+    MissingServletRequestParameterException.class,
+    HttpMessageNotReadableException.class
+  })
   public ResponseEntity<ErrorResponseDto> badRequest(BadRequestException ex) {
     return response(HttpStatus.BAD_REQUEST, "BAD_REQUEST", ex.getMessage(), ex);
   }

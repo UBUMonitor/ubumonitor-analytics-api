@@ -7,6 +7,7 @@ CourseGradeItemsResponse:
       type: array
       items:
         type: object
+        title: Grade Item
         required:
           - id
           - gradeMin
@@ -22,15 +23,12 @@ CourseGradeItemsResponse:
             description: Unique identifier for the parent grade item, if applicable
           name:
             type: string
-            nullable: true
             description: Name of the grade item
           gradeMin:
             type: number
             format: double
-            multipleOf: 0.01
             description: Minimum grade value for the grade item
           gradeMax:
             type: number
             format: double
-            multipleOf: 0.01
             description: Maximum grade value for the grade item

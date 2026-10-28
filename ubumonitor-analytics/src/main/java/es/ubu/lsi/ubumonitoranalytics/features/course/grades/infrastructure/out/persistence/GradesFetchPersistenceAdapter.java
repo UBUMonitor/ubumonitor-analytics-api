@@ -28,14 +28,17 @@ public class GradesFetchPersistenceAdapter implements GradesFetchPersistencePort
   }
 
   @Override
-  public List<UserGrade> fetchCourseUserGradesPersistence(Long courseId) {
+  public List<UserGrade> fetchCourseUserGradesPersistence(
+      Long courseId, List<Long> gradeItemsIds, List<Long> userIds) {
     return jooq.dsl()
-        .select(USERS_GRADES.fields())
+        .select(USERS_GRADES)
         .from(USERS_GRADES)
         .join(GRADES)
         .on(GRADES.ID.eq(USERS_GRADES.GRADE_ID))
         .where(GRADES.COURSE_ID.eq(courseId).and(GRADES.ACTIVE.isTrue()))
         .and(USERS_GRADES.ACTIVE.isTrue())
+        .and(USERS_GRADES.GRADE_ID.in(gradeItemsIds))
+        .and(USERS_GRADES.USER_ID.in(userIds))
         .fetchInto(USERS_GRADES) // Result<UsersGradesRecord>
         .map(mapper::toUserGrade);
   }

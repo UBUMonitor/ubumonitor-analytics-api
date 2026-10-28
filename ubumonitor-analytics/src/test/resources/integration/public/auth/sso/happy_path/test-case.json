@@ -15,10 +15,35 @@
           "fullname": "Jeffrey Sanders",
           "userid": 13,
           "siteid": 1,
-          "siteurl": "https://school.moodledemo.net",
+          "siteurl": "${MOODLE_HOST}",
           "version": "2026042000",
           "release": "5.2"
         }
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "path": "/webservice/rest/server.php",
+        "body": {
+          "contains": "field=username"
+        }
+      },
+      "response": {
+        "bodyFile": "classpath:/integration/shared/teacher-user-by-field-response.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "path": "/user/profile.php?lang=en",
+        "headers": {
+          "Accept-Language": "en"
+        }
+      },
+      "response": {
+        "contentType": "text/html; charset=utf-8",
+        "bodyFile": "classpath:/integration/shared/teacher-profile.html"
       }
     }
   ],

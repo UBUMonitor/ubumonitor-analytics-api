@@ -14,8 +14,6 @@ public class CourseLogsStatisticsRequest {
   private List<CourseLogsGroupBy> groupBy; // Defines the base grouping dimension.
 
   private TimeInterval interval;
-  private Integer weekStartsOn;
-  private FillGapStrategy fillGapsStrategy;
   private List<CourseLogsSelectColumn> fields;
 
   private CourseLogsStatisticsRequestFilters filters;

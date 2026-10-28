@@ -1,0 +1,75 @@
+{
+  "auth": {
+    "request": {
+      "method": "POST",
+      "path": "/api/public/auth/sso",
+      "body": {
+        "host": "${MOODLE_HOST}",
+        "moodleLaunchCredential": "moodlemobile://token=eHh4Ojo6d2lyZW1vY2stbW9vZGxlLXRva2Vu",
+        "dbPassword": "analytics-test-password",
+        "cookies": []
+      }
+    },
+    "expectedResponse": {
+      "status": 200,
+      "body": {
+        "tokenType": "Bearer",
+        "accessToken": "${JWT}"
+      }
+    }
+  },
+  "moodleMocks": [
+    {
+      "request": {
+        "method": "POST",
+        "path": "/webservice/rest/server.php",
+        "body": "wsfunction=core_webservice_get_site_info&moodlewsrestformat=json&wstoken=wiremock-moodle-token"
+      },
+      "response": {
+        "body": {
+          "sitename": "Mount Orange",
+          "username": "teacher",
+          "firstname": "Jeffrey",
+          "lastname": "Sanders",
+          "fullname": "Jeffrey Sanders",
+          "userid": 13,
+          "userpictureurl": "https://school.moodledemo.net/pluginfile.php/160/user/icon/boost/f1?rev=75854",
+          "siteid": 1,
+          "siteurl": "${MOODLE_HOST}",
+          "version": "2026042000",
+          "release": "5.2"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "path": "/webservice/rest/server.php",
+        "body": {
+          "contains": "field=username"
+        }
+      },
+      "response": {
+        "bodyFile": "classpath:/integration/shared/teacher-user-by-field-response.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "path": "/user/profile.php?lang=en",
+        "headers": {
+          "Accept-Language": "en"
+        }
+      },
+      "response": {
+        "contentType": "text/html; charset=utf-8",
+        "bodyFile": "classpath:/integration/shared/teacher-profile.html"
+      }
+    }
+  ],
+  "databaseSetup": [
+    "MERGE INTO USERS (ID, FULL_NAME, FIRST_NAME, LAST_NAME, EMAIL) KEY (ID) VALUES (13, 'Jeffrey Sanders', 'Jeffrey', 'Sanders', 'jeffreysanders199@example.com')",
+    "INSERT INTO COURSES (ID, FULL_NAME, SHORT_NAME, SHOW_GRADES, ENABLE_COMPLETION) VALUES (2, 'Algebra', 'ALG2', TRUE, TRUE)",
+    "MERGE INTO SITES (ID, USER_ID, USER_NAME, HOST, SITE_NAME, VERSION_NUMBER, RELEASE, VERSION, TIME_ZONE) KEY (ID, USER_ID) VALUES (1, 13, 'teacher', '${MOODLE_HOST}', 'Mount Orange', '2026042000', '5.2', '2026042000', 'Etc/GMT-1')"
+  ]
+}

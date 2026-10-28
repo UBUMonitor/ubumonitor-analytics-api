@@ -1,5 +1,5 @@
 {
-  "authFixture": "classpath:/integration/shared/teacher-token-auth.json",
+  "authFixture": "classpath:/integration/shared/teacher-sso-auth.json",
   "request": {
     "method": "GET",
     "path": "/api/sites/info",
@@ -11,17 +11,12 @@
     "status": 200,
     "body": {
       "site": {
-        "siteName": "Mount Orange",
-        "siteVersion": "2026042000",
-        "siteUrl": "https://school.moodledemo.net"
-      },
-      "user": {
-        "id": 13,
-        "username": "teacher",
-        "fullName": "Jeffrey Sanders",
-        "firstName": "Jeffrey",
-        "lastName": "Sanders",
-        "timeZone": "Etc/GMT-1"
+        "id": "1",
+        "name": "Mount Orange",
+        "number": "2026042000",
+        "release": "5.2",
+        "version": "2026042000",
+        "url": "${MOODLE_HOST}"
       }
     }
   }

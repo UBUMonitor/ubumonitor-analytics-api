@@ -1,4 +1,4 @@
-post:
+get:
   tags:
     - CourseGrades
   operationId: GetCourseGradesValues
@@ -14,13 +14,29 @@ post:
         format: int64
       description: Course identifier
 
+    - name: gradeItemsIds
+      in: query
+      description: List of grade item identifiers to include in the grade value lookup.
+      required: true
+      explode: false
+      schema:
+        type: array
+        minItems: 0
+        items:
+          type: integer
+          format: int64
 
-  requestBody:
-    required: true
-    content:
-      application/json:
-        schema:
-          $ref: '../../../components/schemas/courses/grades/values/request.yaml#/CourseGradesValuesRequest'
+    - name: userIds
+      in: query
+      description: List of user IDs to filter the results. If provided, only the specified users will have their grades included in the response.
+      required: true
+      explode: false
+      schema:
+        type: array
+        minItems: 0
+        items:
+          type: integer
+          format: int64
   responses:
     "200":
       description: Grades retrieved successfully

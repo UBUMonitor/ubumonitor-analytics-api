@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/public/auth/token",
+    "body": {
+      "host": "https://moodle.test",
+      "token": "not-a-real-token"
+    }
+  },
+  "expectedResponse": {
+    "status": 404
+  }
+}

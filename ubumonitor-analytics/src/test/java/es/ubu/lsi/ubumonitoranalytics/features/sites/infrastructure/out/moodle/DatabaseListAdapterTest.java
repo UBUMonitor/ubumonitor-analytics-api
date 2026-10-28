@@ -2,7 +2,8 @@ package es.ubu.lsi.ubumonitoranalytics.features.sites.infrastructure.out.moodle;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import es.ubu.lsi.ubumonitoranalytics.features.sites.domain.model.DatabaseInfo;
+import es.ubu.lsi.ubumonitoranalytics.features.system.database.domain.model.DatabaseInfo;
+import es.ubu.lsi.ubumonitoranalytics.features.system.database.infrastructure.out.DatabaseListAdapter;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.moodle.config.MoodleConfig;
 import java.net.URI;
 import java.nio.file.Files;

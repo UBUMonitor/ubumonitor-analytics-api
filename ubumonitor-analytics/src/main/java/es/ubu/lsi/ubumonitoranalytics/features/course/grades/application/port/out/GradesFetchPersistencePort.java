@@ -8,5 +8,6 @@ public interface GradesFetchPersistencePort {
 
   List<GradeItem> fetchCourseGradeItemsPersistence(Long courseId);
 
-  List<UserGrade> fetchCourseUserGradesPersistence(Long courseId);
+  List<UserGrade> fetchCourseUserGradesPersistence(
+      Long courseId, List<Long> gradeItemsIds, List<Long> userIds);
 }

@@ -5,20 +5,10 @@ import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.database.Tenan
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.DatabaseCreationException;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.DatabaseMigrationValidationException;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.concurrent.AsyncOperations;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.moodle.config.MoodleConfig;
 import es.ubu.lsi.ubumonitoranalytics.util.DatabaseUtil;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Stream;
 import javax.sql.DataSource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,8 +19,6 @@ import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DefaultConfiguration;
 import org.jooq.impl.DefaultDSLContext;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Component;
 
 /** Caches tenant data sources and creates a jOOQ context for each access. */
@@ -40,7 +28,6 @@ import org.springframework.stereotype.Component;
 public class JooqProvider implements TenantDatabasePort {
 
   private final MoodleConfig moodleConfig;
-  private final AsyncOperations asyncOperations;
 
   // Cache DataSource instances only; DSLContext instances are request-scoped.
   private final ConcurrentHashMap<String, DataSource> dataSourceCache = new ConcurrentHashMap<>();
@@ -64,26 +51,6 @@ public class JooqProvider implements TenantDatabasePort {
             session.getDbPassword());
     getDataSource(session);
     return databaseCreated;
-  }
-
-  /** Starts tenant datasource creation and Flyway migration without blocking session creation. */
-  @Override
-  public void initializeTenantAsync(SessionData session) {
-
-    if (session == null) {
-      return;
-    }
-
-    asyncOperations
-        .runAsync(() -> initializeTenant(session))
-        .exceptionally(
-            exception -> {
-              log.error(
-                  "Unable to initialize tenant database for {}",
-                  TenantContext.buildTenantId(session),
-                  exception);
-              return null;
-            });
   }
 
   /** Returns the cached tenant data source, creating and migrating it when necessary. */
@@ -199,39 +166,5 @@ public class JooqProvider implements TenantDatabasePort {
     dataSourceCache.clear();
     migratedTenants.clear();
     log.info("Cleared all tenants");
-  }
-
-  private static void deleteDirectory(Path directory) throws IOException {
-    if (!Files.exists(directory)) {
-      return;
-    }
-
-    try (Stream<Path> paths = Files.walk(directory)) {
-      List<Path> pathsToDelete = paths.sorted(Comparator.reverseOrder()).toList();
-      for (Path path : pathsToDelete) {
-        Files.deleteIfExists(path);
-      }
-    }
-  }
-
-  private String extractMigrationsToTemp() throws Exception {
-
-    Path tempDir = Files.createTempDirectory("flyway-migrations");
-
-    PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-
-    Resource[] resources = resolver.getResources("classpath:db/migration/*.sql");
-
-    for (Resource resource : resources) {
-
-      Path target = tempDir.resolve(Objects.requireNonNull(resource.getFilename()));
-
-      try (InputStream in = resource.getInputStream()) {
-        Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
-        log.info("Extracted migration {} to {}", resource.getFilename(), target);
-      }
-    }
-
-    return tempDir.toAbsolutePath().toString();
   }
 }

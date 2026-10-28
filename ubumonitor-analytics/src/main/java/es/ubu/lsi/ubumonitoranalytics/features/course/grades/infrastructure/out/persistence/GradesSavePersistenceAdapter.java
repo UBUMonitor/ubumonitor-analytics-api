@@ -11,10 +11,12 @@ import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.GradesRecord;
 import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.UsersGradesRecord;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.util.*;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.jooq.Record1;
+import org.jooq.Select;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 @Component
 @RequiredArgsConstructor
@@ -26,27 +28,31 @@ public class GradesSavePersistenceAdapter implements GradesSavePersistencePort {
   @Override
   public void saveCourseGradeItemsPersistence(CourseGrade courseGrade) {
     Long courseId = courseGrade.getCourseId();
-    OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
+    OffsetDateTime now = OffsetDateTime.now();
 
     deactivateExisting(courseId, now);
     upsertGradeItems(courseGrade.getGradeItems(), courseId, now);
     upsertUserGrades(courseGrade.getUserGrades(), now);
   }
 
+  // ---------- Deactivate ----------
+
   private void deactivateExisting(Long courseId, OffsetDateTime now) {
+    deactivateUserGrades(courseId, now);
+    deactivateGrades(courseId, now);
+  }
+
+  private void deactivateUserGrades(Long courseId, OffsetDateTime now) {
     jooq.dsl()
         .update(USERS_GRADES)
         .set(USERS_GRADES.ACTIVE, false)
         .set(USERS_GRADES.UPDATED_AT, now)
-        .whereExists(
-            jooq.dsl()
-                .selectOne()
-                .from(GRADES)
-                .where(GRADES.ID.eq(USERS_GRADES.GRADE_ID))
-                .and(GRADES.COURSE_ID.eq(courseId)))
-        .and(USERS_GRADES.ACTIVE.isTrue())
+        .where(USERS_GRADES.ACTIVE.isTrue())
+        .and(USERS_GRADES.GRADE_ID.in(courseGradeIds(courseId)))
         .execute();
+  }
 
+  private void deactivateGrades(Long courseId, OffsetDateTime now) {
     jooq.dsl()
         .update(GRADES)
         .set(GRADES.ACTIVE, false)
@@ -56,63 +62,29 @@ public class GradesSavePersistenceAdapter implements GradesSavePersistencePort {
         .execute();
   }
 
+  private Select<Record1<Long>> courseGradeIds(Long courseId) {
+    return jooq.dsl().select(GRADES.ID).from(GRADES).where(GRADES.COURSE_ID.eq(courseId));
+  }
+
+  // ---------- Upsert ----------
+
   private void upsertGradeItems(List<GradeItem> gradeItems, Long courseId, OffsetDateTime now) {
-    if (gradeItems == null || gradeItems.isEmpty()) {
+    if (CollectionUtils.isEmpty(gradeItems)) {
       return;
     }
 
-    Set<Long> incomingIds = new HashSet<>();
-    for (GradeItem gradeItem : gradeItems) {
-      incomingIds.add(Objects.requireNonNull(gradeItem.getId(), "gradeItem id must not be null"));
-    }
-
-    Set<Long> persistedIds = new HashSet<>();
-    List<GradeItem> pending = new ArrayList<>(gradeItems);
-    while (!pending.isEmpty()) {
-      List<GradeItem> nextPending = new ArrayList<>();
-      List<GradesRecord> records = new ArrayList<>();
-
-      for (GradeItem gradeItem : pending) {
-        Long parentId = gradeItem.getParentId();
-        if (parentId != null
-            && incomingIds.contains(parentId)
-            && !persistedIds.contains(parentId)) {
-          nextPending.add(gradeItem);
-          continue;
-        }
-
-        GradesRecord record = jooq.dsl().newRecord(GRADES);
-        mapper.toRecord(gradeItem, record);
-        record.setCourseId(courseId);
-        record.setActive(true);
-        record.setUpdatedAt(now);
-        records.add(record);
-        persistedIds.add(gradeItem.getId());
-      }
-
-      if (records.isEmpty()) {
-        throw new IllegalStateException("Grade item hierarchy contains a cycle");
-      }
-
-      jooq.dsl().batchMerge(records).execute();
-      pending = nextPending;
-    }
+    List<GradesRecord> records =
+        gradeItems.stream().map(item -> mapper.toRecord(item, courseId, now)).toList();
+    jooq.dsl().batchMerge(records).execute();
   }
 
   private void upsertUserGrades(List<UserGrade> userGrades, OffsetDateTime now) {
-    if (userGrades == null || userGrades.isEmpty()) {
+    if (CollectionUtils.isEmpty(userGrades)) {
       return;
     }
 
-    List<UsersGradesRecord> records = new ArrayList<>();
-    for (UserGrade userGrade : userGrades) {
-      UsersGradesRecord record = jooq.dsl().newRecord(USERS_GRADES);
-      mapper.toRecord(userGrade, record);
-      record.setActive(true);
-      record.setUpdatedAt(now);
-      records.add(record);
-    }
-
+    List<UsersGradesRecord> records =
+        userGrades.stream().map(userGrade -> mapper.toRecord(userGrade, now)).toList();
     jooq.dsl().batchMerge(records).execute();
   }
 }

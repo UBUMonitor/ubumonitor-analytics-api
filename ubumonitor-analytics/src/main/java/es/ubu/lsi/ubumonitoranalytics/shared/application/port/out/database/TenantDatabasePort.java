@@ -12,9 +12,6 @@ public interface TenantDatabasePort {
    */
   boolean initializeTenant(SessionData session);
 
-  /** Initializes the tenant data source and schema migration asynchronously. */
-  void initializeTenantAsync(SessionData session);
-
   /** Closes and removes all cached tenant database resources. */
   void clearAll();
 

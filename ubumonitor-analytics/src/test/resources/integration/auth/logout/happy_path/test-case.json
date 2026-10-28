@@ -1,5 +1,5 @@
 {
-  "authFixture": "classpath:/integration/shared/teacher-token-auth.json",
+  "authFixture": "classpath:/integration/shared/teacher-sso-auth.json",
   "request": {
     "method": "POST",
     "path": "/api/auth/logout",

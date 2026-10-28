@@ -43,7 +43,8 @@
                 "itemnumber": {
                   "nullable": true,
                   "description": "Grade item item number",
-                  "type": "integer"
+                  "type": "integer",
+                  "format": "int64"
                 },
                 "idnumber": {
                   "nullable": true,

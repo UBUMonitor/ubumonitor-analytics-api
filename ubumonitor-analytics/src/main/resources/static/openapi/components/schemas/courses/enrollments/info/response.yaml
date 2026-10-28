@@ -13,9 +13,6 @@ CourseEnrollmentsResponse:
           - id
           - fullName
           - email
-          - firstAccess
-          - lastAccess
-          - lastCourseAccess
           - imageUrl
           - roles
           - groups

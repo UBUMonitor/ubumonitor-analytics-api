@@ -77,13 +77,17 @@ security:
   - bearerAuth: [ ]
 
 paths:
-  /public/health:
-    $ref: './paths/health/health.yaml'
+  /public/system/health:
+    $ref: './paths/system/health.yaml'
+
+  /public/system/shutdown:
+    $ref: './paths/system/shutdown.yaml'
+
+  /public/system/databases/info:
+    $ref: './paths/system/databases.yaml'
+
   /public/auth/credentials:
     $ref: './paths/auth/credentials.yaml'
-
-  /public/auth/token:
-    $ref: './paths/auth/token.yaml'
 
   /public/auth/sso:
     $ref: './paths/auth/sso.yaml'
@@ -97,11 +101,7 @@ paths:
   /public/users/{userId}/images/profile:
     $ref: "./paths/users/images/profile.yaml"
 
-  /public/sites/databases/info:
-    $ref: './paths/sites/databases.yaml'
 
-  /system/shutdown:
-    $ref: './paths/system/shutdown.yaml'
 
   /auth/logout:
     $ref: './paths/auth/logout.yaml'
@@ -139,6 +139,9 @@ paths:
   /courses/{courseId}/grades/info:
     $ref: './paths/courses/grades/info.yaml'
 
+  /courses/{courseId}/grades/values:
+    $ref: './paths/courses/grades/values.yaml'
+
   /courses/{courseId}/logs/sync:
     $ref: './paths/courses/courselogs/sync.yaml'
 
@@ -155,6 +158,14 @@ paths:
 
   /courses/{courseId}/activitycompletion/sync:
     $ref: './paths/courses/activitycompletion/sync.yaml'
+
+  /courses/{courseId}/activitycompletion/info:
+    $ref: './paths/courses/activitycompletion/info.yaml'
+  /courses/{courseId}/activitycompletion/values:
+    $ref: './paths/courses/activitycompletion/values.yaml'
+
+  /users/me/info:
+    $ref: './paths/users/me/info.yaml'
 
   /users/images/document:
     $ref: './paths/users/images/document.yaml'

@@ -1,13 +1,11 @@
 package es.ubu.lsi.ubumonitoranalytics.features.auth.infrastructure.out.moodle;
 
 import es.ubu.lsi.moodle.api.Client;
-import es.ubu.lsi.moodle.model.core.webservice.getsiteinfo.request.GetSiteInfoRequestApi;
-import es.ubu.lsi.moodle.model.core.webservice.getsiteinfo.response.GetSiteInfoResponseApi;
 import es.ubu.lsi.moodle.model.login.token.request.LoginTokenRequestApi;
 import es.ubu.lsi.moodle.model.login.token.response.LoginTokenResponseApi;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.application.port.out.MoodleApiPort;
-import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.auth.AuthInput;
-import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.auth.Cookie;
+import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.AuthInput;
+import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.Cookie;
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -55,18 +53,6 @@ public class MoodleClientAdapter implements MoodleApiPort {
         loginTokenResponse.getToken() != null,
         loginTokenResponse.getError() != null);
     return loginTokenResponse.getToken();
-  }
-
-  @Override
-  public String usernameByToken(AuthInput authInput) {
-    try {
-      GetSiteInfoResponseApi siteInfoResponse =
-          client.coreWebservice().getSiteInfo(new GetSiteInfoRequestApi());
-      return siteInfoResponse.getUsername();
-    } catch (Exception e) {
-      log.info("Error fetching username by token: {}", e.getMessage());
-      return null;
-    }
   }
 
   @Override

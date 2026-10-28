@@ -1,8 +1,8 @@
 package es.ubu.lsi.ubumonitoranalytics.features.auth.infrastructure.in.rest;
 
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.*;
+import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.AuthInput;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.SessionToken;
-import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.auth.AuthInput;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.GlobalMapperConfig;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -23,15 +23,6 @@ public interface AuthMapper {
   @Mapping(target = "password", source = "password")
   @Mapping(target = "host", source = "host")
   AuthInput toDomain(AuthLoginRequestDto authLoginRequestDto);
-
-  /** Maps Moodle-token authentication input to the application model. */
-  @Mapping(target = "cookies", ignore = true)
-  @Mapping(target = "username", ignore = true)
-  @Mapping(target = "password", ignore = true)
-  @Mapping(target = "moodleToken", source = "token")
-  @Mapping(target = "dbPassword", source = "dbPassword")
-  @Mapping(target = "host", source = "host")
-  AuthInput toDomain(AuthTokenRequestDto authTokenRequestDto);
 
   /** Maps offline authentication input to the application model. */
   @Mapping(target = "cookies", ignore = true)

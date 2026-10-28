@@ -120,6 +120,7 @@ CourseLogsListRequest:
     pagination:
       title: CourseLogsInfoRequestPagination
       type: object
+      description: When omitted, all matching logs are returned without pagination.
       properties:
         page:
           type: integer

@@ -1,0 +1,47 @@
+CurrentUserInfoResponse:
+  type: object
+  required:
+    - user
+  properties:
+    user:
+      $ref: '#/UserInfo'
+
+
+UserInfo:
+  title: User Information
+  type: object
+  description: Information about the authenticated user.
+  required:
+    - id
+    - userName
+    - fullName
+    - userImageUrl
+  properties:
+    id:
+      type: integer
+      format: int64
+      description: The unique identifier of the user.
+    userName:
+      type: string
+      description: The username of the user.
+    fullName:
+      type: string
+      description: The full name of the user.
+    firstName:
+      type: string
+      description: The first name of the user.
+    lastName:
+      type: string
+      description: The last name of the user.
+    initials:
+      type: string
+      description: Initials of the full name
+    email:
+      type: string
+      format: email
+    timeZone:
+      type: string
+      description: The timezone of the user.
+    userImageUrl:
+      type: string
+      description: Image url of the user.

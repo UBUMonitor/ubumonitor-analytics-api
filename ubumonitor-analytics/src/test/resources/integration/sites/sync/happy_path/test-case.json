@@ -2,11 +2,12 @@
   "auth": {
     "request": {
       "method": "POST",
-      "path": "/api/public/auth/token",
+      "path": "/api/public/auth/sso",
       "body": {
         "host": "${MOODLE_HOST}",
-        "token": "wiremock-moodle-token",
-        "dbPassword": "analytics-test-password"
+        "moodleLaunchCredential": "moodlemobile://token=eHh4Ojo6d2lyZW1vY2stbW9vZGxlLXRva2Vu",
+        "dbPassword": "analytics-test-password",
+        "cookies": []
       }
     },
     "expectedResponse": {
@@ -96,7 +97,7 @@
           "userhomepage": 1,
           "userhomepageurl": null,
           "siteid": 1,
-          "siteurl": "https://school.moodledemo.net",
+          "siteurl": "${MOODLE_HOST}",
           "sitecalendartype": "gregorian",
           "usercalendartype": "gregorian",
           "userissiteadmin": false,
@@ -105,6 +106,18 @@
           "usersessionscount": null,
           "policyagreed": 1
         }
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "path": "/webservice/rest/server.php",
+        "body": {
+          "contains": "field=username"
+        }
+      },
+      "response": {
+        "bodyFile": "classpath:/integration/shared/teacher-user-by-field-response.json"
       }
     },
     {
@@ -182,17 +195,12 @@
     "status": 200,
     "body": {
       "site": {
-        "siteName": "Mount Orange",
-        "siteVersion": "2026042000",
-        "siteUrl": "https://school.moodledemo.net"
-      },
-      "user": {
-        "id": 13,
-        "username": "teacher",
-        "fullName": "Jeffrey Sanders",
-        "firstName": "Jeffrey",
-        "lastName": "Sanders",
-        "timeZone": "Etc/GMT-1"
+        "id": "1",
+        "name": "Mount Orange",
+        "number": "5.2",
+        "release": "5.2 (Build: 20260420)",
+        "version": "2026042000",
+        "url": "${MOODLE_HOST}"
       }
     }
   }

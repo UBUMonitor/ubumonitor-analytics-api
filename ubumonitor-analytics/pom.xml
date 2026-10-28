@@ -24,7 +24,6 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <mapstruct.version>1.6.3</mapstruct.version>
-        <lombok.version>1.18.42</lombok.version>
         <logbook.version>4.2.0</logbook.version>
         <spring.boot.version>4.1.1</spring.boot.version>
         <start-class>es.ubu.lsi.ubumonitoranalytics.Application</start-class>
@@ -66,19 +65,11 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-logging</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>org.zalando</groupId>
             <artifactId>logbook-spring-boot-starter</artifactId>
             <version>${logbook.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
         </dependency>
 
         <dependency>
@@ -100,13 +91,6 @@
         <dependency>
             <groupId>org.apache.httpcomponents.client5</groupId>
             <artifactId>httpclient5</artifactId>
-        </dependency>
-        <!-- Lombok -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
@@ -195,12 +179,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.wiremock</groupId>
-            <artifactId>wiremock-standalone</artifactId>
-            <version>3.13.2</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>es.ubu.lsi</groupId>
             <artifactId>moodle-java-client</artifactId>
             <version>0.0.7-SNAPSHOT</version>
@@ -220,7 +198,6 @@
             <!-- Compiler -->
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
@@ -424,24 +401,6 @@
 
                             </generator>
                         </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>com.diffplug.spotless</groupId>
-                <artifactId>spotless-maven-plugin</artifactId>
-                <version>3.7.0</version>
-                <configuration>
-                    <java>
-                        <googleJavaFormat/>
-                        <removeUnusedImports/>
-                    </java>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>apply</goal>
-                        </goals>
                     </execution>
                 </executions>
             </plugin>

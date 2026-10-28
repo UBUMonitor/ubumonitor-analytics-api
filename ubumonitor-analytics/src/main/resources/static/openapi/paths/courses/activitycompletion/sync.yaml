@@ -12,6 +12,8 @@ post:
       schema:
         type: integer
         format: int64
+
+
   responses:
     '200':
       description: Successful synchronization of activity completion information. The response includes the updated activity completion information for the user's courses.

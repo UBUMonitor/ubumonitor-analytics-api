@@ -10,31 +10,19 @@ import org.mapstruct.Mapping;
 @Mapper(config = GlobalMapperConfig.class)
 public interface SitePersistenceAdapterMapper {
 
+  @Mapping(target = "userName", source = "site.userName")
+  @Mapping(target = "timeZone", ignore = true)
+  @Mapping(target = "version", source = "site.version")
+  @Mapping(target = "release", source = "site.release")
   @Mapping(target = "versionNumber", source = "site.versionNumber")
-  @Mapping(target = "userImageUrl", source = "loggedUser.userPicture.url")
   @Mapping(target = "siteName", source = "site.siteName")
   @Mapping(target = "id", source = "site.id")
   @Mapping(target = "host", source = "site.host")
-  @Mapping(target = "userId", source = "loggedUser.id")
-  @Mapping(target = "userName", source = "loggedUser.username")
-  @Mapping(target = "firstName", source = "loggedUser.firstName")
-  @Mapping(target = "lastName", source = "loggedUser.lastName")
-  @Mapping(target = "fullName", source = "loggedUser.fullName")
+  @Mapping(target = "userId", source = "site.userId")
   @Mapping(target = "createdAt", ignore = true)
   @Mapping(target = "updatedAt", ignore = true)
-  @Mapping(target = "timeZone", source = "loggedUser.timeZone")
   SitesRecord toRecord(SiteInfo siteInfo);
 
-  @Mapping(target = "site.versionNumber", source = "versionNumber")
-  @Mapping(target = "site.siteName", source = "siteName")
-  @Mapping(target = "site.id", source = "id")
-  @Mapping(target = "site.host", source = "host")
-  @Mapping(target = "loggedUser.id", source = "userId")
-  @Mapping(target = "loggedUser.username", source = "userName")
-  @Mapping(target = "loggedUser.firstName", source = "firstName")
-  @Mapping(target = "loggedUser.lastName", source = "lastName")
-  @Mapping(target = "loggedUser.fullName", source = "fullName")
-  @Mapping(target = "loggedUser.userPicture.url", source = "userImageUrl")
-  @Mapping(target = "loggedUser.timeZone", source = "timeZone")
+  @Mapping(target = "site", source = "dto")
   SiteInfo toDomain(SitesRecord dto);
 }
