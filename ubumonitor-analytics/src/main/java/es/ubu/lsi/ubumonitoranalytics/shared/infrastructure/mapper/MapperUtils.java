@@ -29,42 +29,6 @@ public class MapperUtils {
         : Instant.ofEpochSecond(timestamp).atOffset(ZoneOffset.UTC);
   }
 
-  public OffsetDateTime toOffsetDateTime(Instant instant) {
-    return instant == null ? null : instant.atOffset(ZoneOffset.UTC);
-  }
-
-  public Instant toInstant(OffsetDateTime offsetDateTime) {
-    return offsetDateTime == null ? null : offsetDateTime.toInstant();
-  }
-
-  public LocalDateTime toLocalDateTime(OffsetDateTime offsetDateTime) {
-    return offsetDateTime == null ? null : offsetDateTime.toLocalDateTime();
-  }
-
-  public static LocalDateTime toLocalDateTime(Long timestamp) {
-    return timestamp == null || timestamp == 0L
-        ? null
-        : LocalDateTime.ofInstant(Instant.ofEpochSecond(timestamp), ZoneOffset.UTC);
-  }
-
-  public OffsetDateTime toOffsetDateTime(LocalDateTime localDateTime) {
-    return localDateTime == null ? null : localDateTime.atOffset(ZoneOffset.UTC);
-  }
-
-  public LocalDateTime toLocalDateTime(String localDateTime) {
-    if (localDateTime == null) {
-      return null;
-    }
-    return LocalDateTime.parse(localDateTime);
-  }
-
-  public String toLocalDateTimeString(LocalDateTime localDateTime) {
-    if (localDateTime == null) {
-      return null;
-    }
-    return localDateTime.toString();
-  }
-
   @Named("current")
   public LocalDateTime mapCurrent(Object ignored) {
     return LocalDateTime.now();
@@ -214,12 +178,9 @@ public class MapperUtils {
     return value.intValue();
   }
 
-  public static Integer toUnixTimestamp(OffsetDateTime offsetDateTime) {
-    if (offsetDateTime == null) {
-      return null;
-    }
-
-    return (int) offsetDateTime.toEpochSecond();
+  @Named("nullableTimestamp")
+  public static Long nullableTimestamp(Long timestamp) {
+    return timestamp == null || timestamp == 0L ? null : timestamp;
   }
 
   public static URI toUri(String stringUri) {
@@ -271,7 +232,7 @@ public class MapperUtils {
   }
 
   @Named("now")
-  public static OffsetDateTime now(Object o) {
-    return OffsetDateTime.now();
+  public static Long now(Object o) {
+    return Instant.now().getEpochSecond();
   }
 }

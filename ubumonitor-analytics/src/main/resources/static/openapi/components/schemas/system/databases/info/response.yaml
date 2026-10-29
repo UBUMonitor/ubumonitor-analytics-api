@@ -47,4 +47,4 @@ DatabaseUserInfo:
       type: string
       format: uri
       description: Location of the database file, as a `file:` URI.
-      example: file:///data/databases/https~school.moodledemo.net~student.mv.db
+      example: file:///data/databases/https~school.moodledemo.net~student.db

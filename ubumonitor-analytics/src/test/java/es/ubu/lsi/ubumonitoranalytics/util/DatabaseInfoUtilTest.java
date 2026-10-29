@@ -1,17 +1,56 @@
 package es.ubu.lsi.ubumonitoranalytics.util;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.InvalidDatabaseEncryptionKeyException;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.sql.DriverManager;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 class DatabaseInfoUtilTest {
 
   @TempDir Path tempDir;
+
+  @Test
+  void createsAnEncryptedChacha20DatabaseAndRejectsAnIncorrectKey() throws Exception {
+    URI host = URI.create("https://school.moodledemo.net");
+    String username = "student";
+    String password = "test-password";
+    String jdbcTemplate = "jdbc:sqlite:%s";
+
+    assertTrue(
+        DatabaseUtil.createAndInitializeDatabase(
+            jdbcTemplate, tempDir.toString(), host, username, password));
+
+    Path databaseFile = DatabaseUtil.getFile(tempDir.toString(), host, username);
+    assertTrue(Files.exists(databaseFile));
+    try (var connection =
+            DatabaseUtil.createDataSource(
+                    DatabaseUtil.buildJdbcUrl(jdbcTemplate, tempDir.toString(), host, username),
+                    password)
+                .getConnection();
+        var statement = connection.createStatement()) {
+      statement.execute("CREATE TABLE cipher_probe (id INTEGER PRIMARY KEY)");
+    }
+    assertFalse(
+        new String(Files.readAllBytes(databaseFile), StandardCharsets.ISO_8859_1)
+            .startsWith("SQLite format 3"));
+    assertFalse(
+        DatabaseUtil.createAndInitializeDatabase(
+            jdbcTemplate, tempDir.toString(), host, username, password));
+
+    assertThrows(
+        InvalidDatabaseEncryptionKeyException.class,
+        () ->
+            DatabaseUtil.createAndInitializeDatabase(
+                jdbcTemplate, tempDir.toString(), host, username, "wrong-password"));
+  }
 
   @Test
   void includesTheUriSchemeInTheDatabaseFileName() {
@@ -21,83 +60,5 @@ class DatabaseInfoUtilTest {
     assertEquals(
         "http~school.moodledemo.net~student",
         DatabaseUtil.buildDbFileName(URI.create("http://school.moodledemo.net"), "student"));
-  }
-
-  @Test
-  void migratesAnExistingDatabaseToTheSchemePrefixedName() throws Exception {
-    URI host = URI.create("https://school.moodledemo.net");
-    String oldFileName = "school.moodledemo.net_student";
-    String password = "test-password";
-    String jdbcTemplate = "jdbc:h2:file:%s;CIPHER=AES;DB_CLOSE_ON_EXIT=FALSE";
-    Path oldDatabaseFile = tempDir.resolve(oldFileName + ".mv.db");
-    String oldJdbcUrl =
-        String.format(
-            jdbcTemplate,
-            tempDir.resolve(oldFileName).toAbsolutePath().toString().replace("\\", "/"));
-
-    try (var connection = DriverManager.getConnection(oldJdbcUrl, "sa", password + " " + password);
-        var statement = connection.createStatement()) {
-      statement.execute("CREATE TABLE migration_check (amount INT)");
-      statement.execute("INSERT INTO migration_check VALUES (42)");
-      statement.execute("SHUTDOWN");
-    }
-
-    assertFalse(
-        DatabaseUtil.createAndInitializeDatabase(
-            jdbcTemplate, tempDir.toString(), host, "student", password));
-
-    Path newDatabaseFile = DatabaseUtil.getFile(tempDir.toString(), host, "student");
-    assertTrue(Files.exists(newDatabaseFile));
-    assertFalse(Files.exists(oldDatabaseFile));
-
-    String newJdbcUrl =
-        DatabaseUtil.buildJdbcUrl(jdbcTemplate, tempDir.toString(), host, "student");
-    try (var connection =
-        DriverManager.getConnection(newJdbcUrl, "sa", password + " " + password)) {
-      try (var resultSet =
-          connection.createStatement().executeQuery("SELECT amount FROM migration_check")) {
-        assertTrue(resultSet.next());
-        assertEquals(42, resultSet.getInt("amount"));
-      }
-    }
-  }
-
-  @Test
-  void migratesAnExistingSchemePrefixedUnderscoreDatabase() throws Exception {
-    URI host = URI.create("https://school.moodledemo.net");
-    String oldFileName = "https_school.moodledemo.net_student";
-    String password = "test-password";
-    String jdbcTemplate = "jdbc:h2:file:%s;CIPHER=AES;DB_CLOSE_ON_EXIT=FALSE";
-    Path oldDatabaseFile = tempDir.resolve(oldFileName + ".mv.db");
-    String oldJdbcUrl =
-        String.format(
-            jdbcTemplate,
-            tempDir.resolve(oldFileName).toAbsolutePath().toString().replace("\\", "/"));
-
-    try (var connection = DriverManager.getConnection(oldJdbcUrl, "sa", password + " " + password);
-        var statement = connection.createStatement()) {
-      statement.execute("CREATE TABLE migration_check (amount INT)");
-      statement.execute("INSERT INTO migration_check VALUES (42)");
-      statement.execute("SHUTDOWN");
-    }
-
-    assertFalse(
-        DatabaseUtil.createAndInitializeDatabase(
-            jdbcTemplate, tempDir.toString(), host, "student", password));
-
-    Path newDatabaseFile = DatabaseUtil.getFile(tempDir.toString(), host, "student");
-    assertTrue(Files.exists(newDatabaseFile));
-    assertFalse(Files.exists(oldDatabaseFile));
-
-    String newJdbcUrl =
-        DatabaseUtil.buildJdbcUrl(jdbcTemplate, tempDir.toString(), host, "student");
-    try (var connection =
-        DriverManager.getConnection(newJdbcUrl, "sa", password + " " + password)) {
-      try (var resultSet =
-          connection.createStatement().executeQuery("SELECT amount FROM migration_check")) {
-        assertTrue(resultSet.next());
-        assertEquals(42, resultSet.getInt("amount"));
-      }
-    }
   }
 }

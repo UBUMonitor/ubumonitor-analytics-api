@@ -27,13 +27,15 @@ CourseLogsStatisticsRequest:
       type: object
       properties:
         from:
-          type: string
-          format: date-time
-          example: "2026-05-01T00:00:00Z"
+          type: integer
+          format: int64
+          description: Inclusive start time as a Unix timestamp in seconds.
+          example: 1777593600
         to:
-          type: string
-          format: date-time
-          example: "2026-05-31T23:59:59Z"
+          type: integer
+          format: int64
+          description: Inclusive end time as a Unix timestamp in seconds.
+          example: 1780185599
 
     groupBy:
       type: array

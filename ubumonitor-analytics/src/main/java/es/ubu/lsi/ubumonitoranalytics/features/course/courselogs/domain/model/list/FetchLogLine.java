@@ -1,13 +1,12 @@
 package es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.list;
 
-import java.time.OffsetDateTime;
 import lombok.Data;
 
 @Data
 public class FetchLogLine {
 
   private Long id; // ID
-  private OffsetDateTime timestamp; // LOGGED_AT
+  private Long timestamp; // LOGGED_AT
 
   private Long courseId; // COURSE_ID
 

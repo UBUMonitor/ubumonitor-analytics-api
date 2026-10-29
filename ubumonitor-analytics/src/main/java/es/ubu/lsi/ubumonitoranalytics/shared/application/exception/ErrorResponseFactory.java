@@ -2,7 +2,7 @@ package es.ubu.lsi.ubumonitoranalytics.shared.application.exception;
 
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.ErrorDetailDto;
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.ErrorResponseDto;
-import java.time.OffsetDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -26,7 +26,7 @@ public class ErrorResponseFactory {
     return new ErrorResponseDto()
         .code(code)
         .message(message)
-        .timestamp(OffsetDateTime.now())
+        .timestamp(Instant.now().getEpochSecond())
         .traceId(getTraceId())
         .errors(errors);
   }

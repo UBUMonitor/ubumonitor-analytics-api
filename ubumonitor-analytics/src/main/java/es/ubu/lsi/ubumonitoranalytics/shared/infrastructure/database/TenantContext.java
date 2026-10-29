@@ -17,14 +17,4 @@ public final class TenantContext {
   public static String buildTenantId(SessionData session) {
     return session.getHost() + "_" + session.getUsername();
   }
-
-  /**
-   * Derives the H2 password representation from the tenant session.
-   *
-   * @param session session containing the database encryption key
-   * @return H2 password value
-   */
-  public static String getPassword(SessionData session) {
-    return session.getDbPassword() + " " + session.getDbPassword();
-  }
 }

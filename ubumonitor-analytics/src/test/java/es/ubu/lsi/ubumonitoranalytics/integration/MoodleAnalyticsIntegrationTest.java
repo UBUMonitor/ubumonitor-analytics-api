@@ -12,6 +12,7 @@ import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.Sessio
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.JooqProvider;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.moodle.config.MoodleConfig;
+import es.ubu.lsi.ubumonitoranalytics.util.DatabaseUtil;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -22,12 +23,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
+import javax.sql.DataSource;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -51,6 +55,25 @@ class MoodleAnalyticsIntegrationTest {
           .resolve("run-" + UUID.randomUUID())
           .toAbsolutePath()
           .toString();
+  private static final String TRANSACTION_DATABASE_KEY = "integration-transaction-key";
+
+  @TestConfiguration(proxyBeanMethods = false)
+  static class EncryptedSQLiteTestDataSourceConfiguration {
+
+    @Bean
+    DataSource dataSource() throws IOException {
+      Path databaseDirectory = Path.of(TEST_DATABASE_PATH);
+      Files.createDirectories(databaseDirectory);
+      String databaseUrl =
+          "jdbc:sqlite:"
+              + databaseDirectory
+                  .resolve("transactions.db")
+                  .toAbsolutePath()
+                  .toString()
+                  .replace("\\", "/");
+      return DatabaseUtil.createDataSource(databaseUrl, TRANSACTION_DATABASE_KEY);
+    }
+  }
 
   @LocalServerPort private int port;
 

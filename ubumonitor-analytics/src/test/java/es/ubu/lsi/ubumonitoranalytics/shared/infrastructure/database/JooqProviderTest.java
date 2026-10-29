@@ -1,5 +1,6 @@
 package es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -9,9 +10,7 @@ import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.moodle.config.MoodleConfig;
 import es.ubu.lsi.ubumonitoranalytics.util.DatabaseUtil;
 import java.net.URI;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -25,17 +24,10 @@ class JooqProviderTest {
     URI host = URI.create("https://moodle.test");
     MoodleConfig config =
         new MoodleConfig(
-            new MoodleConfig.Db(
-                tempDir.toString(),
-                "jdbc:h2:file:%s;CIPHER=AES;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1"),
-            new MoodleConfig.Api());
+            new MoodleConfig.Db(tempDir.toString(), "jdbc:sqlite:%s"), new MoodleConfig.Api());
     JooqProvider provider = new JooqProvider(config);
     SessionData session =
         SessionData.builder().host(host).username("teacher").dbPassword("correct-password").build();
-    String jdbcUrl =
-        DatabaseUtil.buildJdbcUrl(
-            config.getDb().getJdbcUrlTemplate(), config.getDb().getBasePath(), host, "teacher");
-
     try {
       assertTrue(provider.initializeTenant(session));
       assertFalse(provider.initializeTenant(session));
@@ -45,58 +37,37 @@ class JooqProviderTest {
           InvalidDatabaseEncryptionKeyException.class, () -> provider.initializeTenant(session));
     } finally {
       provider.closeTenant(session);
-      try (var connection =
-          DriverManager.getConnection(jdbcUrl, "sa", "correct-password correct-password")) {
-        connection.createStatement().execute("SHUTDOWN");
-      }
     }
   }
 
   @Test
-  void migratesAnExistingDatabaseToTheSchemePrefixedName() throws SQLException {
+  void migratesTheTenantDatabaseAndCreatesTheSqliteFile() throws SQLException {
     URI host = URI.create("https://moodle.test");
     String username = "teacher";
     String password = "correct-password";
-    String jdbcTemplate = "jdbc:h2:file:%s;CIPHER=AES;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1";
+    String jdbcTemplate = "jdbc:sqlite:%s";
     MoodleConfig config =
         new MoodleConfig(
             new MoodleConfig.Db(tempDir.toString(), jdbcTemplate), new MoodleConfig.Api());
     JooqProvider provider = new JooqProvider(config);
-    Path legacyDatabase =
-        tempDir.resolve(DatabaseUtil.toHostString(host) + "_" + username + ".mv.db");
-    String legacyJdbcUrl =
-        String.format(
-            jdbcTemplate,
-            tempDir
-                .resolve(DatabaseUtil.toHostString(host) + "_" + username)
-                .toAbsolutePath()
-                .toString()
-                .replace("\\", "/"));
     SessionData session =
         SessionData.builder().host(host).username(username).dbPassword(password).build();
 
-    try (var connection =
-            DriverManager.getConnection(legacyJdbcUrl, "sa", password + " " + password);
-        var statement = connection.createStatement()) {
-      statement.execute("CREATE TABLE migration_check (amount INT)");
-      statement.execute("SHUTDOWN");
-    }
-
     try {
-      provider.initializeTenant(session);
-
-      assertTrue(Files.exists(DatabaseUtil.getFile(tempDir.toString(), host, username)));
-      assertFalse(Files.exists(legacyDatabase));
+      assertTrue(provider.initializeTenant(session));
+      assertEquals(
+          1,
+          provider
+              .getDSLContext(session)
+              .fetchCount(
+                  provider
+                      .getDSLContext(session)
+                      .selectOne()
+                      .from("sqlite_master")
+                      .where("type = 'table' AND name = 'USERS'")));
+      assertTrue(DatabaseUtil.exists(tempDir.toString(), host, username));
     } finally {
       provider.closeTenant(session);
-      try (var connection =
-              DriverManager.getConnection(
-                  DatabaseUtil.buildJdbcUrl(jdbcTemplate, tempDir.toString(), host, username),
-                  "sa",
-                  password + " " + password);
-          var statement = connection.createStatement()) {
-        statement.execute("SHUTDOWN");
-      }
     }
   }
 }

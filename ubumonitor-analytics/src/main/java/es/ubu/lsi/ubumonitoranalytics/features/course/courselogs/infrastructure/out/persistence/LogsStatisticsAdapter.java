@@ -238,16 +238,33 @@ public class LogsStatisticsAdapter implements LogsStatisticsPort {
       return dayOfWeekField(LOGS.LOGGED_AT);
     }
 
+    if (interval == TimeInterval.WEEKLY) {
+      return weekBucketField(LOGS.LOGGED_AT);
+    }
+
+    String sqlitePattern =
+        switch (interval) {
+          case HOURLY -> "%Y-%m-%dT%H:00:00";
+          case DAILY -> "%Y-%m-%d";
+          case MONTHLY -> "%Y-%m";
+          case WEEKLY, DAY_OF_WEEK -> throw new IllegalStateException("Handled above");
+        };
     return DSL.field(
-            "FORMATDATETIME({0}, {1})",
-            String.class, LOGS.LOGGED_AT, DSL.inline(interval.pattern()))
+            "strftime({0}, {1}, 'unixepoch')",
+            String.class, DSL.inline(sqlitePattern), LOGS.LOGGED_AT)
         .as(TIME_BUCKET);
   }
 
   public static Field<Integer> dayOfWeekField(Field<?> timestamp) {
-    Field<Integer> isoDayOfWeek = DSL.field("ISO_DAY_OF_WEEK({0})", Integer.class, timestamp);
+    return DSL.field(
+            "(CAST(strftime('%w', {0}, 'unixepoch') AS INTEGER) + 6) % 7 + 1",
+            Integer.class, timestamp)
+        .as(TIME_BUCKET);
+  }
 
-    return DSL.field("MOD({0} - 1 + 7, 7) + 1", Integer.class, isoDayOfWeek).as(TIME_BUCKET);
+  public static Field<String> weekBucketField(Field<?> timestamp) {
+    return DSL.field("strftime('%G-W%V', {0}, 'unixepoch')", String.class, timestamp)
+        .as(TIME_BUCKET);
   }
 
   // =========================================================

@@ -5,8 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import es.ubu.lsi.moodle.model.core.enrol.getuserscourses.response.GetUsersCoursesResponseApi;
 import es.ubu.lsi.ubumonitoranalytics.features.users.enrollment.domain.model.Course;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
@@ -19,12 +17,16 @@ class MoodleUserCoursesAdapterMapperTest {
   void mapsMoodleZeroCourseEndDateToNull() {
     GetUsersCoursesResponseApi response = new GetUsersCoursesResponseApi();
     response.setStartdate(1_700_000_000L);
+    response.setTimemodified(0L);
     response.setEnddate(0L);
+    response.setLastaccess(0L);
 
     Course course = mapper.toDomainCourse(response);
+    var enrollment = mapper.toDomainEnrolledCourse(response);
 
-    assertEquals(
-        OffsetDateTime.of(2023, 11, 14, 22, 13, 20, 0, ZoneOffset.UTC), course.getStartDate());
+    assertEquals(1_700_000_000L, course.getStartDate());
+    assertNull(course.getTimeModified());
     assertNull(course.getEndDate());
+    assertNull(enrollment.getLastCourseAccess());
   }
 }

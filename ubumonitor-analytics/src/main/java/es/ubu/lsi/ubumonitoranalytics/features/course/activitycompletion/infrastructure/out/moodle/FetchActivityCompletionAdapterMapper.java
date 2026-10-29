@@ -23,7 +23,10 @@ public interface FetchActivityCompletionAdapterMapper {
   @Mapping(target = "valueUsed", source = "valueused")
   @Mapping(target = "userVisible", source = "uservisible")
   @Mapping(target = "userId", expression = "java(userId)")
-  @Mapping(target = "timeCompleted", source = "timecompleted")
+  @Mapping(
+      target = "timeCompleted",
+      source = "timecompleted",
+      qualifiedByName = "nullableTimestamp")
   @Mapping(target = "overrideBy", source = "overrideby")
   @Mapping(target = "moduleId", source = "cmid")
   @Mapping(target = "isTrackedUser", source = "istrackeduser")

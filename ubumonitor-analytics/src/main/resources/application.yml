@@ -5,6 +5,7 @@ spring:
     timeout-per-shutdown-phase: 5s
   jackson:
     default-property-inclusion: non_null
+    modules-to-install: none
     mapper:
       sort-properties-alphabetically: false
   threads:
@@ -12,12 +13,14 @@ spring:
       enabled: true
   autoconfigure:
     exclude:
-      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration
+      - org.springframework.boot.jdbc.autoconfigure.DataSourceTransactionManagerAutoConfiguration
       - org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration
   main:
     banner-mode: off
-    lazy-initialization: true
+    lazy-initialization: false
     allow-bean-definition-overriding: true
+    log-startup-info: false
   servlet:
     multipart:
       max-file-size: 100MB
@@ -41,6 +44,11 @@ server:
   tomcat:
     max-swallow-size: -1
     max-http-form-post-size: 100MB
+    threads:
+      max: 4
+      min-spare: 2
+    max-connections: 10
+    accept-count: 5
 
 springdoc:
   api-docs:
@@ -52,7 +60,7 @@ moodle:
     read-timeout: 30000
   db:
     base-path: ./moodle_dbs
-    jdbc-url-template: jdbc:h2:file:%s;CIPHER=AES;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1;CACHE_SIZE=65536
+    jdbc-url-template: jdbc:sqlite:%s
 logging:
   level:
     org:

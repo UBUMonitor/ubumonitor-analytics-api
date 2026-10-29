@@ -1,6 +1,5 @@
 package es.ubu.lsi.ubumonitoranalytics.features.course.activitycompletion.domain.model;
 
-import java.time.OffsetDateTime;
 import lombok.Data;
 
 @Data
@@ -15,7 +14,7 @@ public class ActivityCompletion {
   private State state;
 
   /** Date and time when the activity was completed. Null if it has not been completed. */
-  private OffsetDateTime timeCompleted;
+  private Long timeCompleted;
 
   /** How completion is tracked for this activity. */
   private Tracking tracking;

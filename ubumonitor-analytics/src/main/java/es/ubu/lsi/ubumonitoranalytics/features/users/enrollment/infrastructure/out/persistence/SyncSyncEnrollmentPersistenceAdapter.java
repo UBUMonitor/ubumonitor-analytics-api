@@ -12,12 +12,10 @@ import es.ubu.lsi.ubumonitoranalytics.features.users.enrollment.infrastructure.o
 import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.CoursesRecord;
 import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.UsersCoursesRecord;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
 /** Stores the current user's course enrollment data in tenant persistence. */
@@ -30,9 +28,9 @@ public class SyncSyncEnrollmentPersistenceAdapter implements SyncEnrollmentPersi
 
   @Override
   public void sync(UserEnrolledCourses userEnrolledCourses) {
-    OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
+    Long now = Instant.now().getEpochSecond();
     upsertUser(userEnrolledCourses.getUserId());
-    deactivateActualUsersCourses(userEnrolledCourses.getUserId());
+    deactivateActualUsersCourses(userEnrolledCourses.getUserId(), now);
 
     upsertCourses(userEnrolledCourses, now);
     upsertUserCourses(userEnrolledCourses, now);
@@ -44,17 +42,17 @@ public class SyncSyncEnrollmentPersistenceAdapter implements SyncEnrollmentPersi
     jooq.dsl().insertInto(USERS).set(USERS.ID, userId).onConflict(USERS.ID).doNothing().execute();
   }
 
-  private void deactivateActualUsersCourses(Long userId) {
+  private void deactivateActualUsersCourses(Long userId, Long now) {
     jooq.dsl()
         .update(USERS_COURSES)
         .set(USERS_COURSES.ACTIVE, false)
-        .set(USERS_COURSES.UPDATED_AT, DSL.currentOffsetDateTime())
+        .set(USERS_COURSES.UPDATED_AT, now)
         .where(USERS_COURSES.USER_ID.eq(userId))
         .and(USERS_COURSES.ACTIVE.eq(true))
         .execute();
   }
 
-  private void upsertCourses(UserEnrolledCourses userEnrolledCourses, OffsetDateTime now) {
+  private void upsertCourses(UserEnrolledCourses userEnrolledCourses, Long now) {
     List<CoursesRecord> records =
         userEnrolledCourses.getEnrolledCourses().stream()
             .map(Enrollment::getCourse)
@@ -64,14 +62,14 @@ public class SyncSyncEnrollmentPersistenceAdapter implements SyncEnrollmentPersi
     jooq.dsl().batchMerge(records).execute();
   }
 
-  private CoursesRecord toCoursesRecord(Course course, OffsetDateTime now) {
+  private CoursesRecord toCoursesRecord(Course course, Long now) {
     CoursesRecord r = jooq.dsl().newRecord(COURSES);
     mapper.toRecord(course, r);
     r.setUpdatedAt(now);
     return r;
   }
 
-  private void upsertUserCourses(UserEnrolledCourses userEnrolledCourses, OffsetDateTime now) {
+  private void upsertUserCourses(UserEnrolledCourses userEnrolledCourses, Long now) {
     List<UsersCoursesRecord> records =
         userEnrolledCourses.getEnrolledCourses().stream()
             .map(e -> toUserCoursesRecord(userEnrolledCourses.getUserId(), e, now))
@@ -80,8 +78,7 @@ public class SyncSyncEnrollmentPersistenceAdapter implements SyncEnrollmentPersi
     jooq.dsl().batchMerge(records).execute();
   }
 
-  private UsersCoursesRecord toUserCoursesRecord(
-      Long userId, Enrollment enrollment, OffsetDateTime now) {
+  private UsersCoursesRecord toUserCoursesRecord(Long userId, Enrollment enrollment, Long now) {
     UsersCoursesRecord r = jooq.dsl().newRecord(USERS_COURSES);
     mapper.toRecord(enrollment, r);
     r.setCourseId(enrollment.getCourse().getId());
@@ -98,7 +95,7 @@ public class SyncSyncEnrollmentPersistenceAdapter implements SyncEnrollmentPersi
 
     List<Long> courseIds = courses.stream().map(Course::getId).toList();
 
-    Map<Long, OffsetDateTime> courseLoadedById =
+    Map<Long, Long> courseLoadedById =
         jooq.dsl()
             .select(COURSES.ID, COURSES.LAST_SYNC)
             .from(COURSES)

@@ -2,19 +2,21 @@ package es.ubu.lsi.ubumonitoranalytics.util;
 
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.DatabaseCreationException;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.InvalidDatabaseEncryptionKeyException;
-import java.io.IOException;
 import java.net.IDN;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.sql.DriverManager;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Locale;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.sqlite.SQLiteConfig;
+import org.sqlite.SQLiteDataSource;
+import org.sqlite.mc.SQLiteMCChacha20Config;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Slf4j
@@ -55,23 +57,21 @@ public class DatabaseUtil {
     try {
       Files.createDirectories(dir);
 
-      migrateLegacyDatabase(jdbcTemplate, basePath, host, username, dbPassword);
       boolean databaseCreated = !Files.exists(getFile(basePath, host, username));
       String jdbcUrl = DatabaseUtil.buildJdbcUrl(jdbcTemplate, basePath, host, username);
 
-      log.info("ABS PATH DB: {}", dir.toAbsolutePath());
-      log.info("FINAL FILE: {}", jdbcUrl);
-      log.info("FILE EXISTS: {}", Files.exists(getFile(basePath, host, username)));
       log.info("Ensuring database exists for {} / {}", host, username);
 
-      // Opening the database creates it when it does not already exist.
-      try (var _ = DriverManager.getConnection(jdbcUrl, "sa", dbPassword + " " + dbPassword)) {
-        log.info("Database ready (H2 auto-create)");
+      try (Connection connection = createDataSource(jdbcUrl, dbPassword).getConnection();
+          var statement = connection.createStatement();
+          var result = statement.executeQuery("SELECT count(*) FROM sqlite_master")) {
+        result.next();
+        log.info("Encrypted SQLite database is ready");
       }
       return databaseCreated;
 
     } catch (SQLException e) {
-      if (e.getSQLState() != null && e.getSQLState().startsWith("28")) {
+      if (isEncryptionKeyFailure(e)) {
         throw new InvalidDatabaseEncryptionKeyException("Invalid database encryption key", e);
       }
       throw new DatabaseCreationException(e.getMessage(), e);
@@ -86,51 +86,34 @@ public class DatabaseUtil {
 
   public static Path getFile(String basePath, URI host, String username) {
     String fileName = DatabaseUtil.buildDbFileName(host, username);
-    return Path.of(basePath).resolve(fileName + ".mv.db");
+    return Path.of(basePath).resolve(fileName + ".db");
   }
 
-  private static void migrateLegacyDatabase(
-      String jdbcTemplate, String basePath, URI host, String username, String dbPassword)
-      throws IOException, SQLException {
-    Path databaseFile = getFile(basePath, host, username);
-    if (Files.exists(databaseFile)) {
-      return;
-    }
+  public static SQLiteDataSource createDataSource(String jdbcUrl, String dbPassword) {
+    SQLiteConfig config = SQLiteMCChacha20Config.getDefault().withKey(dbPassword).build();
+    config.setBusyTimeout(30_000);
+    config.enforceForeignKeys(true);
 
-    for (String legacyFileName : buildLegacyDbFileNames(host, username)) {
-      Path legacyDatabaseFile = Path.of(basePath).resolve(legacyFileName + ".mv.db");
-      if (!Files.exists(legacyDatabaseFile)) {
-        continue;
-      }
-
-      String legacyJdbcUrl = buildJdbcUrl(jdbcTemplate, basePath, legacyFileName);
-      try (var connection =
-              DriverManager.getConnection(legacyJdbcUrl, "sa", dbPassword + " " + dbPassword);
-          var statement = connection.createStatement()) {
-        statement.execute("SHUTDOWN");
-      }
-
-      Files.move(legacyDatabaseFile, databaseFile);
-      return;
-    }
+    SQLiteDataSource dataSource = new SQLiteDataSource(config);
+    dataSource.setUrl(jdbcUrl);
+    return dataSource;
   }
 
-  private static String[] buildLegacyDbFileNames(URI host, String username) {
-    String hostName = toHostString(host);
-    String safeUserName = toSafeUserName(username);
-    String scheme = host == null ? null : host.getScheme();
-    if (scheme == null || scheme.isBlank()) {
-      return new String[] {hostName + "_" + safeUserName};
+  private static boolean isEncryptionKeyFailure(SQLException exception) {
+    for (SQLException current = exception; current != null; current = current.getNextException()) {
+      String message = current.getMessage();
+      if (message != null
+          && (message.toLowerCase(Locale.ROOT).contains("not a database")
+              || message.toLowerCase(Locale.ROOT).contains("encrypted"))) {
+        return true;
+      }
     }
-    return new String[] {
-      scheme.toLowerCase(Locale.ROOT) + "_" + hostName + "_" + safeUserName,
-      hostName + "_" + safeUserName
-    };
+    return false;
   }
 
   private static String buildJdbcUrl(String jdbcTemplate, String basePath, String fileName) {
-    String fullPath = Path.of(basePath).resolve(fileName).toAbsolutePath().toString();
-    // H2 JDBC URLs are more portable when Windows path separators are normalized.
+    String fullPath = Path.of(basePath).resolve(fileName + ".db").toAbsolutePath().toString();
+    // SQLite JDBC URLs are more portable when Windows path separators are normalized.
     return String.format(jdbcTemplate, fullPath.replace("\\", "/"));
   }
 }

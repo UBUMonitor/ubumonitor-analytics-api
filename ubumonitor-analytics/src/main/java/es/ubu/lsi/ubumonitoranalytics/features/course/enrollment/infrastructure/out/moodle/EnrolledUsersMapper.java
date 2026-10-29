@@ -7,7 +7,6 @@ import es.ubu.lsi.moodle.model.core.enrol.getenrolledusers.response.RoleApi;
 import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.*;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.GlobalMapperConfig;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.MapperUtils;
-import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
@@ -34,8 +33,8 @@ public interface EnrolledUsersMapper {
   @Mapping(target = "groups", source = "groups")
   @Mapping(target = "userPicture.data", ignore = true)
   @Mapping(target = "userPicture.url", source = "profileimageurl", qualifiedByName = "profileUrl")
-  @Mapping(target = "lastAccess", source = "lastaccess")
-  @Mapping(target = "firstAccess", source = "firstaccess")
+  @Mapping(target = "lastAccess", source = "lastaccess", qualifiedByName = "nullableTimestamp")
+  @Mapping(target = "firstAccess", source = "firstaccess", qualifiedByName = "nullableTimestamp")
   User toUserDomain(GetEnrolledUsersResponseApi dto, @Context Long courseId);
 
   @Mapping(
@@ -84,10 +83,10 @@ public interface EnrolledUsersMapper {
   }
 
   @Named("lastCourseAccess")
-  default OffsetDateTime lastCourseAccess(
+  default Long lastCourseAccess(
       Long lastCourseAccess, @Context EnrolledcourseApi enrolledcourseApi, @Context Long courseId) {
     if (courseId.equals(enrolledcourseApi.getId())) {
-      return MapperUtils.toOffsetDateTime(lastCourseAccess);
+      return MapperUtils.nullableTimestamp(lastCourseAccess);
     }
     return null;
   }

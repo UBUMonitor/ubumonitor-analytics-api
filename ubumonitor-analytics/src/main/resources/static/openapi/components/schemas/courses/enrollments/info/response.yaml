@@ -29,17 +29,17 @@ CourseEnrollmentsResponse:
             type: string
             description: The email address of the user.
           firstAccess:
-            type: string
-            format: date-time
-            description: The timestamp of the user's first access to the site.
+            type: integer
+            format: int64
+            description: The Unix timestamp in seconds of the user's first access to the site.
           lastAccess:
-            type: string
-            format: date-time
-            description: The timestamp of the user's last access to the site.
+            type: integer
+            format: int64
+            description: The Unix timestamp in seconds of the user's last access to the site.
           lastCourseAccess:
-            type: string
-            format: date-time
-            description: The timestamp of the user's last access to the course.
+            type: integer
+            format: int64
+            description: The Unix timestamp in seconds of the user's last access to the course.
           imageUrl:
             type: string
             format: uri

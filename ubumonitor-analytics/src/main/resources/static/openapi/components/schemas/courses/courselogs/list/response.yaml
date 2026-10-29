@@ -74,11 +74,10 @@ CourseLogsListResponse:
             format: int64
             description: Log entry ID
           timeCreated:
-            type: string
-            format: none
-            pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?$'
-            example: "2026-05-22T10:15:30"
-            description: Log creation time
+            type: integer
+            format: int64
+            example: 1779444930
+            description: Log creation time as a Unix timestamp in seconds.
           courseId:
             type: integer
             format: int64
