@@ -27,14 +27,14 @@ CREATE TABLE COURSES
     ID                BIGINT PRIMARY KEY,
     FULL_NAME         VARCHAR(255),
     SHORT_NAME        VARCHAR(255),
-    SHOW_GRADES       BOOLEAN NOT NULL         DEFAULT FALSE,
-    ENABLE_COMPLETION BOOLEAN NOT NULL         DEFAULT FALSE,
+    SHOW_GRADES       BOOLEAN NOT NULL DEFAULT FALSE,
+    ENABLE_COMPLETION BOOLEAN NOT NULL DEFAULT FALSE,
     START_DATE        BIGINT,
     END_DATE          BIGINT,
     TIME_MODIFIED     BIGINT,
     LAST_SYNC         BIGINT,
-    CREATED_AT        BIGINT DEFAULT (unixepoch()) NOT NULL,
-    UPDATED_AT        BIGINT DEFAULT (unixepoch()) NOT NULL,
+    CREATED_AT        BIGINT           DEFAULT (unixepoch()) NOT NULL,
+    UPDATED_AT        BIGINT           DEFAULT (unixepoch()) NOT NULL,
 
     CONSTRAINT CK_COURSES_DATES CHECK (END_DATE IS NULL OR START_DATE IS NULL OR END_DATE >= START_DATE)
 );
@@ -45,13 +45,13 @@ CREATE TABLE COURSES
 CREATE TABLE GROUPS
 (
     ID          BIGINT PRIMARY KEY,
-    COURSE_ID   BIGINT                                             NOT NULL,
+    COURSE_ID   BIGINT                       NOT NULL,
     NAME        VARCHAR(255),
     DESCRIPTION TEXT,
     CREATED_AT  BIGINT DEFAULT (unixepoch()) NOT NULL,
     UPDATED_AT  BIGINT DEFAULT (unixepoch()) NOT NULL,
 
-    CONSTRAINT UQ_GROUPS_ID_COURSE UNIQUE (ID, COURSE_ID),
+    CONSTRAINT UQ_GROUPS_ID_COURSE UNIQUE (ID, COURSE_ID)
 );
 
 CREATE INDEX IDX_GROUPS_COURSE_ID ON GROUPS (COURSE_ID);
@@ -62,12 +62,12 @@ CREATE TABLE GRADES
 (
     ID         BIGINT PRIMARY KEY,
     PARENT_ID  BIGINT,
-    COURSE_ID  BIGINT                                             NOT NULL,
+    COURSE_ID  BIGINT                       NOT NULL,
     NAME       VARCHAR(255),
     ITEM_TYPE  VARCHAR(50),
     GRADE_MIN  DECIMAL(15, 5),
     GRADE_MAX  DECIMAL(15, 5),
-    ACTIVE     BOOLEAN                                            NOT NULL DEFAULT TRUE,
+    ACTIVE     BOOLEAN                      NOT NULL DEFAULT TRUE,
     CREATED_AT BIGINT DEFAULT (unixepoch()) NOT NULL,
     UPDATED_AT BIGINT DEFAULT (unixepoch()) NOT NULL,
 
@@ -82,10 +82,10 @@ CREATE TABLE USERS_COURSES
     USER_ID            BIGINT  NOT NULL,
     COURSE_ID          BIGINT  NOT NULL,
     LAST_COURSE_ACCESS BIGINT,
-    IS_FAVOURITE       BOOLEAN NOT NULL         DEFAULT FALSE,
-    ACTIVE             BOOLEAN NOT NULL         DEFAULT TRUE,
-    CREATED_AT         BIGINT DEFAULT (unixepoch()) NOT NULL,
-    UPDATED_AT         BIGINT DEFAULT (unixepoch()) NOT NULL,
+    IS_FAVOURITE       BOOLEAN NOT NULL DEFAULT FALSE,
+    ACTIVE             BOOLEAN NOT NULL DEFAULT TRUE,
+    CREATED_AT         BIGINT           DEFAULT (unixepoch()) NOT NULL,
+    UPDATED_AT         BIGINT           DEFAULT (unixepoch()) NOT NULL,
 
     PRIMARY KEY (USER_ID, COURSE_ID),
 
@@ -96,14 +96,14 @@ CREATE INDEX IDX_UC_COURSE_ID ON USERS_COURSES (COURSE_ID);
 
 CREATE TABLE USERS_GROUPS
 (
-    USER_ID    BIGINT                                             NOT NULL,
-    GROUP_ID   BIGINT                                             NOT NULL,
-    COURSE_ID  BIGINT                                             NOT NULL,
-    ACTIVE     BOOLEAN                                            NOT NULL DEFAULT TRUE,
+    USER_ID    BIGINT                       NOT NULL,
+    GROUP_ID   BIGINT                       NOT NULL,
+    COURSE_ID  BIGINT                       NOT NULL,
+    ACTIVE     BOOLEAN                      NOT NULL DEFAULT TRUE,
     CREATED_AT BIGINT DEFAULT (unixepoch()) NOT NULL,
     UPDATED_AT BIGINT DEFAULT (unixepoch()) NOT NULL,
 
-    PRIMARY KEY (USER_ID, GROUP_ID, COURSE_ID),
+    PRIMARY KEY (USER_ID, GROUP_ID, COURSE_ID)
 
 );
 
@@ -113,14 +113,14 @@ CREATE INDEX IDX_UG_COURSE_ID ON USERS_GROUPS (COURSE_ID);
 
 CREATE TABLE USERS_ROLES
 (
-    ROLE_ID    BIGINT                                             NOT NULL,
-    USER_ID    BIGINT                                             NOT NULL,
-    COURSE_ID  BIGINT                                             NOT NULL,
-    ACTIVE     BOOLEAN                                            NOT NULL DEFAULT TRUE,
+    ROLE_ID    BIGINT                       NOT NULL,
+    USER_ID    BIGINT                       NOT NULL,
+    COURSE_ID  BIGINT                       NOT NULL,
+    ACTIVE     BOOLEAN                      NOT NULL DEFAULT TRUE,
     CREATED_AT BIGINT DEFAULT (unixepoch()) NOT NULL,
     UPDATED_AT BIGINT DEFAULT (unixepoch()) NOT NULL,
 
-    PRIMARY KEY (USER_ID, ROLE_ID, COURSE_ID),
+    PRIMARY KEY (USER_ID, ROLE_ID, COURSE_ID)
 
 );
 
@@ -130,15 +130,15 @@ CREATE INDEX IDX_UR_ROLE_ID ON USERS_ROLES (ROLE_ID);
 
 CREATE TABLE USERS_GRADES
 (
-    GRADE_ID   BIGINT                                             NOT NULL,
-    USER_ID    BIGINT                                             NOT NULL,
+    GRADE_ID   BIGINT                       NOT NULL,
+    USER_ID    BIGINT                       NOT NULL,
     GRADE      DECIMAL(15, 5),
     PERCENTAGE DECIMAL(5, 2),
-    ACTIVE     BOOLEAN                                            NOT NULL DEFAULT TRUE,
+    ACTIVE     BOOLEAN                      NOT NULL DEFAULT TRUE,
     CREATED_AT BIGINT DEFAULT (unixepoch()) NOT NULL,
     UPDATED_AT BIGINT DEFAULT (unixepoch()) NOT NULL,
 
-    PRIMARY KEY (GRADE_ID, USER_ID),
+    PRIMARY KEY (GRADE_ID, USER_ID)
 
 );
 
@@ -154,11 +154,10 @@ CREATE TABLE SECTIONS
     NAME       VARCHAR(255),
     SUMMARY    TEXT,
     POSITION   INT,
-    VISIBLE    BOOLEAN NOT NULL         DEFAULT TRUE,
-    ACTIVE     BOOLEAN NOT NULL         DEFAULT TRUE,
-    CREATED_AT BIGINT DEFAULT (unixepoch()) NOT NULL,
-    UPDATED_AT BIGINT DEFAULT (unixepoch()) NOT NULL,
-
+    VISIBLE    BOOLEAN NOT NULL DEFAULT TRUE,
+    ACTIVE     BOOLEAN NOT NULL DEFAULT TRUE,
+    CREATED_AT BIGINT           DEFAULT (unixepoch()) NOT NULL,
+    UPDATED_AT BIGINT           DEFAULT (unixepoch()) NOT NULL
 );
 
 CREATE INDEX IDX_SECTIONS_COURSE_ID ON SECTIONS (COURSE_ID);
@@ -171,12 +170,11 @@ CREATE TABLE MODULES
     MOD_NAME    VARCHAR(50),
     URL         VARCHAR(2048),
     DESCRIPTION TEXT,
-    VISIBLE     BOOLEAN NOT NULL         DEFAULT TRUE,
+    VISIBLE     BOOLEAN NOT NULL DEFAULT TRUE,
     POSITION    INT,
-    ACTIVE      BOOLEAN NOT NULL         DEFAULT TRUE,
-    CREATED_AT  BIGINT DEFAULT (unixepoch()) NOT NULL,
-    UPDATED_AT  BIGINT DEFAULT (unixepoch()) NOT NULL,
-
+    ACTIVE      BOOLEAN NOT NULL DEFAULT TRUE,
+    CREATED_AT  BIGINT           DEFAULT (unixepoch()) NOT NULL,
+    UPDATED_AT  BIGINT           DEFAULT (unixepoch()) NOT NULL
 );
 
 
@@ -194,12 +192,12 @@ CREATE TABLE USERS_ACTIVITIES
     TIME_COMPLETED  BIGINT,
     TRACKING        VARCHAR(50) NOT NULL,
     OVERRIDE_BY     BIGINT,
-    VALUE_USED      BOOLEAN     NOT NULL     DEFAULT FALSE,
+    VALUE_USED      BOOLEAN     NOT NULL DEFAULT FALSE,
     IS_TRACKED_USER BOOLEAN     NOT NULL,
     USER_VISIBLE    BOOLEAN     NOT NULL,
-    ACTIVE          BOOLEAN     NOT NULL     DEFAULT TRUE,
-    CREATED_AT      BIGINT DEFAULT (unixepoch()) NOT NULL,
-    UPDATED_AT      BIGINT DEFAULT (unixepoch()) NOT NULL,
+    ACTIVE          BOOLEAN     NOT NULL DEFAULT TRUE,
+    CREATED_AT      BIGINT               DEFAULT (unixepoch()) NOT NULL,
+    UPDATED_AT      BIGINT               DEFAULT (unixepoch()) NOT NULL,
     PRIMARY KEY (MODULE_ID, USER_ID)
 );
 -- 5. SITES
@@ -208,7 +206,7 @@ CREATE TABLE USERS_ACTIVITIES
 CREATE TABLE SITES
 (
     ID             INTEGER PRIMARY KEY AUTOINCREMENT,
-    USER_ID        BIGINT                                             NOT NULL,
+    USER_ID        BIGINT                       NOT NULL,
     USER_NAME      VARCHAR(255),
     HOST           VARCHAR(2048),
     SITE_NAME      VARCHAR(255),
@@ -231,10 +229,10 @@ CREATE TABLE ACTUAL_USER
     EMAIL               VARCHAR(2048),
     USER_IMAGE_URL      VARCHAR(2048),
     TIME_ZONE           VARCHAR(100),
-    IS_SERVER_TIME_ZONE BOOLEAN                  DEFAULT FALSE             NOT NULL,
+    IS_SERVER_TIME_ZONE BOOLEAN DEFAULT FALSE         NOT NULL,
     LANG                VARCHAR(5),
-    CREATED_AT          BIGINT DEFAULT (unixepoch()) NOT NULL,
-    UPDATED_AT          BIGINT DEFAULT (unixepoch()) NOT NULL,
+    CREATED_AT          BIGINT  DEFAULT (unixepoch()) NOT NULL,
+    UPDATED_AT          BIGINT  DEFAULT (unixepoch()) NOT NULL,
     CONSTRAINT UQ_ACTUAL_USER_USER_NAME UNIQUE (USER_NAME)
 );
 -- 6. Tablas finales
@@ -243,12 +241,11 @@ CREATE TABLE ACTUAL_USER
 CREATE TABLE USERS_IMAGES
 (
     USER_ID      BIGINT PRIMARY KEY,
-    IMAGE_DATA   BLOB                                               NOT NULL,
-    IMAGE_HASH   CHAR(64)                                           NOT NULL, -- SHA-256 en hexadecimal
-    CONTENT_TYPE VARCHAR(100)                                       NOT NULL,
+    IMAGE_DATA   BLOB                         NOT NULL,
+    IMAGE_HASH   CHAR(64)                     NOT NULL, -- SHA-256 en hexadecimal
+    CONTENT_TYPE VARCHAR(100)                 NOT NULL,
     CREATED_AT   BIGINT DEFAULT (unixepoch()) NOT NULL,
-    UPDATED_AT   BIGINT DEFAULT (unixepoch()) NOT NULL,
-
+    UPDATED_AT   BIGINT DEFAULT (unixepoch()) NOT NULL
 );
 
 CREATE TABLE LOGS_COMPONENTS
@@ -294,15 +291,14 @@ CREATE INDEX IDX_LCE_EVENT_ID ON LOGS_COMPONENTS_EVENTS (EVENT_ID);
 CREATE TABLE LOGS
 (
     ID           INTEGER PRIMARY KEY AUTOINCREMENT,
-    LOGGED_AT    BIGINT NOT NULL,
+    LOGGED_AT    BIGINT   NOT NULL,
     USER_ID      BIGINT NULL,
-    COURSE_ID    BIGINT                   NOT NULL,
-    COMPONENT_ID SMALLINT                 NOT NULL,
-    EVENT_ID     SMALLINT                 NOT NULL,
+    COURSE_ID    BIGINT   NOT NULL,
+    COMPONENT_ID SMALLINT NOT NULL,
+    EVENT_ID     SMALLINT NOT NULL,
     MODULE_ID    BIGINT NULL,
-    ORIGIN_ID    TINYINT                  NOT NULL,
-    IP_ADDRESS   VARCHAR(45) NULL,
-
+    ORIGIN_ID    TINYINT  NOT NULL,
+    IP_ADDRESS   VARCHAR(45) NULL
 
 
     -- Se mantienen SIN FK por rendimiento en la tabla grande:
