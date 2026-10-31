@@ -38,11 +38,11 @@ class ProcessLifecycleMonitor implements CommandLineRunner {
 
   private void shutdownIfParentProcessIsUnavailable() {
     log.warn("The specified parent process PID is invalid or has already exited. Shutting down...");
-    shutdownApplication.shutdown();
+    shutdownApplication.shutdownImmediately();
   }
 
   private void onParentProcessExit() {
     log.info("Parent process has exited. Shutting down the sidecar gracefully...");
-    shutdownApplication.shutdown();
+    shutdownApplication.shutdownImmediately();
   }
 }

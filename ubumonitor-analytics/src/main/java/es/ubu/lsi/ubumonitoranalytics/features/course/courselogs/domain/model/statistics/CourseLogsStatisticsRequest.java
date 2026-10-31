@@ -11,11 +11,9 @@ public class CourseLogsStatisticsRequest {
 
   private CourseLogsStatisticsRequestTimeRange timeRange;
 
-  private List<CourseLogsGroupBy> groupBy; // Defines the base grouping dimension.
-
   private TimeInterval interval;
+  private String timeZone;
   private List<CourseLogsSelectColumn> fields;
 
   private CourseLogsStatisticsRequestFilters filters;
-  private List<SortBy> sortBy;
 }

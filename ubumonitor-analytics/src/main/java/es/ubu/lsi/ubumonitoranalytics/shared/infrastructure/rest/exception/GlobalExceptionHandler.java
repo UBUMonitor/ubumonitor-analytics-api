@@ -36,12 +36,21 @@ public class GlobalExceptionHandler {
   private final ErrorResponseFactory factory;
 
   /** Handles application bad-request errors. */
-  @ExceptionHandler({
-    BadRequestException.class,
-    MissingServletRequestParameterException.class,
-    HttpMessageNotReadableException.class
-  })
+  @ExceptionHandler(BadRequestException.class)
   public ResponseEntity<ErrorResponseDto> badRequest(BadRequestException ex) {
+    return response(HttpStatus.BAD_REQUEST, "BAD_REQUEST", ex.getMessage(), ex);
+  }
+
+  /** Handles requests that omit a required query parameter. */
+  @ExceptionHandler(MissingServletRequestParameterException.class)
+  public ResponseEntity<ErrorResponseDto> missingRequestParameter(
+      MissingServletRequestParameterException ex) {
+    return response(HttpStatus.BAD_REQUEST, "BAD_REQUEST", ex.getMessage(), ex);
+  }
+
+  /** Handles malformed request bodies. */
+  @ExceptionHandler(HttpMessageNotReadableException.class)
+  public ResponseEntity<ErrorResponseDto> unreadableRequest(HttpMessageNotReadableException ex) {
     return response(HttpStatus.BAD_REQUEST, "BAD_REQUEST", ex.getMessage(), ex);
   }
 
@@ -117,6 +126,11 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(NoResourceFoundException.class)
   public ResponseEntity<ErrorResponseDto> resourceNotFound(NoResourceFoundException ex) {
     return response(HttpStatus.NOT_FOUND, "RESOURCE_NOT_FOUND", ex.getMessage(), ex);
+  }
+
+  @ExceptionHandler(Exception.class)
+  public ResponseEntity<ErrorResponseDto> internalServerError(Exception ex) {
+    return response(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR", ex.getMessage(), ex);
   }
 
   private ResponseEntity<ErrorResponseDto> response(

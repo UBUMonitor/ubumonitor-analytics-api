@@ -22,6 +22,12 @@ import org.sqlite.mc.SQLiteMCChacha20Config;
 @Slf4j
 public class DatabaseUtil {
 
+  /** Default SQLite page cache size (native memory, outside the Java heap), in KB. */
+  public static final int DEFAULT_CACHE_SIZE_KB = 32_768;
+
+  /** Page size applied only when the database file is created. */
+  private static final int PAGE_SIZE_BYTES = 8192;
+
   public static String toHostString(URI host) {
     if (host == null || host.getHost() == null) {
       return "unknown_host";
@@ -51,18 +57,35 @@ public class DatabaseUtil {
 
   public static boolean createAndInitializeDatabase(
       String jdbcTemplate, String basePath, URI host, String username, String dbPassword) {
+    return createAndInitializeDatabase(
+        jdbcTemplate, basePath, host, username, dbPassword, DEFAULT_CACHE_SIZE_KB);
+  }
+
+  public static boolean createAndInitializeDatabase(
+      String jdbcTemplate,
+      String basePath,
+      URI host,
+      String username,
+      String dbPassword,
+      int cacheSizeKb) {
 
     Path dir = Path.of(basePath);
 
     try {
       Files.createDirectories(dir);
 
+      // Must be computed BEFORE opening: page_size and WAL only apply on first creation.
       boolean databaseCreated = !Files.exists(getFile(basePath, host, username));
       String jdbcUrl = DatabaseUtil.buildJdbcUrl(jdbcTemplate, basePath, host, username);
 
       log.info("Ensuring database exists for {} / {}", host, username);
 
-      try (Connection connection = createDataSource(jdbcUrl, dbPassword).getConnection();
+      SQLiteDataSource dataSource =
+          createDataSource(jdbcUrl, dbPassword, databaseCreated, cacheSizeKb);
+
+      // Short-lived connection used only to create/validate the database. It is closed
+      // before the application pool is opened so two connections never write in parallel.
+      try (Connection connection = dataSource.getConnection();
           var statement = connection.createStatement();
           var result = statement.executeQuery("SELECT count(*) FROM sqlite_master")) {
         result.next();
@@ -89,10 +112,38 @@ public class DatabaseUtil {
     return Path.of(basePath).resolve(fileName + ".db");
   }
 
+  /** Backwards compatible overload: existing database, default cache size. */
   public static SQLiteDataSource createDataSource(String jdbcUrl, String dbPassword) {
+    return createDataSource(jdbcUrl, dbPassword, false, DEFAULT_CACHE_SIZE_KB);
+  }
+
+  /**
+   * Builds an encrypted (ChaCha20) SQLite data source.
+   *
+   * <p>The key is applied through {@link SQLiteConfig}, never through the URL, so it cannot leak
+   * into logs. Settings that are per-connection (cache, synchronous, busy timeout) are applied on
+   * every new connection. Settings stored in the file (page size, WAL) are applied only when the
+   * database is being created.
+   *
+   * @param firstCreation true when the database file does not exist yet
+   * @param cacheSizeKb page cache size in KB (native memory, not counted in -Xmx)
+   */
+  public static SQLiteDataSource createDataSource(
+      String jdbcUrl, String dbPassword, boolean firstCreation, int cacheSizeKb) {
+
     SQLiteConfig config = SQLiteMCChacha20Config.getDefault().withKey(dbPassword).build();
     config.setBusyTimeout(30_000);
     config.enforceForeignKeys(true);
+
+    // Per connection (not persisted in the file). Negative value = size in KB.
+    config.setCacheSize(-Math.abs(cacheSizeKb));
+    config.setSynchronous(SQLiteConfig.SynchronousMode.NORMAL);
+
+    // Persisted in the file: only when creating it.
+    if (firstCreation) {
+      config.setPageSize(PAGE_SIZE_BYTES);
+      config.setJournalMode(SQLiteConfig.JournalMode.WAL);
+    }
 
     SQLiteDataSource dataSource = new SQLiteDataSource(config);
     dataSource.setUrl(jdbcUrl);

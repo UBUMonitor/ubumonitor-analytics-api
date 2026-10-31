@@ -10,8 +10,17 @@ import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Users.USERS;
 
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.port.out.LogsStatisticsPort;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.statistics.*;
+import es.ubu.lsi.ubumonitoranalytics.shared.application.exception.BadRequestException;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
+import java.time.DateTimeException;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.IsoFields;
 import java.util.*;
+import java.util.Comparator;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.jooq.*;
 import org.jooq.Record;
@@ -25,6 +34,10 @@ public class LogsStatisticsAdapter implements LogsStatisticsPort {
 
   public static final String TIME_BUCKET = "timeBucket";
   public static final String VALUE = "VALUE";
+
+  /** Size of the SQL time buckets. 15 min fits every current IANA zone offset and DST shift. */
+  private static final int BUCKET_SECONDS = 900;
+
   private final Jooq jooq;
 
   @Override
@@ -63,53 +76,122 @@ public class LogsStatisticsAdapter implements LogsStatisticsPort {
 
     query = addOptimizedJoins(query, request.getFields(), aggregatedLogs);
 
-    // =========================
-    // ORDER BY GROUP BY FIELDS
-    // =========================
-    Select<?> finalQuery = applyOrderBy(query, request, aggregatedLogs);
-
-    List<StatisticRow> rows = finalQuery.fetchInto(StatisticRow.class);
+    List<StatisticRow> rows;
+    if (request.getInterval() == null) {
+      rows = query.fetchInto(StatisticRow.class);
+    } else {
+      ZoneId zone = resolveTimeZone(request.getTimeZone());
+      Field<Long> bucketField = aggregatedLogs.field(TIME_BUCKET, Long.class);
+      List<OrderField<?>> orderFields = new ArrayList<>();
+      orderFields.add(bucketField.asc());
+      Set<Field<?>> stableOrderFields = new LinkedHashSet<>();
+      for (CourseLogsSelectColumn field :
+          request.getFields() == null ? List.<CourseLogsSelectColumn>of() : request.getFields()) {
+        Field<?> groupField = aggregatedLogs.field(impliedIdFieldFor(field));
+        // Fields not projected by the aggregation cannot be used as stable SQL tie-breakers.
+        if (groupField != null) {
+          stableOrderFields.add(groupField);
+        }
+      }
+      for (Field<?> field : stableOrderFields) {
+        orderFields.add(field.asc());
+      }
+      try (var stream = query.orderBy(orderFields).fetchStream()) {
+        rows = processRecords(stream, request.getInterval(), zone);
+      }
+    }
 
     return CourseLogsStatisticsResult.builder().rows(rows).build();
   }
 
-  private Select<?> applyOrderBy(
-      SelectJoinStep<Record> query,
-      CourseLogsStatisticsRequest request,
-      Table<Record> aggregatedLogs) {
-
-    if (request.getSortBy() == null || request.getSortBy().isEmpty()) {
-      return query;
+  static ZoneId resolveTimeZone(String timeZone) {
+    if (timeZone == null) return ZoneOffset.UTC;
+    try {
+      return ZoneId.of(timeZone);
+    } catch (DateTimeException exception) {
+      throw new BadRequestException("Invalid timeZone: " + timeZone);
     }
-
-    List<OrderField<?>> orderFields = new ArrayList<>();
-
-    for (SortBy sort : request.getSortBy()) {
-      orderFields.add(resolveOrderField(sort, aggregatedLogs));
-    }
-
-    return query.orderBy(orderFields);
   }
 
-  // =========================================================
-  // ORDER BY = GROUP BY FIELDS
-  // =========================================================
-  private OrderField<?> resolveOrderField(SortBy sort, Table<Record> aggregatedLogs) {
+  static String formatTimeBucket(long bucket, TimeInterval interval, ZoneId zone) {
+    var dateTime = Instant.ofEpochSecond(bucket).atZone(zone);
+    return switch (interval) {
+      case HOURLY ->
+          dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH':00:00'", Locale.ROOT));
+      case DAILY -> dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE);
+      case MONTHLY -> dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM", Locale.ROOT));
+      case WEEKLY ->
+          String.format(
+              Locale.ROOT,
+              "%04d-W%02d",
+              dateTime.get(IsoFields.WEEK_BASED_YEAR),
+              dateTime.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR));
+      case DAY_OF_WEEK -> Integer.toString(dateTime.getDayOfWeek().getValue());
+    };
+  }
 
-    Field<?> field =
-        switch (sort.getField()) {
-          case VALUE -> aggregatedLogs.field(VALUE, Integer.class);
+  static List<StatisticRow> processRecords(
+      Stream<Record> records, TimeInterval interval, ZoneId zone) {
+    Map<StatisticRowKey, StatisticRow> mergedRows = new LinkedHashMap<>();
+    records.forEach(
+        record -> {
+          Long bucket = record.get(TIME_BUCKET, Long.class);
+          StatisticRow row = record.into(StatisticRow.class);
+          row.setTimeBucket(formatTimeBucket(bucket, interval, zone));
+          StatisticRowKey key = StatisticRowKey.from(row);
+          StatisticRow existing = mergedRows.get(key);
+          if (existing == null) {
+            mergedRows.put(key, row);
+          } else {
+            existing.setValue(existing.getValue() + row.getValue());
+          }
+        });
+    List<StatisticRow> rows = new ArrayList<>(mergedRows.values());
+    if (interval == TimeInterval.DAY_OF_WEEK) {
+      sortDayOfWeekRows(rows);
+    }
+    return rows;
+  }
 
-          case USER_ID -> aggregatedLogs.field(LOGS.USER_ID);
+  static void sortDayOfWeekRows(List<StatisticRow> rows) {
+    rows.sort(Comparator.comparingInt(row -> Integer.parseInt(row.getTimeBucket())));
+  }
 
-          case MODULE_ID -> aggregatedLogs.field(LOGS.MODULE_ID);
+  private record StatisticRowKey(
+      Long userId,
+      String userFullName,
+      Long moduleId,
+      String moduleName,
+      Short componentId,
+      String componentName,
+      Short eventId,
+      String eventName,
+      Byte originId,
+      String originName,
+      String ipAddress,
+      Long courseId,
+      String timeBucket,
+      Long sectionId,
+      String sectionName) {
 
-          case TIME_BUCKET -> aggregatedLogs.field(TIME_BUCKET);
-
-          case TIME -> aggregatedLogs.field(TIME_BUCKET); // Logical alias.
-        };
-
-    return sort.getDirection() == SortBy.SortDirection.ASC ? field.asc() : field.desc();
+    private static StatisticRowKey from(StatisticRow row) {
+      return new StatisticRowKey(
+          row.getUserId(),
+          row.getUserFullName(),
+          row.getModuleId(),
+          row.getModuleName(),
+          row.getComponentId(),
+          row.getComponentName(),
+          row.getEventId(),
+          row.getEventName(),
+          row.getOriginId(),
+          row.getOriginName(),
+          row.getIpAddress(),
+          row.getCourseId(),
+          row.getTimeBucket(),
+          row.getSectionId(),
+          row.getSectionName());
+    }
   }
 
   // =========================================================
@@ -164,20 +246,14 @@ public class LogsStatisticsAdapter implements LogsStatisticsPort {
 
     Set<Field<?>> innerGroupBy = new LinkedHashSet<>();
 
-    if (request.getGroupBy() != null) {
-      for (CourseLogsGroupBy g : request.getGroupBy()) {
-        innerGroupBy.add(impliedIdFieldFor(g.name()));
-      }
-    }
-
     if (request.getFields() != null) {
       for (CourseLogsSelectColumn s : request.getFields()) {
-        innerGroupBy.add(impliedIdFieldFor(s.name()));
+        innerGroupBy.add(impliedIdFieldFor(s));
       }
     }
 
     if (request.getInterval() != null) {
-      innerGroupBy.add(resolveIntervalField(request.getInterval()));
+      innerGroupBy.add(resolveIntervalField());
     }
 
     return innerGroupBy;
@@ -189,15 +265,11 @@ public class LogsStatisticsAdapter implements LogsStatisticsPort {
   // =========================================================
   private boolean needsSection(CourseLogsStatisticsRequest request) {
 
-    boolean inGroupBy =
-        request.getGroupBy() != null
-            && request.getGroupBy().stream().anyMatch(g -> g.name().contains("SECTION"));
-
     boolean inFields =
         request.getFields() != null
             && request.getFields().stream().anyMatch(f -> f.name().contains("SECTION"));
 
-    return inGroupBy || inFields;
+    return inFields;
   }
 
   // =========================================================
@@ -209,13 +281,7 @@ public class LogsStatisticsAdapter implements LogsStatisticsPort {
     Set<SelectField<?>> fields = new LinkedHashSet<>();
 
     if (request.getInterval() != null) {
-      fields.add(aggregatedLogs.field(TIME_BUCKET, String.class));
-    }
-
-    if (request.getGroupBy() != null) {
-      for (CourseLogsGroupBy g : request.getGroupBy()) {
-        fields.add(outerSelectFieldForGroup(g, aggregatedLogs));
-      }
+      fields.add(aggregatedLogs.field(TIME_BUCKET, Long.class));
     }
 
     if (request.getFields() != null) {
@@ -232,70 +298,27 @@ public class LogsStatisticsAdapter implements LogsStatisticsPort {
   // =========================================================
   // TIME BUCKET
   // =========================================================
-  private Field<?> resolveIntervalField(TimeInterval interval) {
-
-    if (interval == TimeInterval.DAY_OF_WEEK) {
-      return dayOfWeekField(LOGS.LOGGED_AT);
-    }
-
-    if (interval == TimeInterval.WEEKLY) {
-      return weekBucketField(LOGS.LOGGED_AT);
-    }
-
-    String sqlitePattern =
-        switch (interval) {
-          case HOURLY -> "%Y-%m-%dT%H:00:00";
-          case DAILY -> "%Y-%m-%d";
-          case MONTHLY -> "%Y-%m";
-          case WEEKLY, DAY_OF_WEEK -> throw new IllegalStateException("Handled above");
-        };
+  static Field<Long> resolveIntervalField() {
     return DSL.field(
-            "strftime({0}, {1}, 'unixepoch')",
-            String.class, DSL.inline(sqlitePattern), LOGS.LOGGED_AT)
-        .as(TIME_BUCKET);
-  }
-
-  public static Field<Integer> dayOfWeekField(Field<?> timestamp) {
-    return DSL.field(
-            "(CAST(strftime('%w', {0}, 'unixepoch') AS INTEGER) + 6) % 7 + 1",
-            Integer.class, timestamp)
-        .as(TIME_BUCKET);
-  }
-
-  public static Field<String> weekBucketField(Field<?> timestamp) {
-    return DSL.field("strftime('%G-W%V', {0}, 'unixepoch')", String.class, timestamp)
+            "(CAST({0} AS INTEGER) / {1}) * {1}",
+            Long.class, LOGS.LOGGED_AT, DSL.inline(BUCKET_SECONDS))
         .as(TIME_BUCKET);
   }
 
   // =========================================================
   // FIELD MAPPING
   // =========================================================
-  private Field<?> impliedIdFieldFor(String columnOrGroup) {
-    if (columnOrGroup.contains("USER")) return LOGS.USER_ID;
-    if (columnOrGroup.contains("MODULE")) return LOGS.MODULE_ID;
-    if (columnOrGroup.contains("COMPONENT")) return LOGS.COMPONENT_ID;
-    if (columnOrGroup.contains("EVENT")) return LOGS.EVENT_ID;
-    if (columnOrGroup.contains("ORIGIN")) return LOGS.ORIGIN_ID;
-    if (columnOrGroup.contains("IP_ADDRESS")) return LOGS.IP_ADDRESS;
-    if (columnOrGroup.contains("COURSE_ID")) return LOGS.COURSE_ID;
-    if (columnOrGroup.contains("SECTION")) return MODULES.SECTION_ID;
+  private Field<?> impliedIdFieldFor(CourseLogsSelectColumn column) {
+    String columnName = column.name();
+    if (columnName.contains("USER")) return LOGS.USER_ID;
+    if (columnName.contains("MODULE")) return LOGS.MODULE_ID;
+    if (columnName.contains("COMPONENT")) return LOGS.COMPONENT_ID;
+    if (columnName.contains("EVENT")) return LOGS.EVENT_ID;
+    if (columnName.contains("ORIGIN")) return LOGS.ORIGIN_ID;
+    if (columnName.contains("IP_ADDRESS")) return LOGS.IP_ADDRESS;
+    if (columnName.contains("SECTION")) return MODULES.SECTION_ID;
 
-    throw new IllegalArgumentException("Unknown field: " + columnOrGroup);
-  }
-
-  private Field<?> outerSelectFieldForGroup(
-      CourseLogsGroupBy groupBy, Table<Record> aggregatedLogs) {
-    return switch (groupBy) {
-      case USER_ID -> aggregatedLogs.field(LOGS.USER_ID);
-      case MODULE_ID -> aggregatedLogs.field(LOGS.MODULE_ID);
-      case COMPONENT_ID -> aggregatedLogs.field(LOGS.COMPONENT_ID);
-      case EVENT_ID -> aggregatedLogs.field(LOGS.EVENT_ID);
-      case ORIGIN_ID -> aggregatedLogs.field(LOGS.ORIGIN_ID);
-      case IP_ADDRESS -> aggregatedLogs.field(LOGS.IP_ADDRESS);
-      case COURSE_ID -> aggregatedLogs.field(LOGS.COURSE_ID);
-      case TIME_BUCKET -> aggregatedLogs.field(TIME_BUCKET, String.class);
-      case SECTION_ID -> aggregatedLogs.field(MODULES.SECTION_ID);
-    };
+    throw new IllegalArgumentException("Unknown field: " + columnName);
   }
 
   private Field<?> outerSelectFieldFor(
@@ -317,7 +340,6 @@ public class LogsStatisticsAdapter implements LogsStatisticsPort {
       case ORIGIN_NAME -> LOGS_ORIGINS.NAME.as("originName");
 
       case IP_ADDRESS -> aggregatedLogs.field(LOGS.IP_ADDRESS);
-      case COURSE_ID -> aggregatedLogs.field(LOGS.COURSE_ID);
       case SECTION_ID -> aggregatedLogs.field(MODULES.SECTION_ID);
 
       case SECTION_NAME -> SECTIONS.NAME.as("sectionName");
@@ -335,6 +357,7 @@ public class LogsStatisticsAdapter implements LogsStatisticsPort {
       conditions.add(LOGS.COURSE_ID.eq(request.getCourseId()));
     }
 
+    // Range limits remain UTC epoch seconds; clients should calculate them using their own zone.
     var timeRange = request.getTimeRange();
     if (timeRange != null) {
       if (timeRange.getFrom() != null) {

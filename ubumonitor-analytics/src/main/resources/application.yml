@@ -16,6 +16,7 @@ spring:
       - org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration
       - org.springframework.boot.jdbc.autoconfigure.DataSourceTransactionManagerAutoConfiguration
       - org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration
+      - org.springframework.boot.security.autoconfigure.UserDetailsServiceAutoConfiguration
   main:
     banner-mode: off
     lazy-initialization: false

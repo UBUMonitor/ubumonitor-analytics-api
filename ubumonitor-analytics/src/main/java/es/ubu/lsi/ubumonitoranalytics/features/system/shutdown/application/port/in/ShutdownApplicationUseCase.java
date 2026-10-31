@@ -2,4 +2,6 @@ package es.ubu.lsi.ubumonitoranalytics.features.system.shutdown.application.port
 
 public interface ShutdownApplicationUseCase {
   void shutdown();
+
+  void shutdownImmediately();
 }

@@ -1,0 +1,200 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/courses/2/logs/import",
+    "headers": {
+      "Authorization": "******"
+    },
+    "multipart": {
+      "field": "logFile",
+      "filename": "missing-mappings-logs.csv",
+      "contentType": "text/csv",
+      "content": "Time,User full name,Affected user full name,Event context,Component,Event name,Description,Origin,IP address,Affected user\n\"1/01/26, 12:00:00\",Jeffrey Sanders,,Assignment: Algebra,Online text submissions,An online text has been uploaded.,\"The user with id '9' has saved an online text submission with id '138' in the assignment activity with course module id '980'.\",web,192.0.2.9,\n\"1/01/26, 12:00:01\",Jeffrey Sanders,,Gradebook: Algebra,Grade history,Grade history report viewed,\"The user with id '3' viewed the history report in the gradebook.\",web,192.0.2.3,\n\"1/01/26, 12:00:02\",Jeffrey Sanders,,Choice: Algebra,Choice,Choice answer added,\"The user with id '47' has added the option with id '69' for the\n            user with id '47' from the choice activity with course module id '968'.\",web,192.0.2.47,\n\"1/01/26, 12:00:03\",Jeffrey Sanders,,Forum: Algebra,Forum,Discussion subscription created,\"The user with id '13' subscribed the user with id '13' to the discussion  with id '197' in the forum with the course module id '971'.\",web,192.0.2.13,\n\"1/01/26, 12:00:04\",Jeffrey Sanders,,Forum: Algebra,Forum,Some content has been posted.,\"The user with id '13' has posted content in the forum post with id '451' in the discussion '205' located in the forum with course module id '967'.\",web,192.0.2.13,\n\"1/01/26, 12:00:05\",Jeffrey Sanders,,Recycle bin: Algebra,Recycle bin,Item created,Item created with ID 1.,web,192.0.2.13,\n\"1/01/26, 12:00:06\",Jeffrey Sanders,,Recycle bin: Algebra,Recycle bin,Item deleted,Item with ID 1 deleted.,web,192.0.2.13,\n\"1/01/26, 12:00:07\",Jeffrey Sanders,,User tours,User tours,Tour ended,\"The user with id '9' has ended the tour with id '14' at step index '' (id '') on the page with URL ''.\",web,192.0.2.9,\n"
+    }
+  },
+  "expectedResponse": {
+    "status": 200,
+    "body": {
+      "stats": {
+        "saved": 8,
+        "ignored": 0,
+        "failed": 0
+      },
+      "column": {
+        "components": [
+          {
+            "id": 4,
+            "code": "assignsubmission_onlinetext",
+            "name": "Online text submissions"
+          },
+          {
+            "id": 22,
+            "code": "gradereport_history",
+            "name": "Grade history"
+          },
+          {
+            "id": 32,
+            "code": "mod_choice",
+            "name": "Choice"
+          },
+          {
+            "id": 36,
+            "code": "mod_forum",
+            "name": "Forum"
+          },
+          {
+            "id": 72,
+            "code": "tool_recyclebin",
+            "name": "Recycle bin"
+          },
+          {
+            "id": 73,
+            "code": "tool_usertours",
+            "name": "User tours"
+          }
+        ],
+        "events": [
+          {
+            "id": 263,
+            "code": "eventonlinetextuploaded",
+            "name": "An online text has been uploaded."
+          },
+          {
+            "id": 210,
+            "code": "eventgradehistoryreportviewed",
+            "name": "Grade history report viewed"
+          },
+          {
+            "id": 52,
+            "code": "eventanswercreated",
+            "name": "Choice answer added"
+          },
+          {
+            "id": 176,
+            "code": "eventdiscussionsubscriptioncreated",
+            "name": "Discussion subscription created"
+          },
+          {
+            "id": 206,
+            "code": "eventforumcontentposted",
+            "name": "Some content has been posted."
+          },
+          {
+            "id": 237,
+            "code": "eventitemcreated",
+            "name": "Item created"
+          },
+          {
+            "id": 238,
+            "code": "eventitemdeleted",
+            "name": "Item deleted"
+          },
+          {
+            "id": 40,
+            "code": "event_tour_ended",
+            "name": "Tour ended"
+          }
+        ],
+        "componentsEvents": [
+          {
+            "component": {
+              "id": 4,
+              "code": "assignsubmission_onlinetext",
+              "name": "Online text submissions"
+            },
+            "event": {
+              "id": 263,
+              "code": "eventonlinetextuploaded",
+              "name": "An online text has been uploaded."
+            }
+          },
+          {
+            "component": {
+              "id": 22,
+              "code": "gradereport_history",
+              "name": "Grade history"
+            },
+            "event": {
+              "id": 210,
+              "code": "eventgradehistoryreportviewed",
+              "name": "Grade history report viewed"
+            }
+          },
+          {
+            "component": {
+              "id": 32,
+              "code": "mod_choice",
+              "name": "Choice"
+            },
+            "event": {
+              "id": 52,
+              "code": "eventanswercreated",
+              "name": "Choice answer added"
+            }
+          },
+          {
+            "component": {
+              "id": 36,
+              "code": "mod_forum",
+              "name": "Forum"
+            },
+            "event": {
+              "id": 176,
+              "code": "eventdiscussionsubscriptioncreated",
+              "name": "Discussion subscription created"
+            }
+          },
+          {
+            "component": {
+              "id": 36,
+              "code": "mod_forum",
+              "name": "Forum"
+            },
+            "event": {
+              "id": 206,
+              "code": "eventforumcontentposted",
+              "name": "Some content has been posted."
+            }
+          },
+          {
+            "component": {
+              "id": 72,
+              "code": "tool_recyclebin",
+              "name": "Recycle bin"
+            },
+            "event": {
+              "id": 237,
+              "code": "eventitemcreated",
+              "name": "Item created"
+            }
+          },
+          {
+            "component": {
+              "id": 72,
+              "code": "tool_recyclebin",
+              "name": "Recycle bin"
+            },
+            "event": {
+              "id": 238,
+              "code": "eventitemdeleted",
+              "name": "Item deleted"
+            }
+          },
+          {
+            "component": {
+              "id": 73,
+              "code": "tool_usertours",
+              "name": "User tours"
+            },
+            "event": {
+              "id": 40,
+              "code": "event_tour_ended",
+              "name": "Tour ended"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "authFixture": "classpath:/integration/shared/teacher-sso-auth.json"
+}

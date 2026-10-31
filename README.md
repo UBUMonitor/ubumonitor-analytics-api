@@ -9,6 +9,15 @@ Existing tenant databases encrypted with another cipher must be migrated or recr
 - JDK 25
 - Maven
 
+## Runtime memory
+
+The statistics endpoint streams database rows without a result-row limit. For deployments that
+use this endpoint, the recommended JVM options are:
+
+```text
+-Xms64m -Xmx256m -XX:+UseSerialGC -XX:MaxMetaspaceSize=96m -Xss512k
+```
+
 ## Build
 
 ```text

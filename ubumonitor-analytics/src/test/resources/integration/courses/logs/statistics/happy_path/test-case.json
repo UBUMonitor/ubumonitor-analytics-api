@@ -11,10 +11,8 @@
       "Authorization": "******"
     },
     "body": {
-      "groupBy": [
-        "COMPONENT_ID"
-      ],
       "fields": [
+        "COMPONENT_ID",
         "COMPONENT_NAME"
       ]
     }
