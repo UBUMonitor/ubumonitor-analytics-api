@@ -23,8 +23,7 @@ class JooqProviderTest {
   void rejectsAnIncorrectPasswordForAnExistingTenantDatabase() throws SQLException {
     URI host = URI.create("https://moodle.test");
     MoodleConfig config =
-        new MoodleConfig(
-            new MoodleConfig.Db(tempDir.toString(), "jdbc:sqlite:%s"), new MoodleConfig.Api());
+        new MoodleConfig(new MoodleConfig.Db(tempDir.toString()), new MoodleConfig.Api());
     JooqProvider provider = new JooqProvider(config);
     SessionData session =
         SessionData.builder().host(host).username("teacher").dbPassword("correct-password").build();
@@ -45,10 +44,8 @@ class JooqProviderTest {
     URI host = URI.create("https://moodle.test");
     String username = "teacher";
     String password = "correct-password";
-    String jdbcTemplate = "jdbc:sqlite:%s";
     MoodleConfig config =
-        new MoodleConfig(
-            new MoodleConfig.Db(tempDir.toString(), jdbcTemplate), new MoodleConfig.Api());
+        new MoodleConfig(new MoodleConfig.Db(tempDir.toString()), new MoodleConfig.Api());
     JooqProvider provider = new JooqProvider(config);
     SessionData session =
         SessionData.builder().host(host).username(username).dbPassword(password).build();

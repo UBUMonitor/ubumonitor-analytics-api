@@ -44,7 +44,6 @@ public class JooqProvider implements TenantDatabasePort {
 
     boolean databaseCreated =
         DatabaseUtil.createAndInitializeDatabase(
-            moodleConfig.getDb().getJdbcUrlTemplate(),
             moodleConfig.getDb().getBasePath(),
             session.getHost(),
             session.getUsername(),
@@ -82,10 +81,7 @@ public class JooqProvider implements TenantDatabasePort {
     try {
       jdbcUrl =
           DatabaseUtil.buildJdbcUrl(
-              moodleConfig.getDb().getJdbcUrlTemplate(),
-              moodleConfig.getDb().getBasePath(),
-              session.getHost(),
-              session.getUsername());
+              moodleConfig.getDb().getBasePath(), session.getHost(), session.getUsername());
 
       ds.setDataSource(DatabaseUtil.createDataSource(jdbcUrl, session.getDbPassword()));
 

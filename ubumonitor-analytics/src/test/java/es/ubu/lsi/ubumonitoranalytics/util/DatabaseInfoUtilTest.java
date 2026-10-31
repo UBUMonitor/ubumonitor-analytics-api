@@ -22,18 +22,15 @@ class DatabaseInfoUtilTest {
     URI host = URI.create("https://school.moodledemo.net");
     String username = "student";
     String password = "test-password";
-    String jdbcTemplate = "jdbc:sqlite:%s";
 
     assertTrue(
-        DatabaseUtil.createAndInitializeDatabase(
-            jdbcTemplate, tempDir.toString(), host, username, password));
+        DatabaseUtil.createAndInitializeDatabase(tempDir.toString(), host, username, password));
 
     Path databaseFile = DatabaseUtil.getFile(tempDir.toString(), host, username);
     assertTrue(Files.exists(databaseFile));
     try (var connection =
             DatabaseUtil.createDataSource(
-                    DatabaseUtil.buildJdbcUrl(jdbcTemplate, tempDir.toString(), host, username),
-                    password)
+                    DatabaseUtil.buildJdbcUrl(tempDir.toString(), host, username), password)
                 .getConnection();
         var statement = connection.createStatement()) {
       statement.execute("CREATE TABLE cipher_probe (id INTEGER PRIMARY KEY)");
@@ -42,14 +39,13 @@ class DatabaseInfoUtilTest {
         new String(Files.readAllBytes(databaseFile), StandardCharsets.ISO_8859_1)
             .startsWith("SQLite format 3"));
     assertFalse(
-        DatabaseUtil.createAndInitializeDatabase(
-            jdbcTemplate, tempDir.toString(), host, username, password));
+        DatabaseUtil.createAndInitializeDatabase(tempDir.toString(), host, username, password));
 
     assertThrows(
         InvalidDatabaseEncryptionKeyException.class,
         () ->
             DatabaseUtil.createAndInitializeDatabase(
-                jdbcTemplate, tempDir.toString(), host, username, "wrong-password"));
+                tempDir.toString(), host, username, "wrong-password"));
   }
 
   @Test

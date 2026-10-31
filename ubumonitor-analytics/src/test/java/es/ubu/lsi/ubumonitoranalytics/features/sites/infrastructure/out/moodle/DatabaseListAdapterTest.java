@@ -22,8 +22,7 @@ class DatabaseListAdapterTest {
     Files.createFile(tempDir.resolve("https~school.moodledemo.net~teacher.db"));
     Files.createFile(tempDir.resolve("http~school.moodledemo.net~student.db"));
     MoodleConfig moodleConfig =
-        new MoodleConfig(
-            new MoodleConfig.Db(tempDir.toString(), null), new MoodleConfig.Api(null, null));
+        new MoodleConfig(new MoodleConfig.Db(tempDir.toString()), new MoodleConfig.Api(null, null));
     DatabaseListAdapter adapter = new DatabaseListAdapter(moodleConfig);
 
     var hosts = adapter.getDatabaseList();
