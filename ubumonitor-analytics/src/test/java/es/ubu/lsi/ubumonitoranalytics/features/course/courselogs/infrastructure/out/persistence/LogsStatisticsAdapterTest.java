@@ -1,9 +1,6 @@
 package es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.infrastructure.out.persistence;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.statistics.StatisticRow;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.statistics.TimeInterval;

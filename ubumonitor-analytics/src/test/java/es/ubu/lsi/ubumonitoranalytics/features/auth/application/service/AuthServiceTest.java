@@ -10,6 +10,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
+import es.ubu.lsi.moodle.exception.MoodleUnauthorizedException;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.application.port.out.MoodleApiPort;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.application.port.out.SessionPort;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.AuthInput;
@@ -139,6 +140,40 @@ class AuthServiceTest {
             "db-password",
             null,
             null);
+
+    assertThrows(UnauthorizedException.class, () -> authService.loginByCredentials(authInput));
+    verify(moodleApiPort).login(authInput);
+    verifyNoInteractions(tenantDatabasePort, sessionPort);
+  }
+
+  @Test
+  void mapsMoodleUnauthorizedExceptionToApplicationUnauthorizedException() {
+    SessionPort sessionPort = mock(SessionPort.class);
+    MoodleApiPort moodleApiPort = mock(MoodleApiPort.class);
+    TenantDatabasePort tenantDatabasePort = mock(TenantDatabasePort.class);
+    AsyncOperations asyncOperations = new AsyncOperations(Runnable::run);
+    AuthInput authInput =
+        new AuthInput(
+            "teacher",
+            "wrong-password",
+            URI.create("https://moodle.test"),
+            "db-password",
+            null,
+            null);
+
+    when(moodleApiPort.login(authInput))
+        .thenThrow(new MoodleUnauthorizedException("Invalid login"));
+
+    AuthService authService =
+        new AuthService(
+            mock(SyncUserInfoUseCase.class),
+            mock(GetUserInfoPersistenceAdapterPort.class),
+            mock(SiteInfoApiPort.class),
+            mock(SiteInfoPersistencePort.class),
+            sessionPort,
+            moodleApiPort,
+            tenantDatabasePort,
+            asyncOperations);
 
     assertThrows(UnauthorizedException.class, () -> authService.loginByCredentials(authInput));
     verify(moodleApiPort).login(authInput);

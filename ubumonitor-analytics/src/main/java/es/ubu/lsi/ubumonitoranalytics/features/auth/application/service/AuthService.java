@@ -1,5 +1,6 @@
 package es.ubu.lsi.ubumonitoranalytics.features.auth.application.service;
 
+import es.ubu.lsi.moodle.exception.MoodleUnauthorizedException;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.application.port.in.AuthUseCase;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.application.port.out.MoodleApiPort;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.application.port.out.SessionPort;
@@ -16,6 +17,7 @@ import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.database.Tenan
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.concurrent.AsyncOperations;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -81,7 +83,15 @@ public class AuthService implements AuthUseCase {
     CompletableFuture<RestClient> restClientFuture =
         asyncOperations.supplyAsync(() -> fetchRestClient(authInput));
 
-    String moodleToken = moodleTokenFuture.join();
+    String moodleToken;
+    try {
+      moodleToken = moodleTokenFuture.join();
+    } catch (CompletionException exception) {
+      if (exception.getCause() instanceof MoodleUnauthorizedException) {
+        throw new UnauthorizedException("Invalid Moodle credentials.");
+      }
+      throw exception;
+    }
     if (moodleToken == null || moodleToken.isBlank()) {
       throw new UnauthorizedException("Invalid Moodle credentials.");
     }
