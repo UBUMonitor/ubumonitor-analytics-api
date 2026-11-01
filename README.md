@@ -1,11 +1,22 @@
 # UBUMonitor Analytics
 
-UBUMonitor Analytics is a Spring Boot API that provides Moodle analytics over REST and stores tenant data in isolated H2 databases. The application follows a hexagonal architecture and uses OpenAPI delegate generation, jOOQ, Flyway, and a dedicated Moodle Java client.
+UBUMonitor Analytics is a Spring Boot API that provides Moodle analytics over REST and stores tenant data in isolated SQLite databases encrypted with ChaCha20. Encryption uses the open-source SQLite3MultipleCiphers implementation (MIT), bundled by `io.github.willena:sqlite-jdbc`; it does not require a commercial cipher extension. The application follows a hexagonal architecture and uses OpenAPI delegate generation, jOOQ, Flyway, and a dedicated Moodle Java client.
+
+Existing tenant databases encrypted with another cipher must be migrated or recreated before using this version; the application does not convert them automatically.
 
 ## Requirements
 
 - JDK 25
 - Maven
+
+## Runtime memory
+
+The statistics endpoint streams database rows without a result-row limit. For deployments that
+use this endpoint, the recommended JVM options are:
+
+```text
+-Xms64m -Xmx256m -XX:+UseSerialGC -XX:MaxMetaspaceSize=96m -Xss512k
+```
 
 ## Build
 

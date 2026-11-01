@@ -1,7 +1,7 @@
 {
   "authFixture": "classpath:/integration/shared/teacher-sso-auth.json",
   "databaseSetup": [
-    "MERGE INTO USERS (ID, FULL_NAME, FIRST_NAME, LAST_NAME, EMAIL) KEY (ID) VALUES (13, 'Jeffrey Sanders', 'Jeffrey', 'Sanders', 'jeffreysanders199@example.com')"
+    "INSERT OR REPLACE INTO USERS (ID, FULL_NAME, FIRST_NAME, LAST_NAME, EMAIL) VALUES (13, 'Jeffrey Sanders', 'Jeffrey', 'Sanders', 'jeffreysanders199@example.com')"
   ],
   "moodleMocks": [
     {

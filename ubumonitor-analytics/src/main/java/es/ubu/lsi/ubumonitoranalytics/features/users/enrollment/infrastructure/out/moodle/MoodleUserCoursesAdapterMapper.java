@@ -23,17 +23,20 @@ public interface MoodleUserCoursesAdapterMapper {
   @Mapping(target = "enrolledCourses", source = "response")
   UserEnrolledCourses toDomain(Long userId, List<GetUsersCoursesResponseApi> response);
 
-  @Mapping(target = "lastCourseAccess", source = "lastaccess")
+  @Mapping(
+      target = "lastCourseAccess",
+      source = "lastaccess",
+      qualifiedByName = "nullableTimestamp")
   @Mapping(target = "course", source = "getUsersCoursesResponseApi")
   @Mapping(target = "isFavourite", source = "isfavourite")
   Enrollment toDomainEnrolledCourse(GetUsersCoursesResponseApi getUsersCoursesResponseApi);
 
   @Mapping(target = "lastSync", ignore = true)
   @Mapping(target = "shortName", source = "shortname")
-  @Mapping(target = "timeModified", source = "timemodified")
-  @Mapping(target = "startDate", source = "startdate")
+  @Mapping(target = "timeModified", source = "timemodified", qualifiedByName = "nullableTimestamp")
+  @Mapping(target = "startDate", source = "startdate", qualifiedByName = "nullableTimestamp")
   @Mapping(target = "showGrades", source = "showgrades")
-  @Mapping(target = "endDate", source = "enddate")
+  @Mapping(target = "endDate", source = "enddate", qualifiedByName = "nullableTimestamp")
   @Mapping(target = "enableCompletion", source = "enablecompletion")
   @Mapping(target = "fullName", source = "fullname")
   Course toDomainCourse(GetUsersCoursesResponseApi getUsersCoursesResponseApi);

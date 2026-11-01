@@ -19,6 +19,6 @@ public class SessionData {
 
   @ToString.Exclude private String moodleToken;
 
-  @ToString.Exclude private String dbPassword; // Encrypted password used to open the H2 database.
+  @ToString.Exclude private String dbPassword; // Encryption key used to open the tenant database.
   private RestClient restClient;
 }

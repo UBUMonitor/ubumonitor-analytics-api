@@ -4,7 +4,6 @@ import es.ubu.lsi.ubumonitoranalytics.features.course.activitycompletion.domain.
 import es.ubu.lsi.ubumonitoranalytics.features.course.activitycompletion.domain.model.ActivityCompletionResult;
 import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.UsersActivitiesRecord;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.GlobalMapperConfig;
-import java.time.OffsetDateTime;
 import java.util.List;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
@@ -15,18 +14,13 @@ import org.mapstruct.Mapping;
 public interface CourseActivityCompletionPersistenceMapper {
 
   @Mapping(target = "active", constant = "true")
-  @Mapping(target = "updatedAt", expression = "java(offsetDateTime)")
+  @Mapping(target = "updatedAt", expression = "java(now)")
   @Mapping(target = "createdAt", ignore = true)
-  @Mapping(target = "courseId", expression = "java(courseId)")
-  UsersActivitiesRecord toRecord(
-      ActivityCompletion activityCompletionResult,
-      @Context Long courseId,
-      @Context OffsetDateTime offsetDateTime);
+  @Mapping(target = "courseId", ignore = true)
+  UsersActivitiesRecord toRecord(ActivityCompletion activityCompletionResult, @Context Long now);
 
   List<UsersActivitiesRecord> toRecords(
-      List<ActivityCompletion> activityCompletionResult,
-      @Context Long courseId,
-      @Context OffsetDateTime now);
+      List<ActivityCompletion> activityCompletionResult, @Context Long now);
 
   @Mapping(target = "courseId", source = "courseId")
   @Mapping(target = "activityCompletions", source = "usersActivitiesRecords")
@@ -38,7 +32,10 @@ public interface CourseActivityCompletionPersistenceMapper {
   @Mapping(target = "moduleId", source = "moduleId")
   @Mapping(target = "overrideBy", source = "overrideBy")
   @Mapping(target = "state", source = "state")
-  @Mapping(target = "timeCompleted", source = "timeCompleted")
+  @Mapping(
+      target = "timeCompleted",
+      source = "timeCompleted",
+      qualifiedByName = "nullableTimestamp")
   @Mapping(target = "tracking", source = "tracking")
   @Mapping(target = "userVisible", source = "userVisible")
   @Mapping(target = "valueUsed", source = "valueUsed")

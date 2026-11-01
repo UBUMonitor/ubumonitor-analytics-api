@@ -51,9 +51,9 @@ CourseActivityCompletionResponse:
                     - PASS
                     - FAIL
                 timeCompleted:
-                  type: string
-                  format: date-time
-                  description: Date and time when the activity was completed. Null if it has not been completed.
+                  type: integer
+                  format: int64
+                  description: Unix timestamp in seconds when the activity was completed. Null if it has not been completed.
                 tracking:
                   type: string
                   description: |

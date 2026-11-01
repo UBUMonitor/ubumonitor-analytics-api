@@ -13,6 +13,11 @@ class ShutdownApplicationService implements ShutdownApplicationUseCase {
 
   @Override
   public void shutdown() {
+    terminator.terminateAfterResponse();
+  }
+
+  @Override
+  public void shutdownImmediately() {
     terminator.terminate();
   }
 }

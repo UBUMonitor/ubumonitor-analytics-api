@@ -23,9 +23,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class DatabaseListAdapter implements DatabaseListPort {
 
-  private static final String DB_EXTENSION = ".mv.db";
-  private static final Pattern DB_FILE_PATTERN =
-      Pattern.compile("^([^~]+)~([^~]+)~(.+)\\.mv\\.db$");
+  private static final String DB_EXTENSION = ".db";
+  private static final Pattern DB_FILE_PATTERN = Pattern.compile("^([^~]+)~([^~]+)~(.+)\\.db$");
 
   private final MoodleConfig moodleConfig;
 

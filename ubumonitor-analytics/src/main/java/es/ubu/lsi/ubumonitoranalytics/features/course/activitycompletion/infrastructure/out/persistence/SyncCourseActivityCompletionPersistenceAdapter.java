@@ -6,7 +6,7 @@ import es.ubu.lsi.ubumonitoranalytics.features.course.activitycompletion.applica
 import es.ubu.lsi.ubumonitoranalytics.features.course.activitycompletion.domain.model.ActivityCompletionResult;
 import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.UsersActivitiesRecord;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
-import java.time.OffsetDateTime;
+import java.time.Instant;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
@@ -32,8 +32,10 @@ public class SyncCourseActivityCompletionPersistenceAdapter
         .execute();
 
     List<UsersActivitiesRecord> records =
-        mapper.toRecords(
-            result.getActivityCompletions(), result.getCourseId(), OffsetDateTime.now());
+        mapper.toRecords(result.getActivityCompletions(), Instant.now().getEpochSecond());
+    for (UsersActivitiesRecord record : records) {
+      record.setCourseId(result.getCourseId());
+    }
 
     dsl.batchMerge(records).execute();
   }

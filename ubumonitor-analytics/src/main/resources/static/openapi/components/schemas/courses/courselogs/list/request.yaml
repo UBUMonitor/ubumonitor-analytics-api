@@ -7,19 +7,19 @@ CourseLogsListRequest:
       type: object
       properties:
         from:
-          type: string
-          format: none
+          type: integer
+          format: int64
           nullable: true
           default: null
-          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?$'
-          example: "2026-05-01T00:00:00"
+          description: Inclusive start time as a Unix timestamp in seconds.
+          example: 1777593600
         to:
-          type: string
-          format: none
+          type: integer
+          format: int64
           nullable: true
           default: null
-          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?$'
-          example: "2026-05-31T23:59:59"
+          description: Inclusive end time as a Unix timestamp in seconds.
+          example: 1780185599
 
     filters:
       title: CourseLogsInfoRequestFilters

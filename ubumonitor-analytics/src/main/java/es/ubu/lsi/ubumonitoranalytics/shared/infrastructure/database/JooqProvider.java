@@ -44,7 +44,6 @@ public class JooqProvider implements TenantDatabasePort {
 
     boolean databaseCreated =
         DatabaseUtil.createAndInitializeDatabase(
-            moodleConfig.getDb().getJdbcUrlTemplate(),
             moodleConfig.getDb().getBasePath(),
             session.getHost(),
             session.getUsername(),
@@ -69,7 +68,7 @@ public class JooqProvider implements TenantDatabasePort {
 
     DataSource ds = getDataSource(sessionData);
 
-    Configuration config = new DefaultConfiguration().set(ds).set(SQLDialect.H2);
+    Configuration config = new DefaultConfiguration().set(ds).set(SQLDialect.SQLITE);
 
     return new DefaultDSLContext(config);
   }
@@ -82,17 +81,11 @@ public class JooqProvider implements TenantDatabasePort {
     try {
       jdbcUrl =
           DatabaseUtil.buildJdbcUrl(
-              moodleConfig.getDb().getJdbcUrlTemplate(),
-              moodleConfig.getDb().getBasePath(),
-              session.getHost(),
-              session.getUsername());
+              moodleConfig.getDb().getBasePath(), session.getHost(), session.getUsername());
 
-      ds.setJdbcUrl(jdbcUrl);
-      ds.setUsername("sa");
-      ds.setPassword(TenantContext.getPassword(session));
-      ds.setDriverClassName("org.h2.Driver");
+      ds.setDataSource(DatabaseUtil.createDataSource(jdbcUrl, session.getDbPassword()));
 
-      ds.setMaximumPoolSize(5);
+      ds.setMaximumPoolSize(1);
       ds.setMinimumIdle(0);
       ds.setIdleTimeout(600_000);
       ds.setMaxLifetime(1_800_000);

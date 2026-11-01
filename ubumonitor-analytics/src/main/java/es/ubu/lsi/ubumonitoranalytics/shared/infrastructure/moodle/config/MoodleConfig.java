@@ -28,6 +28,5 @@ public class MoodleConfig {
   @AllArgsConstructor
   public static class Db {
     private String basePath;
-    private String jdbcUrlTemplate;
   }
 }

@@ -11,11 +11,22 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 class SpringApplicationTerminator implements ApplicationTerminatorPort {
 
+  private static final long RESPONSE_DELAY_MILLIS = 300;
+
   private final ConfigurableApplicationContext context;
   private final AtomicBoolean terminating = new AtomicBoolean(false);
 
   @Override
   public void terminate() {
+    terminateWithDelay(0);
+  }
+
+  @Override
+  public void terminateAfterResponse() {
+    terminateWithDelay(RESPONSE_DELAY_MILLIS);
+  }
+
+  private void terminateWithDelay(long delayMillis) {
     // Idempotente: varias llamadas no lanzan varios hilos
     if (!terminating.compareAndSet(false, true)) {
       return;
@@ -24,10 +35,12 @@ class SpringApplicationTerminator implements ApplicationTerminatorPort {
         .name("app-shutdown")
         .start(
             () -> {
-              try {
-                Thread.sleep(300); // deja que se envíe el 202
-              } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
+              if (delayMillis > 0) {
+                try {
+                  Thread.sleep(delayMillis);
+                } catch (InterruptedException e) {
+                  Thread.currentThread().interrupt();
+                }
               }
               int code = SpringApplication.exit(context, () -> 0);
               System.exit(code);

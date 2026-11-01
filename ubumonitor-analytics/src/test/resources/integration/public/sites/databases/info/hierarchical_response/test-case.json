@@ -4,9 +4,9 @@
     "path": "/api/public/system/databases/info"
   },
   "databaseFiles": [
-    "https~school.moodledemo.net~teacher.mv.db",
-    "https~school.moodledemo.net~student.mv.db",
-    "http~school.moodledemo.net~student.mv.db"
+    "https~school.moodledemo.net~teacher.db",
+    "https~school.moodledemo.net~student.db",
+    "http~school.moodledemo.net~student.db"
   ],
   "expectedResponse": {
     "status": 200,
@@ -18,12 +18,12 @@
             {
               "id": "https~school.moodledemo.net~student",
               "userName": "student",
-              "location": "${DATABASE_FILE:https~school.moodledemo.net~student.mv.db}"
+              "location": "${DATABASE_FILE:https~school.moodledemo.net~student.db}"
             },
             {
               "id": "https~school.moodledemo.net~teacher",
               "userName": "teacher",
-              "location": "${DATABASE_FILE:https~school.moodledemo.net~teacher.mv.db}"
+              "location": "${DATABASE_FILE:https~school.moodledemo.net~teacher.db}"
             }
           ]
         },
@@ -33,7 +33,7 @@
             {
               "id": "http~school.moodledemo.net~student",
               "userName": "student",
-              "location": "${DATABASE_FILE:http~school.moodledemo.net~student.mv.db}"
+              "location": "${DATABASE_FILE:http~school.moodledemo.net~student.db}"
             }
           ]
         }

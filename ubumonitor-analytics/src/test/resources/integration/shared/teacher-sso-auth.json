@@ -68,8 +68,8 @@
     }
   ],
   "databaseSetup": [
-    "MERGE INTO USERS (ID, FULL_NAME, FIRST_NAME, LAST_NAME, EMAIL) KEY (ID) VALUES (13, 'Jeffrey Sanders', 'Jeffrey', 'Sanders', 'jeffreysanders199@example.com')",
+    "INSERT OR REPLACE INTO USERS (ID, FULL_NAME, FIRST_NAME, LAST_NAME, EMAIL) VALUES (13, 'Jeffrey Sanders', 'Jeffrey', 'Sanders', 'jeffreysanders199@example.com')",
     "INSERT INTO COURSES (ID, FULL_NAME, SHORT_NAME, SHOW_GRADES, ENABLE_COMPLETION) VALUES (2, 'Algebra', 'ALG2', TRUE, TRUE)",
-    "MERGE INTO SITES (ID, USER_ID, USER_NAME, HOST, SITE_NAME, VERSION_NUMBER, RELEASE, VERSION, TIME_ZONE) KEY (ID, USER_ID) VALUES (1, 13, 'teacher', '${MOODLE_HOST}', 'Mount Orange', '2026042000', '5.2', '2026042000', 'Etc/GMT-1')"
+    "INSERT OR REPLACE INTO SITES (ID, USER_ID, USER_NAME, HOST, SITE_NAME, VERSION_NUMBER, RELEASE, VERSION, TIME_ZONE) VALUES (1, 13, 'teacher', '${MOODLE_HOST}', 'Mount Orange', '2026042000', '5.2', '2026042000', 'Etc/GMT-1')"
   ]
 }

@@ -5,7 +5,6 @@ import es.ubu.lsi.ubumonitoranalytics.features.course.grades.domain.model.UserGr
 import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.GradesRecord;
 import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.UsersGradesRecord;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.GlobalMapperConfig;
-import java.time.OffsetDateTime;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -22,7 +21,7 @@ public interface GradesSavePersistenceMapper {
   @Mapping(target = "parentId", source = "gradeItem.parentId")
   @Mapping(target = "itemType", source = "gradeItem.itemType")
   @Mapping(target = "name", source = "gradeItem.name")
-  GradesRecord toRecord(GradeItem gradeItem, Long courseId, OffsetDateTime now);
+  GradesRecord toRecord(GradeItem gradeItem, Long courseId, Long now);
 
   @Mapping(target = "percentage", source = "userGrade.gradePercentageRaw")
   @Mapping(target = "gradeId", source = "userGrade.gradeItemId")
@@ -31,5 +30,5 @@ public interface GradesSavePersistenceMapper {
   @Mapping(target = "createdAt", ignore = true)
   @Mapping(target = "updatedAt", source = "now")
   @Mapping(target = "active", constant = "true")
-  UsersGradesRecord toRecord(UserGrade userGrade, OffsetDateTime now);
+  UsersGradesRecord toRecord(UserGrade userGrade, Long now);
 }
