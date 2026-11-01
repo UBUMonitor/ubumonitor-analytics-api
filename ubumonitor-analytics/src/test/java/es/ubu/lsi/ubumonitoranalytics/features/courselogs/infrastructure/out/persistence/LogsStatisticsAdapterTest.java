@@ -8,8 +8,6 @@ import java.time.LocalDateTime;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
 class LogsStatisticsAdapterTest {
 
@@ -22,27 +20,25 @@ class LogsStatisticsAdapterTest {
       Integer bucket =
           dsl.select(
                   LogsStatisticsAdapter.dayOfWeekField(
-                      DSL.val(LocalDateTime.of(2026, 10, 19, 12, 0)), null))
+                      DSL.val(LocalDateTime.of(2026, 10, 19, 12, 0))))
               .fetchOne(0, Integer.class);
 
       assertEquals(1, bucket);
     }
   }
 
-  @ParameterizedTest
-  @CsvSource({"1, 7", "2, 6", "3, 5", "4, 4", "5, 3", "6, 2", "7, 1"})
-  void dayOfWeekBucketUsesConfiguredWeekStart(int weekStartsOn, int expectedBucket)
-      throws Exception {
+  @Test
+  void dayOfWeekBucketUsesMondayAsWeekStart() throws Exception {
     try (var connection = DriverManager.getConnection("jdbc:h2:mem:week-start-test", "sa", "")) {
       DSLContext dsl = DSL.using(connection);
 
       Integer bucket =
           dsl.select(
                   LogsStatisticsAdapter.dayOfWeekField(
-                      DSL.val(LocalDateTime.of(2026, 10, 18, 12, 0)), weekStartsOn))
+                      DSL.val(LocalDateTime.of(2026, 10, 18, 12, 0))))
               .fetchOne(0, Integer.class);
 
-      assertEquals(expectedBucket, bucket);
+      assertEquals(7, bucket);
     }
   }
 }

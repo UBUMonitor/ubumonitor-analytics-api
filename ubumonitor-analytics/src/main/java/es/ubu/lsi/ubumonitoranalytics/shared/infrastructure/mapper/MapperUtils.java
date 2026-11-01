@@ -269,4 +269,9 @@ public class MapperUtils {
     }
     return zoneId.getId();
   }
+
+  @Named("now")
+  public static OffsetDateTime now(Object o) {
+    return OffsetDateTime.now();
+  }
 }

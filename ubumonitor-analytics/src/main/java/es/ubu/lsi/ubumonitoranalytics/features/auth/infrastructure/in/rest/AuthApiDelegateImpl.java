@@ -4,8 +4,8 @@ import es.ubu.lsi.ubumonitoranalytics.api.generated.api.AuthApiDelegate;
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.*;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.application.port.in.AuthUseCase;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.application.port.in.LogoutUseCase;
+import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.AuthInput;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.SessionToken;
-import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.auth.AuthInput;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.exception.UnauthorizedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,13 +25,6 @@ public class AuthApiDelegateImpl implements AuthApiDelegate {
   public ResponseEntity<AuthResponseDto> authLogin(AuthLoginRequestDto loginAuthRequestDto) {
     AuthInput authInput = authMapper.toDomain(loginAuthRequestDto);
     SessionToken sessionToken = authUseCase.loginByCredentials(authInput);
-    return ResponseEntity.ok(authMapper.toAuthResponse(sessionToken));
-  }
-
-  @Override
-  public ResponseEntity<AuthResponseDto> authToken(AuthTokenRequestDto authTokenRequestDto) {
-    AuthInput authInput = authMapper.toDomain(authTokenRequestDto);
-    SessionToken sessionToken = authUseCase.loginByToken(authInput);
     return ResponseEntity.ok(authMapper.toAuthResponse(sessionToken));
   }
 

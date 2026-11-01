@@ -20,14 +20,6 @@ import org.mapstruct.Named;
 @Mapper(config = GlobalMapperConfig.class)
 public interface GetCourseLogsStatisticsMapper {
 
-  @Mapping(
-      target = "fillGapsStrategy",
-      source = "courseLogsStatisticsRequestDto.fillGapsStrategy",
-      defaultValue = "NONE")
-  @Mapping(
-      target = "weekStartsOn",
-      source = "courseLogsStatisticsRequestDto.weekStartsOn",
-      defaultValue = "1")
   CourseLogsStatisticsRequest toDomain(
       Long courseId, CourseLogsStatisticsRequestDto courseLogsStatisticsRequestDto);
 

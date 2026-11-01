@@ -1,11 +1,11 @@
 package es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.list;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import lombok.Data;
 
 @Data
 public class CourseLogsInfoRequestTimeRange {
 
-  private LocalDateTime from;
-  private LocalDateTime to;
+  private OffsetDateTime from;
+  private OffsetDateTime to;
 }

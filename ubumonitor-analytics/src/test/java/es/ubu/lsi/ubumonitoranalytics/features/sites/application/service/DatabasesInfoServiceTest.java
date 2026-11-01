@@ -2,8 +2,9 @@ package es.ubu.lsi.ubumonitoranalytics.features.sites.application.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import es.ubu.lsi.ubumonitoranalytics.features.sites.application.port.out.DatabaseListPort;
-import es.ubu.lsi.ubumonitoranalytics.features.sites.domain.model.DatabaseHostInfo;
+import es.ubu.lsi.ubumonitoranalytics.features.system.database.application.port.out.DatabaseListPort;
+import es.ubu.lsi.ubumonitoranalytics.features.system.database.application.service.DatabasesInfoService;
+import es.ubu.lsi.ubumonitoranalytics.features.system.database.domain.model.DatabaseHostInfo;
 import java.net.URI;
 import java.util.List;
 import org.junit.jupiter.api.Test;

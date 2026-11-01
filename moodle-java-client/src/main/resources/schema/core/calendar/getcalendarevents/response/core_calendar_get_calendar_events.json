@@ -102,7 +102,8 @@
           "uuid": {
             "nullable": true,
             "description": "Unique ID of iCal events",
-            "type": "string"
+            "type": "string",
+            "format": "uuid"
           },
           "sequence": {
             "description": "Sequence",
@@ -110,7 +111,8 @@
           },
           "timeduration": {
             "description": "Time duration",
-            "type": "integer"
+            "type": "integer",
+            "format": "int64"
           },
           "timemodified": {
             "description": "Time modified",

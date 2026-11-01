@@ -108,7 +108,8 @@
       },
       "profileimageurlsmall": {
         "description": "User image profile URL - small version",
-        "type": "string"
+        "type": "string",
+        "format": "uri"
       },
       "institution": {
         "nullable": true,
@@ -245,8 +246,13 @@
         "description": "The fullname of the user",
         "type": "string"
       },
+      "initials": {
+        "description": "The initials of the user",
+        "type": "string"
+      },
       "profileimageurl": {
         "description": "User image profile URL - big version",
+        "format": "uri",
         "type": "string"
       },
       "interests": {

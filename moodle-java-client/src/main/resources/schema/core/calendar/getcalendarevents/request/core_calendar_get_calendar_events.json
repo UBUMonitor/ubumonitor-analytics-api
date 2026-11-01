@@ -49,37 +49,37 @@
               "description": "List of category IDs",
               "type": "array",
               "items": {
-                "type": "integer"
+                "type": "integer",
+                "format": "int64"
               }
             },
             "courseids": {
               "description": "List of course IDs",
               "type": "array",
               "items": {
-                "type": "integer"
+                "type": "integer",
+                "format": "int64"
               }
             },
             "groupids": {
               "description": "List of group IDs",
               "type": "array",
               "items": {
-                "type": "integer"
+                "type": "integer",
+                "format": "int64"
               }
             },
             "eventids": {
               "description": "List of event IDs",
               "type": "array",
               "items": {
-                "type": "integer"
+                "type": "integer",
+                "format": "int64"
               }
             }
           }
         }
-      },
-      "required": [
-        "courseid",
-        "userid"
-      ]
+      }
     },
     "wsfunction": {
       "default": "core_calendar_get_calendar_events",

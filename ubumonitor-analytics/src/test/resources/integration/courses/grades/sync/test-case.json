@@ -1,10 +1,10 @@
 {
   "databaseSetup": [
-    "INSERT INTO USERS (ID, FULL_NAME, FIRST_NAME, LAST_NAME, EMAIL) VALUES (13, 'Jeffrey Sanders', 'Jeffrey', 'Sanders', 'jeffreysanders199@example.com')",
+    "MERGE INTO USERS (ID, FULL_NAME, FIRST_NAME, LAST_NAME, EMAIL) KEY (ID) VALUES (13, 'Jeffrey Sanders', 'Jeffrey', 'Sanders', 'jeffreysanders199@example.com')",
     "INSERT INTO USERS (ID) VALUES (10), (35), (12), (16), (37), (14), (33), (23), (47), (56), (31), (6), (28), (5), (36), (34), (17), (11), (29), (15), (7), (26), (8), (24), (9), (25), (27), (32), (22), (4), (21), (48), (49), (46), (44), (45), (51)",
     "INSERT INTO COURSES (ID, FULL_NAME, SHORT_NAME, SHOW_GRADES, ENABLE_COMPLETION) VALUES (69, 'Mindful Course Creation', 'MCC', TRUE, TRUE)",
     "INSERT INTO COURSES (ID, FULL_NAME, SHORT_NAME, SHOW_GRADES, ENABLE_COMPLETION) VALUES (72, 'Effective Memory Techniques', 'Effective Memory Techniques', TRUE, TRUE)",
-    "INSERT INTO SITES (HOST, SITE_NAME, VERSION_NUMBER, USER_ID, USER_NAME, FULL_NAME, FIRST_NAME, LAST_NAME) VALUES ('${MOODLE_HOST}', 'Mount Orange', '2026042000', 13, 'teacher', 'Jeffrey Sanders', 'Jeffrey', 'Sanders')"
+    "MERGE INTO SITES (ID, USER_ID, USER_NAME, HOST, SITE_NAME, VERSION_NUMBER, RELEASE, VERSION) KEY (ID, USER_ID) VALUES (1, 13, 'teacher', 'https://school.moodledemo.net', 'Mount Orange', '2026042000', '5.2', '2026042000')"
   ],
   "moodleMocks": [
     {
@@ -5501,5 +5501,5 @@
       }
     }
   ],
-  "authFixture": "classpath:/integration/shared/teacher-token-auth.json"
+  "authFixture": "classpath:/integration/shared/teacher-sso-auth.json"
 }

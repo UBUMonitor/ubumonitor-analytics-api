@@ -1,7 +1,80 @@
 CourseActivityCompletionResponse:
   type: object
+  title: CourseActivityCompletionResponse
+  description: Completion status of a course, grouped by activity. Each activity lists the status of every enrolled user.
+  required:
+    - activities
   properties:
-    statuses:
-      type: integer
-      format: int64
-      description: The number of completed activities in the course.
+    activities:
+      type: array
+      description: Course activities that have completion tracking enabled.
+      items:
+        type: object
+        title: ActivityCompletion
+        description: An activity of the course and the completion status of each user in it.
+        required:
+          - moduleId
+          - users
+        properties:
+          moduleId:
+            type: integer
+            format: int64
+            description: The unique identifier of the course module.
+          users:
+            type: array
+            description: Completion status of each enrolled user for this activity.
+            items:
+              type: object
+              title: UserActivityCompletion
+              description: Completion status of one user for one activity.
+              required:
+                - userId
+                - state
+                - tracking
+                - visible
+                - valueUsed
+                - isTrackedUser
+                - userVisible
+              properties:
+                userId:
+                  type: integer
+                  format: int64
+                  description: The unique identifier of the user.
+                state:
+                  type: string
+                  description: |
+                    Completion state of the activity for the user.
+                    PASS means completed with a passing grade; FAIL means completed with a failing grade.
+                  enum:
+                    - INCOMPLETE
+                    - COMPLETE
+                    - PASS
+                    - FAIL
+                timeCompleted:
+                  type: string
+                  format: date-time
+                  description: Date and time when the activity was completed. Null if it has not been completed.
+                tracking:
+                  type: string
+                  description: |
+                    How completion is tracked for this activity.
+                    NONE means completion is not tracked; MANUAL means the user marks the activity as done;
+                    AUTOMATIC means it is completed automatically when the configured conditions are met.
+                  enum:
+                    - NONE
+                    - MANUAL
+                    - AUTOMATIC
+                overrideBy:
+                  type: integer
+                  format: int64
+                  description: Identifier of the user who manually overrode the status.
+                valueUsed:
+                  type: boolean
+                  default: false
+                  description: Whether the completion status of this activity is used by another activity, for example in an access restriction that requires it to be completed.
+                isTrackedUser:
+                  type: boolean
+                  description: Whether the user is tracked for completion, meaning their progress counts towards the activity. Depends on the user's role in the course.
+                userVisible:
+                  type: boolean
+                  description: Whether the activity is visible to this specific user, taking into account availability restrictions and group settings.

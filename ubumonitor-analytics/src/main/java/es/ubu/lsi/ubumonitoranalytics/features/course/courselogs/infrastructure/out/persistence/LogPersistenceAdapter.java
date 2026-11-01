@@ -1,12 +1,12 @@
 package es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.infrastructure.out.persistence;
 
+import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.ActualUser.ACTUAL_USER;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Courses.COURSES;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Logs.LOGS;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsComponents.LOGS_COMPONENTS;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsComponentsEvents.LOGS_COMPONENTS_EVENTS;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsEvents.LOGS_EVENTS;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsOrigins.LOGS_ORIGINS;
-import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Sites.SITES;
 
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.port.out.LogPersistencePort;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.port.out.MoodleLogCatalog;
@@ -17,7 +17,7 @@ import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.infrastructure.
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
 import java.time.Instant;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +68,7 @@ public class LogPersistenceAdapter implements LogPersistencePort {
                     LOGS.MODULE_ID,
                     LOGS.ORIGIN_ID,
                     LOGS.IP_ADDRESS)
-                .values((LocalDateTime) null, null, null, null, null, null, null, null));
+                .values((OffsetDateTime) null, null, null, null, null, null, null, null));
     for (ProcessLogLine l : logs) {
       batch.bind(
           l.getTime(),
@@ -114,9 +114,9 @@ public class LogPersistenceAdapter implements LogPersistencePort {
     return ZoneId.of(
         Objects.requireNonNull(
             jooq.dsl()
-                .select(SITES.TIME_ZONE)
-                .from(SITES)
-                .where(SITES.USER_NAME.eq(userName))
+                .select(ACTUAL_USER.TIME_ZONE)
+                .from(ACTUAL_USER)
+                .where(ACTUAL_USER.USER_NAME.eq(userName))
                 .fetchOneInto(String.class)));
   }
 

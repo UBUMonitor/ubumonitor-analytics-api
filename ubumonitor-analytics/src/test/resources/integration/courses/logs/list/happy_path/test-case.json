@@ -1,7 +1,7 @@
 {
   "databaseSetup": [
-    "INSERT INTO USERS (ID, FULL_NAME, FIRST_NAME, LAST_NAME, EMAIL) VALUES (13, 'Jeffrey Sanders', 'Jeffrey', 'Sanders', 'jeffrey@example.com')",
-    "INSERT INTO COURSES (ID, FULL_NAME, SHORT_NAME) VALUES (2, 'Algebra', 'ALG2')",
+    "MERGE INTO USERS (ID, FULL_NAME, FIRST_NAME, LAST_NAME, EMAIL) KEY (ID) VALUES (13, 'Jeffrey Sanders', 'Jeffrey', 'Sanders', 'jeffrey@example.com')",
+    "MERGE INTO COURSES (ID, FULL_NAME, SHORT_NAME) KEY (ID) VALUES (2, 'Algebra', 'ALG2')",
     "INSERT INTO SECTIONS (ID, COURSE_ID, NAME, POSITION, VISIBLE, ACTIVE) VALUES (3, 2, 'General', 0, TRUE, TRUE)",
     "INSERT INTO MODULES (ID, SECTION_ID, NAME, MOD_NAME, POSITION, VISIBLE, ACTIVE) VALUES (7, 3, 'Course page', 'page', 1, TRUE, TRUE)",
     "INSERT INTO LOGS (LOGGED_AT, USER_ID, COURSE_ID, COMPONENT_ID, EVENT_ID, MODULE_ID, ORIGIN_ID, IP_ADDRESS) VALUES (TIMESTAMP '2026-01-01 12:00:00', 13, 2, 29, 55, 7, 1, '192.0.2.13')"
@@ -59,6 +59,8 @@
           "userFullName": "Jeffrey Sanders",
           "moduleId": 7,
           "moduleName": "Course page",
+          "sectionId": 3,
+          "sectionName": "General",
           "component": "Assignment",
           "componentId": 29,
           "eventName": "A submission has been submitted.",
@@ -70,5 +72,5 @@
       ]
     }
   },
-  "authFixture": "classpath:/integration/shared/teacher-token-auth.json"
+  "authFixture": "classpath:/integration/shared/teacher-sso-auth.json"
 }

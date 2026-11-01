@@ -1,0 +1,102 @@
+{
+  "databaseSetup": [
+    "MERGE INTO USERS (ID, FULL_NAME, FIRST_NAME, LAST_NAME, EMAIL) KEY (ID) VALUES (13, 'Jeffrey Sanders', 'Jeffrey', 'Sanders', 'jeffrey@example.com')",
+    "MERGE INTO COURSES (ID, FULL_NAME, SHORT_NAME) KEY (ID) VALUES (2, 'Algebra', 'ALG2')",
+    "INSERT INTO SECTIONS (ID, COURSE_ID, NAME, POSITION, VISIBLE, ACTIVE) VALUES (3, 2, 'General', 0, TRUE, TRUE)",
+    "INSERT INTO MODULES (ID, SECTION_ID, NAME, MOD_NAME, POSITION, VISIBLE, ACTIVE) VALUES (7, 3, 'Course page', 'page', 1, TRUE, TRUE)",
+    "INSERT INTO LOGS (LOGGED_AT, COURSE_ID, COMPONENT_ID, EVENT_ID, ORIGIN_ID) SELECT DATEADD('SECOND', X, TIMESTAMP '2026-01-01 12:00:00'), 2, 29, 55, 1 FROM SYSTEM_RANGE(1, 21)"
+  ],
+  "request": {
+    "method": "POST",
+    "path": "/api/courses/2/logs/list",
+    "headers": {
+      "Authorization": "******"
+    },
+    "body": {
+      "fields": [
+        "ID"
+      ],
+      "includeTotal": true
+    }
+  },
+  "expectedResponse": {
+    "status": 200,
+    "body": {
+      "page": {
+        "page": 0,
+        "size": 21,
+        "totalElements": 21,
+        "totalPages": 1,
+        "first": true,
+        "last": true,
+        "empty": false
+      },
+      "content": [
+        {
+          "id": 1
+        },
+        {
+          "id": 2
+        },
+        {
+          "id": 3
+        },
+        {
+          "id": 4
+        },
+        {
+          "id": 5
+        },
+        {
+          "id": 6
+        },
+        {
+          "id": 7
+        },
+        {
+          "id": 8
+        },
+        {
+          "id": 9
+        },
+        {
+          "id": 10
+        },
+        {
+          "id": 11
+        },
+        {
+          "id": 12
+        },
+        {
+          "id": 13
+        },
+        {
+          "id": 14
+        },
+        {
+          "id": 15
+        },
+        {
+          "id": 16
+        },
+        {
+          "id": 17
+        },
+        {
+          "id": 18
+        },
+        {
+          "id": 19
+        },
+        {
+          "id": 20
+        },
+        {
+          "id": 21
+        }
+      ]
+    }
+  },
+  "authFixture": "classpath:/integration/shared/teacher-sso-auth.json"
+}
