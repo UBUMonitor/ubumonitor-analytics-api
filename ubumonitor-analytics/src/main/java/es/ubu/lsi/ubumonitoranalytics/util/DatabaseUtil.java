@@ -2,13 +2,6 @@ package es.ubu.lsi.ubumonitoranalytics.util;
 
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.DatabaseCreationException;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.InvalidDatabaseEncryptionKeyException;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.sqlite.SQLiteConfig;
-import org.sqlite.SQLiteDataSource;
-import org.sqlite.mc.SQLiteMCChacha20Config;
-
 import java.io.IOException;
 import java.net.IDN;
 import java.net.URI;
@@ -20,6 +13,12 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Locale;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.sqlite.SQLiteConfig;
+import org.sqlite.SQLiteDataSource;
+import org.sqlite.mc.SQLiteMCChacha20Config;
 
 /** Helpers to name, locate, create and open the per-user encrypted SQLite databases. */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
