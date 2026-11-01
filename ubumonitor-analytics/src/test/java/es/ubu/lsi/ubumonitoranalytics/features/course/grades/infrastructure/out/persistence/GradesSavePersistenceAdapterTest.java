@@ -12,20 +12,26 @@ import es.ubu.lsi.ubumonitoranalytics.features.course.grades.domain.model.Course
 import es.ubu.lsi.ubumonitoranalytics.features.course.grades.domain.model.GradeItem;
 import es.ubu.lsi.ubumonitoranalytics.features.course.grades.domain.model.UserGrade;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
+import es.ubu.lsi.ubumonitoranalytics.util.DatabaseUtil;
 import java.math.BigDecimal;
-import java.sql.DriverManager;
+import java.nio.file.Path;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.mapstruct.factory.Mappers;
 
 class GradesSavePersistenceAdapterTest {
 
+  @TempDir Path tempDir;
+
   @Test
   void synchronizesGradeItemsAndUserGradesAndDeactivatesMissingRows() throws Exception {
-    try (var connection = DriverManager.getConnection("jdbc:h2:mem:grades-sync-test", "sa", "")) {
-      DSLContext dsl = DSL.using(connection, SQLDialect.H2);
+    String jdbcUrl =
+        "jdbc:sqlite:" + tempDir.resolve("grades-sync.db").toString().replace("\\", "/");
+    try (var connection = DatabaseUtil.createDataSource(jdbcUrl, "test-key").getConnection()) {
+      DSLContext dsl = DSL.using(connection, SQLDialect.SQLITE);
       createTables(dsl);
       insertGrade(dsl, 11L, 7L);
       insertGrade(dsl, 12L, 7L);
@@ -96,8 +102,8 @@ class GradesSavePersistenceAdapterTest {
           GRADE_MIN DECIMAL(15, 5),
           GRADE_MAX DECIMAL(15, 5),
           ACTIVE BOOLEAN NOT NULL DEFAULT TRUE,
-          CREATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-          UPDATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+          CREATED_AT BIGINT NOT NULL DEFAULT (unixepoch()),
+          UPDATED_AT BIGINT NOT NULL DEFAULT (unixepoch())
         )
         """);
     dsl.execute(
@@ -108,8 +114,8 @@ class GradesSavePersistenceAdapterTest {
           GRADE DECIMAL(15, 5),
           PERCENTAGE DECIMAL(5, 2),
           ACTIVE BOOLEAN NOT NULL DEFAULT TRUE,
-          CREATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-          UPDATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+          CREATED_AT BIGINT NOT NULL DEFAULT (unixepoch()),
+          UPDATED_AT BIGINT NOT NULL DEFAULT (unixepoch()),
           PRIMARY KEY (GRADE_ID, USER_ID)
         )
         """);

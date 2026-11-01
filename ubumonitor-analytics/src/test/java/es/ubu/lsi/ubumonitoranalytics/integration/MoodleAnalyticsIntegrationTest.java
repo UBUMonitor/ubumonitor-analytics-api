@@ -12,6 +12,7 @@ import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.Sessio
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.JooqProvider;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.moodle.config.MoodleConfig;
+import es.ubu.lsi.ubumonitoranalytics.util.DatabaseUtil;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -22,12 +23,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
+import javax.sql.DataSource;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -38,7 +42,9 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    properties = "openapi.uBUMonitorAnalytics.base-path=/api")
 class MoodleAnalyticsIntegrationTest {
 
   private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -49,6 +55,25 @@ class MoodleAnalyticsIntegrationTest {
           .resolve("run-" + UUID.randomUUID())
           .toAbsolutePath()
           .toString();
+  private static final String TRANSACTION_DATABASE_KEY = "integration-transaction-key";
+
+  @TestConfiguration(proxyBeanMethods = false)
+  static class EncryptedSQLiteTestDataSourceConfiguration {
+
+    @Bean
+    DataSource dataSource() throws IOException {
+      Path databaseDirectory = Path.of(TEST_DATABASE_PATH);
+      Files.createDirectories(databaseDirectory);
+      String databaseUrl =
+          "jdbc:sqlite:"
+              + databaseDirectory
+                  .resolve("transactions.db")
+                  .toAbsolutePath()
+                  .toString()
+                  .replace("\\", "/");
+      return DatabaseUtil.createDataSource(databaseUrl, TRANSACTION_DATABASE_KEY);
+    }
+  }
 
   @LocalServerPort private int port;
 
@@ -131,7 +156,7 @@ class MoodleAnalyticsIntegrationTest {
           endpointCase.path("expectedResponse").path("status").asInt(),
           response.getStatusCode().value(),
           "Unexpected status for " + requestPath + ": " + response.getBody());
-      assertExpectedBody(endpointCase, response);
+      assertExpectedBody(endpointCase, response, wireMock.baseUrl());
       MediaType contentType = response.getHeaders().getContentType();
       if (contentType != null && MediaType.APPLICATION_JSON.isCompatibleWith(contentType)) {
         JsonNode tokenResponse = OBJECT_MAPPER.readTree(response.getBody());
@@ -220,7 +245,11 @@ class MoodleAnalyticsIntegrationTest {
               null);
       assertEquals(
           authDefinition.path("expectedResponse").path("status").asInt(200),
-          authResponse.getStatusCode().value());
+          authResponse.getStatusCode().value(),
+          "Unexpected status for "
+              + authRequest.path("path").asText()
+              + ": "
+              + authResponse.getBody());
       accessToken = OBJECT_MAPPER.readTree(authResponse.getBody()).path("accessToken").asText();
       assertFalse(accessToken.isBlank(), "Auth response must include an access token");
       ObjectNode expectedAuthBody = authDefinition.path("expectedResponse").path("body").deepCopy();
@@ -262,7 +291,7 @@ class MoodleAnalyticsIntegrationTest {
         endpoint.path("expectedResponse").path("status").asInt(200),
         response.getStatusCode().value(),
         "Unexpected status for " + requestPath + ": " + response.getBody());
-    assertExpectedBody(endpoint, response);
+    assertExpectedBody(endpoint, response, moodleHost);
   }
 
   private String configureFixtureDatabase(String fixtureName) {
@@ -290,8 +319,8 @@ class MoodleAnalyticsIntegrationTest {
     setup.forEach(statement -> dsl.execute(statement.asText().replace("${MOODLE_HOST}", host)));
   }
 
-  private void assertExpectedBody(JsonNode testCase, ResponseEntity<String> response)
-      throws IOException {
+  private void assertExpectedBody(
+      JsonNode testCase, ResponseEntity<String> response, String moodleHost) throws IOException {
     JsonNode expectedBody = testCase.path("expectedResponse").path("body");
     if (!expectedBody.isMissingNode()) {
       JsonNode actualBody = OBJECT_MAPPER.readTree(response.getBody());
@@ -303,8 +332,34 @@ class MoodleAnalyticsIntegrationTest {
         expectedBody = resolvedExpectedBody;
       }
       expectedBody = resolveExpectedDatabaseFiles(expectedBody);
+      expectedBody = resolveExpectedMoodleHost(expectedBody, moodleHost);
       assertEquals(expectedBody, actualBody);
     }
+  }
+
+  private JsonNode resolveExpectedMoodleHost(JsonNode expectedBody, String moodleHost) {
+    if (expectedBody.isObject()) {
+      ObjectNode resolved = expectedBody.deepCopy();
+      resolved
+          .properties()
+          .forEach(
+              property ->
+                  resolved.set(
+                      property.getKey(),
+                      resolveExpectedMoodleHost(property.getValue(), moodleHost)));
+      return resolved;
+    }
+    if (expectedBody.isArray()) {
+      ArrayNode resolved = OBJECT_MAPPER.createArrayNode();
+      expectedBody.forEach(value -> resolved.add(resolveExpectedMoodleHost(value, moodleHost)));
+      return resolved;
+    }
+    if (!expectedBody.isTextual()) {
+      return expectedBody;
+    }
+    return OBJECT_MAPPER
+        .getNodeFactory()
+        .textNode(expectedBody.asText().replace("${MOODLE_HOST}", moodleHost));
   }
 
   private JsonNode resolveExpectedDatabaseFiles(JsonNode expectedBody) {
@@ -461,6 +516,7 @@ class MoodleAnalyticsIntegrationTest {
             : response.path("body").isTextual()
                 ? response.path("body").asText()
                 : response.path("body").toString();
+    responseBody = responseBody.replace("${MOODLE_HOST}", wireMock.baseUrl());
     wireMock.stubFor(
         mapping.willReturn(
             aResponse()

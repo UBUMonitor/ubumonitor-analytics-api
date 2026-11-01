@@ -9,8 +9,6 @@ import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.li
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.list.FetchCourseLogsResult;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.statistics.CourseLogsStatisticsRequest;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.statistics.CourseLogsStatisticsResult;
-import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.statistics.StatisticRow;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +21,6 @@ public class FetchCourseLogsService implements FetchCourseLogsUseCase {
   private final FetchLogPersistencePort fetchLogPersistencePort;
   private final LogsStatisticsPort logsStatisticsPort;
   private final CourseLogsInfoPort courseLogsInfoPort;
-  private final TimeSeriesFiller timeSeriesFiller;
 
   /**
    * @param courseLogsInfoRequest filters and pagination for log retrieval
@@ -37,21 +34,12 @@ public class FetchCourseLogsService implements FetchCourseLogsUseCase {
 
   /**
    * @param request statistic filters and grouping options
-   * @return calculated statistics, with missing time buckets filled when requested
+   * @return calculated statistics
    */
   @Override
   @Transactional(readOnly = true)
   public CourseLogsStatisticsResult getCourseLogsStatistics(CourseLogsStatisticsRequest request) {
-
-    CourseLogsStatisticsResult result = logsStatisticsPort.getCourseLogsStatistics(request);
-
-    if (request.getInterval() == null) {
-      return result;
-    }
-
-    List<StatisticRow> filledRows = timeSeriesFiller.fill(result.getRows(), request);
-
-    return CourseLogsStatisticsResult.builder().rows(filledRows).build();
+    return logsStatisticsPort.getCourseLogsStatistics(request);
   }
 
   /**

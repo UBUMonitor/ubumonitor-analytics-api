@@ -1,0 +1,13 @@
+get:
+  tags:
+    - Databases
+  operationId: listDatabases
+  summary: List all databases
+  description: Retrieves a list of all available databases.
+  responses:
+    "200":
+      description: All available databases.
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/system/databases/info/response.yaml#/DatabasesInfoResponse'

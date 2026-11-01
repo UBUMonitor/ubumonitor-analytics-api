@@ -12,7 +12,6 @@ public enum CourseLogsSelectColumn {
   ORIGIN_ID,
   ORIGIN_NAME,
   IP_ADDRESS,
-  COURSE_ID,
   SECTION_ID,
   SECTION_NAME
 }

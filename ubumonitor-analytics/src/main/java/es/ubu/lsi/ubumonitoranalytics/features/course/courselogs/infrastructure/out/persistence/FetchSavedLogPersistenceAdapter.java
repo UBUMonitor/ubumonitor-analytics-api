@@ -19,7 +19,7 @@ import org.jooq.impl.DSL;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Component;
 
-/** Queries tenant persistence for filtered and paginated course logs. */
+/** Queries tenant persistence for filtered course logs with optional pagination. */
 @Component
 @RequiredArgsConstructor
 public class FetchSavedLogPersistenceAdapter implements FetchLogPersistencePort {
@@ -51,9 +51,16 @@ public class FetchSavedLogPersistenceAdapter implements FetchLogPersistencePort 
     Set<LogViewColumn> requiredColumns = determineRequiredColumns(columns, request.getSort());
     List<SelectFieldOrAsterisk> fields = mapToSelectFields(columns);
 
-    return buildDynamicQuery(fields, requiredColumns)
-        .where(conditions)
-        .orderBy(buildSortFields(request.getSort()))
+    var query =
+        buildDynamicQuery(fields, requiredColumns)
+            .where(conditions)
+            .orderBy(buildSortFields(request.getSort()));
+
+    if (pagination == null) {
+      return query.fetchInto(FetchLogLine.class);
+    }
+
+    return query
         .offset(pagination.getPage() * pagination.getSize())
         .limit(pagination.getSize())
         .fetchInto(FetchLogLine.class);
@@ -67,19 +74,22 @@ public class FetchSavedLogPersistenceAdapter implements FetchLogPersistencePort 
     FetchCourseLogsResult.FetchCourseLogsResultBuilder builder =
         FetchCourseLogsResult.builder()
             .logs(logs)
-            .page(pagination.getPage())
+            .page(pagination == null ? 0 : pagination.getPage())
             .size(logs.size())
             .empty(logs.isEmpty());
 
     if (Boolean.TRUE.equals(request.getIncludeTotal())) {
       int total = fetchTotal(conditions);
-      int totalPages = (int) Math.ceil((double) total / pagination.getSize());
+      int totalPages =
+          pagination == null
+              ? (total == 0 ? 0 : 1)
+              : (int) Math.ceil((double) total / pagination.getSize());
 
       builder
           .totalElements(total)
           .totalPages(totalPages)
-          .first(pagination.getPage() == 0)
-          .last(pagination.getPage() >= Math.max(0, totalPages - 1));
+          .first(pagination == null || pagination.getPage() == 0)
+          .last(pagination == null || pagination.getPage() >= Math.max(0, totalPages - 1));
     }
 
     return builder.build();

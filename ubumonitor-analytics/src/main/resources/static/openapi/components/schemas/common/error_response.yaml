@@ -15,10 +15,10 @@ ErrorResponse:
       description: "A human-readable explanation specific to this occurrence of the problem."
       example: "The requested resource was not found on the server."
     timestamp:
-      type: string
-      format: date-time
-      description: "The date and time when the error occurred."
-      example: "2026-03-05T20:57:38Z"
+      type: integer
+      format: int64
+      description: "The Unix timestamp in seconds when the error occurred."
+      example: 1772744258
     traceId:
       type: string
       description: "A unique identifier for the request trace, useful for debugging."

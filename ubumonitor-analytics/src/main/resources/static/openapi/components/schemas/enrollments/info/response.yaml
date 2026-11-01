@@ -32,18 +32,18 @@ EnrollmentsResponse:
             type: boolean
             description: Indicates whether course completion tracking is enabled for the user.
           startDate:
-            type: string
-            format: date-time
-            description: The date and time when the user's enrollment in the course starts.
+            type: integer
+            format: int64
+            description: The Unix timestamp in seconds when the user's enrollment in the course starts.
           endDate:
-            type: string
-            format: date-time
-            description: The date and time when the user's enrollment in the course ends.
+            type: integer
+            format: int64
+            description: The Unix timestamp in seconds when the user's enrollment in the course ends.
           timeModified:
-            type: string
-            format: date-time
-            description: The date and time when the enrollment information was last modified.
+            type: integer
+            format: int64
+            description: The Unix timestamp in seconds when the enrollment information was last modified.
           lastSync:
-            type: string
-            format: date-time
-            description: The date and time when the enrollment information was last synchronized.
+            type: integer
+            format: int64
+            description: The Unix timestamp in seconds when the enrollment information was last synchronized.

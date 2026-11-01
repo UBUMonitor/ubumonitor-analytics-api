@@ -10,5 +10,5 @@ public interface GradesUseCase {
 
   List<GradeItem> getGradeItems(Long courseId);
 
-  List<UserGrade> getUserGrades(Long courseId);
+  List<UserGrade> getUserGrades(Long courseId, List<Long> gradeItemsIds, List<Long> userIds);
 }

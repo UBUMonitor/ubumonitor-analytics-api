@@ -1,7 +1,6 @@
 package es.ubu.lsi.ubumonitoranalytics.features.users.enrollment.infrastructure.out.persistence;
 
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Courses.COURSES;
-import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Sites.SITES;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.UsersCourses.USERS_COURSES;
 
 import es.ubu.lsi.ubumonitoranalytics.features.users.enrollment.application.port.out.PersistenceFetchPort;
@@ -23,15 +22,6 @@ public class PersistenceFetchAdapter implements PersistenceFetchPort {
 
   private final Jooq jooq;
   private final GetEnrollmentPersistenceAdapterMapper mapper;
-
-  @Override
-  public Long getUserIdByUserName(String username) {
-    return jooq.dsl()
-        .select(SITES.USER_ID)
-        .from(SITES)
-        .where(SITES.USER_NAME.eq(username))
-        .fetchOneInto(Long.class);
-  }
 
   @Override
   public UserEnrolledCourses getEnrolledCourses(Long userId) {

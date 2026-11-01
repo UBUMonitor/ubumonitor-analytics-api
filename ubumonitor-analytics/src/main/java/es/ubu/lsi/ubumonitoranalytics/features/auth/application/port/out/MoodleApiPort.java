@@ -1,6 +1,6 @@
 package es.ubu.lsi.ubumonitoranalytics.features.auth.application.port.out;
 
-import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.auth.AuthInput;
+import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.AuthInput;
 import java.net.URI;
 import org.springframework.web.client.RestClient;
 
@@ -14,14 +14,6 @@ public interface MoodleApiPort {
    * @return the Moodle token
    */
   String login(AuthInput authInput);
-
-  /**
-   * Resolves the username associated with the current Moodle token.
-   *
-   * @param authInput authentication details containing the token
-   * @return the Moodle username, or {@code null} when it cannot be resolved
-   */
-  String usernameByToken(AuthInput authInput);
 
   /**
    * Builds a web client authenticated with the supplied cookies.

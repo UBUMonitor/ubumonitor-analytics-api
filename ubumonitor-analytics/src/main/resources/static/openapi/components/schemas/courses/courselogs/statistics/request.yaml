@@ -5,11 +5,10 @@ CourseLogsStatisticsRequest:
     fields:
       title: CourseLogsInfoRequestFields
       type: array
-      description: Columns to include in response
+      description: Columns to include in the response and use as grouping dimensions.
       items:
         type: string
         enum:
-          - COURSE_ID
           - USER_ID
           - MODULE_ID
           - COMPONENT_ID
@@ -27,28 +26,16 @@ CourseLogsStatisticsRequest:
       type: object
       properties:
         from:
-          type: string
-          format: none
-          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?$'
-          example: "2026-05-01T00:00:00"
+          type: integer
+          format: int64
+          description: Inclusive start time as a Unix timestamp in seconds.
+          example: 1777593600
         to:
-          type: string
-          format: none
-          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?$'
-          example: "2026-05-31T23:59:59"
+          type: integer
+          format: int64
+          description: Inclusive end time as a Unix timestamp in seconds.
+          example: 1780185599
 
-    groupBy:
-      type: array
-      items:
-        type: string
-        enum:
-          - USER_ID
-          - MODULE_ID
-          - COMPONENT_ID
-          - EVENT_ID
-          - ORIGIN_ID
-          - IP_ADDRESS
-          - SECTION_ID
     interval:
       type: string
       description: >
@@ -61,43 +48,13 @@ CourseLogsStatisticsRequest:
         - MONTHLY
         - DAY_OF_WEEK
       example: DAILY
-    weekStartsOn:
-      type: integer
-      description: >
-        ISO day number used as the first day when interval is DAY_OF_WEEK
-        (1=Monday, 7=Sunday). Defaults to Monday.
-      minimum: 1
-      maximum: 7
-      default: 1
-    fillGapsStrategy:
+    timeZone:
       type: string
-      enum:
-        - NONE
-        - ZERO
-        - NULL
-      default: NONE
-    sortBy:
-      type: array
-      items:
-        title: CourseLogsStatisticsRequestSortByItem
-        type: object
-        required:
-          - field
-        properties:
-          field:
-            type: string
-            enum:
-              - VALUE
-              - USER_ID
-              - MODULE_ID
-              - TIME
-              - TIME_BUCKET
-
-          direction:
-            type: string
-            enum: [ ASC, DESC ]
-            example: ASC
-            default: ASC
+      description: >
+        IANA time zone used to compute time buckets when `interval` is set
+        (e.g. Europe/Madrid). Ignored if `interval` is not provided.
+      default: UTC
+      example: Europe/Madrid
     filters:
       type: object
       properties:
@@ -107,8 +64,7 @@ CourseLogsStatisticsRequest:
           items:
             type: integer
             format: int64
-        nullable: true
-        default: null
+          nullable: true
 
         moduleIds:
           type: array
@@ -116,7 +72,6 @@ CourseLogsStatisticsRequest:
             type: integer
             format: int64
           nullable: true
-          default: null
 
         componentIds:
           type: array
@@ -124,7 +79,6 @@ CourseLogsStatisticsRequest:
             type: integer
             format: int64
           nullable: true
-          default: null
 
         eventIds:
           type: array
@@ -132,7 +86,6 @@ CourseLogsStatisticsRequest:
             type: integer
             format: int64
           nullable: true
-          default: null
 
         originIds:
           type: array
@@ -140,14 +93,12 @@ CourseLogsStatisticsRequest:
             type: integer
             format: int64
           nullable: true
-          default: null
 
         ipAddresses:
           type: array
           items:
             type: string
           nullable: true
-          default: null
 
         sectionIds:
           type: array
@@ -155,4 +106,3 @@ CourseLogsStatisticsRequest:
             type: integer
             format: int64
           nullable: true
-          default: null

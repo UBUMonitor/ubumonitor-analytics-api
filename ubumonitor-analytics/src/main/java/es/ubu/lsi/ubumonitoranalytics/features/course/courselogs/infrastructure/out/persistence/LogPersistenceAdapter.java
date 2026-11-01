@@ -1,12 +1,12 @@
 package es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.infrastructure.out.persistence;
 
+import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.ActualUser.ACTUAL_USER;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Courses.COURSES;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Logs.LOGS;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsComponents.LOGS_COMPONENTS;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsComponentsEvents.LOGS_COMPONENTS_EVENTS;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsEvents.LOGS_EVENTS;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsOrigins.LOGS_ORIGINS;
-import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Sites.SITES;
 
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.port.out.LogPersistencePort;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.port.out.MoodleLogCatalog;
@@ -17,7 +17,6 @@ import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.infrastructure.
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,10 +67,10 @@ public class LogPersistenceAdapter implements LogPersistencePort {
                     LOGS.MODULE_ID,
                     LOGS.ORIGIN_ID,
                     LOGS.IP_ADDRESS)
-                .values((LocalDateTime) null, null, null, null, null, null, null, null));
+                .values((Long) null, null, null, null, null, null, null, null));
     for (ProcessLogLine l : logs) {
       batch.bind(
-          l.getTime(),
+          l.getTime().getEpochSecond(),
           l.getUserId(),
           l.getCourseId(),
           l.getComponentId(),
@@ -88,7 +87,8 @@ public class LogPersistenceAdapter implements LogPersistencePort {
   public LogContext getLogContext(Long courseId) {
     String userName = currentSessionContext.getSessionData().getUsername();
 
-    Instant lastLogTime = getLastLogTime(courseId);
+    Long lastLogTimestamp = getLastLogTime(courseId);
+    Instant lastLogTime = lastLogTimestamp == null ? null : Instant.ofEpochSecond(lastLogTimestamp);
 
     ZoneId zoneId = getZoneId(userName);
     MoodleLogCatalog moodleLogCatalog = getMoodleLogCatalog();
@@ -102,21 +102,21 @@ public class LogPersistenceAdapter implements LogPersistencePort {
         .build();
   }
 
-  private @Nullable Instant getLastLogTime(Long courseId) {
+  private @Nullable Long getLastLogTime(Long courseId) {
     return jooq.dsl()
         .select(DSL.max(LOGS.LOGGED_AT))
         .from(LOGS)
         .where(LOGS.COURSE_ID.eq(courseId))
-        .fetchOneInto(Instant.class);
+        .fetchOneInto(Long.class);
   }
 
   private @NonNull ZoneId getZoneId(String userName) {
     return ZoneId.of(
         Objects.requireNonNull(
             jooq.dsl()
-                .select(SITES.TIME_ZONE)
-                .from(SITES)
-                .where(SITES.USER_NAME.eq(userName))
+                .select(ACTUAL_USER.TIME_ZONE)
+                .from(ACTUAL_USER)
+                .where(ACTUAL_USER.USER_NAME.eq(userName))
                 .fetchOneInto(String.class)));
   }
 

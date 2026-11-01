@@ -52,5 +52,5 @@
       }
     }
   },
-  "authFixture": "classpath:/integration/shared/teacher-token-auth.json"
+  "authFixture": "classpath:/integration/shared/teacher-sso-auth.json"
 }

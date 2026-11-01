@@ -1,0 +1,117 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/courses/2/logs/import",
+    "headers": {
+      "Authorization": "******"
+    },
+    "multipart": {
+      "field": "logFile",
+      "filename": "extended-mappings-logs.csv",
+      "contentType": "text/csv",
+      "content": "Time,User full name,Affected user full name,Event context,Component,Event name,Description,Origin,IP address,Affected user\n\"1/01/26, 12:00:00\",Jeffrey Sanders,,Course: Algebra,Accessibility toolkit,Accessibility report viewed,\"Accessibility report was viewed for course id 66,\ncategory id 0, tab errors.\",web,192.0.2.9,\n\"1/01/26, 12:00:01\",Jeffrey Sanders,,User tours,User tours,Step shown,\"The user with id '48' has viewed the tour with id '' at step index '' (id '35') on the page with URL ''.\",web,192.0.2.48,\n\"1/01/26, 12:00:02\",Jeffrey Sanders,,Chat,mod_chat,Unknown event,\"Unknown event (\\mod_chat\\event\\course_module_viewed)\",web,192.0.2.48,\n\"1/01/26, 12:00:03\",Jeffrey Sanders,,Survey,mod_survey,Unknown event,\"Unknown event (\\mod_survey\\event\\course_module_viewed)\",web,192.0.2.48,\n"
+    }
+  },
+  "expectedResponse": {
+    "status": 200,
+    "body": {
+      "stats": {
+        "saved": 4,
+        "ignored": 0,
+        "failed": 0
+      },
+      "column": {
+        "components": [
+          {
+            "id": 66,
+            "code": "tool_brickfield",
+            "name": "Accessibility toolkit"
+          },
+          {
+            "id": 73,
+            "code": "tool_usertours",
+            "name": "User tours"
+          },
+          {
+            "id": 74,
+            "code": "mod_chat",
+            "name": "mod_chat"
+          },
+          {
+            "id": 75,
+            "code": "mod_survey",
+            "name": "mod_survey"
+          }
+        ],
+        "events": [
+          {
+            "id": 500,
+            "code": "eventaccessibilityreportviewed",
+            "name": "Accessibility report viewed"
+          },
+          {
+            "id": 39,
+            "code": "event_step_shown",
+            "name": "Step shown"
+          },
+          {
+            "id": 423,
+            "code": "eventunknownlogged",
+            "name": "Unknown event"
+          }
+        ],
+        "componentsEvents": [
+          {
+            "component": {
+              "id": 66,
+              "code": "tool_brickfield",
+              "name": "Accessibility toolkit"
+            },
+            "event": {
+              "id": 500,
+              "code": "eventaccessibilityreportviewed",
+              "name": "Accessibility report viewed"
+            }
+          },
+          {
+            "component": {
+              "id": 73,
+              "code": "tool_usertours",
+              "name": "User tours"
+            },
+            "event": {
+              "id": 39,
+              "code": "event_step_shown",
+              "name": "Step shown"
+            }
+          },
+          {
+            "component": {
+              "id": 74,
+              "code": "mod_chat",
+              "name": "mod_chat"
+            },
+            "event": {
+              "id": 423,
+              "code": "eventunknownlogged",
+              "name": "Unknown event"
+            }
+          },
+          {
+            "component": {
+              "id": 75,
+              "code": "mod_survey",
+              "name": "mod_survey"
+            },
+            "event": {
+              "id": 423,
+              "code": "eventunknownlogged",
+              "name": "Unknown event"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "authFixture": "classpath:/integration/shared/teacher-sso-auth.json"
+}

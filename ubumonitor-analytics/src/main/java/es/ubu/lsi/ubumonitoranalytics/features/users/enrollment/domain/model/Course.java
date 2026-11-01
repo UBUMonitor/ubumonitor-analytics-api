@@ -1,6 +1,5 @@
 package es.ubu.lsi.ubumonitoranalytics.features.users.enrollment.domain.model;
 
-import java.time.OffsetDateTime;
 import lombok.Data;
 
 @Data
@@ -11,8 +10,8 @@ public class Course {
   private String shortName;
   private Boolean showGrades;
   private Boolean enableCompletion;
-  private OffsetDateTime startDate;
-  private OffsetDateTime endDate;
-  private OffsetDateTime timeModified;
-  private OffsetDateTime lastSync;
+  private Long startDate;
+  private Long endDate;
+  private Long timeModified;
+  private Long lastSync;
 }

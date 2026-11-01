@@ -2,7 +2,7 @@
 
 ## Qué es el proyecto
 UBUMonitor Analytics es una API Spring Boot que ofrece analítica Moodle por REST y persiste datos de cada sitio Moodle.
-El reactor Maven tiene `ubumonitor-analytics` (API, lógica, persistencia jOOQ/H2) y `moodle-java-client` (cliente REST y modelos Moodle).
+El reactor Maven tiene `ubumonitor-analytics` (API, lógica, persistencia jOOQ/SQLite cifrada) y `moodle-java-client` (cliente REST y modelos Moodle).
 La API consume el cliente como módulo del mismo reactor; el POM raíz declara ambos módulos y la configuración de formato.
 
 ## Comandos
@@ -57,7 +57,7 @@ No edites código generado: OpenAPI y jOOQ viven bajo `ubumonitor-analytics/targ
 
 ### Añadir un campo o tabla
 1. Añade una migración versionada `ubumonitor-analytics/src/main/resources/db/migration/V<N>__<descripcion>.sql`; no reescribas una migración ya aplicada.
-2. Ejecuta `mvn -pl ubumonitor-analytics generate-sources`: Flyway migra `target/moodle_dbs/bootstrap` y jOOQ genera el código a partir de esa base.
+2. Ejecuta `mvn -pl ubumonitor-analytics generate-sources`: Flyway migra `target/bootstrap.db` y jOOQ genera el código a partir de esa base SQLite.
 3. Actualiza el mapper de persistencia y después el adaptador jOOQ que lee/escribe el campo o tabla.
 4. Actualiza el fixture/datos de integración necesario y valida la feature.
 
@@ -86,7 +86,7 @@ No edites código generado: OpenAPI y jOOQ viven bajo `ubumonitor-analytics/targ
 ### ✅ Hazlo sin preguntar
 - Lee y conserva cambios previos del usuario; limita el diff a la tarea.
 - Añade cobertura enfocada para el comportamiento nuevo y ejecuta los checks aplicables.
-- Usa fixtures, WireMock y las bases H2 aisladas del runner para verificar integraciones.
+- Usa fixtures, WireMock y las bases SQLite Cipher aisladas del runner para verificar integraciones.
 ### ⚠️ Pregunta antes
 - Cambiar contratos REST, autenticación/autorización u otras decisiones de seguridad.
 - Cambiar configuración o aislamiento de tenant, esquema de BD/migraciones o añadir dependencias.
@@ -97,10 +97,10 @@ No edites código generado: OpenAPI y jOOQ viven bajo `ubumonitor-analytics/targ
 - Modificar tests/fixtures existentes si basta con añadir cobertura nueva; no borres ni debilites asserts para hacer pasar una prueba.
 
 ## Gotchas
-- Falla la compilación al faltar tipos jOOQ tras `clean` → `flyway:migrate` y `jooq:generate` corren en `generate-sources` sobre `target/moodle_dbs/bootstrap` → ejecuta el lifecycle Maven desde `generate-sources`, no compiles a mano.
+- Falla la compilación al faltar tipos jOOQ tras `clean` → `flyway:migrate` y `jooq:generate` corren en `generate-sources` sobre `target/bootstrap.db` → ejecuta el lifecycle Maven desde `generate-sources`, no compiles a mano.
 - El código jOOQ no encuentra tabla/columna → las migraciones declaran identificadores como `USERS`, `COURSES` y `USERS_IMAGES` en mayúsculas → conserva los nombres SQL del DDL.
 - No aparece una modificación del DTO → OpenAPI/JSON Schema se regenera en `target/` → cambia la fuente YAML/JSON Schema y vuelve a generar.
-- La API local muestra Swagger/H2 Console solo con configuración de desarrollo → `application-dev.yml` no es el perfil por defecto → activa `dev` solo para uso local.
+- La API local muestra Swagger solo con configuración de desarrollo → `application-dev.yml` no es el perfil por defecto → activa `dev` solo para uso local.
 - `run.bat` tarda y cierra otro proceso → siempre ejecuta `mvn clean install` y mata el listener del puerto 9090 → para iterar, usa el comando dirigido al módulo; revisa el puerto antes de usar el `.bat`.
 - Falla una API Java reciente o la compilación con otro JDK → ambos módulos fijan Java 25 y la API usa Spring Boot 4.1.1 → compila con JDK 25 y no introduzcas APIs incompatibles.
 - El test recorre todos los fixtures → el patrón por defecto es `classpath:/integration/**/test-case.json` → pasa `-Dintegration.fixture.pattern=classpath:/integration/.../test-case.json`.

@@ -11,12 +11,10 @@ import es.ubu.lsi.ubumonitoranalytics.features.course.content.domain.model.Secti
 import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.ModulesRecord;
 import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.SectionsRecord;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
 /** Stores synchronized course sections and modules in tenant persistence. */
@@ -31,7 +29,7 @@ public class SyncCourseContentPersistenceAdapter implements CourseContentPersist
   public void save(CourseContent content) {
 
     Long courseId = content.getCourseId();
-    OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
+    Long now = Instant.now().getEpochSecond();
     upsertCourse(courseId);
     deactivateExisting(courseId);
 
@@ -39,7 +37,7 @@ public class SyncCourseContentPersistenceAdapter implements CourseContentPersist
     upsertModules(content, now);
   }
 
-  private void upsertSections(CourseContent content, OffsetDateTime now) {
+  private void upsertSections(CourseContent content, Long now) {
     if (content.getSections() == null || content.getSections().isEmpty()) {
       return;
     }
@@ -62,7 +60,7 @@ public class SyncCourseContentPersistenceAdapter implements CourseContentPersist
     jooq.dsl().batchMerge(records).execute();
   }
 
-  private void upsertModules(CourseContent content, OffsetDateTime now) {
+  private void upsertModules(CourseContent content, Long now) {
 
     List<ModulesRecord> records = new ArrayList<>();
 
@@ -106,7 +104,7 @@ public class SyncCourseContentPersistenceAdapter implements CourseContentPersist
     jooq.dsl()
         .update(MODULES)
         .set(MODULES.ACTIVE, false)
-        .set(MODULES.UPDATED_AT, DSL.currentOffsetDateTime())
+        .set(MODULES.UPDATED_AT, Instant.now().getEpochSecond())
         .where(MODULES.ACTIVE.eq(true))
         .andExists(
             jooq.dsl()
@@ -119,7 +117,7 @@ public class SyncCourseContentPersistenceAdapter implements CourseContentPersist
     jooq.dsl()
         .update(SECTIONS)
         .set(SECTIONS.ACTIVE, false)
-        .set(SECTIONS.UPDATED_AT, DSL.currentOffsetDateTime())
+        .set(SECTIONS.UPDATED_AT, Instant.now().getEpochSecond())
         .where(SECTIONS.COURSE_ID.eq(courseId))
         .and(SECTIONS.ACTIVE.eq(true))
         .execute();

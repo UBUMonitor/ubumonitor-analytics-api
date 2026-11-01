@@ -7,7 +7,7 @@ CourseGradesValuesResponse:
           title: CourseGradesValuesResponseRow
           type: object
           properties:
-            gradeItemId:
+            id:
               type: integer
               format: int64
               description: Unique identifier for the grade item
@@ -18,10 +18,10 @@ CourseGradesValuesResponse:
             grade:
               type: number
               format: double
-              nullable: true
               description: The grade value for the user in the specified grade item
             percentage:
               type: number
+              min: 0
+              max: 100
               format: double
-              nullable: true
               description: The percentage grade for the user in the specified grade item

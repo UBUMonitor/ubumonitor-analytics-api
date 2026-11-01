@@ -22,25 +22,16 @@ public class SiteInfoPersistenceAdapter implements SiteInfoPersistencePort {
   public void save(SiteInfo siteInfo) {
 
     SitesRecord sitesRecord = mapper.toRecord(siteInfo);
-    sitesRecord.touched(
-        SITES.ID, false); // no enviar id: que lo genere la BD / no pisar el existente
-
-    jooq.dsl()
-        .insertInto(SITES)
-        .set(sitesRecord)
-        .onConflict(SITES.HOST, SITES.USER_NAME)
-        .doUpdate()
-        .set(sitesRecord)
-        .execute();
+    jooq.dsl().batchMerge(sitesRecord).execute();
   }
 
   @Override
-  public SiteInfo fetchSiteInfo(String username) {
+  public SiteInfo fetchSiteInfo(String userName) {
 
-    SitesRecord dto = jooq.dsl().fetchOne(SITES, SITES.USER_NAME.eq(username));
+    SitesRecord dto = jooq.dsl().fetchOne(SITES, SITES.USER_NAME.eq(userName));
 
     if (dto == null) {
-      throw new EntityNotFoundException("Site not found for username: " + username);
+      throw new EntityNotFoundException("Site not found for userName: " + userName);
     }
 
     return mapper.toDomain(dto);

@@ -1,8 +1,9 @@
 package es.ubu.lsi.ubumonitoranalytics.features.auth.infrastructure.out.session;
 
 import es.ubu.lsi.ubumonitoranalytics.features.auth.application.port.out.SessionPort;
+import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.AuthInput;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.SessionToken;
-import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.auth.AuthInput;
+import es.ubu.lsi.ubumonitoranalytics.features.users.info.domain.model.UserInfo;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.SessionStorePort;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
@@ -26,7 +27,8 @@ public class SessionAdapter implements SessionPort {
   private final SessionAdapterMapper sessionAdapterMapper;
 
   @Override
-  public SessionToken generateSession(AuthInput authInput, RestClient restClient) {
+  public SessionToken generateSession(
+      AuthInput authInput, UserInfo userInfo, RestClient restClient) {
 
     String username = authInput.getUsername();
     String moodleToken = authInput.getMoodleToken();
@@ -42,18 +44,18 @@ public class SessionAdapter implements SessionPort {
       return toSessionToken(existingSession.getToken());
     }
 
-    SessionData newSession = createSession(authInput, restClient);
+    SessionData newSession = createSession(authInput, userInfo, restClient);
 
     return toSessionToken(newSession.getToken());
   }
 
   @Override
   public SessionToken updateSession(
-      AuthInput authInput, SessionToken sessionToken, RestClient restClient) {
+      AuthInput authInput, SessionToken sessionToken, UserInfo userInfo, RestClient restClient) {
 
     invalidateSession(sessionToken);
 
-    SessionData newSession = createSession(authInput, restClient);
+    SessionData newSession = createSession(authInput, userInfo, restClient);
 
     return toSessionToken(newSession.getToken());
   }
@@ -63,11 +65,12 @@ public class SessionAdapter implements SessionPort {
     sessionStore.invalidateSession(sessionToken.getToken());
   }
 
-  private SessionData createSession(AuthInput authInput, RestClient restClient) {
+  private SessionData createSession(AuthInput authInput, UserInfo userInfo, RestClient restClient) {
 
     String token = generateToken();
 
-    SessionData sessionData = sessionAdapterMapper.toSessionData(authInput, token, restClient);
+    SessionData sessionData =
+        sessionAdapterMapper.toSessionData(authInput, token, userInfo, restClient);
 
     sessionStore.saveSession(token, sessionData);
 

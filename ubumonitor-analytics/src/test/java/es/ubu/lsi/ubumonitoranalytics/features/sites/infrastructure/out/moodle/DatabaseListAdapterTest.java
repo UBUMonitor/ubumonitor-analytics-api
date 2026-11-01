@@ -2,7 +2,8 @@ package es.ubu.lsi.ubumonitoranalytics.features.sites.infrastructure.out.moodle;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import es.ubu.lsi.ubumonitoranalytics.features.sites.domain.model.DatabaseInfo;
+import es.ubu.lsi.ubumonitoranalytics.features.system.database.domain.model.DatabaseInfo;
+import es.ubu.lsi.ubumonitoranalytics.features.system.database.infrastructure.out.DatabaseListAdapter;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.moodle.config.MoodleConfig;
 import java.net.URI;
 import java.nio.file.Files;
@@ -17,12 +18,11 @@ class DatabaseListAdapterTest {
 
   @Test
   void groupsDatabaseFilesByHostAndOmitsTheExtensionFromTheirIds() throws Exception {
-    Files.createFile(tempDir.resolve("https~school.moodledemo.net~student.mv.db"));
-    Files.createFile(tempDir.resolve("https~school.moodledemo.net~teacher.mv.db"));
-    Files.createFile(tempDir.resolve("http~school.moodledemo.net~student.mv.db"));
+    Files.createFile(tempDir.resolve("https~school.moodledemo.net~student.db"));
+    Files.createFile(tempDir.resolve("https~school.moodledemo.net~teacher.db"));
+    Files.createFile(tempDir.resolve("http~school.moodledemo.net~student.db"));
     MoodleConfig moodleConfig =
-        new MoodleConfig(
-            new MoodleConfig.Db(tempDir.toString(), null), new MoodleConfig.Api(null, null));
+        new MoodleConfig(new MoodleConfig.Db(tempDir.toString()), new MoodleConfig.Api(null, null));
     DatabaseListAdapter adapter = new DatabaseListAdapter(moodleConfig);
 
     var hosts = adapter.getDatabaseList();

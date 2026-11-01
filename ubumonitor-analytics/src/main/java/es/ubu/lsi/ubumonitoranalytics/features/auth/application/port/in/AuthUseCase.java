@@ -1,18 +1,10 @@
 package es.ubu.lsi.ubumonitoranalytics.features.auth.application.port.in;
 
+import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.AuthInput;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.SessionToken;
-import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.auth.AuthInput;
 
 /** Application operations for authenticating a user and creating a session. */
 public interface AuthUseCase {
-
-  /**
-   * Authenticates with an existing Moodle token.
-   *
-   * @param tokenAuthInput Moodle token and site details
-   * @return the generated session token
-   */
-  SessionToken loginByToken(AuthInput tokenAuthInput);
 
   /**
    * Authenticates with Moodle credentials.
