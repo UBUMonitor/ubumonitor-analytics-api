@@ -1,13 +1,13 @@
 package es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.application.port.in;
 
-import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.UsersResponse;
+import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.CourseEnrollments;
 
 /** Retrieves the users enrolled in a course from local persistence. */
 public interface GetCourseEnrollmentsUseCase {
 
   /**
    * @param courseId Moodle course identifier
-   * @return users and enrollment details for the course
+   * @return the enrollments stored for the course
    */
-  UsersResponse getCourseEnrollment(Long courseId);
+  CourseEnrollments getCourseEnrollments(Long courseId);
 }

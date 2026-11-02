@@ -28,6 +28,7 @@
         "COMPONENT_NAME",
         "EVENT_NAME",
         "ORIGIN_NAME",
+        "ORIGIN_CODE",
         "SECTION_ID",
         "SECTION_NAME"
       ],
@@ -65,7 +66,8 @@
           "componentId": 29,
           "eventName": "A submission has been submitted.",
           "eventId": 55,
-          "originName": "web",
+          "originName": "Web",
+          "originCode": "web",
           "originId": 1,
           "ip": "192.0.2.13"
         }

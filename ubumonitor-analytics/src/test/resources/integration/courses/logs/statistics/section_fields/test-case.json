@@ -1,0 +1,34 @@
+{
+  "databaseSetup": [
+    "INSERT OR REPLACE INTO COURSES (ID, FULL_NAME, SHORT_NAME) VALUES (2, 'Algebra', 'ALG2')",
+    "INSERT INTO SECTIONS (ID, COURSE_ID, NAME, POSITION, VISIBLE, ACTIVE) VALUES (3, 2, 'General', 0, TRUE, TRUE)",
+    "INSERT INTO MODULES (ID, SECTION_ID, NAME, MOD_NAME, POSITION, VISIBLE, ACTIVE) VALUES (7, 3, 'Course page', 'page', 1, TRUE, TRUE)",
+    "INSERT INTO LOGS (LOGGED_AT, COURSE_ID, COMPONENT_ID, EVENT_ID, MODULE_ID, ORIGIN_ID) VALUES (unixepoch('2026-01-01 12:00:00'), 2, 29, 55, 7, 1)"
+  ],
+  "request": {
+    "method": "POST",
+    "path": "/api/courses/2/logs/statistics",
+    "headers": {
+      "Authorization": "******"
+    },
+    "body": {
+      "fields": [
+        "SECTION_ID",
+        "SECTION_NAME"
+      ]
+    }
+  },
+  "expectedResponse": {
+    "status": 200,
+    "body": {
+      "rows": [
+        {
+          "sectionId": 3,
+          "sectionName": "General",
+          "value": 1
+        }
+      ]
+    }
+  },
+  "authFixture": "classpath:/integration/shared/teacher-sso-auth.json"
+}

@@ -42,6 +42,13 @@
               "name": "A submission has been submitted."
             }
           }
+        ],
+        "origins": [
+          {
+            "id": 1,
+            "code": "web",
+            "name": "Web"
+          }
         ]
       }
     }

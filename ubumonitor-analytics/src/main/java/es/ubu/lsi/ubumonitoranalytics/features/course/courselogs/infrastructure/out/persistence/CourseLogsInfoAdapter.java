@@ -4,14 +4,15 @@ import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Logs.LOGS;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsComponents.LOGS_COMPONENTS;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsComponentsEvents.LOGS_COMPONENTS_EVENTS;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsEvents.LOGS_EVENTS;
+import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsOrigins.LOGS_ORIGINS;
 
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.port.out.CourseLogsInfoPort;
-import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.info.CourseComponent;
-import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.info.CourseComponentEvent;
-import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.info.CourseEvent;
-import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.info.CourseLogsInfoResult;
+import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.info.*;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.jooq.Record;
 import org.springframework.stereotype.Component;
@@ -25,6 +26,18 @@ public class CourseLogsInfoAdapter implements CourseLogsInfoPort {
 
   @Override
   public CourseLogsInfoResult getCourseLogsInfo(Long courseId) {
+    List<CourseComponentEvent> componentsEvents = fetchComponentsEvents(courseId);
+
+    CourseLogsInfoResult result = new CourseLogsInfoResult();
+    result.setComponents(extractDistinctComponents(componentsEvents));
+    result.setEvents(extractDistinctEvents(componentsEvents));
+    result.setComponentsEvents(componentsEvents);
+    result.setOrigins(fetchOrigins(courseId));
+    return result;
+  }
+
+  /** Component/event pairs that actually appear in the logs of the course. */
+  private List<CourseComponentEvent> fetchComponentsEvents(Long courseId) {
     var pairs =
         jooq.dsl()
             .selectDistinct(LOGS.COMPONENT_ID, LOGS.EVENT_ID)
@@ -32,8 +45,8 @@ public class CourseLogsInfoAdapter implements CourseLogsInfoPort {
             .where(LOGS.COURSE_ID.eq(courseId))
             .asTable("pairs");
 
-    var componentId = pairs.field(LOGS.COMPONENT_ID);
-    var eventId = pairs.field(LOGS.EVENT_ID);
+    var pairComponentId = pairs.field(LOGS.COMPONENT_ID);
+    var pairEventId = pairs.field(LOGS.EVENT_ID);
 
     var records =
         jooq.dsl()
@@ -49,50 +62,89 @@ public class CourseLogsInfoAdapter implements CourseLogsInfoPort {
             .on(
                 LOGS_COMPONENTS_EVENTS
                     .COMPONENT_ID
-                    .eq(componentId)
-                    .and(LOGS_COMPONENTS_EVENTS.EVENT_ID.eq(eventId)))
+                    .eq(pairComponentId)
+                    .and(LOGS_COMPONENTS_EVENTS.EVENT_ID.eq(pairEventId)))
             .join(LOGS_COMPONENTS)
             .on(LOGS_COMPONENTS.ID.eq(LOGS_COMPONENTS_EVENTS.COMPONENT_ID))
             .join(LOGS_EVENTS)
             .on(LOGS_EVENTS.ID.eq(LOGS_COMPONENTS_EVENTS.EVENT_ID))
             .fetch();
 
-    Map<Integer, CourseComponent> componentsById = new LinkedHashMap<>();
-    Map<Integer, CourseEvent> eventsById = new LinkedHashMap<>();
-    List<CourseComponentEvent> componentEventRows = new ArrayList<>();
+    List<CourseComponentEvent> componentsEvents = new ArrayList<>();
     for (Record record : records) {
-      CourseComponentEvent pair = toCourseComponentEvent(record);
-      componentEventRows.add(pair);
-      CourseComponent component = pair.getCourseComponent();
+      componentsEvents.add(toCourseComponentEvent(record));
+    }
+    return componentsEvents;
+  }
+
+  private List<CourseOrigin> fetchOrigins(Long courseId) {
+    var courseOriginIds =
+        jooq.dsl().selectDistinct(LOGS.ORIGIN_ID).from(LOGS).where(LOGS.COURSE_ID.eq(courseId));
+
+    var records =
+        jooq.dsl()
+            .select(LOGS_ORIGINS.ID, LOGS_ORIGINS.CODE, LOGS_ORIGINS.NAME)
+            .from(LOGS_ORIGINS)
+            .where(LOGS_ORIGINS.ID.in(courseOriginIds))
+            .orderBy(LOGS_ORIGINS.ID.asc())
+            .fetch();
+
+    List<CourseOrigin> origins = new ArrayList<>();
+    for (Record record : records) {
+      origins.add(toCourseOrigin(record));
+    }
+    return origins;
+  }
+
+  /** One component per id, keeping the first occurrence and the original order. */
+  private List<CourseComponent> extractDistinctComponents(
+      List<CourseComponentEvent> componentsEvents) {
+    Map<Integer, CourseComponent> componentsById = new LinkedHashMap<>();
+    for (CourseComponentEvent componentEvent : componentsEvents) {
+      CourseComponent component = componentEvent.getCourseComponent();
       componentsById.putIfAbsent(component.getId(), component);
-      CourseEvent event = new CourseEvent();
-      event.setId(record.get(LOGS_EVENTS.ID).intValue());
-      event.setCode(record.get(LOGS_EVENTS.CODE));
-      event.setName(record.get(LOGS_EVENTS.NAME));
+    }
+    return new ArrayList<>(componentsById.values());
+  }
+
+  /** One event per id, keeping the first occurrence and the original order. */
+  private List<CourseEvent> extractDistinctEvents(List<CourseComponentEvent> componentsEvents) {
+    Map<Integer, CourseEvent> eventsById = new LinkedHashMap<>();
+    for (CourseComponentEvent componentEvent : componentsEvents) {
+      CourseEvent event = componentEvent.getCourseEvent();
       eventsById.putIfAbsent(event.getId(), event);
     }
-    List<CourseEvent> events = new ArrayList<>(eventsById.values());
-
-    CourseLogsInfoResult result = new CourseLogsInfoResult();
-    result.setComponents(new ArrayList<>(componentsById.values()));
-    result.setEvents(events);
-    result.setComponentsEvents(componentEventRows);
-    return result;
+    return new ArrayList<>(eventsById.values());
   }
 
   private CourseComponentEvent toCourseComponentEvent(Record record) {
     CourseComponentEvent componentEvent = new CourseComponentEvent();
+    componentEvent.setCourseComponent(toCourseComponent(record));
+    componentEvent.setCourseEvent(toCourseEvent(record));
+    return componentEvent;
+  }
+
+  private CourseComponent toCourseComponent(Record record) {
     CourseComponent component = new CourseComponent();
     component.setId(record.get(LOGS_COMPONENTS.ID).intValue());
     component.setCode(record.get(LOGS_COMPONENTS.CODE));
     component.setName(record.get(LOGS_COMPONENTS.NAME));
-    componentEvent.setCourseComponent(component);
+    return component;
+  }
 
+  private CourseEvent toCourseEvent(Record record) {
     CourseEvent event = new CourseEvent();
     event.setId(record.get(LOGS_EVENTS.ID).intValue());
     event.setCode(record.get(LOGS_EVENTS.CODE));
     event.setName(record.get(LOGS_EVENTS.NAME));
-    componentEvent.setCourseEvent(event);
-    return componentEvent;
+    return event;
+  }
+
+  private CourseOrigin toCourseOrigin(Record record) {
+    CourseOrigin origin = new CourseOrigin();
+    origin.setId(record.get(LOGS_ORIGINS.ID).intValue());
+    origin.setCode(record.get(LOGS_ORIGINS.CODE));
+    origin.setName(record.get(LOGS_ORIGINS.NAME));
+    return origin;
   }
 }

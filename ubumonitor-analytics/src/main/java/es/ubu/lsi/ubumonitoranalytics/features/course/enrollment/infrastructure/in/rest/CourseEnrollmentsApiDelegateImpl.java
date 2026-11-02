@@ -4,8 +4,7 @@ import es.ubu.lsi.ubumonitoranalytics.api.generated.api.CourseEnrollmentsApiDele
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.CourseEnrollmentsResponseDto;
 import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.application.port.in.GetCourseEnrollmentsUseCase;
 import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.application.port.in.SyncCourseEnrollmentsUseCase;
-import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.UsersResponse;
-import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
+import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.CourseEnrollments;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,18 +23,18 @@ public class CourseEnrollmentsApiDelegateImpl implements CourseEnrollmentsApiDel
 
   @Override
   public ResponseEntity<CourseEnrollmentsResponseDto> syncCourseUsersEnrollments(Long courseId) {
-    UsersResponse usersResponse = syncCourseEnrollmentsUseCase.syncCourseEnrollments(courseId);
-    SessionData sessionData = currentSessionContext.getSessionData();
     return ResponseEntity.ok(
-        courseEnrollmentsApiDelegateMapper.toDto(usersResponse, courseId, sessionData));
+        toResponse(syncCourseEnrollmentsUseCase.syncCourseEnrollments(courseId)));
   }
 
   @Override
   public ResponseEntity<CourseEnrollmentsResponseDto> getCourseUsersEnrollmentsInfo(Long courseId) {
-    UsersResponse usersResponse = getCourseEnrollmentsUseCase.getCourseEnrollment(courseId);
-    SessionData sessionData = currentSessionContext.getSessionData();
-
     return ResponseEntity.ok(
-        courseEnrollmentsApiDelegateMapper.toDto(usersResponse, courseId, sessionData));
+        toResponse(getCourseEnrollmentsUseCase.getCourseEnrollments(courseId)));
+  }
+
+  private CourseEnrollmentsResponseDto toResponse(CourseEnrollments enrollments) {
+    return courseEnrollmentsApiDelegateMapper.toDto(
+        enrollments, currentSessionContext.getSessionData());
   }
 }
