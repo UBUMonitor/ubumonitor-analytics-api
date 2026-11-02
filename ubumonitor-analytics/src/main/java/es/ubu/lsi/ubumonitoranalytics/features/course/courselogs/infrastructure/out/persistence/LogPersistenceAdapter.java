@@ -161,8 +161,8 @@ public class LogPersistenceAdapter implements LogPersistencePort {
 
   private Map<String, Byte> getLogOrigins() {
     return jooq.dsl()
-        .select(LOGS_ORIGINS.NAME, LOGS_ORIGINS.ID)
+        .select(LOGS_ORIGINS.CODE, LOGS_ORIGINS.ID)
         .from(LOGS_ORIGINS)
-        .fetchMap(LOGS_ORIGINS.NAME, LOGS_ORIGINS.ID);
+        .fetchMap(LOGS_ORIGINS.CODE, LOGS_ORIGINS.ID);
   }
 }

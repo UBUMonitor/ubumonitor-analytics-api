@@ -1,46 +1,28 @@
 package es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.infrastructure.out.persistence.mapper;
 
-import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Courses.COURSES;
-import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.UsersCourses.USERS_COURSES;
-
 import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.Course;
 import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.Group;
 import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.Role;
 import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.User;
-import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.UserCourse;
 import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.CoursesRecord;
 import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.GroupsRecord;
 import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.RolesRecord;
 import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.UsersRecord;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.GlobalMapperConfig;
-import org.jooq.Record;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-/** Maps course enrollment records to application response models. */
+/** Maps jOOQ records to enrollment domain models. */
 @Mapper(config = GlobalMapperConfig.class)
-public interface EnrollmentCourseEnrollmentsMapper {
+public interface EnrollmentReadMapper {
 
+  /** Profile pictures are served by a dedicated endpoint, so they are not loaded here. */
   @Mapping(target = "userPicture", ignore = true)
-  @Mapping(target = "roles", ignore = true)
-  @Mapping(target = "groups", ignore = true)
-  @Mapping(target = "courses", ignore = true)
-  User toUserDomain(UsersRecord r);
+  User toUser(UsersRecord source);
 
-  Course toCourseDomain(CoursesRecord r);
+  Course toCourse(CoursesRecord source);
 
-  Group toGroupDomain(GroupsRecord into);
+  Group toGroup(GroupsRecord source);
 
-  Role toRoleDomain(RolesRecord into);
-
-  default UserCourse toUserCourseDomain(Record r) {
-
-    UserCourse uc = new UserCourse();
-
-    uc.setCourse(toCourseDomain(r.into(COURSES)));
-
-    uc.setLastCourseAccess(r.get(USERS_COURSES.LAST_COURSE_ACCESS));
-
-    return uc;
-  }
+  Role toRole(RolesRecord source);
 }

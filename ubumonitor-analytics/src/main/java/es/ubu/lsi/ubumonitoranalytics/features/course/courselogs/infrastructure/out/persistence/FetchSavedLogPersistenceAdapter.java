@@ -129,7 +129,8 @@ public class FetchSavedLogPersistenceAdapter implements FetchLogPersistencePort 
     if (requiredColumns.contains(LogViewColumn.EVENT_NAME)) {
       query = query.join(LOGS_EVENTS).on(LOGS.EVENT_ID.eq(LOGS_EVENTS.ID));
     }
-    if (requiredColumns.contains(LogViewColumn.ORIGIN_NAME)) {
+    if (requiredColumns.contains(LogViewColumn.ORIGIN_NAME)
+        || requiredColumns.contains(LogViewColumn.ORIGIN_CODE)) {
       query = query.join(LOGS_ORIGINS).on(LOGS.ORIGIN_ID.eq(LOGS_ORIGINS.ID));
     }
     if (requiredColumns.contains(LogViewColumn.SECTION_NAME)) {
@@ -254,6 +255,7 @@ public class FetchSavedLogPersistenceAdapter implements FetchLogPersistencePort 
       case COMPONENT_NAME -> LOGS_COMPONENTS.NAME.as("COMPONENT_NAME");
       case EVENT_NAME -> LOGS_EVENTS.NAME.as("EVENT_NAME");
       case ORIGIN_NAME -> LOGS_ORIGINS.NAME.as("ORIGIN_NAME");
+      case ORIGIN_CODE -> LOGS_ORIGINS.CODE.as("ORIGIN_CODE");
       case SECTION_ID -> MODULES.SECTION_ID.as("SECTION_ID");
       case SECTION_NAME -> SECTIONS.NAME.as("SECTION_NAME");
     };

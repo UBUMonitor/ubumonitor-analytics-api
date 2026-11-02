@@ -265,7 +265,8 @@ CREATE TABLE LOGS_EVENTS
 CREATE TABLE LOGS_ORIGINS
 (
     ID   TINYINT PRIMARY KEY, -- IDs fijos: LOGS.ORIGIN_ID se valida con CHECK
-    NAME VARCHAR(20) NOT NULL UNIQUE
+    CODE VARCHAR(20) NOT NULL UNIQUE,
+    NAME VARCHAR(255) NOT NULL
 );
 
 -- Un patron GROK por fila. Un mismo (componente, evento) puede tener varias
@@ -445,13 +446,13 @@ END;
 
 -- 9. INSERTS INICIALES
 -- =========================
-INSERT INTO LOGS_ORIGINS (ID, NAME)
-VALUES (1, 'web'),
-       (2, 'cli'),
-       (3, 'ws'),
-       (4, 'scheduled'),
-       (5, 'restore'),
-       (6, 'backup');
+INSERT INTO LOGS_ORIGINS (ID, CODE, NAME)
+VALUES (1, 'web', 'Web'),
+       (2, 'cli', 'CLI'),
+       (3, 'ws', 'Web Service'),
+       (4, 'scheduled', 'Scheduled'),
+       (5, 'restore', 'Restore'),
+       (6, 'backup', 'Backup');
 
 INSERT INTO LOGS_COMPONENTS (ID, CODE, NAME)
 VALUES (1, 'assignfeedback_file', 'File feedback'),

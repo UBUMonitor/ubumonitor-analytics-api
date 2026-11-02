@@ -1,8 +1,8 @@
 package es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.application.service;
 
 import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.application.port.in.GetCourseEnrollmentsUseCase;
-import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.application.port.out.EnrollmentGetPersistencePort;
-import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.UsersResponse;
+import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.application.port.out.LoadCourseEnrollmentsPort;
+import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.CourseEnrollments;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,15 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class GetCourseEnrollmentsService implements GetCourseEnrollmentsUseCase {
 
-  private final EnrollmentGetPersistencePort enrollmentGetPersistencePort;
+  private final LoadCourseEnrollmentsPort loadCourseEnrollmentsPort;
 
-  /**
-   * @param courseId Moodle course identifier
-   * @return users and enrollment details stored for the course
-   */
   @Override
   @Transactional(readOnly = true)
-  public UsersResponse getCourseEnrollment(Long courseId) {
-    return enrollmentGetPersistencePort.getCourseEnrollment(courseId);
+  public CourseEnrollments getCourseEnrollments(Long courseId) {
+    return loadCourseEnrollmentsPort.load(courseId);
   }
 }

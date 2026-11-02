@@ -32,7 +32,10 @@
   "expectedResponse": {
     "status": 200,
     "body": {
-      "users": []
+      "users": [],
+      "groups": [],
+      "roles": [],
+      "courses": []
     }
   },
   "authFixture": "classpath:/integration/shared/teacher-sso-auth.json"

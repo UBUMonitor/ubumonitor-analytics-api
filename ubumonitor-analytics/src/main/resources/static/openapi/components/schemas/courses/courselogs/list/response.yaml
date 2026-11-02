@@ -66,6 +66,7 @@ CourseLogsListResponse:
           - eventName
           - eventId
           - originName
+          - originCode
           - originId
           - ip
         properties:
@@ -121,6 +122,9 @@ CourseLogsListResponse:
           originName:
             type: string
             description: Name of the origin associated with the log
+          originCode:
+            type: string
+            description: Code of the origin associated with the log
           originId:
             type: integer
             format: int64
