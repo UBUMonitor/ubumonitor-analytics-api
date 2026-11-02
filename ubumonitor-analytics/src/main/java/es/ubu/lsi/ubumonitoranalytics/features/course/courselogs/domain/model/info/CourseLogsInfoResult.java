@@ -8,4 +8,5 @@ public class CourseLogsInfoResult {
   private List<CourseComponent> components;
   private List<CourseEvent> events;
   private List<CourseComponentEvent> componentsEvents;
+  private List<CourseOrigin> origins;
 }

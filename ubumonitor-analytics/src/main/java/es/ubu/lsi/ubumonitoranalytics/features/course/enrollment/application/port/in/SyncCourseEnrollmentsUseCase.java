@@ -1,13 +1,13 @@
 package es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.application.port.in;
 
-import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.UsersResponse;
+import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.CourseEnrollments;
 
-/** Synchronizes users and enrollment details for a course from Moodle. */
+/** Synchronizes the enrollments of a course from Moodle into local persistence. */
 public interface SyncCourseEnrollmentsUseCase {
 
   /**
    * @param courseId Moodle course identifier
-   * @return the synchronized users and enrollment details
+   * @return the enrollments fetched from Moodle and persisted
    */
-  UsersResponse syncCourseEnrollments(Long courseId);
+  CourseEnrollments syncCourseEnrollments(Long courseId);
 }

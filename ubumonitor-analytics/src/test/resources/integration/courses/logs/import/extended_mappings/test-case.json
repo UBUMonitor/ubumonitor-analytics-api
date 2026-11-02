@@ -109,6 +109,13 @@
               "name": "Unknown event"
             }
           }
+        ],
+        "origins": [
+          {
+            "id": 1,
+            "code": "web",
+            "name": "Web"
+          }
         ]
       }
     }

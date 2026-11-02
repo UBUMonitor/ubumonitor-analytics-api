@@ -2,13 +2,19 @@ package es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
+/**
+ * A group of users inside a course.
+ *
+ * @param id Moodle group identifier
+ * @param name group name
+ * @param description plain-text group description
+ */
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 public class Group {
-  private Long id;
-  private String name;
-  private String description;
+  @NonNull Long id;
+  String name;
+  String description;
 }

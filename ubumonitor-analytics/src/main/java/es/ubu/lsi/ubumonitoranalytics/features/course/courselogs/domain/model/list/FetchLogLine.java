@@ -26,6 +26,7 @@ public class FetchLogLine {
 
   private Integer originId; // ORIGIN_ID
   private String originName; // ORIGIN_NAME
+  private String originCode; // ORIGIN_CODE
 
   private String ipAddress; // IP_ADDRESS
 }
