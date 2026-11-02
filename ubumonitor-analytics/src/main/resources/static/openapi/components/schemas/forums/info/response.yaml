@@ -1,0 +1,231 @@
+CourseForumsResponse:
+  type: object
+  required:
+    - forums
+  properties:
+    forums:
+      type: array
+      description: Forums, their discussions, and posts in the requested course.
+      items:
+        $ref: '#/Forum'
+Forum:
+  type: object
+  required:
+    - id
+    - courseId
+    - moduleId
+    - visible
+  properties:
+    id:
+      type: integer
+      format: int64
+      description: Forum ID
+    courseId:
+      type: integer
+      format: int64
+      description: ID of the course the forum belongs to
+    moduleId:
+      type: integer
+      format: int64
+      description: Course module ID (cmid / coursemodule -> MODULES.ID, no FK)
+    name:
+      type: string
+      description: Forum name
+    intro:
+      type: string
+      description: Forum introduction text
+    type:
+      type: string
+      enum: [ GENERAL, NEWS, QANDA, EACHUSER, SINGLE, BLOG ]
+      description: Forum type
+    visible:
+      type: boolean
+      default: true
+      description: Whether the forum is visible to students
+    groupMode:
+      type: string
+      enum: [ NO_GROUPS, SEPARATE_GROUPS, VISIBLE_GROUPS ]
+      description: Group mode
+    groupingId:
+      type: integer
+      format: int64
+      description: Grouping ID used for the forum
+    dueDate:
+      type: integer
+      format: int64
+      description: Due date as a Unix timestamp (null = no due date)
+    cutoffDate:
+      type: integer
+      format: int64
+      description: Cut-off date as a Unix timestamp; no posts are accepted after it (null = no cut-off)
+    assessed:
+      type: string
+      enum: [ AVERAGE, COUNT, MAX, MIN, SUM ]
+      description: Aggregate type used to assess posts (null = no ratings)
+    scale:
+      type: integer
+      description: Grade type or scale ID used for ratings (negative values refer to a scale ID)
+    gradeForum:
+      type: integer
+      description: Maximum grade for the whole forum (null = forum is not graded)
+    maxBytes:
+      type: integer
+      format: int64
+      description: Maximum attachment size in bytes
+    maxAttachments:
+      type: integer
+      description: Maximum number of attachments per post
+    forceSubscribe:
+      type: string
+      enum:
+        - OPTIONAL
+        - FORCED
+        - AUTO
+        - DISABLED
+      description: Subscription mode
+    trackingType:
+      type: string
+      enum:
+        - "OFF"
+        - "OPTIONAL"
+        - "FORCED"
+      description: Read tracking type
+    warnAfter:
+      type: integer
+      format: int64
+      description: Number of posts in the blocking period after which the user is warned
+    blockAfter:
+      type: integer
+      format: int64
+      description: Number of posts in the blocking period after which the user is blocked from posting
+    blockPeriod:
+      type: integer
+      format: int64
+      description: Blocking period in seconds
+    lockDiscussionAfter:
+      type: integer
+      format: int64
+      description: Seconds of inactivity after which discussions are automatically locked (null = never)
+    completionDiscussions:
+      type: integer
+      description: Number of discussions a student must create to complete the activity
+    completionReplies:
+      type: integer
+      description: Number of replies a student must post to complete the activity
+    completionPosts:
+      type: integer
+      description: Total number of posts a student must make to complete the activity
+    timeModified:
+      type: integer
+      format: int64
+      description: Last modification time as a Unix timestamp
+    discussions:
+      type: array
+      description: Discussions of the forum
+      items:
+        $ref: '#/ForumDiscussion'
+
+ForumDiscussion:
+  type: object
+  required:
+    - id
+    - forumId
+    - pinned
+    - locked
+  properties:
+    id:
+      type: integer
+      format: int64
+      description: Discussion ID (Moodle "discussion" field, not "id", which is the first post id)
+    forumId:
+      type: integer
+      format: int64
+      description: ID of the forum the discussion belongs to
+    name:
+      type: string
+      description: Discussion name
+    groupId:
+      type: integer
+      format: int64
+      description: Group ID
+    userId:
+      type: integer
+      format: int64
+      description: ID of the user who started the discussion (author)
+    timeStart:
+      type: integer
+      format: int64
+      description: Display start time as a Unix timestamp (null = always displayed)
+    timeEnd:
+      type: integer
+      format: int64
+      description: Display end time as a Unix timestamp (null = never ends)
+    timeModified:
+      type: integer
+      format: int64
+      description: Last modification time as a Unix timestamp
+    pinned:
+      type: boolean
+      default: false
+      description: Whether the discussion is pinned to the top of the list
+    locked:
+      type: boolean
+      default: false
+      description: Whether the discussion is locked (no more replies allowed)
+    posts:
+      type: array
+      description: Posts of the discussion
+      items:
+        $ref: '#/ForumPost'
+
+ForumPost:
+  type: object
+  required:
+    - id
+    - discussionId
+    - hasAttachment
+    - isDeleted
+    - isPrivateReply
+  properties:
+    id:
+      type: integer
+      format: int64
+      description: Post ID
+    discussionId:
+      type: integer
+      format: int64
+      description: ID of the discussion the post belongs to
+    parentId:
+      type: integer
+      format: int64
+      description: ID of the parent post (null = first post of the discussion)
+    userId:
+      type: integer
+      format: int64
+      description: ID of the post author
+    subject:
+      type: string
+      description: Post subject
+    message:
+      type: string
+      description: Post message body
+    hasAttachment:
+      type: boolean
+      default: false
+      description: Whether the post has attachments
+    isDeleted:
+      type: boolean
+      default: false
+      description: Whether the post has been deleted
+    isPrivateReply:
+      type: boolean
+      default: false
+      description: Whether the post is a private reply
+    timeCreated:
+      type: integer
+      format: int64
+      description: Creation time as a Unix timestamp
+    timeModified:
+      type: integer
+      format: int64
+      description: Last modification time as a Unix timestamp

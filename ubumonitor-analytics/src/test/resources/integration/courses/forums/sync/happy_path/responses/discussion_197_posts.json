@@ -1,0 +1,140 @@
+{
+  "posts": [
+    {
+      "id": 437,
+      "subject": "Re: Mindful course creation",
+      "replysubject": "Re: Mindful course creation",
+      "label": "Re: Mindful course creation by Jeffrey Sanders",
+      "message": "<div class=\"text_to_html\">Both, really, Brian. How do you see it yourself?</div>",
+      "messageformat": 1,
+      "author": {
+        "id": 13,
+        "fullname": "Jeffrey Sanders",
+        "initials": "JS",
+        "isdeleted": false,
+        "groups": [],
+        "urls": {
+          "profile": "https://school.moodledemo.net/user/view.php?id=13&course=69",
+          "profileimage": "https://school.moodledemo.net/pluginfile.php/160/user/icon/boost/f1?rev=75854"
+        }
+      },
+      "discussionid": 197,
+      "hasparent": true,
+      "parentid": 436,
+      "timecreated": 1649572734,
+      "timemodified": 1649572734,
+      "unread": false,
+      "isdeleted": false,
+      "isprivatereply": false,
+      "haswordcount": false,
+      "wordcount": null,
+      "charcount": null,
+      "capabilities": {
+        "view": true,
+        "edit": true,
+        "delete": true,
+        "split": true,
+        "reply": true,
+        "selfenrol": false,
+        "export": false,
+        "controlreadstatus": false,
+        "canreplyprivately": true
+      },
+      "urls": {
+        "view": "https://school.moodledemo.net/mod/forum/discuss.php?d=197#p437",
+        "viewisolated": "https://school.moodledemo.net/mod/forum/discuss.php?d=197&parent=437",
+        "viewparent": "https://school.moodledemo.net/mod/forum/discuss.php?d=197#p436",
+        "edit": "https://school.moodledemo.net/mod/forum/post.php?edit=437",
+        "delete": "https://school.moodledemo.net/mod/forum/post.php?delete=437",
+        "split": "https://school.moodledemo.net/mod/forum/post.php?prune=437",
+        "reply": "https://school.moodledemo.net/mod/forum/post.php?reply=437#mformforum",
+        "export": null,
+        "markasread": null,
+        "markasunread": null,
+        "discuss": "https://school.moodledemo.net/mod/forum/discuss.php?d=197"
+      },
+      "attachments": [],
+      "messageinlinefiles": [],
+      "tags": [],
+      "html": {
+        "rating": null,
+        "taglist": null,
+        "authorsubheading": "by <a href=\"https://school.moodledemo.net/user/view.php?id=13&course=69\">Jeffrey Sanders</a> - <time datetime=\"2022-04-10T07:38:54+01:00\">Sunday, 10 April 2022, 7:38 AM</time>"
+      }
+    },
+    {
+      "id": 436,
+      "subject": "Mindful course creation",
+      "replysubject": "Mindful course creation",
+      "label": "Mindful course creation by Brian Franklin",
+      "message": "<p dir=\"ltr\" style=\"text-align:left;\">I am confused. Is this about learning how to create courses in a mindful way? Or about how to teach mindfully?</p>",
+      "messageformat": 1,
+      "author": {
+        "id": 47,
+        "fullname": "Brian Franklin",
+        "initials": "BF",
+        "isdeleted": false,
+        "groups": [],
+        "urls": {
+          "profile": "https://school.moodledemo.net/user/view.php?id=47&course=69",
+          "profileimage": "https://school.moodledemo.net/pluginfile.php/322/user/icon/boost/f1?rev=2093"
+        }
+      },
+      "discussionid": 197,
+      "hasparent": false,
+      "parentid": null,
+      "timecreated": 1649572648,
+      "timemodified": 1649572648,
+      "unread": false,
+      "isdeleted": false,
+      "isprivatereply": false,
+      "haswordcount": false,
+      "wordcount": null,
+      "charcount": null,
+      "capabilities": {
+        "view": true,
+        "edit": true,
+        "delete": true,
+        "split": false,
+        "reply": true,
+        "selfenrol": false,
+        "export": false,
+        "controlreadstatus": false,
+        "canreplyprivately": true
+      },
+      "urls": {
+        "view": "https://school.moodledemo.net/mod/forum/discuss.php?d=197#p436",
+        "viewisolated": "https://school.moodledemo.net/mod/forum/discuss.php?d=197&parent=436",
+        "viewparent": null,
+        "edit": "https://school.moodledemo.net/mod/forum/post.php?edit=436",
+        "delete": "https://school.moodledemo.net/mod/forum/post.php?delete=436",
+        "split": null,
+        "reply": "https://school.moodledemo.net/mod/forum/post.php?reply=436#mformforum",
+        "export": null,
+        "markasread": null,
+        "markasunread": null,
+        "discuss": "https://school.moodledemo.net/mod/forum/discuss.php?d=197"
+      },
+      "attachments": [],
+      "messageinlinefiles": [],
+      "tags": [],
+      "html": {
+        "rating": null,
+        "taglist": null,
+        "authorsubheading": "by <a href=\"https://school.moodledemo.net/user/view.php?id=47&course=69\">Brian Franklin</a> - <time datetime=\"2022-04-10T07:37:28+01:00\">Sunday, 10 April 2022, 7:37 AM</time>"
+      }
+    }
+  ],
+  "forumid": 104,
+  "courseid": 69,
+  "ratinginfo": {
+    "contextid": 1596,
+    "component": "mod_forum",
+    "ratingarea": "post",
+    "canviewall": null,
+    "canviewany": null,
+    "scales": [],
+    "ratings": []
+  },
+  "warnings": []
+}

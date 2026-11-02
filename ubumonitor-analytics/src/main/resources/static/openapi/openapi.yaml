@@ -164,6 +164,14 @@ paths:
   /courses/{courseId}/activitycompletion/values:
     $ref: './paths/courses/activitycompletion/values.yaml'
 
+  /courses/{courseId}/forums/sync:
+    $ref: './paths/courses/forums/sync.yaml'
+  /courses/{courseId}/forums/info:
+    $ref: './paths/courses/forums/info.yaml'
+  /calendars/events/sync:
+    $ref: './paths/calendars/events/sync.yaml'
+  /calendars/events/info:
+    $ref: './paths/calendars/events/info.yaml'
   /users/me/info:
     $ref: './paths/users/me/info.yaml'
 

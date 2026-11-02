@@ -1,0 +1,590 @@
+{
+  "databaseSetup": [],
+  "moodleMocks": [
+    {
+      "request": {
+        "method": "POST",
+        "path": "/webservice/rest/server.php",
+        "body": "wsfunction=tool_mobile_get_public_config&moodlewsrestformat=json&wstoken=wiremock-moodle-token"
+      },
+      "response": {
+        "body": {
+          "wwwroot": "https://school.moodledemo.net",
+          "httpswwwroot": "https://school.moodledemo.net",
+          "sitename": "Mount Orange",
+          "enablewebservices": 1,
+          "enablemobilewebservice": 1,
+          "maintenanceenabled": 0,
+          "maintenancemessage": "",
+          "typeoflogin": 1,
+          "launchurl": "https://school.moodledemo.net/admin/tool/mobile/launch.php"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "path": "/webservice/rest/server.php",
+        "body": {
+          "contains": "mod_forum_get_forums_by_courses"
+        }
+      },
+      "response": {
+        "bodyFile": "classpath:/integration/courses/forums/sync/happy_path/responses/forums.json"
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "path": "/webservice/rest/server.php",
+        "body": {
+          "contains": "forumid=103"
+        }
+      },
+      "response": {
+        "bodyFile": "classpath:/integration/courses/forums/sync/happy_path/responses/forum_103_discussions.json"
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "path": "/webservice/rest/server.php",
+        "body": {
+          "contains": "forumid=104"
+        }
+      },
+      "response": {
+        "bodyFile": "classpath:/integration/courses/forums/sync/happy_path/responses/forum_104_discussions.json"
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "path": "/webservice/rest/server.php",
+        "body": {
+          "contains": "discussionid=195"
+        }
+      },
+      "response": {
+        "bodyFile": "classpath:/integration/courses/forums/sync/happy_path/responses/discussion_195_posts.json"
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "path": "/webservice/rest/server.php",
+        "body": {
+          "contains": "discussionid=205"
+        }
+      },
+      "response": {
+        "bodyFile": "classpath:/integration/courses/forums/sync/happy_path/responses/discussion_205_posts.json"
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "path": "/webservice/rest/server.php",
+        "body": {
+          "contains": "discussionid=196"
+        }
+      },
+      "response": {
+        "bodyFile": "classpath:/integration/courses/forums/sync/happy_path/responses/discussion_196_posts.json"
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "path": "/webservice/rest/server.php",
+        "body": {
+          "contains": "discussionid=197"
+        }
+      },
+      "response": {
+        "bodyFile": "classpath:/integration/courses/forums/sync/happy_path/responses/discussion_197_posts.json"
+      }
+    }
+  ],
+  "authFixture": "classpath:/integration/shared/teacher-sso-auth.json",
+  "endpoints": [
+    {
+      "request": {
+        "method": "POST",
+        "path": "/api/courses/69/forums/sync",
+        "headers": {
+          "Authorization": "******"
+        }
+      },
+      "expectedResponse": {
+        "status": 200,
+        "body": {
+          "forums": [
+            {
+              "id": 103,
+              "courseId": 69,
+              "moduleId": 967,
+              "name": "Course noticeboard",
+              "intro": "General news and announcements",
+              "type": "NEWS",
+              "visible": true,
+              "dueDate": 0,
+              "cutoffDate": 0,
+              "scale": 0,
+              "gradeForum": 0,
+              "maxBytes": 0,
+              "maxAttachments": 1,
+              "forceSubscribe": "FORCED",
+              "trackingType": "FORCED",
+              "warnAfter": 0,
+              "blockAfter": 0,
+              "blockPeriod": 0,
+              "lockDiscussionAfter": 0,
+              "completionDiscussions": 0,
+              "completionReplies": 0,
+              "completionPosts": 0,
+              "timeModified": 1649844742,
+              "discussions": [
+                {
+                  "id": 205,
+                  "forumId": 103,
+                  "name": "And again!",
+                  "groupId": -1,
+                  "userId": 13,
+                  "timeStart": 0,
+                  "timeEnd": 0,
+                  "timeModified": 1682491874,
+                  "pinned": false,
+                  "locked": false,
+                  "posts": [
+                    {
+                      "id": 451,
+                      "discussionId": 205,
+                      "userId": 13,
+                      "subject": "And again!",
+                      "message": "<p>We're now on Moodle LMS 4.2 - as a teacher I love it! I can add activities anywhere and also bulk move, delete and change availability!</p>",
+                      "hasAttachment": false,
+                      "isDeleted": false,
+                      "isPrivateReply": false,
+                      "timeCreated": 1682491874,
+                      "timeModified": 1682491874
+                    }
+                  ]
+                },
+                {
+                  "id": 195,
+                  "forumId": 103,
+                  "name": "Welcome to the course!",
+                  "groupId": -1,
+                  "userId": 13,
+                  "timeStart": 0,
+                  "timeEnd": 0,
+                  "timeModified": 1649738064,
+                  "pinned": false,
+                  "locked": false,
+                  "posts": [
+                    {
+                      "id": 439,
+                      "discussionId": 195,
+                      "parentId": 432,
+                      "userId": 13,
+                      "subject": "Re: Welcome to the course!",
+                      "message": "<div class=\"text_to_html\">I have just been informed Mount Orange is running Moodle 4.0, so please try out the activities and enjoy the experience.</div>",
+                      "hasAttachment": false,
+                      "isDeleted": false,
+                      "isPrivateReply": false,
+                      "timeCreated": 1649738064,
+                      "timeModified": 1649738064
+                    },
+                    {
+                      "id": 432,
+                      "discussionId": 195,
+                      "userId": 13,
+                      "subject": "Welcome to the course!",
+                      "message": "<p dir=\"ltr\" style=\"text-align:left;\">Welcome to all our teachers, student teachers and those interested in a future career in teaching!</p><p dir=\"ltr\" style=\"text-align:left;\">This course, designed to showcase Moodle 4.0, is all about teaching and learning mindfully.</p>",
+                      "hasAttachment": false,
+                      "isDeleted": false,
+                      "isPrivateReply": false,
+                      "timeCreated": 1649318591,
+                      "timeModified": 1649318591
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": 104,
+              "courseId": 69,
+              "moduleId": 971,
+              "name": "Let's talk about stress!",
+              "intro": "",
+              "type": "GENERAL",
+              "visible": true,
+              "dueDate": 0,
+              "cutoffDate": 0,
+              "scale": 100,
+              "gradeForum": 0,
+              "maxBytes": 20971520,
+              "maxAttachments": 9,
+              "forceSubscribe": "OPTIONAL",
+              "trackingType": "FORCED",
+              "warnAfter": 0,
+              "blockAfter": 0,
+              "blockPeriod": 0,
+              "lockDiscussionAfter": 0,
+              "completionDiscussions": 0,
+              "completionReplies": 0,
+              "completionPosts": 1,
+              "timeModified": 1790922837,
+              "discussions": [
+                {
+                  "id": 196,
+                  "forumId": 104,
+                  "name": "What causes you stress?",
+                  "groupId": -1,
+                  "userId": 13,
+                  "timeStart": 0,
+                  "timeEnd": 0,
+                  "timeModified": 1649572783,
+                  "pinned": false,
+                  "locked": false,
+                  "posts": [
+                    {
+                      "id": 438,
+                      "discussionId": 196,
+                      "parentId": 434,
+                      "userId": 13,
+                      "subject": "Re: What causes you stress?",
+                      "message": "<div class=\"text_to_html\">Hello Barbara. Just to let you know I have some very good materials for helping conquer a fear of public speaking if you are interested.</div>",
+                      "hasAttachment": false,
+                      "isDeleted": false,
+                      "isPrivateReply": true,
+                      "timeCreated": 1649572783,
+                      "timeModified": 1649572783
+                    },
+                    {
+                      "id": 435,
+                      "discussionId": 196,
+                      "parentId": 434,
+                      "userId": 47,
+                      "subject": "Re: What causes you stress?",
+                      "message": "<div class=\"text_to_html\">What causes me stress? People who don't see my point of view!</div>",
+                      "hasAttachment": false,
+                      "isDeleted": false,
+                      "isPrivateReply": false,
+                      "timeCreated": 1649572599,
+                      "timeModified": 1649572599
+                    },
+                    {
+                      "id": 434,
+                      "discussionId": 196,
+                      "parentId": 433,
+                      "userId": 56,
+                      "subject": "Re: What causes you stress?",
+                      "message": "<div class=\"text_to_html\">Public speaking - but I realise that if I am to become a teacher I need to conquer this !</div>",
+                      "hasAttachment": false,
+                      "isDeleted": false,
+                      "isPrivateReply": false,
+                      "timeCreated": 1649319019,
+                      "timeModified": 1649319019
+                    },
+                    {
+                      "id": 433,
+                      "discussionId": 196,
+                      "userId": 13,
+                      "subject": "What causes you stress?",
+                      "message": "<p dir=\"ltr\" style=\"text-align:left;\">In a teaching and learning environment what causes you stress? I'll start:</p><p dir=\"ltr\" style=\"text-align:left;\"></p><ul><li>Lack of punctuality by other people. \"If you're not ten minutes early, you're late!\" as my grandma used to say.</li><li>Not being organised - which is why I tend to be over-organised, which is something I need to work on.</li></ul>",
+                      "hasAttachment": false,
+                      "isDeleted": false,
+                      "isPrivateReply": false,
+                      "timeCreated": 1649318713,
+                      "timeModified": 1649318713
+                    }
+                  ]
+                },
+                {
+                  "id": 197,
+                  "forumId": 104,
+                  "name": "Mindful course creation",
+                  "groupId": -1,
+                  "userId": 47,
+                  "timeStart": 0,
+                  "timeEnd": 0,
+                  "timeModified": 1649572734,
+                  "pinned": false,
+                  "locked": false,
+                  "posts": [
+                    {
+                      "id": 437,
+                      "discussionId": 197,
+                      "parentId": 436,
+                      "userId": 13,
+                      "subject": "Re: Mindful course creation",
+                      "message": "<div class=\"text_to_html\">Both, really, Brian. How do you see it yourself?</div>",
+                      "hasAttachment": false,
+                      "isDeleted": false,
+                      "isPrivateReply": false,
+                      "timeCreated": 1649572734,
+                      "timeModified": 1649572734
+                    },
+                    {
+                      "id": 436,
+                      "discussionId": 197,
+                      "userId": 47,
+                      "subject": "Mindful course creation",
+                      "message": "<p dir=\"ltr\" style=\"text-align:left;\">I am confused. Is this about learning how to create courses in a mindful way? Or about how to teach mindfully?</p>",
+                      "hasAttachment": false,
+                      "isDeleted": false,
+                      "isPrivateReply": false,
+                      "timeCreated": 1649572648,
+                      "timeModified": 1649572648
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "path": "/api/courses/69/forums/info",
+        "headers": {
+          "Authorization": "******"
+        }
+      },
+      "expectedResponse": {
+        "status": 200,
+        "body": {
+          "forums": [
+            {
+              "id": 103,
+              "courseId": 69,
+              "moduleId": 967,
+              "name": "Course noticeboard",
+              "intro": "General news and announcements",
+              "type": "NEWS",
+              "visible": true,
+              "dueDate": 0,
+              "cutoffDate": 0,
+              "scale": 0,
+              "gradeForum": 0,
+              "maxBytes": 0,
+              "maxAttachments": 1,
+              "forceSubscribe": "FORCED",
+              "trackingType": "FORCED",
+              "warnAfter": 0,
+              "blockAfter": 0,
+              "blockPeriod": 0,
+              "lockDiscussionAfter": 0,
+              "completionDiscussions": 0,
+              "completionReplies": 0,
+              "completionPosts": 0,
+              "timeModified": 1649844742,
+              "discussions": [
+                {
+                  "id": 195,
+                  "forumId": 103,
+                  "name": "Welcome to the course!",
+                  "groupId": -1,
+                  "userId": 13,
+                  "timeStart": 0,
+                  "timeEnd": 0,
+                  "timeModified": 1649738064,
+                  "pinned": false,
+                  "locked": false,
+                  "posts": [
+                    {
+                      "id": 432,
+                      "discussionId": 195,
+                      "userId": 13,
+                      "subject": "Welcome to the course!",
+                      "message": "<p dir=\"ltr\" style=\"text-align:left;\">Welcome to all our teachers, student teachers and those interested in a future career in teaching!</p><p dir=\"ltr\" style=\"text-align:left;\">This course, designed to showcase Moodle 4.0, is all about teaching and learning mindfully.</p>",
+                      "hasAttachment": false,
+                      "isDeleted": false,
+                      "isPrivateReply": false,
+                      "timeCreated": 1649318591,
+                      "timeModified": 1649318591
+                    },
+                    {
+                      "id": 439,
+                      "discussionId": 195,
+                      "parentId": 432,
+                      "userId": 13,
+                      "subject": "Re: Welcome to the course!",
+                      "message": "<div class=\"text_to_html\">I have just been informed Mount Orange is running Moodle 4.0, so please try out the activities and enjoy the experience.</div>",
+                      "hasAttachment": false,
+                      "isDeleted": false,
+                      "isPrivateReply": false,
+                      "timeCreated": 1649738064,
+                      "timeModified": 1649738064
+                    }
+                  ]
+                },
+                {
+                  "id": 205,
+                  "forumId": 103,
+                  "name": "And again!",
+                  "groupId": -1,
+                  "userId": 13,
+                  "timeStart": 0,
+                  "timeEnd": 0,
+                  "timeModified": 1682491874,
+                  "pinned": false,
+                  "locked": false,
+                  "posts": [
+                    {
+                      "id": 451,
+                      "discussionId": 205,
+                      "userId": 13,
+                      "subject": "And again!",
+                      "message": "<p>We're now on Moodle LMS 4.2 - as a teacher I love it! I can add activities anywhere and also bulk move, delete and change availability!</p>",
+                      "hasAttachment": false,
+                      "isDeleted": false,
+                      "isPrivateReply": false,
+                      "timeCreated": 1682491874,
+                      "timeModified": 1682491874
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": 104,
+              "courseId": 69,
+              "moduleId": 971,
+              "name": "Let's talk about stress!",
+              "intro": "",
+              "type": "GENERAL",
+              "visible": true,
+              "dueDate": 0,
+              "cutoffDate": 0,
+              "scale": 100,
+              "gradeForum": 0,
+              "maxBytes": 20971520,
+              "maxAttachments": 9,
+              "forceSubscribe": "OPTIONAL",
+              "trackingType": "FORCED",
+              "warnAfter": 0,
+              "blockAfter": 0,
+              "blockPeriod": 0,
+              "lockDiscussionAfter": 0,
+              "completionDiscussions": 0,
+              "completionReplies": 0,
+              "completionPosts": 1,
+              "timeModified": 1790922837,
+              "discussions": [
+                {
+                  "id": 196,
+                  "forumId": 104,
+                  "name": "What causes you stress?",
+                  "groupId": -1,
+                  "userId": 13,
+                  "timeStart": 0,
+                  "timeEnd": 0,
+                  "timeModified": 1649572783,
+                  "pinned": false,
+                  "locked": false,
+                  "posts": [
+                    {
+                      "id": 433,
+                      "discussionId": 196,
+                      "userId": 13,
+                      "subject": "What causes you stress?",
+                      "message": "<p dir=\"ltr\" style=\"text-align:left;\">In a teaching and learning environment what causes you stress? I'll start:</p><p dir=\"ltr\" style=\"text-align:left;\"></p><ul><li>Lack of punctuality by other people. \"If you're not ten minutes early, you're late!\" as my grandma used to say.</li><li>Not being organised - which is why I tend to be over-organised, which is something I need to work on.</li></ul>",
+                      "hasAttachment": false,
+                      "isDeleted": false,
+                      "isPrivateReply": false,
+                      "timeCreated": 1649318713,
+                      "timeModified": 1649318713
+                    },
+                    {
+                      "id": 434,
+                      "discussionId": 196,
+                      "parentId": 433,
+                      "userId": 56,
+                      "subject": "Re: What causes you stress?",
+                      "message": "<div class=\"text_to_html\">Public speaking - but I realise that if I am to become a teacher I need to conquer this !</div>",
+                      "hasAttachment": false,
+                      "isDeleted": false,
+                      "isPrivateReply": false,
+                      "timeCreated": 1649319019,
+                      "timeModified": 1649319019
+                    },
+                    {
+                      "id": 435,
+                      "discussionId": 196,
+                      "parentId": 434,
+                      "userId": 47,
+                      "subject": "Re: What causes you stress?",
+                      "message": "<div class=\"text_to_html\">What causes me stress? People who don't see my point of view!</div>",
+                      "hasAttachment": false,
+                      "isDeleted": false,
+                      "isPrivateReply": false,
+                      "timeCreated": 1649572599,
+                      "timeModified": 1649572599
+                    },
+                    {
+                      "id": 438,
+                      "discussionId": 196,
+                      "parentId": 434,
+                      "userId": 13,
+                      "subject": "Re: What causes you stress?",
+                      "message": "<div class=\"text_to_html\">Hello Barbara. Just to let you know I have some very good materials for helping conquer a fear of public speaking if you are interested.</div>",
+                      "hasAttachment": false,
+                      "isDeleted": false,
+                      "isPrivateReply": true,
+                      "timeCreated": 1649572783,
+                      "timeModified": 1649572783
+                    }
+                  ]
+                },
+                {
+                  "id": 197,
+                  "forumId": 104,
+                  "name": "Mindful course creation",
+                  "groupId": -1,
+                  "userId": 47,
+                  "timeStart": 0,
+                  "timeEnd": 0,
+                  "timeModified": 1649572734,
+                  "pinned": false,
+                  "locked": false,
+                  "posts": [
+                    {
+                      "id": 436,
+                      "discussionId": 197,
+                      "userId": 47,
+                      "subject": "Mindful course creation",
+                      "message": "<p dir=\"ltr\" style=\"text-align:left;\">I am confused. Is this about learning how to create courses in a mindful way? Or about how to teach mindfully?</p>",
+                      "hasAttachment": false,
+                      "isDeleted": false,
+                      "isPrivateReply": false,
+                      "timeCreated": 1649572648,
+                      "timeModified": 1649572648
+                    },
+                    {
+                      "id": 437,
+                      "discussionId": 197,
+                      "parentId": 436,
+                      "userId": 13,
+                      "subject": "Re: Mindful course creation",
+                      "message": "<div class=\"text_to_html\">Both, really, Brian. How do you see it yourself?</div>",
+                      "hasAttachment": false,
+                      "isDeleted": false,
+                      "isPrivateReply": false,
+                      "timeCreated": 1649572734,
+                      "timeModified": 1649572734
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

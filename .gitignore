@@ -59,4 +59,5 @@ coverage/
 
 
 moodle_dbs/
+/data/
 *.log
