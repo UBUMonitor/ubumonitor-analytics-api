@@ -12,4 +12,4 @@ get:
           schema:
             $ref: '../../components/schemas/enrollments/info/response.yaml#/EnrollmentsResponse'
     '401':
-      $ref: '../../openapi.yaml#/components/responses/unauthorized_401'
+      $ref: '../../components/responses/unauthorized_401.yaml'

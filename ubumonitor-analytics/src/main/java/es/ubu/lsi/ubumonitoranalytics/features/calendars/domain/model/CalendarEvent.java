@@ -1,21 +1,27 @@
 package es.ubu.lsi.ubumonitoranalytics.features.calendars.domain.model;
 
-public record CalendarEvent(
-    Long id,
-    String name,
-    String description,
-    Long courseId,
-    Long categoryId,
-    Long groupId,
-    Long userId,
-    Long repeatId,
-    String moduleName,
-    Long instance,
-    String eventType,
-    Long timeStart,
-    Long timeDuration,
-    Integer visible,
-    Integer sequence,
-    Long timeModified,
-    Long subscriptionId,
-    String uuid) {}
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+@Data
+@AllArgsConstructor
+public class CalendarEvent {
+  private Long id;
+  private String name;
+  private String description;
+  private Long courseId;
+  private Long categoryId;
+  private Long groupId;
+  private Long userId;
+  private Long repeatId;
+  private String moduleName;
+  private Long instance;
+  private String eventType;
+  private Long timeStart;
+  private Long timeDuration;
+  private Integer visible;
+  private Integer sequence;
+  private Long timeModified;
+  private Long subscriptionId;
+  private String uuid;
+}

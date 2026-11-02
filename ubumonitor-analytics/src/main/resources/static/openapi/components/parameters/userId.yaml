@@ -1,0 +1,7 @@
+name: userId
+in: path
+required: true
+description: Moodle user identifier
+schema:
+  type: integer
+  format: int64

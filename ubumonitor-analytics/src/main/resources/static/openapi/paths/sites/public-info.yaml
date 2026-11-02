@@ -1,4 +1,5 @@
 get:
+  security: [ ]
   tags:
     - Sites
   summary: Get public site information

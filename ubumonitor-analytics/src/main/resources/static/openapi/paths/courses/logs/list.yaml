@@ -8,13 +8,7 @@ post:
     and selectable log columns.
 
   parameters:
-    - name: courseId
-      in: path
-      required: true
-      schema:
-        type: integer
-        format: int64
-      description: Course identifier
+    - $ref: '../../../components/parameters/courseId.yaml'
 
 
   requestBody:
@@ -22,14 +16,14 @@ post:
     content:
       application/json:
         schema:
-          $ref: '../../../components/schemas/courses/courselogs/list/request.yaml#/CourseLogsListRequest'
+          $ref: '../../../components/schemas/courses/logs/list/request.yaml#/CourseLogsListRequest'
   responses:
     "200":
       description: Logs retrieved successfully
       content:
         application/json:
           schema:
-            $ref: '../../../components/schemas/courses/courselogs/list/response.yaml#/CourseLogsListResponse'
+            $ref: '../../../components/schemas/courses/logs/list/response.yaml#/CourseLogsListResponse'
 
     '401':
-      $ref: '../../../openapi.yaml#/components/responses/unauthorized_401'
+      $ref: '../../../components/responses/unauthorized_401.yaml'

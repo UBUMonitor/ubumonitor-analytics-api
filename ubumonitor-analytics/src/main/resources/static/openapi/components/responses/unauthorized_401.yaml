@@ -10,4 +10,4 @@ content:
       traceId: "56e89575-dc49-4a83-b84c-0d5bff268ea7"
       errors:
         - field: exception
-          message: 401 UNAUTHORIZED "Invalid token - token not found"
+          message: '401 UNAUTHORIZED "Invalid token - token not found"'

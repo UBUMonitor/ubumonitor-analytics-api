@@ -53,4 +53,4 @@ get:
             type: string
             format: binary
     '401':
-      $ref: '../../../openapi.yaml#/components/responses/unauthorized_401'
+      $ref: '../../../components/responses/unauthorized_401.yaml'

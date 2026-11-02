@@ -12,4 +12,4 @@ post:
           schema:
             $ref: '../../components/schemas/sites/info/response.yaml#/SiteInfoResponse'
     '401':
-      $ref: '../../openapi.yaml#/components/responses/unauthorized_401'
+      $ref: '../../components/responses/unauthorized_401.yaml'

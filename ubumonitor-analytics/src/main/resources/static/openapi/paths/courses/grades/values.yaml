@@ -6,13 +6,7 @@ get:
   description: Get course grade values
 
   parameters:
-    - name: courseId
-      in: path
-      required: true
-      schema:
-        type: integer
-        format: int64
-      description: Course identifier
+    - $ref: '../../../components/parameters/courseId.yaml'
 
     - name: gradeItemsIds
       in: query
@@ -46,4 +40,4 @@ get:
             $ref: '../../../components/schemas/courses/grades/values/response.yaml#/CourseGradesValuesResponse'
 
     '401':
-      $ref: '../../../openapi.yaml#/components/responses/unauthorized_401'
+      $ref: '../../../components/responses/unauthorized_401.yaml'

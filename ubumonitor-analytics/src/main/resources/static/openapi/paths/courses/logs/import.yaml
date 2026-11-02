@@ -4,12 +4,7 @@ post:
   operationId: ImportCourseLogs
   summary: Import Moodle logs CSV
   parameters:
-    - name: courseId
-      in: path
-      required: true
-      schema:
-        type: integer
-        format: int64
+    - $ref: '../../../components/parameters/courseId.yaml'
   requestBody:
     required: true
     content:
@@ -28,7 +23,7 @@ post:
       content:
         application/json:
           schema:
-            $ref: '../../../components/schemas/courses/courselogs/info/response.yaml#/CourseLogsResponse'
+            $ref: '../../../components/schemas/courses/logs/info/response.yaml#/CourseLogsResponse'
 
     '401':
-      $ref: '../../../openapi.yaml#/components/responses/unauthorized_401'
+      $ref: '../../../components/responses/unauthorized_401.yaml'
