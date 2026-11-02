@@ -1,0 +1,57 @@
+{
+  "databaseSetup": [
+    "INSERT INTO CALENDARS_EVENTS (ID, NAME, DESCRIPTION, COURSE_ID, CATEGORY_ID, GROUP_ID, USER_ID, REPEAT_ID, MODULE_NAME, INSTANCE, EVENT_TYPE, TIME_START, TIME_DURATION, VISIBLE, SEQUENCE, TIME_MODIFIED, SUBSCRIPTION_ID, UUID) VALUES (490, 'About this course should be completed', 'Learning outcomes and completion information.', 69, NULL, NULL, 13, NULL, 'book', 12, 'expectcompletionon', 1651132800, 0, 1, 1, 1649844777, NULL, NULL)"
+  ],
+  "moodleMocks": [
+    {
+      "request": {
+        "method": "POST",
+        "path": "/webservice/rest/server.php",
+        "body": "wsfunction=tool_mobile_get_public_config&moodlewsrestformat=json&wstoken=wiremock-moodle-token"
+      },
+      "response": {
+        "body": {
+          "wwwroot": "https://school.moodledemo.net",
+          "httpswwwroot": "https://school.moodledemo.net",
+          "sitename": "Mount Orange",
+          "enablewebservices": 1,
+          "enablemobilewebservice": 1,
+          "maintenanceenabled": 0,
+          "maintenancemessage": "",
+          "typeoflogin": 1,
+          "launchurl": "https://school.moodledemo.net/admin/tool/mobile/launch.php"
+        }
+      }
+    }
+  ],
+  "request": {
+    "method": "GET",
+    "path": "/api/calendars/events/info",
+    "headers": {
+      "Authorization": "******"
+    }
+  },
+  "expectedResponse": {
+    "status": 200,
+    "body": {
+      "events": [
+        {
+          "id": 490,
+          "name": "About this course should be completed",
+          "description": "Learning outcomes and completion information.",
+          "courseId": 69,
+          "userId": 13,
+          "moduleName": "book",
+          "instance": 12,
+          "eventType": "expectcompletionon",
+          "timeStart": 1651132800,
+          "timeDuration": 0,
+          "visible": 1,
+          "sequence": 1,
+          "timeModified": 1649844777
+        }
+      ]
+    }
+  },
+  "authFixture": "classpath:/integration/shared/teacher-sso-auth.json"
+}
