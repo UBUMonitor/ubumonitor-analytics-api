@@ -1,0 +1,17 @@
+post:
+  tags:
+    - CourseForums
+  summary: Synchronize course forums
+  operationId: SyncCourseForums
+  description: Retrieves the latest forum, discussion, and post data for the specified course and updates the local tenant database.
+  parameters:
+    - $ref: '../../../components/parameters/courseId.yaml'
+  responses:
+    '200':
+      description: Successful synchronization of course forums, discussions, and posts.
+      content:
+        application/json:
+          schema:
+            $ref: '../../../components/schemas/courses/forums/info/response.yaml#/CourseForumsResponse'
+    '401':
+      $ref: '../../../components/responses/unauthorized_401.yaml'

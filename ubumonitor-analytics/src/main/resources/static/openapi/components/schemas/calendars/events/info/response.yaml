@@ -1,0 +1,98 @@
+CalendarEventsResponse:
+  type: object
+  required:
+    - events
+  properties:
+    events:
+      type: array
+      description: Calendar events synchronized from Moodle.
+      items:
+        $ref: '#/CalendarEvent'
+
+CalendarEvent:
+  type: object
+  required:
+    - id
+    - name
+    - courseId
+    - userId
+    - eventType
+    - timeStart
+    - timeDuration
+    - visible
+    - sequence
+    - timeModified
+  properties:
+    id:
+      type: integer
+      format: int64
+      description: Moodle event ID.
+    name:
+      type: string
+      description: Event name.
+    description:
+      type: string
+      nullable: true
+      description: Event description.
+    courseId:
+      type: integer
+      format: int64
+      description: Course ID associated with the event.
+    categoryId:
+      type: integer
+      format: int64
+      nullable: true
+      description: Category ID, when the event belongs to a category.
+    groupId:
+      type: integer
+      format: int64
+      nullable: true
+      description: Group ID associated with the event.
+    userId:
+      type: integer
+      format: int64
+      description: User ID associated with the event.
+    repeatId:
+      type: integer
+      format: int64
+      nullable: true
+      description: ID of the recurring event series.
+    moduleName:
+      type: string
+      nullable: true
+      description: Name of the Moodle module associated with the event.
+    instance:
+      type: integer
+      format: int64
+      nullable: true
+      description: Module instance ID.
+    eventType:
+      type: string
+      description: Moodle event type.
+    timeStart:
+      type: integer
+      format: int64
+      description: Event start as a Unix timestamp in seconds.
+    timeDuration:
+      type: integer
+      format: int64
+      description: Event duration in seconds.
+    visible:
+      type: integer
+      description: Whether the event is visible.
+    sequence:
+      type: integer
+      description: Event sequence number.
+    timeModified:
+      type: integer
+      format: int64
+      description: Last modification time as a Unix timestamp in seconds.
+    subscriptionId:
+      type: integer
+      format: int64
+      nullable: true
+      description: Calendar subscription ID.
+    uuid:
+      type: string
+      nullable: true
+      description: Unique identifier of an iCalendar event.

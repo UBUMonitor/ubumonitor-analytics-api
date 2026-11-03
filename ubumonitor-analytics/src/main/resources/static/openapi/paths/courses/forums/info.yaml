@@ -1,0 +1,17 @@
+get:
+  tags:
+    - CourseForums
+  summary: Get course forums information
+  operationId: GetCourseForumsInfo
+  description: Retrieves the persisted forums, discussions, and posts for the specified course.
+  parameters:
+    - $ref: '../../../components/parameters/courseId.yaml'
+  responses:
+    '200':
+      description: Successful retrieval of forum information. The response includes the forum information for the specified course.
+      content:
+        application/json:
+          schema:
+            $ref: '../../../components/schemas/courses/forums/info/response.yaml#/CourseForumsResponse'
+    '401':
+      $ref: '../../../components/responses/unauthorized_401.yaml'

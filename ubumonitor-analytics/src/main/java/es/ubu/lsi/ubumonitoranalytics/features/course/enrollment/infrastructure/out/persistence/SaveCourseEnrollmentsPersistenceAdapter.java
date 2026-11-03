@@ -1,31 +1,18 @@
 package es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.infrastructure.out.persistence;
 
+import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.CourseGroups.COURSE_GROUPS;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Courses.COURSES;
-import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Groups.GROUPS;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Roles.ROLES;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Users.USERS;
+import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.UsersCourseGroups.USERS_COURSE_GROUPS;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.UsersCourses.USERS_COURSES;
-import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.UsersGroups.USERS_GROUPS;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.UsersImages.USERS_IMAGES;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.UsersRoles.USERS_ROLES;
 
 import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.application.port.out.SaveCourseEnrollmentsPort;
-import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.Course;
-import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.CourseEnrollments;
-import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.Enrollment;
-import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.Group;
-import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.Role;
-import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.User;
-import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.UserCourse;
+import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.*;
 import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.infrastructure.out.persistence.mapper.EnrollmentWriteMapper;
-import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.CoursesRecord;
-import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.GroupsRecord;
-import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.RolesRecord;
-import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.UsersCoursesRecord;
-import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.UsersGroupsRecord;
-import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.UsersImagesRecord;
-import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.UsersRecord;
-import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.UsersRolesRecord;
+import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.*;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.UserPicture;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
 import java.time.Instant;
@@ -124,8 +111,8 @@ public class SaveCourseEnrollmentsPersistenceAdapter implements SaveCourseEnroll
         groups.stream()
             .map(
                 group -> {
-                  GroupsRecord record = jooq.dsl().newRecord(GROUPS);
-                  mapper.toGroupsRecord(group, record);
+                  CourseGroupsRecord record = jooq.dsl().newRecord(COURSE_GROUPS);
+                  mapper.toCourseGroupsRecord(group, record);
                   record.setCourseId(courseId);
                   record.setUpdatedAt(now);
                   return record;
@@ -163,11 +150,11 @@ public class SaveCourseEnrollmentsPersistenceAdapter implements SaveCourseEnroll
         .execute();
 
     jooq.dsl()
-        .update(USERS_GROUPS)
-        .set(USERS_GROUPS.ACTIVE, false)
-        .set(USERS_GROUPS.UPDATED_AT, now)
-        .where(USERS_GROUPS.COURSE_ID.eq(courseId))
-        .and(USERS_GROUPS.ACTIVE.isTrue())
+        .update(USERS_COURSE_GROUPS)
+        .set(USERS_COURSE_GROUPS.ACTIVE, false)
+        .set(USERS_COURSE_GROUPS.UPDATED_AT, now)
+        .where(USERS_COURSE_GROUPS.COURSE_ID.eq(courseId))
+        .and(USERS_COURSE_GROUPS.ACTIVE.isTrue())
         .execute();
 
     jooq.dsl()
@@ -215,7 +202,8 @@ public class SaveCourseEnrollmentsPersistenceAdapter implements SaveCourseEnroll
                     enrollment.getGroups().stream()
                         .map(
                             group -> {
-                              UsersGroupsRecord record = jooq.dsl().newRecord(USERS_GROUPS);
+                              UsersCourseGroupsRecord record =
+                                  jooq.dsl().newRecord(USERS_COURSE_GROUPS);
                               record.setUserId(enrollment.getUser().getId());
                               record.setGroupId(group.getId());
                               record.setCourseId(courseId);

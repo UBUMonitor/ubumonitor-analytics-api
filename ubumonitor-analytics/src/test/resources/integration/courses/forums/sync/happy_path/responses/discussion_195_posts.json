@@ -1,0 +1,140 @@
+{
+  "posts": [
+    {
+      "id": 439,
+      "subject": "Re: Welcome to the course!",
+      "replysubject": "Re: Welcome to the course!",
+      "label": "Re: Welcome to the course! by Jeffrey Sanders",
+      "message": "<div class=\"text_to_html\">I have just been informed Mount Orange is running Moodle 4.0, so please try out the activities and enjoy the experience.</div>",
+      "messageformat": 1,
+      "author": {
+        "id": 13,
+        "fullname": "Jeffrey Sanders",
+        "initials": "JS",
+        "isdeleted": false,
+        "groups": [],
+        "urls": {
+          "profile": "https://school.moodledemo.net/user/view.php?id=13&course=69",
+          "profileimage": "https://school.moodledemo.net/pluginfile.php/160/user/icon/boost/f1?rev=75854"
+        }
+      },
+      "discussionid": 195,
+      "hasparent": true,
+      "parentid": 432,
+      "timecreated": 1649738064,
+      "timemodified": 1649738064,
+      "unread": false,
+      "isdeleted": false,
+      "isprivatereply": false,
+      "haswordcount": false,
+      "wordcount": null,
+      "charcount": null,
+      "capabilities": {
+        "view": true,
+        "edit": true,
+        "delete": true,
+        "split": true,
+        "reply": true,
+        "selfenrol": false,
+        "export": false,
+        "controlreadstatus": false,
+        "canreplyprivately": true
+      },
+      "urls": {
+        "view": "https://school.moodledemo.net/mod/forum/discuss.php?d=195#p439",
+        "viewisolated": "https://school.moodledemo.net/mod/forum/discuss.php?d=195&parent=439",
+        "viewparent": "https://school.moodledemo.net/mod/forum/discuss.php?d=195#p432",
+        "edit": "https://school.moodledemo.net/mod/forum/post.php?edit=439",
+        "delete": "https://school.moodledemo.net/mod/forum/post.php?delete=439",
+        "split": "https://school.moodledemo.net/mod/forum/post.php?prune=439",
+        "reply": "https://school.moodledemo.net/mod/forum/post.php?reply=439#mformforum",
+        "export": null,
+        "markasread": null,
+        "markasunread": null,
+        "discuss": "https://school.moodledemo.net/mod/forum/discuss.php?d=195"
+      },
+      "attachments": [],
+      "messageinlinefiles": [],
+      "tags": [],
+      "html": {
+        "rating": null,
+        "taglist": null,
+        "authorsubheading": "by <a href=\"https://school.moodledemo.net/user/view.php?id=13&course=69\">Jeffrey Sanders</a> - <time datetime=\"2022-04-12T05:34:24+01:00\">Tuesday, 12 April 2022, 5:34 AM</time>"
+      }
+    },
+    {
+      "id": 432,
+      "subject": "Welcome to the course!",
+      "replysubject": "Welcome to the course!",
+      "label": "Welcome to the course! by Jeffrey Sanders",
+      "message": "<p dir=\"ltr\" style=\"text-align:left;\">Welcome to all our teachers, student teachers and those interested in a future career in teaching!</p><p dir=\"ltr\" style=\"text-align:left;\">This course, designed to showcase Moodle 4.0, is all about teaching and learning mindfully.</p>",
+      "messageformat": 1,
+      "author": {
+        "id": 13,
+        "fullname": "Jeffrey Sanders",
+        "initials": "JS",
+        "isdeleted": false,
+        "groups": [],
+        "urls": {
+          "profile": "https://school.moodledemo.net/user/view.php?id=13&course=69",
+          "profileimage": "https://school.moodledemo.net/pluginfile.php/160/user/icon/boost/f1?rev=75854"
+        }
+      },
+      "discussionid": 195,
+      "hasparent": false,
+      "parentid": null,
+      "timecreated": 1649318591,
+      "timemodified": 1649318591,
+      "unread": false,
+      "isdeleted": false,
+      "isprivatereply": false,
+      "haswordcount": false,
+      "wordcount": null,
+      "charcount": null,
+      "capabilities": {
+        "view": true,
+        "edit": true,
+        "delete": true,
+        "split": false,
+        "reply": true,
+        "selfenrol": false,
+        "export": false,
+        "controlreadstatus": false,
+        "canreplyprivately": true
+      },
+      "urls": {
+        "view": "https://school.moodledemo.net/mod/forum/discuss.php?d=195#p432",
+        "viewisolated": "https://school.moodledemo.net/mod/forum/discuss.php?d=195&parent=432",
+        "viewparent": null,
+        "edit": "https://school.moodledemo.net/mod/forum/post.php?edit=432",
+        "delete": "https://school.moodledemo.net/mod/forum/post.php?delete=432",
+        "split": null,
+        "reply": "https://school.moodledemo.net/mod/forum/post.php?reply=432#mformforum",
+        "export": null,
+        "markasread": null,
+        "markasunread": null,
+        "discuss": "https://school.moodledemo.net/mod/forum/discuss.php?d=195"
+      },
+      "attachments": [],
+      "messageinlinefiles": [],
+      "tags": [],
+      "html": {
+        "rating": null,
+        "taglist": null,
+        "authorsubheading": "by <a href=\"https://school.moodledemo.net/user/view.php?id=13&course=69\">Jeffrey Sanders</a> - <time datetime=\"2022-04-07T09:03:11+01:00\">Thursday, 7 April 2022, 9:03 AM</time>"
+      }
+    }
+  ],
+  "forumid": 103,
+  "courseid": 69,
+  "ratinginfo": {
+    "contextid": 1592,
+    "component": "mod_forum",
+    "ratingarea": "post",
+    "canviewall": null,
+    "canviewany": null,
+    "scales": [],
+    "ratings": []
+  },
+  "warnings": []
+}

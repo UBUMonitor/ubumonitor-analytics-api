@@ -1,4 +1,5 @@
 post:
+  security: [ ]
   tags:
     - System
   summary: Shutdown the server

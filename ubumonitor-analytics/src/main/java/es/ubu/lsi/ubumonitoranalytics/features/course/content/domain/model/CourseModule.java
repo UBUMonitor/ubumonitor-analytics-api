@@ -17,4 +17,5 @@ public class CourseModule {
   private String description;
 
   private Boolean visible;
+  private Long instance;
 }

@@ -59,7 +59,7 @@ moodle:
     connect-timeout: 5000
     read-timeout: 30000
   db:
-    base-path: ./moodle_dbs
+    base-path: moodle_dbs
 logging:
   level:
     org.jooq.Constants: WARN

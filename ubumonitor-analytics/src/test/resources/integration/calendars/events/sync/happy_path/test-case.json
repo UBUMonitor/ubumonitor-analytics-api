@@ -1,0 +1,90 @@
+{
+  "databaseSetup": [],
+  "moodleMocks": [
+    {
+      "request": {
+        "method": "POST",
+        "path": "/webservice/rest/server.php",
+        "body": "wsfunction=tool_mobile_get_public_config&moodlewsrestformat=json&wstoken=wiremock-moodle-token"
+      },
+      "response": {
+        "body": {
+          "wwwroot": "https://school.moodledemo.net",
+          "httpswwwroot": "https://school.moodledemo.net",
+          "sitename": "Mount Orange",
+          "enablewebservices": 1,
+          "enablemobilewebservice": 1,
+          "maintenanceenabled": 0,
+          "maintenancemessage": "",
+          "typeoflogin": 1,
+          "launchurl": "https://school.moodledemo.net/admin/tool/mobile/launch.php"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "path": "/webservice/rest/server.php",
+        "body": "options%5Btimeend%5D=0&options%5Bsiteevents%5D=1&options%5Buserevents%5D=1&options%5Bignorehidden%5D=0&options%5Btimestart%5D=0&events%5Bcourseids%5D%5B0%5D=69&wsfunction=core_calendar_get_calendar_events&moodlewsrestformat=json&wstoken=wiremock-moodle-token"
+      },
+      "response": {
+        "body": {
+          "events": [
+            {
+              "id": 490,
+              "name": "About this course should be completed",
+              "description": "<div class=\"no-overflow\"><p dir=\"ltr\" style=\"text-align:left;\">Learning outcomes and completion information.</p></div>",
+              "format": 1,
+              "courseid": 69,
+              "categoryid": null,
+              "groupid": 0,
+              "userid": 13,
+              "repeatid": null,
+              "modulename": "book",
+              "instance": 12,
+              "eventtype": "expectcompletionon",
+              "timestart": 1651132800,
+              "timeduration": 0,
+              "visible": 1,
+              "sequence": 1,
+              "timemodified": 1649844777,
+              "subscriptionid": null
+            }
+          ],
+          "warnings": []
+        }
+      }
+    }
+  ],
+  "request": {
+    "method": "POST",
+    "path": "/api/calendars/events/sync?courseIds=69",
+    "headers": {
+      "Authorization": "******"
+    }
+  },
+  "expectedResponse": {
+    "status": 200,
+    "body": {
+      "events": [
+        {
+          "id": 490,
+          "name": "About this course should be completed",
+          "description": "Learning outcomes and completion information.",
+          "courseId": 69,
+          "groupId": 0,
+          "userId": 13,
+          "moduleName": "book",
+          "instance": 12,
+          "eventType": "expectcompletionon",
+          "timeStart": 1651132800,
+          "timeDuration": 0,
+          "visible": 1,
+          "sequence": 1,
+          "timeModified": 1649844777
+        }
+      ]
+    }
+  },
+  "authFixture": "classpath:/integration/shared/teacher-sso-auth.json"
+}

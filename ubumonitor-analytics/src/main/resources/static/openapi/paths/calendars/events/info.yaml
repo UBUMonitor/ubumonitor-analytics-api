@@ -1,0 +1,25 @@
+get:
+  tags:
+    - Calendars
+  summary: Get calendar events
+  operationId: GetCalendarEventsInfo
+  description: Retrieves locally stored calendar events. If courseIds is omitted, all events are returned.
+  parameters:
+    - name: courseIds
+      in: query
+      description: Moodle course IDs used to filter calendar events. If omitted, all events are returned.
+      required: false
+      schema:
+        type: array
+        items:
+          type: integer
+          format: int64
+  responses:
+    '200':
+      description: Calendar events.
+      content:
+        application/json:
+          schema:
+            $ref: '../../../components/schemas/calendars/events/info/response.yaml#/CalendarEventsResponse'
+    '401':
+      $ref: '../../../components/responses/unauthorized_401.yaml'
