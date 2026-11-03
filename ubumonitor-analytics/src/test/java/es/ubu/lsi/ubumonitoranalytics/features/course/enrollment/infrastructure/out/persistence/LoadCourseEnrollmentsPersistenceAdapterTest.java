@@ -4,13 +4,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.CourseEnrollments;
-import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.Enrollment;
-import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.User;
+import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.*;
 import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.infrastructure.out.persistence.mapper.EnrollmentReadMapper;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
 import es.ubu.lsi.ubumonitoranalytics.util.DatabaseUtil;
 import java.nio.file.Path;
+import java.sql.Connection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -20,6 +19,8 @@ import org.jooq.impl.DSL;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.mapstruct.factory.Mappers;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.datasource.init.ScriptUtils;
 
 class LoadCourseEnrollmentsPersistenceAdapterTest {
 
@@ -32,7 +33,7 @@ class LoadCourseEnrollmentsPersistenceAdapterTest {
         "jdbc:sqlite:" + tempDir.resolve("course-enrollments.db").toString().replace("\\", "/");
     try (var connection = DatabaseUtil.createDataSource(jdbcUrl, "test-key").getConnection()) {
       DSLContext dsl = DSL.using(connection, SQLDialect.SQLITE);
-      createTables(dsl);
+      createTables(connection);
       insertCourse(dsl, 2L, "Requested course");
       insertCourse(dsl, 3L, "Other course");
       insertUser(dsl, 13L, "First user");
@@ -61,9 +62,9 @@ class LoadCourseEnrollmentsPersistenceAdapterTest {
           Set.of(13L, 14L), response.users().stream().map(User::getId).collect(Collectors.toSet()));
       assertEquals(
           Set.of(2L, 3L),
-          response.courses().stream().map(course -> course.getId()).collect(Collectors.toSet()));
-      assertEquals(List.of(7L), response.groups().stream().map(group -> group.getId()).toList());
-      assertEquals(List.of(5L), response.roles().stream().map(role -> role.getId()).toList());
+          response.courses().stream().map(Course::getId).collect(Collectors.toSet()));
+      assertEquals(List.of(7L), response.groups().stream().map(Group::getId).toList());
+      assertEquals(List.of(5L), response.roles().stream().map(Role::getId).toList());
 
       Enrollment firstEnrollment =
           response.getEnrollments().stream()
@@ -75,102 +76,15 @@ class LoadCourseEnrollmentsPersistenceAdapterTest {
           firstEnrollment.getCourses().stream()
               .map(userCourse -> userCourse.getCourse().getId())
               .collect(Collectors.toSet()));
-      assertEquals(
-          List.of(7L), firstEnrollment.getGroups().stream().map(group -> group.getId()).toList());
-      assertEquals(
-          List.of(5L), firstEnrollment.getRoles().stream().map(role -> role.getId()).toList());
+      assertEquals(List.of(7L), firstEnrollment.getGroups().stream().map(Group::getId).toList());
+      assertEquals(List.of(5L), firstEnrollment.getRoles().stream().map(Role::getId).toList());
       assertEquals(100L, firstEnrollment.lastAccessTo(2L));
     }
   }
 
-  private void createTables(DSLContext dsl) {
-    dsl.execute(
-        """
-        CREATE TABLE USERS (
-          ID BIGINT PRIMARY KEY,
-          FULL_NAME VARCHAR(255),
-          FIRST_NAME VARCHAR(255),
-          LAST_NAME VARCHAR(255),
-          EMAIL VARCHAR(255),
-          FIRST_ACCESS BIGINT,
-          LAST_ACCESS BIGINT,
-          CREATED_AT BIGINT NOT NULL DEFAULT 0,
-          UPDATED_AT BIGINT NOT NULL DEFAULT 0
-        )
-        """);
-    dsl.execute(
-        """
-        CREATE TABLE COURSES (
-          ID BIGINT PRIMARY KEY,
-          FULL_NAME VARCHAR(255),
-          SHORT_NAME VARCHAR(255),
-          SHOW_GRADES BOOLEAN NOT NULL DEFAULT 0,
-          ENABLE_COMPLETION BOOLEAN NOT NULL DEFAULT 0,
-          START_DATE BIGINT,
-          END_DATE BIGINT,
-          TIME_MODIFIED BIGINT,
-          LAST_SYNC BIGINT,
-          CREATED_AT BIGINT NOT NULL DEFAULT 0,
-          UPDATED_AT BIGINT NOT NULL DEFAULT 0
-        )
-        """);
-    dsl.execute(
-        """
-        CREATE TABLE USERS_COURSES (
-          USER_ID BIGINT NOT NULL,
-          COURSE_ID BIGINT NOT NULL,
-          LAST_COURSE_ACCESS BIGINT,
-          IS_FAVOURITE BOOLEAN NOT NULL DEFAULT 0,
-          ACTIVE BOOLEAN NOT NULL DEFAULT 1,
-          CREATED_AT BIGINT NOT NULL DEFAULT 0,
-          UPDATED_AT BIGINT NOT NULL DEFAULT 0,
-          PRIMARY KEY (USER_ID, COURSE_ID)
-        )
-        """);
-    dsl.execute(
-        """
-        CREATE TABLE GROUPS (
-          ID BIGINT PRIMARY KEY,
-          COURSE_ID BIGINT NOT NULL,
-          NAME VARCHAR(255),
-          DESCRIPTION TEXT,
-          CREATED_AT BIGINT NOT NULL DEFAULT 0,
-          UPDATED_AT BIGINT NOT NULL DEFAULT 0
-        )
-        """);
-    dsl.execute(
-        """
-        CREATE TABLE USERS_GROUPS (
-          USER_ID BIGINT NOT NULL,
-          GROUP_ID BIGINT NOT NULL,
-          COURSE_ID BIGINT NOT NULL,
-          ACTIVE BOOLEAN NOT NULL DEFAULT 1,
-          CREATED_AT BIGINT NOT NULL DEFAULT 0,
-          UPDATED_AT BIGINT NOT NULL DEFAULT 0,
-          PRIMARY KEY (USER_ID, GROUP_ID, COURSE_ID)
-        )
-        """);
-    dsl.execute(
-        """
-        CREATE TABLE ROLES (
-          ID BIGINT PRIMARY KEY,
-          NAME VARCHAR(255),
-          CREATED_AT BIGINT NOT NULL DEFAULT 0,
-          UPDATED_AT BIGINT NOT NULL DEFAULT 0
-        )
-        """);
-    dsl.execute(
-        """
-        CREATE TABLE USERS_ROLES (
-          ROLE_ID BIGINT NOT NULL,
-          USER_ID BIGINT NOT NULL,
-          COURSE_ID BIGINT NOT NULL,
-          ACTIVE BOOLEAN NOT NULL DEFAULT 1,
-          CREATED_AT BIGINT NOT NULL DEFAULT 0,
-          UPDATED_AT BIGINT NOT NULL DEFAULT 0,
-          PRIMARY KEY (USER_ID, ROLE_ID, COURSE_ID)
-        )
-        """);
+  private void createTables(Connection connection) {
+    ScriptUtils.executeSqlScript(
+        connection, new ClassPathResource("db/test/course-enrollments-schema.sql"));
   }
 
   private void insertCourse(DSLContext dsl, long id, String name) {
@@ -193,7 +107,8 @@ class LoadCourseEnrollmentsPersistenceAdapterTest {
 
   private void insertGroup(DSLContext dsl, long id, long courseId, String name) {
     dsl.execute(
-        "INSERT INTO GROUPS (ID, COURSE_ID, NAME) VALUES ({0}, {1}, {2})", id, courseId, name);
+        "INSERT INTO COURSE_GROUPS (ID, COURSE_ID, NAME) VALUES ({0}, {1}, {2})",
+        id, courseId, name);
   }
 
   private void insertRole(DSLContext dsl, long id, String name) {
@@ -203,7 +118,7 @@ class LoadCourseEnrollmentsPersistenceAdapterTest {
   private void insertGroupMembership(DSLContext dsl, long userId, long groupId, long courseId) {
     dsl.execute(
         """
-        INSERT INTO USERS_GROUPS (USER_ID, GROUP_ID, COURSE_ID, ACTIVE)
+        INSERT INTO USERS_COURSE_GROUPS (USER_ID, GROUP_ID, COURSE_ID, ACTIVE)
         VALUES ({0}, {1}, {2}, TRUE)
         """,
         userId, groupId, courseId);

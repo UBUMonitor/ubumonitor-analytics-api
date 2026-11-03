@@ -1,4 +1,5 @@
 get:
+  security: [ ]
   tags:
     - Databases
   operationId: listDatabases

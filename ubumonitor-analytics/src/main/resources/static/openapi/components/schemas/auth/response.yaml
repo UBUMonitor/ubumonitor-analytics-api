@@ -3,6 +3,7 @@ AuthResponse:
   required:
     - accessToken
     - tokenType
+    - user
   properties:
     accessToken:
       type: string
@@ -11,3 +12,5 @@ AuthResponse:
       type: string
       description: Type of the token, usually "Bearer"
       example: Bearer
+    user:
+      $ref: '../users/me/info/response.yaml#/UserInfo'

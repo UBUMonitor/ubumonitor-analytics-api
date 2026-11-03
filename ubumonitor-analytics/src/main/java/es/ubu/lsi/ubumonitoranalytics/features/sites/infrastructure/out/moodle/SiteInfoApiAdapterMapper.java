@@ -17,6 +17,9 @@ public interface SiteInfoApiAdapterMapper {
 
   @Mapping(target = "userName", source = "username")
   @Mapping(target = "userId", source = "userid")
+  @Mapping(target = "firstName", source = "firstname")
+  @Mapping(target = "lastName", source = "lastname")
+  @Mapping(target = "fullName", source = "fullname")
   @Mapping(target = "siteName", source = "sitename")
   @Mapping(target = "host", source = "siteurl")
   @Mapping(target = "id", source = "siteid")

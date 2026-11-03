@@ -1,6 +1,7 @@
 package es.ubu.lsi.ubumonitoranalytics.features.auth.infrastructure.in.rest;
 
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.*;
+import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.AuthCurrentUser;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.AuthInput;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.SessionToken;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.GlobalMapperConfig;
@@ -36,7 +37,10 @@ public interface AuthMapper {
   /** Maps an application session token to the generated REST response. */
   @Mapping(target = "tokenType", constant = "Bearer")
   @Mapping(target = "accessToken", source = "token")
+  @Mapping(target = "user", source = "currentUser")
   AuthResponseDto toAuthResponse(SessionToken sessionToken);
+
+  UserInfoDto toAuthResponseUser(AuthCurrentUser currentUser);
 
   /** Maps an SSO launch credential to the application authentication model. */
   @Mapping(target = "username", ignore = true)

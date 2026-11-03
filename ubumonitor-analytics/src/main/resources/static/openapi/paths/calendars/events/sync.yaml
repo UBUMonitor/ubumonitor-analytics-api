@@ -1,0 +1,25 @@
+post:
+  tags:
+    - Calendars
+  summary: Synchronize calendar events
+  operationId: SyncCalendarEvents
+  description: Retrieves calendar events from Moodle and replaces the locally stored events. If courseIds is omitted, all events are synchronized.
+  parameters:
+    - name: courseIds
+      in: query
+      description: Moodle course IDs whose calendar events should be synchronized. If omitted, Moodle returns all events.
+      required: false
+      schema:
+        type: array
+        items:
+          type: integer
+          format: int64
+  responses:
+    '200':
+      description: Calendar events synchronized successfully.
+      content:
+        application/json:
+          schema:
+            $ref: '../../../components/schemas/calendars/events/info/response.yaml#/CalendarEventsResponse'
+    '401':
+      $ref: '../../../components/responses/unauthorized_401.yaml'

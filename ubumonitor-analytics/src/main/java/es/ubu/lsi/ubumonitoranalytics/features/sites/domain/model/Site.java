@@ -8,6 +8,9 @@ public class Site {
   private Long id;
   private Long userId;
   private String userName;
+  private String firstName;
+  private String lastName;
+  private String fullName;
   private URI host;
   private String siteName;
   private String versionNumber;

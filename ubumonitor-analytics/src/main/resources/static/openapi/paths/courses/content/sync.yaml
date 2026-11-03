@@ -5,13 +5,7 @@ post:
   operationId: SyncCourseContent
   description: Retrieves the latest sections and modules for the specified course from Moodle and stores them in the local tenant database.
   parameters:
-    - name: courseId
-      in: path
-      description: The unique identifier of the course for which to synchronize enrollments.
-      required: true
-      schema:
-        type: integer
-        format: int64
+    - $ref: '../../../components/parameters/courseId.yaml'
   responses:
     '200':
       description: Successful synchronization of enrollments. The response includes the updated enrollment information for the user's courses.
@@ -20,6 +14,6 @@ post:
           schema:
             $ref: '../../../components/schemas/courses/content/info/response.yaml#/CourseContentResponse'
     '401':
-      $ref: '../../../openapi.yaml#/components/responses/unauthorized_401'
+      $ref: '../../../components/responses/unauthorized_401.yaml'
 
 

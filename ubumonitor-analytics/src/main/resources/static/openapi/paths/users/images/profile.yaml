@@ -12,13 +12,7 @@ get:
       required: false
       schema:
         type: string
-    - name: userId
-      in: path
-      description: Moodle user identifier.
-      required: true
-      schema:
-        type: integer
-        format: int64
+    - $ref: '../../../components/parameters/userId.yaml'
     - name: host
       in: query
       description: Moodle site URL.

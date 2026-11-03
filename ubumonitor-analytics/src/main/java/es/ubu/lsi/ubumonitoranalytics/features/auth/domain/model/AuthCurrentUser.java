@@ -1,5 +1,6 @@
 package es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model;
 
+import java.net.URI;
 import java.time.ZoneId;
 import lombok.Data;
 
@@ -14,4 +15,5 @@ public class AuthCurrentUser {
   private String email;
   private ZoneId timeZone;
   private String lang;
+  private URI userImageUrl;
 }

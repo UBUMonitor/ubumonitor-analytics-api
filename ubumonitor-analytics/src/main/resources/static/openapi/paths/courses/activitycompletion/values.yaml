@@ -5,13 +5,7 @@ get:
   operationId: GetCourseActivityCompletionValues
   description: Retrieves the activity completion information for a course.
   parameters:
-    - name: courseId
-      in: path
-      description: The unique identifier of the course for which to retrieve activity completion information.
-      required: true
-      schema:
-        type: integer
-        format: int64
+    - $ref: '../../../components/parameters/courseId.yaml'
 
     - name: moduleIds
       in: query
@@ -43,4 +37,4 @@ get:
           schema:
             $ref: '../../../components/schemas/courses/activitycompletion/info/response.yaml#/CourseActivityCompletionResponse'
     '401':
-      $ref: '../../../openapi.yaml#/components/responses/unauthorized_401'
+      $ref: '../../../components/responses/unauthorized_401.yaml'

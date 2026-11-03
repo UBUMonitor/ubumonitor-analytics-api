@@ -1,0 +1,78 @@
+{
+  "posts": [
+    {
+      "id": 451,
+      "subject": "And again!",
+      "replysubject": "And again!",
+      "label": "And again! by Jeffrey Sanders",
+      "message": "<p>We're now on Moodle LMS 4.2 - as a teacher I love it! I can add activities anywhere and also bulk move, delete and change availability!</p>",
+      "messageformat": 1,
+      "author": {
+        "id": 13,
+        "fullname": "Jeffrey Sanders",
+        "initials": "JS",
+        "isdeleted": false,
+        "groups": [],
+        "urls": {
+          "profile": "https://school.moodledemo.net/user/view.php?id=13&course=69",
+          "profileimage": "https://school.moodledemo.net/pluginfile.php/160/user/icon/boost/f1?rev=75854"
+        }
+      },
+      "discussionid": 205,
+      "hasparent": false,
+      "parentid": null,
+      "timecreated": 1682491874,
+      "timemodified": 1682491874,
+      "unread": false,
+      "isdeleted": false,
+      "isprivatereply": false,
+      "haswordcount": false,
+      "wordcount": null,
+      "charcount": null,
+      "capabilities": {
+        "view": true,
+        "edit": true,
+        "delete": true,
+        "split": false,
+        "reply": true,
+        "selfenrol": false,
+        "export": false,
+        "controlreadstatus": false,
+        "canreplyprivately": true
+      },
+      "urls": {
+        "view": "https://school.moodledemo.net/mod/forum/discuss.php?d=205#p451",
+        "viewisolated": "https://school.moodledemo.net/mod/forum/discuss.php?d=205&parent=451",
+        "viewparent": null,
+        "edit": "https://school.moodledemo.net/mod/forum/post.php?edit=451",
+        "delete": "https://school.moodledemo.net/mod/forum/post.php?delete=451",
+        "split": null,
+        "reply": "https://school.moodledemo.net/mod/forum/post.php?reply=451#mformforum",
+        "export": null,
+        "markasread": null,
+        "markasunread": null,
+        "discuss": "https://school.moodledemo.net/mod/forum/discuss.php?d=205"
+      },
+      "attachments": [],
+      "messageinlinefiles": [],
+      "tags": [],
+      "html": {
+        "rating": null,
+        "taglist": null,
+        "authorsubheading": "by <a href=\"https://school.moodledemo.net/user/view.php?id=13&course=69\">Jeffrey Sanders</a> - <time datetime=\"2023-04-26T07:51:14+01:00\">Wednesday, 26 April 2023, 7:51 AM</time>"
+      }
+    }
+  ],
+  "forumid": 103,
+  "courseid": 69,
+  "ratinginfo": {
+    "contextid": 1592,
+    "component": "mod_forum",
+    "ratingarea": "post",
+    "canviewall": null,
+    "canviewany": null,
+    "scales": [],
+    "ratings": []
+  },
+  "warnings": []
+}

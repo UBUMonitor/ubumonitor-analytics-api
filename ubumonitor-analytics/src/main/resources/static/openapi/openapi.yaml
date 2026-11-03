@@ -1,4 +1,4 @@
-openapi: 3.0.0
+openapi: 3.0.3
 info:
   title: UBU Monitor Analytics
   version: "1.0.0"
@@ -6,92 +6,73 @@ info:
     UBUMonitor Analytics API provides endpoints for authenticating users, synchronizing course and enrollment information, and retrieving details about courses and enrollments. It allows clients to interact with the UBUMonitor site to manage user sessions, access course data, and keep enrollment information up-to-date. The API is designed to facilitate integration with UBUMonitor and enable efficient management of user authentication and course-related data.
 
 servers:
-  - url: http://localhost:9090
+  - url: http://127.0.0.1:9090
     description: Local development server
-components:
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: Opaque session token
-  responses:
-    bad_request_400:
-      description: Bad Request - invalid field or missing data
-      content:
-        application/json:
-          schema:
-            $ref: './components/schemas/common/error_response.yaml#/ErrorResponse'
-          example:
-            code: BAD_REQUEST
-            message: "Missing required header: X-Moodle-Host"
-            timestamp: "2026-04-05T02:41:49.5759267+02:00"
-            traceId: 4a253e64-5203-477a-8f4c-db25fd11a067
-            errors:
-              - field: exception
-                message: '400 BAD_REQUEST "Missing required header: X-Moodle-Host"'
-    unauthorized_401:
-      description: Unauthorized - token missing or invalid
-      content:
-        application/json:
-          schema:
-            $ref: './components/schemas/common/error_response.yaml#/ErrorResponse'
-          example:
-            code: UNAUTHORIZED
-            message: Invalid token - token not found
-            timestamp: "2026-03-19T01:05:54.8306311+01:00"
-            traceId: "56e89575-dc49-4a83-b84c-0d5bff268ea7"
-            errors:
-              - field: exception
-                message: '401 UNAUTHORIZED "Invalid token - token not found"'
-    not_found_404:
-      description: Not found
-      content:
-        application/json:
-          schema:
-            $ref: './components/schemas/common/error_response.yaml#/ErrorResponse'
-          example:
-            code: NOT_FOUND
-            message: Invalid token - token not found
-            timestamp: "2026-03-19T01:05:54.8306311+01:00"
-            traceId: "56e89575-dc49-4a83-b84c-0d5bff268ea7"
-            errors:
-              - field: exception
-                message: '404 NOT FOUND'
-    conflict_409:
-      description: Conflict - resource already exists or request conflicts with current state
-      content:
-        application/json:
-          schema:
-            $ref: './components/schemas/common/error_response.yaml#/ErrorResponse'
-          example:
-            code: CONFLICT
-            message: Resource already exists or conflicts with current state
-            timestamp: "2026-03-19T01:05:54.8306311+01:00"
-            traceId: "56e89575-dc49-4a83-b84c-0d5bff268ea7"
-            errors:
-              - field: exception
-                message: '409 CONFLICT "Resource already exists or conflicts with current state"'
-
 
 security:
   - bearerAuth: [ ]
 
+tags:
+  - name: Auth
+    description: Authentication and session management.
+  - name: Sites
+    description: Site information and synchronization.
+  - name: Users
+    description: Current user information and user images.
+  - name: UserEnrollments
+    description: Enrollments of the current user.
+  - name: Calendars
+    description: Calendar events.
+  - name: CourseEnrollments
+    description: Enrollments of a specific course.
+  - name: CourseContent
+    description: Content (sections and modules) of a course.
+  - name: CourseGrades
+    description: Grade items and grade values of a course.
+  - name: CourseLogs
+    description: Activity logs of a course.
+  - name: CourseActivityCompletion
+    description: Activity completion information of a course.
+  - name: CourseForums
+    description: Forums, discussions and posts of a course.
+  - name: Databases
+    description: Database information.
+  - name: Health
+    description: Service health check.
+  - name: System
+    description: System administration operations.
+
+components:
+  securitySchemes:
+    bearerAuth:
+      $ref: './components/securitySchemes/bearerAuth.yaml'
+  parameters:
+    courseId:
+      $ref: './components/parameters/courseId.yaml'
+    userId:
+      $ref: './components/parameters/userId.yaml'
+  responses:
+    bad_request_400:
+      $ref: './components/responses/bad_request_400.yaml'
+    unauthorized_401:
+      $ref: './components/responses/unauthorized_401.yaml'
+    not_found_404:
+      $ref: './components/responses/not_found_404.yaml'
+    conflict_409:
+      $ref: './components/responses/conflict_409.yaml'
+
 paths:
   /public/system/health:
     $ref: './paths/system/health.yaml'
-
   /public/system/shutdown:
     $ref: './paths/system/shutdown.yaml'
-
   /public/system/databases/info:
     $ref: './paths/system/databases.yaml'
 
   /public/auth/credentials:
     $ref: './paths/auth/credentials.yaml'
-
   /public/auth/sso:
     $ref: './paths/auth/sso.yaml'
-
   /public/auth/offline:
     $ref: './paths/auth/offline.yaml'
 
@@ -99,73 +80,67 @@ paths:
     $ref: './paths/sites/public-info.yaml'
 
   /public/users/{userId}/images/profile:
-    $ref: "./paths/users/images/profile.yaml"
-
-
+    $ref: './paths/users/images/profile.yaml'
 
   /auth/logout:
     $ref: './paths/auth/logout.yaml'
 
-
   /sites/sync:
     $ref: './paths/sites/sync.yaml'
-
   /sites/info:
     $ref: './paths/sites/info.yaml'
 
-
   /enrollments/sync:
     $ref: './paths/enrollments/sync.yaml'
-
   /enrollments/info:
     $ref: './paths/enrollments/info.yaml'
 
   /courses/{courseId}/enrollments/info:
     $ref: './paths/courses/enrollments/info.yaml'
-
   /courses/{courseId}/enrollments/sync:
     $ref: './paths/courses/enrollments/sync.yaml'
 
-
   /courses/{courseId}/content/sync:
     $ref: './paths/courses/content/sync.yaml'
-
   /courses/{courseId}/content/info:
     $ref: './paths/courses/content/info.yaml'
 
   /courses/{courseId}/grades/sync:
     $ref: './paths/courses/grades/sync.yaml'
-
   /courses/{courseId}/grades/info:
     $ref: './paths/courses/grades/info.yaml'
-
   /courses/{courseId}/grades/values:
     $ref: './paths/courses/grades/values.yaml'
 
   /courses/{courseId}/logs/sync:
-    $ref: './paths/courses/courselogs/sync.yaml'
-
+    $ref: './paths/courses/logs/sync.yaml'
   /courses/{courseId}/logs/import:
-    $ref: './paths/courses/courselogs/import.yaml'
-
+    $ref: './paths/courses/logs/import.yaml'
   /courses/{courseId}/logs/info:
-    $ref: './paths/courses/courselogs/info.yaml'
+    $ref: './paths/courses/logs/info.yaml'
   /courses/{courseId}/logs/list:
-    $ref: './paths/courses/courselogs/list.yaml'
-
+    $ref: './paths/courses/logs/list.yaml'
   /courses/{courseId}/logs/statistics:
-    $ref: './paths/courses/courselogs/statistics.yaml'
+    $ref: './paths/courses/logs/statistics.yaml'
 
   /courses/{courseId}/activitycompletion/sync:
     $ref: './paths/courses/activitycompletion/sync.yaml'
-
   /courses/{courseId}/activitycompletion/info:
     $ref: './paths/courses/activitycompletion/info.yaml'
   /courses/{courseId}/activitycompletion/values:
     $ref: './paths/courses/activitycompletion/values.yaml'
 
+  /courses/{courseId}/forums/sync:
+    $ref: './paths/courses/forums/sync.yaml'
+  /courses/{courseId}/forums/info:
+    $ref: './paths/courses/forums/info.yaml'
+
+  /calendars/events/sync:
+    $ref: './paths/calendars/events/sync.yaml'
+  /calendars/events/info:
+    $ref: './paths/calendars/events/info.yaml'
+
   /users/me/info:
     $ref: './paths/users/me/info.yaml'
-
   /users/images/document:
     $ref: './paths/users/images/document.yaml'
