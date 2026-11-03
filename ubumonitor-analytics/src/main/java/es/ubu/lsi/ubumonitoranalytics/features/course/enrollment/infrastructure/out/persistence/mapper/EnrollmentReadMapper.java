@@ -4,10 +4,7 @@ import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.Co
 import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.Group;
 import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.Role;
 import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.User;
-import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.CoursesRecord;
-import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.GroupsRecord;
-import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.RolesRecord;
-import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.UsersRecord;
+import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.*;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.GlobalMapperConfig;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -22,7 +19,7 @@ public interface EnrollmentReadMapper {
 
   Course toCourse(CoursesRecord source);
 
-  Group toGroup(GroupsRecord source);
+  Group toGroup(CourseGroupsRecord source);
 
   Role toRole(RolesRecord source);
 }

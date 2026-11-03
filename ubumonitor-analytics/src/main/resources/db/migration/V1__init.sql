@@ -1,591 +1,629 @@
 -- 1. Tablas sin FK
 -- =====================================================================
 
-CREATE TABLE USERS
+CREATE TABLE users
 (
-    ID           BIGINT PRIMARY KEY,
-    FULL_NAME    TEXT,
-    FIRST_NAME   TEXT,
-    LAST_NAME    TEXT,
-    EMAIL        TEXT,
-    FIRST_ACCESS BIGINT,
-    LAST_ACCESS  BIGINT,
-    CREATED_AT   BIGINT DEFAULT 0 NOT NULL,
-    UPDATED_AT   BIGINT DEFAULT 0 NOT NULL
+    id           BIGINT PRIMARY KEY,
+    full_name    TEXT,
+    first_name   TEXT,
+    last_name    TEXT,
+    email        TEXT,
+    first_access BIGINT,
+    last_access  BIGINT,
+    created_at   BIGINT DEFAULT 0 NOT NULL,
+    updated_at   BIGINT DEFAULT 0 NOT NULL
 );
 
-CREATE TABLE ROLES
+CREATE TABLE roles
 (
-    ID         BIGINT PRIMARY KEY,
-    NAME       TEXT,
-    CREATED_AT BIGINT DEFAULT 0 NOT NULL,
-    UPDATED_AT BIGINT DEFAULT 0 NOT NULL
+    id         BIGINT PRIMARY KEY,
+    name       TEXT,
+    created_at BIGINT DEFAULT 0 NOT NULL,
+    updated_at BIGINT DEFAULT 0 NOT NULL
 );
 
-CREATE TABLE COURSES
+CREATE TABLE courses
 (
-    ID                BIGINT PRIMARY KEY,
-    FULL_NAME         TEXT,
-    SHORT_NAME        TEXT,
-    SHOW_GRADES       BOOLEAN NOT NULL DEFAULT FALSE,
-    ENABLE_COMPLETION BOOLEAN NOT NULL DEFAULT FALSE,
-    START_DATE        BIGINT,
-    END_DATE          BIGINT,
-    TIME_MODIFIED     BIGINT,
-    LAST_SYNC         BIGINT,
-    CREATED_AT        BIGINT           DEFAULT 0 NOT NULL,
-    UPDATED_AT        BIGINT           DEFAULT 0 NOT NULL,
+    id                BIGINT PRIMARY KEY,
+    full_name         TEXT,
+    short_name        TEXT,
+    show_grades       BOOLEAN NOT NULL DEFAULT FALSE,
+    enable_completion BOOLEAN NOT NULL DEFAULT FALSE,
+    start_date        BIGINT,
+    end_date          BIGINT,
+    time_modified     BIGINT,
+    last_sync         BIGINT,
+    created_at        BIGINT           DEFAULT 0 NOT NULL,
+    updated_at        BIGINT           DEFAULT 0 NOT NULL,
 
-    CONSTRAINT CK_COURSES_DATES CHECK (END_DATE IS NULL OR START_DATE IS NULL OR END_DATE >= START_DATE)
+    CONSTRAINT ck_courses_dates CHECK (end_date IS NULL OR start_date IS NULL OR end_date >= start_date)
 );
 
 -- 2. Dependientes directas
 -- =========================
 
-CREATE TABLE GROUPS
+CREATE TABLE course_groups
 (
-    ID          BIGINT PRIMARY KEY,
-    COURSE_ID   BIGINT           NOT NULL,
-    NAME        TEXT,
-    DESCRIPTION TEXT,
-    CREATED_AT  BIGINT DEFAULT 0 NOT NULL,
-    UPDATED_AT  BIGINT DEFAULT 0 NOT NULL,
+    id          BIGINT PRIMARY KEY,
+    course_id   BIGINT           NOT NULL,
+    name        TEXT,
+    description TEXT,
+    created_at  BIGINT DEFAULT 0 NOT NULL,
+    updated_at  BIGINT DEFAULT 0 NOT NULL,
 
-    CONSTRAINT UQ_GROUPS_ID_COURSE UNIQUE (ID, COURSE_ID)
+    CONSTRAINT uq_groups_id_course UNIQUE (id, course_id)
 );
 
-CREATE INDEX IDX_GROUPS_COURSE_ID ON GROUPS (COURSE_ID);
+CREATE INDEX idx_groups_course_id ON course_groups (course_id);
 
 -- 3. Tablas intermedias (many-to-many)
 -- =========================
-CREATE TABLE GRADES
+CREATE TABLE grades
 (
-    ID         BIGINT PRIMARY KEY,
-    PARENT_ID  BIGINT,
-    COURSE_ID  BIGINT                       NOT NULL,
-    NAME       TEXT,
-    ITEM_TYPE  TEXT,
-    GRADE_MIN  NUMERIC,
-    GRADE_MAX  NUMERIC,
-    ACTIVE     BOOLEAN                      NOT NULL DEFAULT TRUE,
-    CREATED_AT BIGINT DEFAULT (unixepoch()) NOT NULL,
-    UPDATED_AT BIGINT DEFAULT (unixepoch()) NOT NULL,
+    id         BIGINT PRIMARY KEY,
+    parent_id  BIGINT,
+    course_id  BIGINT           NOT NULL,
+    name       TEXT,
+    item_type  TEXT,
+    grade_min  NUMERIC,
+    grade_max  NUMERIC,
+    active     BOOLEAN          NOT NULL DEFAULT TRUE,
+    created_at BIGINT DEFAULT 0 NOT NULL,
+    updated_at BIGINT DEFAULT 0 NOT NULL,
 
-    CONSTRAINT CK_GRADES_RANGE CHECK (GRADE_MIN IS NULL OR GRADE_MAX IS NULL OR GRADE_MAX >= GRADE_MIN)
+    CONSTRAINT ck_grades_range CHECK (grade_min IS NULL OR grade_max IS NULL OR grade_max >= grade_min)
 );
 
-CREATE INDEX IDX_GRADES_COURSE_ID ON GRADES (COURSE_ID);
-CREATE INDEX IDX_GRADES_PARENT_ID ON GRADES (PARENT_ID);
+CREATE INDEX idx_grades_course_id ON grades (course_id);
+CREATE INDEX idx_grades_parent_id ON grades (parent_id);
 
 
-CREATE TABLE FORUMS
+CREATE TABLE forums
 (
-    ID                     BIGINT PRIMARY KEY,
-    COURSE_ID              BIGINT  NOT NULL,
-    MODULE_ID              BIGINT  NOT NULL, -- cmid / coursemodule -> MODULES.ID (sin FK)
-    NAME                   TEXT,
-    INTRO                  TEXT,
-    TYPE                   TEXT,
-    VISIBLE                BOOLEAN NOT NULL DEFAULT TRUE,
-    GROUP_MODE             INTEGER,
-    GROUPING_ID            BIGINT,
-    DUE_DATE               BIGINT,
-    CUTOFF_DATE            BIGINT,
-    ASSESSED               INTEGER,
-    SCALE                  INTEGER,
-    GRADE_FORUM            INTEGER,
-    MAX_BYTES              BIGINT,
-    MAX_ATTACHMENTS        INTEGER,
-    FORCE_SUBSCRIBE        INTEGER,
-    TRACKING_TYPE          INTEGER,
-    WARN_AFTER             BIGINT,
-    BLOCK_AFTER            BIGINT,
-    BLOCK_PERIOD           BIGINT,
-    LOCK_DISCUSSION_AFTER  BIGINT,
-    COMPLETION_DISCUSSIONS INTEGER,
-    COMPLETION_REPLIES     INTEGER,
-    COMPLETION_POSTS       INTEGER,
-    TIME_MODIFIED          BIGINT,
-    ACTIVE                 BOOLEAN NOT NULL DEFAULT TRUE,
-    CREATED_AT             BIGINT           DEFAULT 0 NOT NULL,
-    UPDATED_AT             BIGINT           DEFAULT 0 NOT NULL,
+    id                     BIGINT PRIMARY KEY,
+    course_id              BIGINT  NOT NULL,
+    module_id              BIGINT  NOT NULL, -- cmid / coursemodule -> modules.id (sin FK)
+    name                   TEXT,
+    intro                  TEXT,
+    type                   TEXT,
+    visible                BOOLEAN NOT NULL DEFAULT TRUE,
+    group_mode             INTEGER,
+    grouping_id            BIGINT,
+    due_date               BIGINT,
+    cutoff_date            BIGINT,
+    assessed               INTEGER,
+    scale                  INTEGER,
+    grade_forum            INTEGER,
+    max_bytes              BIGINT,
+    max_attachments        INTEGER,
+    force_subscribe        INTEGER,
+    tracking_type          INTEGER,
+    warn_after             BIGINT,
+    block_after            BIGINT,
+    block_period           BIGINT,
+    lock_discussion_after  BIGINT,
+    completion_discussions INTEGER,
+    completion_replies     INTEGER,
+    completion_posts       INTEGER,
+    time_modified          BIGINT,
+    active                 BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at             BIGINT           DEFAULT 0 NOT NULL,
+    updated_at             BIGINT           DEFAULT 0 NOT NULL,
 
-    CONSTRAINT UQ_FORUMS_MODULE UNIQUE (MODULE_ID)
+    CONSTRAINT uq_forums_module UNIQUE (module_id)
 );
 
-CREATE INDEX IDX_FORUMS_COURSE_ID ON FORUMS (COURSE_ID);
+CREATE INDEX idx_forums_course_id ON forums (course_id);
 
-CREATE TABLE FORUMS_DISCUSSIONS
+CREATE TABLE forums_discussions
 (
-    ID            BIGINT PRIMARY KEY,          -- campo "discussion" (no el "id", que es el del primer post)
-    FORUM_ID      BIGINT  NOT NULL,
-    NAME          TEXT,
-    GROUP_ID      BIGINT  NOT NULL DEFAULT -1, -- -1 = todos los participantes
-    USER_ID       BIGINT,                      -- autor
-    TIME_START    BIGINT,
-    TIME_END      BIGINT,
-    TIME_MODIFIED BIGINT,
-    PINNED        BOOLEAN NOT NULL DEFAULT FALSE,
-    LOCKED        BOOLEAN NOT NULL DEFAULT FALSE,
-    ACTIVE        BOOLEAN NOT NULL DEFAULT TRUE,
-    CREATED_AT    BIGINT           DEFAULT 0 NOT NULL,
-    UPDATED_AT    BIGINT           DEFAULT 0 NOT NULL
+    id            BIGINT PRIMARY KEY,          -- campo "discussion" (no el "id", que es el del primer post)
+    forum_id      BIGINT  NOT NULL,
+    name          TEXT,
+    group_id      BIGINT  NOT NULL DEFAULT -1, -- -1 = todos los participantes
+    user_id       BIGINT,                      -- autor
+    time_start    BIGINT,
+    time_end      BIGINT,
+    time_modified BIGINT,
+    pinned        BOOLEAN NOT NULL DEFAULT FALSE,
+    locked        BOOLEAN NOT NULL DEFAULT FALSE,
+    active        BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at    BIGINT           DEFAULT 0 NOT NULL,
+    updated_at    BIGINT           DEFAULT 0 NOT NULL
 );
 
-CREATE INDEX IDX_FD_FORUM_ID ON FORUMS_DISCUSSIONS (FORUM_ID);
-CREATE INDEX IDX_FD_USER_ID ON FORUMS_DISCUSSIONS (USER_ID);
+CREATE INDEX idx_fd_forum_id ON forums_discussions (forum_id);
+CREATE INDEX idx_fd_user_id ON forums_discussions (user_id);
 
-CREATE TABLE FORUMS_POSTS
+CREATE TABLE forums_posts
 (
-    ID               BIGINT PRIMARY KEY,
-    DISCUSSION_ID    BIGINT  NOT NULL,
-    PARENT_ID        BIGINT, -- NULL = primer post de la discusion
-    USER_ID          BIGINT,
-    SUBJECT          TEXT,
-    MESSAGE          TEXT,
-    MESSAGE_FORMAT   INTEGER,
-    HAS_ATTACHMENT   BOOLEAN NOT NULL DEFAULT FALSE,
-    IS_DELETED       BOOLEAN NOT NULL DEFAULT FALSE,
-    IS_PRIVATE_REPLY BOOLEAN NOT NULL DEFAULT FALSE,
-    TIME_CREATED     BIGINT,
-    TIME_MODIFIED    BIGINT,
-    ACTIVE           BOOLEAN NOT NULL DEFAULT TRUE,
-    CREATED_AT       BIGINT           DEFAULT 0 NOT NULL,
-    UPDATED_AT       BIGINT           DEFAULT 0 NOT NULL
+    id               BIGINT PRIMARY KEY,
+    discussion_id    BIGINT  NOT NULL,
+    parent_id        BIGINT, -- NULL = primer post de la discusion
+    user_id          BIGINT,
+    subject          TEXT,
+    message          TEXT,
+    message_format   INTEGER,
+    has_attachment   BOOLEAN NOT NULL DEFAULT FALSE,
+    is_deleted       BOOLEAN NOT NULL DEFAULT FALSE,
+    is_private_reply BOOLEAN NOT NULL DEFAULT FALSE,
+    time_created     BIGINT,
+    time_modified    BIGINT,
+    active           BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at       BIGINT           DEFAULT 0 NOT NULL,
+    updated_at       BIGINT           DEFAULT 0 NOT NULL
 );
 
-CREATE INDEX IDX_FP_DISCUSSION_ID ON FORUMS_POSTS (DISCUSSION_ID);
-CREATE INDEX IDX_FP_PARENT_ID ON FORUMS_POSTS (PARENT_ID);
-CREATE INDEX IDX_FP_USER_ID ON FORUMS_POSTS (USER_ID);
+CREATE INDEX idx_fp_discussion_id ON forums_posts (discussion_id);
+CREATE INDEX idx_fp_parent_id ON forums_posts (parent_id);
+CREATE INDEX idx_fp_user_id ON forums_posts (user_id);
 
-CREATE TABLE USERS_COURSES
+CREATE TABLE users_courses
 (
-    USER_ID            BIGINT  NOT NULL,
-    COURSE_ID          BIGINT  NOT NULL,
-    LAST_COURSE_ACCESS BIGINT,
-    IS_FAVOURITE       BOOLEAN NOT NULL DEFAULT FALSE,
-    ACTIVE             BOOLEAN NOT NULL DEFAULT TRUE,
-    CREATED_AT         BIGINT           DEFAULT 0 NOT NULL,
-    UPDATED_AT         BIGINT           DEFAULT 0 NOT NULL,
+    user_id            BIGINT  NOT NULL,
+    course_id          BIGINT  NOT NULL,
+    last_course_access BIGINT,
+    is_favourite       BOOLEAN NOT NULL DEFAULT FALSE,
+    active             BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at         BIGINT           DEFAULT 0 NOT NULL,
+    updated_at         BIGINT           DEFAULT 0 NOT NULL,
 
-    PRIMARY KEY (USER_ID, COURSE_ID),
-
-    CONSTRAINT FK_UC_COURSE FOREIGN KEY (COURSE_ID) REFERENCES COURSES (ID) ON DELETE CASCADE
-);
--- la PK ya cubre busquedas por USER_ID; solo hace falta COURSE_ID
-CREATE INDEX IDX_UC_COURSE_ID ON USERS_COURSES (COURSE_ID);
-
-CREATE TABLE USERS_GROUPS
-(
-    USER_ID    BIGINT           NOT NULL,
-    GROUP_ID   BIGINT           NOT NULL,
-    COURSE_ID  BIGINT           NOT NULL,
-    ACTIVE     BOOLEAN          NOT NULL DEFAULT TRUE,
-    CREATED_AT BIGINT DEFAULT 0 NOT NULL,
-    UPDATED_AT BIGINT DEFAULT 0 NOT NULL,
-
-    PRIMARY KEY (USER_ID, GROUP_ID, COURSE_ID)
+    PRIMARY KEY (user_id, course_id)
 
 );
+CREATE INDEX idx_uc_course_id ON users_courses (course_id);
 
-CREATE INDEX IDX_UG_GROUP_ID ON USERS_GROUPS (GROUP_ID);
-CREATE INDEX IDX_UG_COURSE_ID ON USERS_GROUPS (COURSE_ID);
-
-
-CREATE TABLE USERS_ROLES
+CREATE TABLE users_course_groups
 (
-    ROLE_ID    BIGINT           NOT NULL,
-    USER_ID    BIGINT           NOT NULL,
-    COURSE_ID  BIGINT           NOT NULL,
-    ACTIVE     BOOLEAN          NOT NULL DEFAULT TRUE,
-    CREATED_AT BIGINT DEFAULT 0 NOT NULL,
-    UPDATED_AT BIGINT DEFAULT 0 NOT NULL,
+    user_id    BIGINT           NOT NULL,
+    course_id  BIGINT           NOT NULL,
+    group_id   BIGINT           NOT NULL,
+    active     BOOLEAN          NOT NULL DEFAULT TRUE,
+    created_at BIGINT DEFAULT 0 NOT NULL,
+    updated_at BIGINT DEFAULT 0 NOT NULL,
 
-    PRIMARY KEY (USER_ID, ROLE_ID, COURSE_ID)
+    PRIMARY KEY (user_id, group_id, course_id)
 
 );
 
-CREATE INDEX IDX_UR_COURSE_ID ON USERS_ROLES (COURSE_ID);
-CREATE INDEX IDX_UR_ROLE_ID ON USERS_ROLES (ROLE_ID);
+CREATE INDEX idx_ug_group_id ON users_course_groups (group_id);
+CREATE INDEX idx_ug_course_id ON users_course_groups (course_id);
+CREATE INDEX idx_ug_user_id ON users_course_groups (user_id);
 
-
-CREATE TABLE USERS_GRADES
+CREATE TABLE users_roles
 (
-    GRADE_ID   BIGINT           NOT NULL,
-    USER_ID    BIGINT           NOT NULL,
-    GRADE      NUMERIC,
-    PERCENTAGE NUMERIC,
-    ACTIVE     BOOLEAN          NOT NULL DEFAULT TRUE,
-    CREATED_AT BIGINT DEFAULT 0 NOT NULL,
-    UPDATED_AT BIGINT DEFAULT 0 NOT NULL,
+    role_id    BIGINT           NOT NULL,
+    user_id    BIGINT           NOT NULL,
+    course_id  BIGINT           NOT NULL,
+    active     BOOLEAN          NOT NULL DEFAULT TRUE,
+    created_at BIGINT DEFAULT 0 NOT NULL,
+    updated_at BIGINT DEFAULT 0 NOT NULL,
 
-    PRIMARY KEY (GRADE_ID, USER_ID)
+    PRIMARY KEY (user_id, role_id, course_id)
 
 );
 
-CREATE INDEX IDX_UGR_USER_ID ON USERS_GRADES (USER_ID);
+CREATE INDEX idx_ur_course_id ON users_roles (course_id);
+CREATE INDEX idx_ur_role_id ON users_roles (role_id);
+
+
+CREATE TABLE users_grades
+(
+    grade_id   BIGINT           NOT NULL,
+    user_id    BIGINT           NOT NULL,
+    grade      NUMERIC,
+    percentage NUMERIC,
+    active     BOOLEAN          NOT NULL DEFAULT TRUE,
+    created_at BIGINT DEFAULT 0 NOT NULL,
+    updated_at BIGINT DEFAULT 0 NOT NULL,
+
+    PRIMARY KEY (grade_id, user_id)
+
+);
+
+CREATE INDEX idx_ugr_user_id ON users_grades (user_id);
 
 -- 4. Estructura jerarquica
 -- =========================
 
-CREATE TABLE SECTIONS
+CREATE TABLE sections
 (
-    ID         BIGINT PRIMARY KEY,
-    COURSE_ID  BIGINT  NOT NULL,
-    NAME       TEXT,
-    SUMMARY    TEXT,
-    POSITION   INTEGER,
-    VISIBLE    BOOLEAN NOT NULL DEFAULT TRUE,
-    ACTIVE     BOOLEAN NOT NULL DEFAULT TRUE,
-    CREATED_AT BIGINT           DEFAULT 0 NOT NULL,
-    UPDATED_AT BIGINT           DEFAULT 0 NOT NULL
+    id         BIGINT PRIMARY KEY,
+    course_id  BIGINT  NOT NULL,
+    name       TEXT,
+    summary    TEXT,
+    position   INTEGER,
+    visible    BOOLEAN NOT NULL DEFAULT TRUE,
+    active     BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at BIGINT           DEFAULT 0 NOT NULL,
+    updated_at BIGINT           DEFAULT 0 NOT NULL
 );
 
-CREATE INDEX IDX_SECTIONS_COURSE_ID ON SECTIONS (COURSE_ID);
+CREATE INDEX idx_sections_course_id ON sections (course_id);
 
-CREATE TABLE MODULES
+CREATE TABLE modules
 (
-    ID          BIGINT PRIMARY KEY,
-    SECTION_ID  BIGINT  NOT NULL,
-    NAME        TEXT,
-    MOD_NAME    TEXT,
-    INSTANCE    BIGINT,
-    URL         TEXT,
-    DESCRIPTION TEXT,
-    VISIBLE     BOOLEAN NOT NULL DEFAULT TRUE,
-    POSITION    INTEGER,
-    ACTIVE      BOOLEAN NOT NULL DEFAULT TRUE,
-    CREATED_AT  BIGINT           DEFAULT 0 NOT NULL,
-    UPDATED_AT  BIGINT           DEFAULT 0 NOT NULL
+    id          BIGINT PRIMARY KEY,
+    section_id  BIGINT  NOT NULL,
+    name        TEXT,
+    mod_name    TEXT,
+    instance    BIGINT,
+    url         TEXT,
+    description TEXT,
+    visible     BOOLEAN NOT NULL DEFAULT TRUE,
+    position    INTEGER,
+    active      BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at  BIGINT           DEFAULT 0 NOT NULL,
+    updated_at  BIGINT           DEFAULT 0 NOT NULL
 );
 
+CREATE INDEX idx_modules_section_id ON modules (section_id);
 
-
-CREATE INDEX IDX_MODULES_SECTION_ID ON MODULES (SECTION_ID);
-
-
-
-CREATE TABLE USERS_ACTIVITIES
+CREATE TABLE users_activities
 (
-    MODULE_ID       BIGINT  NOT NULL,
-    USER_ID         BIGINT  NOT NULL,
-    COURSE_ID       BIGINT  NOT NULL,
-    STATE           TEXT    NOT NULL,
-    TIME_COMPLETED  BIGINT,
-    TRACKING        TEXT    NOT NULL,
-    OVERRIDE_BY     BIGINT,
-    VALUE_USED      BOOLEAN NOT NULL DEFAULT FALSE,
-    IS_TRACKED_USER BOOLEAN NOT NULL,
-    USER_VISIBLE    BOOLEAN NOT NULL,
-    ACTIVE          BOOLEAN NOT NULL DEFAULT TRUE,
-    CREATED_AT      BIGINT           DEFAULT 0 NOT NULL,
-    UPDATED_AT      BIGINT           DEFAULT 0 NOT NULL,
-    PRIMARY KEY (MODULE_ID, USER_ID)
+    module_id       BIGINT  NOT NULL,
+    user_id         BIGINT  NOT NULL,
+    course_id       BIGINT  NOT NULL,
+    state           TEXT    NOT NULL,
+    time_completed  BIGINT,
+    tracking        TEXT    NOT NULL,
+    override_by     BIGINT,
+    value_used      BOOLEAN NOT NULL DEFAULT FALSE,
+    is_tracked_user BOOLEAN NOT NULL,
+    user_visible    BOOLEAN NOT NULL,
+    active          BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at      BIGINT           DEFAULT 0 NOT NULL,
+    updated_at      BIGINT           DEFAULT 0 NOT NULL,
+    PRIMARY KEY (module_id, user_id)
 );
 -- 5. SITES
 -- =========================
 
-CREATE TABLE SITES
+CREATE TABLE sites
 (
-    ID             INTEGER PRIMARY KEY AUTOINCREMENT,
-    USER_ID        BIGINT           NOT NULL,
-    USER_NAME      TEXT,
-    HOST           TEXT,
-    SITE_NAME      TEXT,
-    VERSION_NUMBER TEXT,
-    RELEASE        TEXT,
-    VERSION        TEXT,
-    TIME_ZONE      TEXT,
-    CREATED_AT     BIGINT DEFAULT 0 NOT NULL,
-    UPDATED_AT     BIGINT DEFAULT 0 NOT NULL
+    id             INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id        BIGINT           NOT NULL,
+    user_name      TEXT,
+    host           TEXT,
+    site_name      TEXT,
+    version_number TEXT,
+    release        TEXT,
+    version        TEXT,
+    time_zone      TEXT,
+    created_at     BIGINT DEFAULT 0 NOT NULL,
+    updated_at     BIGINT DEFAULT 0 NOT NULL
 );
 
-CREATE TABLE ACTUAL_USER
+CREATE TABLE actual_user
 (
-    ID                  BIGINT PRIMARY KEY,
-    USER_NAME           TEXT,
-    FULL_NAME           TEXT,
-    FIRST_NAME          TEXT,
-    LAST_NAME           TEXT,
-    INITIALS            TEXT,
-    EMAIL               TEXT,
-    USER_IMAGE_URL      TEXT,
-    TIME_ZONE           TEXT,
-    IS_SERVER_TIME_ZONE BOOLEAN DEFAULT FALSE NOT NULL,
-    LANG                TEXT,
-    CREATED_AT          BIGINT  DEFAULT 0     NOT NULL,
-    UPDATED_AT          BIGINT  DEFAULT 0     NOT NULL,
-    CONSTRAINT UQ_ACTUAL_USER_USER_NAME UNIQUE (USER_NAME)
+    id                  BIGINT PRIMARY KEY,
+    user_name           TEXT,
+    full_name           TEXT,
+    first_name          TEXT,
+    last_name           TEXT,
+    initials            TEXT,
+    email               TEXT,
+    user_image_url      TEXT,
+    time_zone           TEXT,
+    is_server_time_zone BOOLEAN DEFAULT FALSE NOT NULL,
+    lang                TEXT,
+    created_at          BIGINT  DEFAULT 0     NOT NULL,
+    updated_at          BIGINT  DEFAULT 0     NOT NULL,
+    CONSTRAINT uq_actual_user_user_name UNIQUE (user_name)
 );
 -- 6. Tablas finales
 -- =========================
 
-CREATE TABLE USERS_IMAGES
+CREATE TABLE users_images
 (
-    USER_ID      BIGINT PRIMARY KEY,
-    IMAGE_DATA   BLOB             NOT NULL,
-    IMAGE_HASH   TEXT             NOT NULL CHECK (length(IMAGE_HASH) = 64), -- SHA-256 en hexadecimal
-    CONTENT_TYPE TEXT             NOT NULL,
-    CREATED_AT   BIGINT DEFAULT 0 NOT NULL,
-    UPDATED_AT   BIGINT DEFAULT 0 NOT NULL
+    user_id      BIGINT PRIMARY KEY,
+    image_data   BLOB             NOT NULL,
+    image_hash   TEXT             NOT NULL CHECK (length(image_hash) = 64), -- SHA-256 en hexadecimal
+    content_type TEXT             NOT NULL,
+    created_at   BIGINT DEFAULT 0 NOT NULL,
+    updated_at   BIGINT DEFAULT 0 NOT NULL
 );
 
-CREATE TABLE CALENDARS_EVENTS
+CREATE TABLE calendars_events
 (
-    ID              BIGINT PRIMARY KEY,
-    NAME            TEXT    NOT NULL,
-    DESCRIPTION     TEXT,
-    COURSE_ID       BIGINT  NOT NULL,
-    CATEGORY_ID     BIGINT,
-    GROUP_ID        BIGINT,
-    USER_ID         BIGINT  NOT NULL,
-    REPEAT_ID       BIGINT,
-    MODULE_NAME     TEXT,
-    INSTANCE        BIGINT,
-    EVENT_TYPE      TEXT    NOT NULL,
-    TIME_START      BIGINT  NOT NULL,
-    TIME_DURATION   BIGINT  NOT NULL,
-    VISIBLE         INTEGER NOT NULL,
-    SEQUENCE        INTEGER NOT NULL,
-    TIME_MODIFIED   BIGINT  NOT NULL,
-    SUBSCRIPTION_ID BIGINT,
-    UUID            TEXT,
-    CREATED_AT      BIGINT  DEFAULT 0 NOT NULL,
-    UPDATED_AT      BIGINT  DEFAULT 0 NOT NULL
+    id              BIGINT PRIMARY KEY,
+    name            TEXT             NOT NULL,
+    description     TEXT,
+    course_id       BIGINT           NOT NULL,
+    category_id     BIGINT,
+    group_id        BIGINT,
+    user_id         BIGINT           NOT NULL,
+    repeat_id       BIGINT,
+    module_name     TEXT,
+    instance        BIGINT,
+    event_type      TEXT             NOT NULL,
+    time_start      BIGINT           NOT NULL,
+    time_duration   BIGINT           NOT NULL,
+    visible         INTEGER          NOT NULL,
+    sequence        INTEGER          NOT NULL,
+    time_modified   BIGINT           NOT NULL,
+    subscription_id BIGINT,
+    uuid            TEXT,
+    created_at      BIGINT DEFAULT 0 NOT NULL,
+    updated_at      BIGINT DEFAULT 0 NOT NULL
 );
 
-CREATE INDEX IDX_CALENDARS_EVENTS_COURSE_ID ON CALENDARS_EVENTS (COURSE_ID);
-CREATE INDEX IDX_CALENDARS_EVENTS_TIME_START ON CALENDARS_EVENTS (TIME_START);
+CREATE INDEX idx_calendars_events_course_id ON calendars_events (course_id);
+CREATE INDEX idx_calendars_events_time_start ON calendars_events (time_start);
 
-CREATE TABLE LOGS_COMPONENTS
+CREATE TABLE logs_components
 (
-    ID   SMALLINT PRIMARY KEY,
-    CODE TEXT NOT NULL UNIQUE, -- solo ASCII
-    NAME TEXT NOT NULL UNIQUE
+    id   SMALLINT PRIMARY KEY,
+    code TEXT NOT NULL UNIQUE, -- solo ASCII
+    name TEXT NOT NULL UNIQUE
 );
 
-CREATE TABLE LOGS_EVENTS
+CREATE TABLE logs_events
 (
-    ID   SMALLINT PRIMARY KEY,
-    CODE TEXT NOT NULL UNIQUE,
-    NAME TEXT NOT NULL -- no es unico: Moodle repite nombres entre eventos distintos
+    id   SMALLINT PRIMARY KEY,
+    code TEXT NOT NULL UNIQUE,
+    name TEXT NOT NULL -- no es unico: Moodle repite nombres entre eventos distintos
 );
 
-CREATE TABLE LOGS_ORIGINS
+CREATE TABLE logs_origins
 (
-    ID   TINYINT PRIMARY KEY, -- IDs fijos: LOGS.ORIGIN_ID se valida con CHECK
-    CODE TEXT NOT NULL UNIQUE,
-    NAME TEXT NOT NULL
+    id   TINYINT PRIMARY KEY, -- IDs fijos: logs.origin_id se valida con CHECK
+    code TEXT NOT NULL UNIQUE,
+    name TEXT NOT NULL
 );
 
 -- Un patron GROK por fila. Un mismo (componente, evento) puede tener varias
--- filas (una por patron); basta con que case una. Sin patron: PATTERN NULL.
-CREATE TABLE LOGS_COMPONENTS_EVENTS
+-- filas (una por patron); basta con que case una. Sin patron: pattern NULL.
+CREATE TABLE logs_components_events
 (
-    ID           INTEGER PRIMARY KEY AUTOINCREMENT,
-    COMPONENT_ID SMALLINT NOT NULL,
-    EVENT_ID     SMALLINT NOT NULL,
-    PATTERN      TEXT,
+    id           INTEGER PRIMARY KEY AUTOINCREMENT,
+    component_id SMALLINT NOT NULL,
+    event_id     SMALLINT NOT NULL,
+    pattern      TEXT,
 
-    CONSTRAINT UQ_LCE_COMPONENT_EVENT_PATTERN UNIQUE (COMPONENT_ID, EVENT_ID, PATTERN),
-    CONSTRAINT FK_LCE_COMPONENT FOREIGN KEY (COMPONENT_ID) REFERENCES LOGS_COMPONENTS (ID),
-    CONSTRAINT FK_LCE_EVENT FOREIGN KEY (EVENT_ID) REFERENCES LOGS_EVENTS (ID)
+    CONSTRAINT uq_lce_component_event_pattern UNIQUE (component_id, event_id, pattern),
+    CONSTRAINT fk_lce_component FOREIGN KEY (component_id) REFERENCES logs_components (id),
+    CONSTRAINT fk_lce_event FOREIGN KEY (event_id) REFERENCES logs_events (id)
 );
 
-CREATE INDEX IDX_LCE_EVENT_ID ON LOGS_COMPONENTS_EVENTS (EVENT_ID);
+CREATE INDEX idx_lce_event_id ON logs_components_events (event_id);
 
 -- =====================================================================
 -- LOGS
 -- =====================================================================
 
-CREATE TABLE LOGS
+CREATE TABLE logs
 (
-    ID           INTEGER PRIMARY KEY AUTOINCREMENT,
-    LOGGED_AT    BIGINT   NOT NULL,
-    USER_ID      BIGINT NULL,
-    COURSE_ID    BIGINT   NOT NULL,
-    COMPONENT_ID SMALLINT NOT NULL,
-    EVENT_ID     SMALLINT NOT NULL,
-    MODULE_ID    BIGINT NULL,
-    ORIGIN_ID    TINYINT  NOT NULL,
-    IP_ADDRESS   TEXT NULL
+    id           INTEGER PRIMARY KEY AUTOINCREMENT,
+    logged_at    BIGINT   NOT NULL,
+    user_id      BIGINT NULL,
+    course_id    BIGINT   NOT NULL,
+    component_id SMALLINT NOT NULL,
+    event_id     SMALLINT NOT NULL,
+    module_id    BIGINT NULL,
+    origin_id    TINYINT  NOT NULL,
+    ip_address   TEXT NULL
 
 
     -- Se mantienen SIN FK por rendimiento en la tabla grande:
-    --   COURSE_ID -> COURSES(ID), USER_ID -> USERS(ID), MODULE_ID -> MODULES(ID)
+    --   course_id -> courses(id), user_id -> users(id), module_id -> modules(id)
 );
-CREATE INDEX IDX_LOGS_COURSE_USER_TIME ON LOGS (COURSE_ID, USER_ID, LOGGED_AT);
-CREATE INDEX IDX_LOGS_COURSE_TIME ON LOGS (COURSE_ID, LOGGED_AT);
-CREATE INDEX IDX_LOGS_COURSE_COMPONENT_EVENT ON LOGS (COURSE_ID, COMPONENT_ID, EVENT_ID);
+CREATE INDEX idx_logs_course_user_time ON logs (course_id, user_id, logged_at);
+CREATE INDEX idx_logs_course_time ON logs (course_id, logged_at);
+CREATE INDEX idx_logs_course_component_event ON logs (course_id, component_id, event_id);
 
-CREATE TRIGGER TRG_USERS_SET_TIMESTAMPS
+CREATE TRIGGER trg_users_set_timestamps
     AFTER INSERT
-    ON USERS
-    FOR EACH ROW WHEN NEW.CREATED_AT = 0 OR NEW.UPDATED_AT = 0
+    ON users
+    FOR EACH ROW WHEN NEW.created_at = 0 OR NEW.updated_at = 0
 BEGIN
-    UPDATE USERS
-    SET CREATED_AT = CASE WHEN NEW.CREATED_AT = 0 THEN unixepoch() ELSE NEW.CREATED_AT END,
-        UPDATED_AT = CASE WHEN NEW.UPDATED_AT = 0 THEN unixepoch() ELSE NEW.UPDATED_AT END
+    UPDATE users
+    SET created_at = CASE WHEN NEW.created_at = 0 THEN unixepoch() ELSE NEW.created_at END,
+        updated_at = CASE WHEN NEW.updated_at = 0 THEN unixepoch() ELSE NEW.updated_at END
     WHERE rowid = NEW.rowid;
 END;
 
-CREATE TRIGGER TRG_ROLES_SET_TIMESTAMPS
+CREATE TRIGGER trg_roles_set_timestamps
     AFTER INSERT
-    ON ROLES
-    FOR EACH ROW WHEN NEW.CREATED_AT = 0 OR NEW.UPDATED_AT = 0
+    ON roles
+    FOR EACH ROW WHEN NEW.created_at = 0 OR NEW.updated_at = 0
 BEGIN
-    UPDATE ROLES
-    SET CREATED_AT = CASE WHEN NEW.CREATED_AT = 0 THEN unixepoch() ELSE NEW.CREATED_AT END,
-        UPDATED_AT = CASE WHEN NEW.UPDATED_AT = 0 THEN unixepoch() ELSE NEW.UPDATED_AT END
+    UPDATE roles
+    SET created_at = CASE WHEN NEW.created_at = 0 THEN unixepoch() ELSE NEW.created_at END,
+        updated_at = CASE WHEN NEW.updated_at = 0 THEN unixepoch() ELSE NEW.updated_at END
     WHERE rowid = NEW.rowid;
 END;
 
-CREATE TRIGGER TRG_COURSES_SET_TIMESTAMPS
+CREATE TRIGGER trg_courses_set_timestamps
     AFTER INSERT
-    ON COURSES
-    FOR EACH ROW WHEN NEW.CREATED_AT = 0 OR NEW.UPDATED_AT = 0
+    ON courses
+    FOR EACH ROW WHEN NEW.created_at = 0 OR NEW.updated_at = 0
 BEGIN
-    UPDATE COURSES
-    SET CREATED_AT = CASE WHEN NEW.CREATED_AT = 0 THEN unixepoch() ELSE NEW.CREATED_AT END,
-        UPDATED_AT = CASE WHEN NEW.UPDATED_AT = 0 THEN unixepoch() ELSE NEW.UPDATED_AT END
+    UPDATE courses
+    SET created_at = CASE WHEN NEW.created_at = 0 THEN unixepoch() ELSE NEW.created_at END,
+        updated_at = CASE WHEN NEW.updated_at = 0 THEN unixepoch() ELSE NEW.updated_at END
     WHERE rowid = NEW.rowid;
 END;
 
-CREATE TRIGGER TRG_GROUPS_SET_TIMESTAMPS
+CREATE TRIGGER trg_groups_set_timestamps
     AFTER INSERT
-    ON GROUPS
-    FOR EACH ROW WHEN NEW.CREATED_AT = 0 OR NEW.UPDATED_AT = 0
+    ON course_groups
+    FOR EACH ROW WHEN NEW.created_at = 0 OR NEW.updated_at = 0
 BEGIN
-    UPDATE GROUPS
-    SET CREATED_AT = CASE WHEN NEW.CREATED_AT = 0 THEN unixepoch() ELSE NEW.CREATED_AT END,
-        UPDATED_AT = CASE WHEN NEW.UPDATED_AT = 0 THEN unixepoch() ELSE NEW.UPDATED_AT END
+    UPDATE course_groups
+    SET created_at = CASE WHEN NEW.created_at = 0 THEN unixepoch() ELSE NEW.created_at END,
+        updated_at = CASE WHEN NEW.updated_at = 0 THEN unixepoch() ELSE NEW.updated_at END
     WHERE rowid = NEW.rowid;
 END;
 
-CREATE TRIGGER TRG_GRADES_SET_TIMESTAMPS
+CREATE TRIGGER trg_grades_set_timestamps
     AFTER INSERT
-    ON GRADES
-    FOR EACH ROW WHEN NEW.CREATED_AT = 0 OR NEW.UPDATED_AT = 0
+    ON grades
+    FOR EACH ROW WHEN NEW.created_at = 0 OR NEW.updated_at = 0
 BEGIN
-    UPDATE GRADES
-    SET CREATED_AT = CASE WHEN NEW.CREATED_AT = 0 THEN unixepoch() ELSE NEW.CREATED_AT END,
-        UPDATED_AT = CASE WHEN NEW.UPDATED_AT = 0 THEN unixepoch() ELSE NEW.UPDATED_AT END
+    UPDATE grades
+    SET created_at = CASE WHEN NEW.created_at = 0 THEN unixepoch() ELSE NEW.created_at END,
+        updated_at = CASE WHEN NEW.updated_at = 0 THEN unixepoch() ELSE NEW.updated_at END
     WHERE rowid = NEW.rowid;
 END;
 
-CREATE TRIGGER TRG_USERS_COURSES_SET_TIMESTAMPS
+CREATE TRIGGER trg_users_courses_set_timestamps
     AFTER INSERT
-    ON USERS_COURSES
-    FOR EACH ROW WHEN NEW.CREATED_AT = 0 OR NEW.UPDATED_AT = 0
+    ON users_courses
+    FOR EACH ROW WHEN NEW.created_at = 0 OR NEW.updated_at = 0
 BEGIN
-    UPDATE USERS_COURSES
-    SET CREATED_AT = CASE WHEN NEW.CREATED_AT = 0 THEN unixepoch() ELSE NEW.CREATED_AT END,
-        UPDATED_AT = CASE WHEN NEW.UPDATED_AT = 0 THEN unixepoch() ELSE NEW.UPDATED_AT END
+    UPDATE users_courses
+    SET created_at = CASE WHEN NEW.created_at = 0 THEN unixepoch() ELSE NEW.created_at END,
+        updated_at = CASE WHEN NEW.updated_at = 0 THEN unixepoch() ELSE NEW.updated_at END
     WHERE rowid = NEW.rowid;
 END;
 
-CREATE TRIGGER TRG_USERS_GROUPS_SET_TIMESTAMPS
+CREATE TRIGGER trg_users_groups_set_timestamps
     AFTER INSERT
-    ON USERS_GROUPS
-    FOR EACH ROW WHEN NEW.CREATED_AT = 0 OR NEW.UPDATED_AT = 0
+    ON users_course_groups
+    FOR EACH ROW WHEN NEW.created_at = 0 OR NEW.updated_at = 0
 BEGIN
-    UPDATE USERS_GROUPS
-    SET CREATED_AT = CASE WHEN NEW.CREATED_AT = 0 THEN unixepoch() ELSE NEW.CREATED_AT END,
-        UPDATED_AT = CASE WHEN NEW.UPDATED_AT = 0 THEN unixepoch() ELSE NEW.UPDATED_AT END
+    UPDATE users_course_groups
+    SET created_at = CASE WHEN NEW.created_at = 0 THEN unixepoch() ELSE NEW.created_at END,
+        updated_at = CASE WHEN NEW.updated_at = 0 THEN unixepoch() ELSE NEW.updated_at END
     WHERE rowid = NEW.rowid;
 END;
 
-CREATE TRIGGER TRG_USERS_ROLES_SET_TIMESTAMPS
+CREATE TRIGGER trg_users_roles_set_timestamps
     AFTER INSERT
-    ON USERS_ROLES
-    FOR EACH ROW WHEN NEW.CREATED_AT = 0 OR NEW.UPDATED_AT = 0
+    ON users_roles
+    FOR EACH ROW WHEN NEW.created_at = 0 OR NEW.updated_at = 0
 BEGIN
-    UPDATE USERS_ROLES
-    SET CREATED_AT = CASE WHEN NEW.CREATED_AT = 0 THEN unixepoch() ELSE NEW.CREATED_AT END,
-        UPDATED_AT = CASE WHEN NEW.UPDATED_AT = 0 THEN unixepoch() ELSE NEW.UPDATED_AT END
+    UPDATE users_roles
+    SET created_at = CASE WHEN NEW.created_at = 0 THEN unixepoch() ELSE NEW.created_at END,
+        updated_at = CASE WHEN NEW.updated_at = 0 THEN unixepoch() ELSE NEW.updated_at END
     WHERE rowid = NEW.rowid;
 END;
 
-CREATE TRIGGER TRG_USERS_GRADES_SET_TIMESTAMPS
+CREATE TRIGGER trg_users_grades_set_timestamps
     AFTER INSERT
-    ON USERS_GRADES
-    FOR EACH ROW WHEN NEW.CREATED_AT = 0 OR NEW.UPDATED_AT = 0
+    ON users_grades
+    FOR EACH ROW WHEN NEW.created_at = 0 OR NEW.updated_at = 0
 BEGIN
-    UPDATE USERS_GRADES
-    SET CREATED_AT = CASE WHEN NEW.CREATED_AT = 0 THEN unixepoch() ELSE NEW.CREATED_AT END,
-        UPDATED_AT = CASE WHEN NEW.UPDATED_AT = 0 THEN unixepoch() ELSE NEW.UPDATED_AT END
+    UPDATE users_grades
+    SET created_at = CASE WHEN NEW.created_at = 0 THEN unixepoch() ELSE NEW.created_at END,
+        updated_at = CASE WHEN NEW.updated_at = 0 THEN unixepoch() ELSE NEW.updated_at END
     WHERE rowid = NEW.rowid;
 END;
 
-CREATE TRIGGER TRG_SECTIONS_SET_TIMESTAMPS
+CREATE TRIGGER trg_sections_set_timestamps
     AFTER INSERT
-    ON SECTIONS
-    FOR EACH ROW WHEN NEW.CREATED_AT = 0 OR NEW.UPDATED_AT = 0
+    ON sections
+    FOR EACH ROW WHEN NEW.created_at = 0 OR NEW.updated_at = 0
 BEGIN
-    UPDATE SECTIONS
-    SET CREATED_AT = CASE WHEN NEW.CREATED_AT = 0 THEN unixepoch() ELSE NEW.CREATED_AT END,
-        UPDATED_AT = CASE WHEN NEW.UPDATED_AT = 0 THEN unixepoch() ELSE NEW.UPDATED_AT END
+    UPDATE sections
+    SET created_at = CASE WHEN NEW.created_at = 0 THEN unixepoch() ELSE NEW.created_at END,
+        updated_at = CASE WHEN NEW.updated_at = 0 THEN unixepoch() ELSE NEW.updated_at END
     WHERE rowid = NEW.rowid;
 END;
 
-CREATE TRIGGER TRG_MODULES_SET_TIMESTAMPS
+CREATE TRIGGER trg_modules_set_timestamps
     AFTER INSERT
-    ON MODULES
-    FOR EACH ROW WHEN NEW.CREATED_AT = 0 OR NEW.UPDATED_AT = 0
+    ON modules
+    FOR EACH ROW WHEN NEW.created_at = 0 OR NEW.updated_at = 0
 BEGIN
-    UPDATE MODULES
-    SET CREATED_AT = CASE WHEN NEW.CREATED_AT = 0 THEN unixepoch() ELSE NEW.CREATED_AT END,
-        UPDATED_AT = CASE WHEN NEW.UPDATED_AT = 0 THEN unixepoch() ELSE NEW.UPDATED_AT END
+    UPDATE modules
+    SET created_at = CASE WHEN NEW.created_at = 0 THEN unixepoch() ELSE NEW.created_at END,
+        updated_at = CASE WHEN NEW.updated_at = 0 THEN unixepoch() ELSE NEW.updated_at END
     WHERE rowid = NEW.rowid;
 END;
 
-CREATE TRIGGER TRG_USERS_ACTIVITIES_SET_TIMESTAMPS
+CREATE TRIGGER trg_users_activities_set_timestamps
     AFTER INSERT
-    ON USERS_ACTIVITIES
-    FOR EACH ROW WHEN NEW.CREATED_AT = 0 OR NEW.UPDATED_AT = 0
+    ON users_activities
+    FOR EACH ROW WHEN NEW.created_at = 0 OR NEW.updated_at = 0
 BEGIN
-    UPDATE USERS_ACTIVITIES
-    SET CREATED_AT = CASE WHEN NEW.CREATED_AT = 0 THEN unixepoch() ELSE NEW.CREATED_AT END,
-        UPDATED_AT = CASE WHEN NEW.UPDATED_AT = 0 THEN unixepoch() ELSE NEW.UPDATED_AT END
+    UPDATE users_activities
+    SET created_at = CASE WHEN NEW.created_at = 0 THEN unixepoch() ELSE NEW.created_at END,
+        updated_at = CASE WHEN NEW.updated_at = 0 THEN unixepoch() ELSE NEW.updated_at END
     WHERE rowid = NEW.rowid;
 END;
 
-CREATE TRIGGER TRG_SITES_SET_TIMESTAMPS
+CREATE TRIGGER trg_sites_set_timestamps
     AFTER INSERT
-    ON SITES
-    FOR EACH ROW WHEN NEW.CREATED_AT = 0 OR NEW.UPDATED_AT = 0
+    ON sites
+    FOR EACH ROW WHEN NEW.created_at = 0 OR NEW.updated_at = 0
 BEGIN
-    UPDATE SITES
-    SET CREATED_AT = CASE WHEN NEW.CREATED_AT = 0 THEN unixepoch() ELSE NEW.CREATED_AT END,
-        UPDATED_AT = CASE WHEN NEW.UPDATED_AT = 0 THEN unixepoch() ELSE NEW.UPDATED_AT END
+    UPDATE sites
+    SET created_at = CASE WHEN NEW.created_at = 0 THEN unixepoch() ELSE NEW.created_at END,
+        updated_at = CASE WHEN NEW.updated_at = 0 THEN unixepoch() ELSE NEW.updated_at END
     WHERE rowid = NEW.rowid;
 END;
 
-CREATE TRIGGER TRG_ACTUAL_USER_SET_TIMESTAMPS
+CREATE TRIGGER trg_actual_user_set_timestamps
     AFTER INSERT
-    ON ACTUAL_USER
-    FOR EACH ROW WHEN NEW.CREATED_AT = 0 OR NEW.UPDATED_AT = 0
+    ON actual_user
+    FOR EACH ROW WHEN NEW.created_at = 0 OR NEW.updated_at = 0
 BEGIN
-    UPDATE ACTUAL_USER
-    SET CREATED_AT = CASE WHEN NEW.CREATED_AT = 0 THEN unixepoch() ELSE NEW.CREATED_AT END,
-        UPDATED_AT = CASE WHEN NEW.UPDATED_AT = 0 THEN unixepoch() ELSE NEW.UPDATED_AT END
+    UPDATE actual_user
+    SET created_at = CASE WHEN NEW.created_at = 0 THEN unixepoch() ELSE NEW.created_at END,
+        updated_at = CASE WHEN NEW.updated_at = 0 THEN unixepoch() ELSE NEW.updated_at END
     WHERE rowid = NEW.rowid;
 END;
 
-CREATE TRIGGER TRG_USERS_IMAGES_SET_TIMESTAMPS
+CREATE TRIGGER trg_users_images_set_timestamps
     AFTER INSERT
-    ON USERS_IMAGES
-    FOR EACH ROW WHEN NEW.CREATED_AT = 0 OR NEW.UPDATED_AT = 0
+    ON users_images
+    FOR EACH ROW WHEN NEW.created_at = 0 OR NEW.updated_at = 0
 BEGIN
-    UPDATE USERS_IMAGES
-    SET CREATED_AT = CASE WHEN NEW.CREATED_AT = 0 THEN unixepoch() ELSE NEW.CREATED_AT END,
-        UPDATED_AT = CASE WHEN NEW.UPDATED_AT = 0 THEN unixepoch() ELSE NEW.UPDATED_AT END
+    UPDATE users_images
+    SET created_at = CASE WHEN NEW.created_at = 0 THEN unixepoch() ELSE NEW.created_at END,
+        updated_at = CASE WHEN NEW.updated_at = 0 THEN unixepoch() ELSE NEW.updated_at END
+    WHERE rowid = NEW.rowid;
+END;
+
+CREATE TRIGGER trg_forums_set_timestamps
+    AFTER INSERT
+    ON forums
+    FOR EACH ROW WHEN NEW.created_at = 0 OR NEW.updated_at = 0
+BEGIN
+    UPDATE forums
+    SET created_at = CASE WHEN NEW.created_at = 0 THEN unixepoch() ELSE NEW.created_at END,
+        updated_at = CASE WHEN NEW.updated_at = 0 THEN unixepoch() ELSE NEW.updated_at END
+    WHERE rowid = NEW.rowid;
+END;
+
+CREATE TRIGGER trg_forums_discussions_set_timestamps
+    AFTER INSERT
+    ON forums_discussions
+    FOR EACH ROW WHEN NEW.created_at = 0 OR NEW.updated_at = 0
+BEGIN
+    UPDATE forums_discussions
+    SET created_at = CASE WHEN NEW.created_at = 0 THEN unixepoch() ELSE NEW.created_at END,
+        updated_at = CASE WHEN NEW.updated_at = 0 THEN unixepoch() ELSE NEW.updated_at END
+    WHERE rowid = NEW.rowid;
+END;
+
+CREATE TRIGGER trg_forums_posts_set_timestamps
+    AFTER INSERT
+    ON forums_posts
+    FOR EACH ROW WHEN NEW.created_at = 0 OR NEW.updated_at = 0
+BEGIN
+    UPDATE forums_posts
+    SET created_at = CASE WHEN NEW.created_at = 0 THEN unixepoch() ELSE NEW.created_at END,
+        updated_at = CASE WHEN NEW.updated_at = 0 THEN unixepoch() ELSE NEW.updated_at END
+    WHERE rowid = NEW.rowid;
+END;
+
+CREATE TRIGGER trg_calendars_events_set_timestamps
+    AFTER INSERT
+    ON calendars_events
+    FOR EACH ROW WHEN NEW.created_at = 0 OR NEW.updated_at = 0
+BEGIN
+    UPDATE calendars_events
+    SET created_at = CASE WHEN NEW.created_at = 0 THEN unixepoch() ELSE NEW.created_at END,
+        updated_at = CASE WHEN NEW.updated_at = 0 THEN unixepoch() ELSE NEW.updated_at END
     WHERE rowid = NEW.rowid;
 END;
 
 -- 9. INSERTS INICIALES
 -- =========================
-INSERT INTO LOGS_ORIGINS (ID, CODE, NAME)
+INSERT INTO LOGS_ORIGINS (id, code, name)
 VALUES (1, 'web', 'Web'),
        (2, 'cli', 'CLI'),
        (3, 'ws', 'Web Service'),
@@ -593,7 +631,7 @@ VALUES (1, 'web', 'Web'),
        (5, 'restore', 'Restore'),
        (6, 'backup', 'Backup');
 
-INSERT INTO LOGS_COMPONENTS (ID, CODE, NAME)
+INSERT INTO LOGS_COMPONENTS (id, code, name)
 VALUES (1, 'assignfeedback_file', 'File feedback'),
        (2, 'assignsubmission_comments', 'Submission comments'),
        (3, 'assignsubmission_file', 'File submissions'),
@@ -671,7 +709,7 @@ VALUES (1, 'assignfeedback_file', 'File feedback'),
        (75, 'mod_survey', 'mod_survey')
 ;
 
-INSERT INTO LOGS_EVENTS (ID, CODE, NAME)
+INSERT INTO LOGS_EVENTS (id, code, name)
 VALUES (1, 'activitymanagementviewed', 'activity_management_viewed'),
        (2, 'analysisrequested', 'analysis_requested'),
        (3, 'audiencecreated', 'Audience created'),

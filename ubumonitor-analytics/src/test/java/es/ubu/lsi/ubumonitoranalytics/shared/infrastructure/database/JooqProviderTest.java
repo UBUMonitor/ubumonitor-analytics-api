@@ -61,7 +61,7 @@ class JooqProviderTest {
                       .getDSLContext(session)
                       .selectOne()
                       .from("sqlite_master")
-                      .where("type = 'table' AND name = 'USERS'")));
+                      .where("type = 'table' AND name = 'users'")));
       assertTrue(DatabaseUtil.exists(tempDir.toString(), host, username));
     } finally {
       provider.closeTenant(session);

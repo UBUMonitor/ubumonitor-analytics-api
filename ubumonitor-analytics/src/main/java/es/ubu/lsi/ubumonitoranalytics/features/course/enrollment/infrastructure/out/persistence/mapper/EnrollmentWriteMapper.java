@@ -4,11 +4,7 @@ import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.Co
 import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.Group;
 import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.Role;
 import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.User;
-import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.CoursesRecord;
-import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.GroupsRecord;
-import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.RolesRecord;
-import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.UsersImagesRecord;
-import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.UsersRecord;
+import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.*;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.UserPicture;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.GlobalMapperConfig;
 import org.mapstruct.Mapper;
@@ -46,7 +42,7 @@ public interface EnrollmentWriteMapper {
   @Mapping(target = "courseId", ignore = true)
   @Mapping(target = "updatedAt", ignore = true)
   @Mapping(target = "createdAt", ignore = true)
-  void toGroupsRecord(Group group, @MappingTarget GroupsRecord target);
+  void toCourseGroupsRecord(Group group, @MappingTarget CourseGroupsRecord target);
 
   @Mapping(target = "updatedAt", ignore = true)
   @Mapping(target = "createdAt", ignore = true)

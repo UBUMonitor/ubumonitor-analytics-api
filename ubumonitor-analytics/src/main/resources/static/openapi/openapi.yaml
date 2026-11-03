@@ -6,7 +6,7 @@ info:
     UBUMonitor Analytics API provides endpoints for authenticating users, synchronizing course and enrollment information, and retrieving details about courses and enrollments. It allows clients to interact with the UBUMonitor site to manage user sessions, access course data, and keep enrollment information up-to-date. The API is designed to facilitate integration with UBUMonitor and enable efficient management of user authentication and course-related data.
 
 servers:
-  - url: http://localhost:9090
+  - url: http://127.0.0.1:9090
     description: Local development server
 
 security:
