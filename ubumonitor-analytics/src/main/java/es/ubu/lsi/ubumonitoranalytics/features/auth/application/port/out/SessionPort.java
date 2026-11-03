@@ -29,6 +29,17 @@ public interface SessionPort {
       AuthInput authInput, SessionToken sessionToken, UserInfo userInfo, RestClient restClient);
 
   /**
+   * Updates the stored data for an existing session without changing its token.
+   *
+   * @param authInput authenticated user and site details
+   * @param sessionToken token of the session to update
+   * @param userInfo user info
+   * @param restClient authenticated Moodle web client, if required
+   */
+  void updateSessionData(
+      AuthInput authInput, SessionToken sessionToken, UserInfo userInfo, RestClient restClient);
+
+  /**
    * Invalidates the session identified by the supplied token.
    *
    * @param sessionToken application session token
