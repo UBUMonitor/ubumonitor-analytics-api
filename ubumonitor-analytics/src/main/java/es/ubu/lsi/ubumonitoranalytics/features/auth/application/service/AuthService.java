@@ -4,11 +4,13 @@ import es.ubu.lsi.moodle.exception.MoodleUnauthorizedException;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.application.port.in.AuthUseCase;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.application.port.out.MoodleApiPort;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.application.port.out.SessionPort;
+import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.AuthCurrentUser;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.AuthInput;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.SessionToken;
 import es.ubu.lsi.ubumonitoranalytics.features.sites.application.dto.SiteInfo;
 import es.ubu.lsi.ubumonitoranalytics.features.sites.application.port.out.SiteInfoApiPort;
 import es.ubu.lsi.ubumonitoranalytics.features.sites.application.port.out.SiteInfoPersistencePort;
+import es.ubu.lsi.ubumonitoranalytics.features.sites.domain.model.Site;
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.appication.port.in.SyncUserInfoUseCase;
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.appication.port.out.GetUserInfoPersistenceAdapterPort;
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.domain.model.UserInfo;
@@ -61,7 +63,8 @@ public class AuthService implements AuthUseCase {
       sessionToken = sessionPort.updateSession(authInput, sessionToken, null, restClient);
       siteInfoPersistencePort.save(siteInfo);
       UserInfo userInfo = syncUserInfoUseCase.syncActualUser(userName);
-      return sessionPort.updateSession(authInput, sessionToken, userInfo, restClient);
+      sessionToken = sessionPort.updateSession(authInput, sessionToken, userInfo, restClient);
+      return attachSiteUserInfo(sessionToken, siteInfo, userInfo);
     } catch (RuntimeException exception) {
       sessionPort.invalidateSession(sessionToken);
       throw exception;
@@ -103,9 +106,13 @@ public class AuthService implements AuthUseCase {
     SessionToken sessionToken = sessionPort.generateSession(authInput, null, restClient);
     try {
       SiteInfo siteInfo = siteInfoApiPort.fetchSiteInfo();
+      if (siteInfo == null || siteInfo.getSite() == null) {
+        throw new UnauthorizedException("Invalid Moodle site information.");
+      }
       siteInfoPersistencePort.save(siteInfo);
       UserInfo userInfo = syncUserInfoUseCase.syncActualUser(authInput.getUsername());
-      return sessionPort.updateSession(authInput, sessionToken, userInfo, restClient);
+      sessionToken = sessionPort.updateSession(authInput, sessionToken, userInfo, restClient);
+      return attachSiteUserInfo(sessionToken, siteInfo, userInfo);
     } catch (RuntimeException exception) {
       sessionPort.invalidateSession(sessionToken);
       throw exception;
@@ -128,7 +135,8 @@ public class AuthService implements AuthUseCase {
       if (userInfo == null) {
         throw new UnauthorizedException("Invalid username");
       }
-      return sessionPort.updateSession(authInput, sessionToken, userInfo, null);
+      sessionToken = sessionPort.updateSession(authInput, sessionToken, userInfo, null);
+      return attachUserInfo(sessionToken, userInfo);
     } catch (RuntimeException exception) {
       sessionPort.invalidateSession(sessionToken);
       throw exception;
@@ -147,6 +155,44 @@ public class AuthService implements AuthUseCase {
 
   private String fetchMoodleToken(AuthInput authInput) {
     return moodleApiPort.login(authInput);
+  }
+
+  private SessionToken attachSiteUserInfo(
+      SessionToken sessionToken, SiteInfo siteInfo, UserInfo userInfo) {
+    Site site = siteInfo.getSite();
+    if (site.getUserId() == null || site.getUserName() == null || site.getUserName().isBlank()) {
+      throw new UnauthorizedException("Invalid Moodle site information.");
+    }
+
+    AuthCurrentUser currentUser = new AuthCurrentUser();
+    currentUser.setId(site.getUserId());
+    currentUser.setUserName(site.getUserName());
+    currentUser.setFirstName(site.getFirstName());
+    currentUser.setLastName(site.getLastName());
+    currentUser.setFullName(site.getFullName());
+    currentUser.setInitials(userInfo == null ? null : userInfo.getInitials());
+    currentUser.setEmail(userInfo == null ? null : userInfo.getEmail());
+    currentUser.setTimeZone(userInfo == null ? null : userInfo.getTimeZone());
+    currentUser.setLang(userInfo == null ? null : userInfo.getLang());
+    currentUser.setUserImageUrl(userInfo == null ? null : userInfo.getUserImageUrl());
+    sessionToken.setCurrentUser(currentUser);
+    return sessionToken;
+  }
+
+  private SessionToken attachUserInfo(SessionToken sessionToken, UserInfo userInfo) {
+    AuthCurrentUser currentUser = new AuthCurrentUser();
+    currentUser.setId(userInfo.getId());
+    currentUser.setUserName(userInfo.getUserName());
+    currentUser.setFirstName(userInfo.getFirstName());
+    currentUser.setLastName(userInfo.getLastName());
+    currentUser.setFullName(userInfo.getFullName());
+    currentUser.setInitials(userInfo.getInitials());
+    currentUser.setEmail(userInfo.getEmail());
+    currentUser.setTimeZone(userInfo.getTimeZone());
+    currentUser.setLang(userInfo.getLang());
+    currentUser.setUserImageUrl(userInfo.getUserImageUrl());
+    sessionToken.setCurrentUser(currentUser);
+    return sessionToken;
   }
 
   private RestClient fetchRestClient(AuthInput authInput) {

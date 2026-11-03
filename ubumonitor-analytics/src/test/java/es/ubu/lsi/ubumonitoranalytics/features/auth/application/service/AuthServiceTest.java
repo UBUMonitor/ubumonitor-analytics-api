@@ -52,6 +52,7 @@ class AuthServiceTest {
     RestClient restClient = mock(RestClient.class);
     UserInfo userInfo = mock(UserInfo.class);
     Site site = new Site();
+    site.setUserId(13L);
     site.setUserName("teacher");
     SiteInfo siteInfo = SiteInfo.builder().site(site).build();
     AsyncOperations asyncOperations = new AsyncOperations(Runnable::run);
@@ -242,9 +243,14 @@ class AuthServiceTest {
     when(moodleApiPort.loginWeb("teacher", "moodle-password", authInput.getHost()))
         .thenReturn(restClient);
     when(tenantDatabasePort.initializeTenant(any())).thenReturn(true);
-    when(siteInfoApiPort.fetchSiteInfo()).thenReturn(mock(SiteInfo.class));
+    Site site = new Site();
+    site.setUserId(13L);
+    site.setUserName("teacher");
+    when(siteInfoApiPort.fetchSiteInfo()).thenReturn(SiteInfo.builder().site(site).build());
     when(syncUserInfoUseCase.syncActualUser("teacher")).thenReturn(userInfo);
     when(sessionPort.generateSession(eq(authInput), isNull(), eq(restClient)))
+        .thenReturn(sessionToken);
+    when(sessionPort.updateSession(authInput, sessionToken, userInfo, restClient))
         .thenReturn(sessionToken);
 
     AuthService authService =
@@ -290,9 +296,14 @@ class AuthServiceTest {
     when(moodleApiPort.loginWeb("teacher", "moodle-password", authInput.getHost()))
         .thenReturn(restClient);
     when(tenantDatabasePort.initializeTenant(any())).thenReturn(false);
-    when(siteInfoApiPort.fetchSiteInfo()).thenReturn(mock(SiteInfo.class));
+    Site site = new Site();
+    site.setUserId(13L);
+    site.setUserName("teacher");
+    when(siteInfoApiPort.fetchSiteInfo()).thenReturn(SiteInfo.builder().site(site).build());
     when(syncUserInfoUseCase.syncActualUser("teacher")).thenReturn(userInfo);
     when(sessionPort.generateSession(eq(authInput), isNull(), eq(restClient)))
+        .thenReturn(sessionToken);
+    when(sessionPort.updateSession(authInput, sessionToken, userInfo, restClient))
         .thenReturn(sessionToken);
 
     AuthService authService =

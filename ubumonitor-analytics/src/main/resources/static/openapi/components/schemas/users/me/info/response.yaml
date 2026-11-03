@@ -45,3 +45,6 @@ UserInfo:
     userImageUrl:
       type: string
       description: Image url of the user.
+    lang:
+      type: string
+      description: The language of the user.

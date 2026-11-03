@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class SessionToken {
   private String token;
   private Long expiresIn;
+  private AuthCurrentUser currentUser;
 }
