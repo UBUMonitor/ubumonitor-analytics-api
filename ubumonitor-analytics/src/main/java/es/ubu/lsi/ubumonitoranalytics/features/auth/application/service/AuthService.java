@@ -135,7 +135,7 @@ public class AuthService implements AuthUseCase {
       if (userInfo == null) {
         throw new UnauthorizedException("Invalid username");
       }
-      sessionToken = sessionPort.updateSession(authInput, sessionToken, userInfo, null);
+      sessionPort.updateSessionData(authInput, sessionToken, userInfo, null);
       return attachUserInfo(sessionToken, userInfo);
     } catch (RuntimeException exception) {
       sessionPort.invalidateSession(sessionToken);
