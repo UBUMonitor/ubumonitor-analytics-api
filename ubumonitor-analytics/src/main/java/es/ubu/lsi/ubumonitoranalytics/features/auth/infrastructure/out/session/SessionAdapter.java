@@ -7,12 +7,13 @@ import es.ubu.lsi.ubumonitoranalytics.features.users.info.domain.model.UserInfo;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.SessionStorePort;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
-import java.net.URI;
-import java.security.SecureRandom;
-import java.util.Base64;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
+
+import java.net.URI;
+import java.security.SecureRandom;
+import java.util.Base64;
 
 /** Implements session creation and invalidation using the shared session store. */
 @Component
@@ -58,6 +59,16 @@ public class SessionAdapter implements SessionPort {
     SessionData newSession = createSession(authInput, userInfo, restClient);
 
     return toSessionToken(newSession.getToken());
+  }
+
+  @Override
+  public void updateSessionData(
+      AuthInput authInput, SessionToken sessionToken, UserInfo userInfo, RestClient restClient) {
+    SessionData sessionData =
+        sessionAdapterMapper.toSessionData(
+            authInput, sessionToken.getToken(), userInfo, restClient);
+    sessionStore.saveSession(sessionToken.getToken(), sessionData);
+    currentSessionContext.setSessionData(sessionData);
   }
 
   @Override

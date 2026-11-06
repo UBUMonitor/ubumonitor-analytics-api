@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -31,6 +32,38 @@ import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestClient;
 
 class AuthServiceTest {
+
+  @Test
+  void loginOfflineUpdatesSessionDataWithoutReplacingItsToken() {
+    SessionPort sessionPort = mock(SessionPort.class);
+    GetUserInfoPersistenceAdapterPort userInfoPersistencePort =
+        mock(GetUserInfoPersistenceAdapterPort.class);
+    TenantDatabasePort tenantDatabasePort = mock(TenantDatabasePort.class);
+    AuthInput authInput =
+        new AuthInput(
+            "teacher", null, URI.create("https://moodle.test"), "database-password", null, null);
+    UserInfo userInfo = mock(UserInfo.class);
+    SessionToken sessionToken = mock(SessionToken.class);
+    AuthService authService =
+        new AuthService(
+            mock(SyncUserInfoUseCase.class),
+            userInfoPersistencePort,
+            mock(SiteInfoApiPort.class),
+            mock(SiteInfoPersistencePort.class),
+            sessionPort,
+            mock(MoodleApiPort.class),
+            tenantDatabasePort,
+            new AsyncOperations(Runnable::run));
+    when(userInfoPersistencePort.getActualUser("teacher")).thenReturn(userInfo);
+    when(sessionPort.generateSession(authInput, null, null)).thenReturn(sessionToken);
+
+    authService.loginOffline(authInput);
+
+    verify(tenantDatabasePort).initializeTenant(any());
+    verify(sessionPort).generateSession(authInput, null, null);
+    verify(sessionPort).updateSessionData(authInput, sessionToken, userInfo, null);
+    verify(sessionPort, never()).updateSession(any(), any(), any(), any());
+  }
 
   @Test
   void loginBySSOResolvesTheMoodleUserAndSynchronizesUserInfo() {
