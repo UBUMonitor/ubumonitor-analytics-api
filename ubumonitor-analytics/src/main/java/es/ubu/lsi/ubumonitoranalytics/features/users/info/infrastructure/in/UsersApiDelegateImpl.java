@@ -29,7 +29,7 @@ public class UsersApiDelegateImpl implements UsersApiDelegate {
   private final EnrollmentImagesDocumentCommandMapper enrollmentImagesDocumentCommandMapper;
 
   @Override
-  public ResponseEntity<Resource> getUserImagesProfile(
+  public ResponseEntity<Resource> getUserProfileImage(
       Long userId, URI host, String username, String ifNoneMatch) {
     UserImage userImage =
         getUserProfileImageUseCase.getUserImage(userId, host, username, ifNoneMatch);
@@ -51,7 +51,7 @@ public class UsersApiDelegateImpl implements UsersApiDelegate {
   }
 
   @Override
-  public ResponseEntity<Resource> getUsersEnrollmentImagesDocument(
+  public ResponseEntity<Resource> generateUserEnrollmentImagesDocument(
       List<Long> userIds,
       URI defaultImageUri,
       Boolean useDefaultPhoto,

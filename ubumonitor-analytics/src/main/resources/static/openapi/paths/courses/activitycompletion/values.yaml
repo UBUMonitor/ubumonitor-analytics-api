@@ -2,7 +2,7 @@ get:
   tags:
     - CourseActivityCompletion
   summary: Get course activity completion information with filter
-  operationId: GetCourseActivityCompletionValues
+  operationId: getCourseActivityCompletionValues
   description: Retrieves the activity completion information for a course.
   parameters:
     - $ref: '../../../components/parameters/courseId.yaml'

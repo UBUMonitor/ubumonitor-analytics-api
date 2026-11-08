@@ -38,9 +38,9 @@ class UsersApiDelegateImplTest {
             mock(EnrollmentImagesDocumentCommandMapper.class));
 
     ResponseEntity<Resource> modifiedResponse =
-        delegate.getUserImagesProfile(13L, null, "teacher", null);
+        delegate.getUserProfileImage(13L, null, "teacher", null);
     ResponseEntity<Resource> unmodifiedResponse =
-        delegate.getUserImagesProfile(13L, null, "teacher", null);
+        delegate.getUserProfileImage(13L, null, "teacher", null);
 
     assertEquals(HttpStatus.OK, modifiedResponse.getStatusCode());
     assertEquals(HttpStatus.NOT_MODIFIED, unmodifiedResponse.getStatusCode());

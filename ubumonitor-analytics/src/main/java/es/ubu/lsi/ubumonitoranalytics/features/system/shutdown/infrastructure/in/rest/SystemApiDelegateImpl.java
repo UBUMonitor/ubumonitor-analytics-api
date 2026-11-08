@@ -14,7 +14,7 @@ class SystemApiDelegateImpl implements SystemApiDelegate {
   private final ShutdownApplicationUseCase shutdownUseCase;
 
   @Override
-  public ResponseEntity<Void> shutdown() {
+  public ResponseEntity<Void> shutdownServer() {
     shutdownUseCase.shutdown();
     return ResponseEntity.status(HttpStatus.ACCEPTED).build();
   }

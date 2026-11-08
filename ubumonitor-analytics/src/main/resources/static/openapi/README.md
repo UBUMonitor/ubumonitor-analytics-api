@@ -15,6 +15,7 @@ components/
 ## Reglas
 
 - Los paths solo se declaran en `openapi.yaml`; cada uno apunta con `$ref` a su archivo.
+- Los `operationId` son únicos y usan `lowerCamelCase`, con el patrón `acción + recurso` (por ejemplo, `getCourseGrades` y `syncCourseGrades`).
 - Un schema por archivo, con el nombre del schema como clave raíz (`#/NombreSchema`).
 - Parámetros y errores repetidos viven en `components/` y se referencian; no se copian.
 - Los endpoints bajo `/public` declaran `security: [ ]`.

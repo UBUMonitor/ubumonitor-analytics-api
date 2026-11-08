@@ -2,7 +2,7 @@ get:
   tags:
     - Users
   summary: Get users Word document with enrollment images
-  operationId: getUsersEnrollmentImagesDocument
+  operationId: generateUserEnrollmentImagesDocument
   description: Retrieves the enrollment images for users
   parameters:
     - name: userIds

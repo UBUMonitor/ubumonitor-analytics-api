@@ -1,6 +1,6 @@
 post:
   tags: [ Auth ]
-  operationId: AuthLogout
+  operationId: logoutSession
   summary: Logout session
   description: Logout session. The token must be included in the Authorization header as a Bearer token.
   responses:

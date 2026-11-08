@@ -54,7 +54,7 @@ CourseContentModule:
   required:
     - id
     - name
-    - modName
+    - code
     - url
     - description
     - visible
@@ -68,7 +68,7 @@ CourseContentModule:
       type: string
       description: Module name
 
-    modName:
+    code:
       type: string
       description: Module technical name
 

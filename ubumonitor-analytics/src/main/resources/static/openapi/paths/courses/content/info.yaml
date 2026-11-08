@@ -2,7 +2,7 @@ get:
   tags:
     - CourseContent
   summary: Get course content
-  operationId: GetCourseUsersContentInfo
+  operationId: getCourseContent
   description: Retrieves the sections and modules stored for a course.
   parameters:
     - $ref: '../../../components/parameters/courseId.yaml'

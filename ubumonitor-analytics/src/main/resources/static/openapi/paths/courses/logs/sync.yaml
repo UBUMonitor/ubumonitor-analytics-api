@@ -1,7 +1,7 @@
 post:
   tags:
     - CourseLogs
-  operationId: SyncCourseLogs
+  operationId: syncCourseLogs
   summary: Sync Moodle logs CSV
   parameters:
     - $ref: '../../../components/parameters/courseId.yaml'

@@ -2,7 +2,7 @@ post:
   tags:
     - Calendars
   summary: Synchronize calendar events
-  operationId: SyncCalendarEvents
+  operationId: syncCalendarEvents
   description: Retrieves calendar events from Moodle and replaces the locally stored events. If courseIds is omitted, all events are synchronized.
   parameters:
     - name: courseIds

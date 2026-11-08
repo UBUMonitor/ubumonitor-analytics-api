@@ -18,7 +18,7 @@ public class CourseGradesApiDelegateImpl implements CourseGradesApiDelegate {
   private final GradesUseCase gradesUseCase;
 
   @Override
-  public ResponseEntity<CourseGradeItemsResponseDto> getCourseGradesInfo(Long courseId) {
+  public ResponseEntity<CourseGradeItemsResponseDto> getCourseGrades(Long courseId) {
     return ResponseEntity.ok(
         courseGradesMapper.toCourseGradeItemsResponseDto(
             gradesUseCase.getGradeItems(courseId), courseId));
@@ -31,7 +31,7 @@ public class CourseGradesApiDelegateImpl implements CourseGradesApiDelegate {
   }
 
   @Override
-  public ResponseEntity<CourseGradesValuesResponseDto> getCourseGradesValues(
+  public ResponseEntity<CourseGradesValuesResponseDto> getCourseGradeValues(
       Long courseId, List<Long> gradeItemsIds, List<Long> userIds) {
     return ResponseEntity.ok(
         courseGradesMapper.toCourseGradesValuesResponseDto(

@@ -49,13 +49,13 @@ public class CourseLogsApiDelegateImpl implements CourseLogsApiDelegate {
   }
 
   @Override
-  public ResponseEntity<CourseLogsResponseDto> getCourseLogsInfo(Long courseId) {
+  public ResponseEntity<CourseLogsResponseDto> getCourseLogFilters(Long courseId) {
     CourseLogsInfoResult courseLogsInfoResult = fetchCourseLogsUseCase.getCourseLogsInfo(courseId);
     return ResponseEntity.ok(columnInfoMapper.toDto(courseLogsInfoResult));
   }
 
   @Override
-  public ResponseEntity<CourseLogsListResponseDto> getCourseLogsList(
+  public ResponseEntity<CourseLogsListResponseDto> searchCourseLogs(
       Long courseId, CourseLogsListRequestDto courseLogsListRequestDto) {
     CourseLogsInfoRequest courseLogsInfoRequest =
         getCourseLogsMapper.toDomain(courseId, courseLogsListRequestDto);
@@ -67,7 +67,7 @@ public class CourseLogsApiDelegateImpl implements CourseLogsApiDelegate {
   }
 
   @Override
-  public ResponseEntity<CourseLogsStatisticsResponseDto> getCourseLogsStatistics(
+  public ResponseEntity<CourseLogsStatisticsResponseDto> getCourseLogStatistics(
       Long courseId, CourseLogsStatisticsRequestDto courseLogsStatisticsRequestDto) {
 
     CourseLogsStatisticsRequest courseLogsStatisticsRequest =

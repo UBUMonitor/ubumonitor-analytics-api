@@ -37,7 +37,7 @@ public interface FetchCourseContentAdapaterMapper {
 
   @Mapping(target = "id", source = "id")
   @Mapping(target = "name", source = "name")
-  @Mapping(target = "modName", source = "modname")
+  @Mapping(target = "code", source = "modname")
   @Mapping(target = "url", source = "url")
   @Mapping(target = "description", source = "moduleApi.description", qualifiedByName = "parseHtml")
   @Mapping(target = "visible", source = "visible")

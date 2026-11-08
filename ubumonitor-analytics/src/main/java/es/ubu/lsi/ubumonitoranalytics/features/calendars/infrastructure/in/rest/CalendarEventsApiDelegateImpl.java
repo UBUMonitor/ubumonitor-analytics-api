@@ -25,7 +25,7 @@ public class CalendarEventsApiDelegateImpl implements CalendarsApiDelegate {
   }
 
   @Override
-  public ResponseEntity<CalendarEventsResponseDto> getCalendarEventsInfo(List<Long> courseIds) {
+  public ResponseEntity<CalendarEventsResponseDto> getCalendarEvents(List<Long> courseIds) {
     return ResponseEntity.ok(
         calendarEventsApiDelegateMapper.toDto(
             getCalendarEventsUseCase.getCalendarEvents(courseIds)));

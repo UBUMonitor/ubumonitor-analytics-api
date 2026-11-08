@@ -18,7 +18,7 @@ public class CourseActivityCompletionApiDelegateImpl
   private final CourseActivityCompletionUseCase courseActivityCompletionUseCase;
 
   @Override
-  public ResponseEntity<CourseActivityCompletionResponseDto> syncCourseActivityCompletion(
+  public ResponseEntity<CourseActivityCompletionResponseDto> syncCourseActivityCompletions(
       Long courseId) {
     return ResponseEntity.ok(
         courseActivityCompletionApiDelegateMapper.toResponseDto(
@@ -26,7 +26,7 @@ public class CourseActivityCompletionApiDelegateImpl
   }
 
   @Override
-  public ResponseEntity<CourseActivityCompletionResponseDto> getCourseActivityCompletionInfo(
+  public ResponseEntity<CourseActivityCompletionResponseDto> getCourseActivityCompletions(
       Long courseId) {
     return ResponseEntity.ok(
         courseActivityCompletionApiDelegateMapper.toResponseDto(

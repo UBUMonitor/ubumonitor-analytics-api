@@ -2,7 +2,7 @@ post:
   tags:
     - CourseContent
   summary: Synchronize course content
-  operationId: SyncCourseContent
+  operationId: syncCourseContent
   description: Retrieves the latest sections and modules for the specified course from Moodle and stores them in the local tenant database.
   parameters:
     - $ref: '../../../components/parameters/courseId.yaml'
@@ -15,5 +15,4 @@ post:
             $ref: '../../../components/schemas/courses/content/info/response.yaml#/CourseContentResponse'
     '401':
       $ref: '../../../components/responses/unauthorized_401.yaml'
-
 

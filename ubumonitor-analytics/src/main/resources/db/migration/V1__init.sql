@@ -246,7 +246,7 @@ CREATE TABLE modules
     id          BIGINT PRIMARY KEY,
     section_id  BIGINT  NOT NULL,
     name        TEXT,
-    mod_name    TEXT,
+    code        TEXT,
     instance    BIGINT,
     url         TEXT,
     description TEXT,

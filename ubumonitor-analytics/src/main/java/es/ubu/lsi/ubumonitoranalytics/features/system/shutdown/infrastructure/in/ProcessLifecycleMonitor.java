@@ -33,7 +33,16 @@ class ProcessLifecycleMonitor implements CommandLineRunner {
   private void monitorParentProcess(ProcessHandle parentProcess) {
     log.info("Monitoring parent process with PID: {}", parentProcess.pid());
 
-    parentProcess.onExit().thenRun(this::onParentProcessExit);
+    parentProcess
+        .onExit()
+        .thenRun(this::onParentProcessExit)
+        .exceptionally(this::onMonitoringFailure);
+  }
+
+  private Void onMonitoringFailure(Throwable error) {
+    log.error("Parent process monitoring failed. Shutting down...", error);
+    shutdownApplication.shutdownImmediately();
+    return null;
   }
 
   private void shutdownIfParentProcessIsUnavailable() {

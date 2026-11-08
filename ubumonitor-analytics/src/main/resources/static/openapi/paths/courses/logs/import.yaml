@@ -1,7 +1,7 @@
 post:
   tags:
     - CourseLogs
-  operationId: ImportCourseLogs
+  operationId: importCourseLogs
   summary: Import Moodle logs CSV
   parameters:
     - $ref: '../../../components/parameters/courseId.yaml'

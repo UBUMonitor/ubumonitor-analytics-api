@@ -2,7 +2,7 @@ get:
   tags:
     - CourseForums
   summary: Get course forums information
-  operationId: GetCourseForumsInfo
+  operationId: getCourseForums
   description: Retrieves the persisted forums, discussions, and posts for the specified course.
   parameters:
     - $ref: '../../../components/parameters/courseId.yaml'

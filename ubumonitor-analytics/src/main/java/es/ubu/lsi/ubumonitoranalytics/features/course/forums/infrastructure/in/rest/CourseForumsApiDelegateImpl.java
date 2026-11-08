@@ -22,7 +22,7 @@ public class CourseForumsApiDelegateImpl implements CourseForumsApiDelegate {
   }
 
   @Override
-  public ResponseEntity<CourseForumsResponseDto> getCourseForumsInfo(Long courseId) {
+  public ResponseEntity<CourseForumsResponseDto> getCourseForums(Long courseId) {
     return ResponseEntity.ok(mapper.toDto(getCourseForumsUseCase.getCourseForums(courseId)));
   }
 }

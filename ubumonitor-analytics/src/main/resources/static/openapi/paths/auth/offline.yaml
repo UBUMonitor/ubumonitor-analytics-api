@@ -1,6 +1,6 @@
 post:
   tags: [ Auth ]
-  operationId: AuthOffline
+  operationId: createOfflineSession
   summary: Create an offline application session
   description: |
     Receives the Moodle site URL, username, and database encryption key. Returns an opaque Bearer session token for an offline session.

@@ -1,7 +1,9 @@
 package es.ubu.lsi.ubumonitoranalytics.features.course.content.infrastructure.in;
 
+import es.ubu.lsi.ubumonitoranalytics.api.generated.model.CourseContentModuleDto;
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.CourseContentResponseDto;
 import es.ubu.lsi.ubumonitoranalytics.features.course.content.domain.model.CourseContent;
+import es.ubu.lsi.ubumonitoranalytics.features.course.content.domain.model.CourseModule;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.GlobalMapperConfig;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -12,4 +14,6 @@ public interface CourseContentApiDelegateMapper {
 
   @Mapping(target = "sections", source = "sections")
   CourseContentResponseDto toDto(CourseContent courseContent);
+
+  CourseContentModuleDto toDto(CourseModule module);
 }

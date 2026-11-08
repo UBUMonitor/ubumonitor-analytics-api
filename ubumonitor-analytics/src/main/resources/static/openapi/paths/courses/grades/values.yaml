@@ -1,7 +1,7 @@
 get:
   tags:
     - CourseGrades
-  operationId: GetCourseGradesValues
+  operationId: getCourseGradeValues
   summary: Get course grade values
   description: Get course grade values
 

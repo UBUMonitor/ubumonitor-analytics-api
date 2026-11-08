@@ -2,7 +2,7 @@ get:
   tags:
     - CourseGrades
   summary: Get course grades
-  operationId: GetCourseGradesInfo
+  operationId: getCourseGrades
   description: Retrieves the grade information for users enrolled in a specific course. This endpoint provides details about the users enrolled in the course, including their roles and grade status. It allows clients to access up-to-date grade information for a particular course on the Moodle site.
   parameters:
     - $ref: '../../../components/parameters/courseId.yaml'

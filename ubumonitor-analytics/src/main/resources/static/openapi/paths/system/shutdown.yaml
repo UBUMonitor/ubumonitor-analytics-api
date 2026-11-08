@@ -3,7 +3,7 @@ post:
   tags:
     - System
   summary: Shutdown the server
-  operationId: shutdown
+  operationId: shutdownServer
   description: Shuts down the server gracefully.
   responses:
     '202':

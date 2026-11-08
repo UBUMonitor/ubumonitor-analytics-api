@@ -18,13 +18,13 @@ public class UserEnrollmentsApiDelegateImpl implements UserEnrollmentsApiDelegat
   private final UserCoursesEnrollmentsMapper userCoursesEnrollmentsMapper;
 
   @Override
-  public ResponseEntity<EnrollmentsResponseDto> syncUserEnrollments() {
+  public ResponseEntity<EnrollmentsResponseDto> syncCurrentUserEnrollments() {
     return ResponseEntity.ok(
         userCoursesEnrollmentsMapper.toDto(syncUserCoursesUseCase.syncActualUserEnrollments()));
   }
 
   @Override
-  public ResponseEntity<EnrollmentsResponseDto> getActualUserEnrollments() {
+  public ResponseEntity<EnrollmentsResponseDto> getCurrentUserEnrollments() {
     return ResponseEntity.ok(
         userCoursesEnrollmentsMapper.toDto(getUserCoursesUseCase.getActualUserEnrollments()));
   }

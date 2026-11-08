@@ -14,7 +14,7 @@ public class HealthApiDelegateImpl implements HealthApiDelegate {
   private final CheckReadinessUseCase checkReadinessUseCase;
 
   @Override
-  public ResponseEntity<Void> checkHealth() {
+  public ResponseEntity<Void> checkServiceHealth() {
     if (checkReadinessUseCase.isReady()) {
       return ResponseEntity.noContent().build();
     }

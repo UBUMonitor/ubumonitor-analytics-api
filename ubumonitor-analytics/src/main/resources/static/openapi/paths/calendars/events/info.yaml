@@ -2,7 +2,7 @@ get:
   tags:
     - Calendars
   summary: Get calendar events
-  operationId: GetCalendarEventsInfo
+  operationId: getCalendarEvents
   description: Retrieves locally stored calendar events. If courseIds is omitted, all events are returned.
   parameters:
     - name: courseIds

@@ -1,7 +1,7 @@
 post:
   tags:
     - CourseLogs
-  operationId: GetCourseLogsStatistics
+  operationId: getCourseLogStatistics
   summary: Get course log statistics
   description: Get aggregated course log statistics
 

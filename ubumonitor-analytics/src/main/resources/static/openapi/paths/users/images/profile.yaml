@@ -2,7 +2,7 @@ get:
   tags:
     - Users
   summary: Get user profile image
-  operationId: GetUserImagesProfile
+  operationId: getUserProfileImage
   description: Retrieves a user's Moodle profile image and supports conditional requests with an ETag.
   security: [ ]
   parameters:

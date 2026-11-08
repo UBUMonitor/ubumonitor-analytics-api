@@ -3,7 +3,7 @@ get:
   tags:
     - Health
   summary: Check service health
-  operationId: CheckHealth
+  operationId: checkServiceHealth
   description: Checks the health status of the service.
   responses:
     '204':

@@ -1,6 +1,6 @@
 post:
   tags: [ Auth ]
-  operationId: AuthSSO
+  operationId: loginWithSso
   summary: Authenticate with an SSO launch credential
   description: |
     Receives a Moodle site URL, an SSO launch credential, and the database encryption key. Returns an opaque Bearer session token for subsequent authenticated requests.
