@@ -10,6 +10,8 @@ public class GradeItem {
   private String name;
   private String itemType;
   private Long itemInstance;
+  private Long moduleId;
+  private Integer position;
   private BigDecimal gradeMin;
   private BigDecimal gradeMax;
 }

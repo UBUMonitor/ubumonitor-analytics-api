@@ -18,6 +18,8 @@ public interface GradesSavePersistenceMapper {
   @Mapping(target = "id", source = "gradeItem.id")
   @Mapping(target = "gradeMin", source = "gradeItem.gradeMin")
   @Mapping(target = "gradeMax", source = "gradeItem.gradeMax")
+  @Mapping(target = "moduleId", source = "gradeItem.moduleId")
+  @Mapping(target = "position", source = "gradeItem.position")
   @Mapping(target = "parentId", source = "gradeItem.parentId")
   @Mapping(target = "itemType", source = "gradeItem.itemType")
   @Mapping(target = "name", source = "gradeItem.name")

@@ -58,6 +58,10 @@ class GradesSavePersistenceAdapterTest {
       assertFalse(dsl.selectFrom(GRADES).where(GRADES.ID.eq(12L)).fetchOne().getActive());
       assertTrue(dsl.selectFrom(GRADES).where(GRADES.ID.eq(13L)).fetchOne().getActive());
       assertTrue(dsl.selectFrom(GRADES).where(GRADES.ID.eq(14L)).fetchOne().getActive());
+      assertEquals(110L, dsl.selectFrom(GRADES).where(GRADES.ID.eq(11L)).fetchOne().getModuleId());
+      assertEquals(11, dsl.selectFrom(GRADES).where(GRADES.ID.eq(11L)).fetchOne().getPosition());
+      assertEquals(140L, dsl.selectFrom(GRADES).where(GRADES.ID.eq(14L)).fetchOne().getModuleId());
+      assertEquals(14, dsl.selectFrom(GRADES).where(GRADES.ID.eq(14L)).fetchOne().getPosition());
 
       assertEquals(
           0,
@@ -99,6 +103,8 @@ class GradesSavePersistenceAdapterTest {
           COURSE_ID BIGINT NOT NULL,
           NAME VARCHAR(255),
           ITEM_TYPE VARCHAR(50),
+          MODULE_ID BIGINT,
+          POSITION INTEGER,
           GRADE_MIN DECIMAL(15, 5),
           GRADE_MAX DECIMAL(15, 5),
           ACTIVE BOOLEAN NOT NULL DEFAULT TRUE,
@@ -144,6 +150,8 @@ class GradesSavePersistenceAdapterTest {
     gradeItem.setName("Grade " + id);
     gradeItem.setGradeMin(BigDecimal.ZERO);
     gradeItem.setGradeMax(BigDecimal.valueOf(100));
+    gradeItem.setModuleId(id * 10);
+    gradeItem.setPosition(Math.toIntExact(id));
     return gradeItem;
   }
 

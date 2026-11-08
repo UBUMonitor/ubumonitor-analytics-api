@@ -7,15 +7,16 @@ import es.ubu.lsi.ubumonitoranalytics.features.course.grades.domain.model.Course
 import es.ubu.lsi.ubumonitoranalytics.features.course.grades.domain.model.GradeItem;
 import es.ubu.lsi.ubumonitoranalytics.features.course.grades.domain.model.UserGrade;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.GlobalMapperConfig;
+import org.mapstruct.Context;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import org.mapstruct.Context;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 
 @Mapper(config = GlobalMapperConfig.class)
 public interface MoodleGradesAdapterResponseMapper {
@@ -45,7 +46,9 @@ public interface MoodleGradesAdapterResponseMapper {
     return List.of();
   }
 
+  @Mapping(target = "position", source = "gradeItemApi", qualifiedByName = "position")
   @Mapping(target = "itemInstance", source = "iteminstance")
+  @Mapping(target = "moduleId", source = "cmid")
   @Mapping(target = "itemType", source = "itemtype")
   @Mapping(target = "name", source = "itemname")
   @Mapping(target = "gradeMax", source = "grademax")
@@ -64,7 +67,6 @@ public interface MoodleGradesAdapterResponseMapper {
                       anotherGradeItem.getCategoryid(), gradeItemApi.getParentcategoryid()))
           .findAny()
           .map(GradeItemApi::getId)
-          .map(Long::valueOf)
           .orElse(null);
     }
     return allGradeItems.stream()
@@ -113,5 +115,14 @@ public interface MoodleGradesAdapterResponseMapper {
 
     return BigDecimal.valueOf((gradeRaw - min) / (max - min) * 100)
         .setScale(2, RoundingMode.HALF_UP);
+  }
+
+
+  @Named("position")
+  default Integer position(GradeItemApi gradeItemApi, @Context List<GradeItemApi> allGradeItems) {
+    if (gradeItemApi == null) {
+      return -1;
+    }
+    return allGradeItems.indexOf(gradeItemApi);
   }
 }

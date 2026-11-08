@@ -21,6 +21,15 @@ CourseGradeItemsResponse:
             type: integer
             format: int64
             description: Unique identifier for the parent grade item, if applicable
+          moduleId:
+            type: integer
+            format: int64
+            nullable: true
+            description: Moodle course module identifier for the grade item, if applicable
+          position:
+            type: integer
+            nullable: true
+            description: 1-based position of the grade item in Moodle's gradeitems array
           name:
             type: string
             description: Name of the grade item

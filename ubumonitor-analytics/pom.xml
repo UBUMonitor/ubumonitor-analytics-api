@@ -256,6 +256,9 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <argLine>--enable-native-access=ALL-UNNAMED</argLine>
+                    <parallel>classes</parallel>
+                    <threadCount>4</threadCount>
+                    <useUnlimitedThreads>false</useUnlimitedThreads>
                 </configuration>
             </plugin>
 

@@ -12,6 +12,8 @@ import org.mapstruct.Mapping;
 public interface GradesFetchPersistenceMapper {
 
   @Mapping(target = "itemInstance", ignore = true)
+  @Mapping(target = "moduleId", source = "moduleId")
+  @Mapping(target = "position", source = "position")
   GradeItem toGradeItem(GradesRecord record);
 
   @Mapping(source = "gradeId", target = "gradeItemId")

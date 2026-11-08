@@ -66,6 +66,7 @@ CREATE TABLE grades
     name       TEXT,
     item_type  TEXT,
     module_id  BIGINT,
+    position   INTEGER,
     grade_min  NUMERIC,
     grade_max  NUMERIC,
     active     BOOLEAN          NOT NULL DEFAULT TRUE,
