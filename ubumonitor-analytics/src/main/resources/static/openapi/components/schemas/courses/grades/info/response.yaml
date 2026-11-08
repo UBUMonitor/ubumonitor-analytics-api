@@ -10,6 +10,8 @@ CourseGradeItemsResponse:
         title: Grade Item
         required:
           - id
+          - itemType
+          - position
           - gradeMin
           - gradeMax
         properties:
@@ -20,6 +22,12 @@ CourseGradeItemsResponse:
           itemType:
             type: string
             description: Type of the grade item in Moodle
+            enum:
+              - COURSE
+              - CATEGORY
+              - MOD
+              - MANUAL
+              - BLOCKS
           parentId:
             type: integer
             format: int64
