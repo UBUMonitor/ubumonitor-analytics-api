@@ -10,7 +10,7 @@ public class CourseModule {
 
   private String name;
 
-  private String code;
+  private String modName;
 
   private URI url;
 
