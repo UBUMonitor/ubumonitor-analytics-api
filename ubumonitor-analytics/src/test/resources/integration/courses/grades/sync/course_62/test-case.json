@@ -1,0 +1,466 @@
+{
+  "databaseSetup": [
+    "INSERT OR REPLACE INTO USERS (ID, FULL_NAME, FIRST_NAME, LAST_NAME, EMAIL) VALUES (13, 'Jeffrey Sanders', 'Jeffrey', 'Sanders', 'jeffreysanders199@example.com')",
+    "INSERT INTO COURSES (ID, FULL_NAME, SHORT_NAME, SHOW_GRADES, ENABLE_COMPLETION) VALUES (62, 'Course 62', 'C62', TRUE, TRUE)",
+    "INSERT OR REPLACE INTO SITES (ID, USER_ID, USER_NAME, HOST, SITE_NAME, VERSION_NUMBER, RELEASE, VERSION) VALUES (1, 13, 'teacher', '${MOODLE_HOST}', 'Mount Orange', '2026042000', '5.2', '2026042000')"
+  ],
+  "authFixture": "classpath:/integration/shared/teacher-sso-auth.json",
+  "moodleMocks": [
+    {
+      "request": {
+        "method": "POST",
+        "path": "/webservice/rest/server.php",
+        "body": "courseid=62&wsfunction=gradereport_user_get_grade_items&moodlewsrestformat=json&wstoken=wiremock-moodle-token"
+      },
+      "response": {
+        "body": {
+          "usergrades": [
+            {
+              "courseid": 62,
+              "courseidnumber": "",
+              "userid": 13,
+              "userfullname": "Jeffrey Sanders",
+              "useridnumber": "",
+              "maxdepth": 3,
+              "gradeitems": [
+                {
+                  "id": 370,
+                  "itemname": "",
+                  "itemtype": "course",
+                  "itemmodule": null,
+                  "iteminstance": 85,
+                  "itemnumber": null,
+                  "idnumber": "",
+                  "categoryid": null,
+                  "outcomeid": null,
+                  "scaleid": null,
+                  "locked": false,
+                  "graderaw": null,
+                  "gradedatesubmitted": null,
+                  "gradedategraded": null,
+                  "gradehiddenbydate": false,
+                  "gradeneedsupdate": false,
+                  "gradeishidden": false,
+                  "gradeislocked": false,
+                  "gradeisoverridden": false,
+                  "gradeformatted": "-",
+                  "grademin": 0,
+                  "grademax": 630,
+                  "rangeformatted": "0&ndash;630",
+                  "percentageformatted": "-",
+                  "feedback": "",
+                  "feedbackformat": 0
+                },
+                {
+                  "id": 379,
+                  "itemname": "Analysis",
+                  "itemtype": "category",
+                  "itemmodule": null,
+                  "iteminstance": 86,
+                  "itemnumber": null,
+                  "idnumber": "",
+                  "categoryid": null,
+                  "outcomeid": null,
+                  "scaleid": null,
+                  "locked": false,
+                  "weightraw": 0,
+                  "weightformatted": "0.00 %",
+                  "status": "novalue",
+                  "graderaw": null,
+                  "gradedatesubmitted": null,
+                  "gradedategraded": null,
+                  "gradehiddenbydate": false,
+                  "gradeneedsupdate": false,
+                  "gradeishidden": false,
+                  "gradeislocked": false,
+                  "gradeisoverridden": false,
+                  "gradeformatted": "-",
+                  "grademin": 0,
+                  "grademax": 100,
+                  "rangeformatted": "0&ndash;100",
+                  "percentageformatted": "-",
+                  "feedback": "",
+                  "feedbackformat": 0,
+                  "parentcategoryid": 85
+                },
+                {
+                  "id": 380,
+                  "itemname": "Collaborative",
+                  "itemtype": "category",
+                  "itemmodule": null,
+                  "iteminstance": 87,
+                  "itemnumber": null,
+                  "idnumber": "",
+                  "categoryid": null,
+                  "outcomeid": null,
+                  "scaleid": null,
+                  "locked": false,
+                  "weightraw": 0,
+                  "weightformatted": "0.00 %",
+                  "status": "novalue",
+                  "graderaw": null,
+                  "gradedatesubmitted": null,
+                  "gradedategraded": null,
+                  "gradehiddenbydate": false,
+                  "gradeneedsupdate": false,
+                  "gradeishidden": false,
+                  "gradeislocked": false,
+                  "gradeisoverridden": false,
+                  "gradeformatted": "-",
+                  "grademin": 0,
+                  "grademax": 100,
+                  "rangeformatted": "0&ndash;100",
+                  "percentageformatted": "-",
+                  "feedback": "",
+                  "feedbackformat": 0,
+                  "parentcategoryid": 85
+                },
+                {
+                  "id": 381,
+                  "itemname": "Individual ",
+                  "itemtype": "category",
+                  "itemmodule": null,
+                  "iteminstance": 88,
+                  "itemnumber": null,
+                  "idnumber": "",
+                  "categoryid": null,
+                  "outcomeid": null,
+                  "scaleid": null,
+                  "locked": false,
+                  "weightraw": 0,
+                  "weightformatted": "0.00 %",
+                  "status": "novalue",
+                  "graderaw": null,
+                  "gradedatesubmitted": null,
+                  "gradedategraded": null,
+                  "gradehiddenbydate": false,
+                  "gradeneedsupdate": false,
+                  "gradeishidden": false,
+                  "gradeislocked": false,
+                  "gradeisoverridden": false,
+                  "gradeformatted": "-",
+                  "grademin": 0,
+                  "grademax": 420,
+                  "rangeformatted": "0&ndash;420",
+                  "percentageformatted": "-",
+                  "feedback": "",
+                  "feedbackformat": 0,
+                  "parentcategoryid": 85
+                },
+                {
+                  "id": 390,
+                  "itemname": "Screening 1 ",
+                  "itemtype": "manual",
+                  "itemmodule": null,
+                  "iteminstance": null,
+                  "itemnumber": 0,
+                  "idnumber": "",
+                  "categoryid": 92,
+                  "outcomeid": null,
+                  "scaleid": null,
+                  "locked": false,
+                  "graderaw": null,
+                  "gradedatesubmitted": null,
+                  "gradedategraded": null,
+                  "gradehiddenbydate": false,
+                  "gradeneedsupdate": false,
+                  "gradeishidden": false,
+                  "gradeislocked": false,
+                  "gradeisoverridden": false,
+                  "gradeformatted": "-",
+                  "grademin": 1,
+                  "grademax": 2,
+                  "rangeformatted": "Absent&ndash;Present",
+                  "percentageformatted": "-",
+                  "feedback": "",
+                  "feedbackformat": 0
+                },
+                {
+                  "id": 391,
+                  "itemname": "Screening 2 ",
+                  "itemtype": "manual",
+                  "itemmodule": null,
+                  "iteminstance": null,
+                  "itemnumber": 0,
+                  "idnumber": "",
+                  "categoryid": 92,
+                  "outcomeid": null,
+                  "scaleid": null,
+                  "locked": false,
+                  "graderaw": null,
+                  "gradedatesubmitted": null,
+                  "gradedategraded": null,
+                  "gradehiddenbydate": false,
+                  "gradeneedsupdate": false,
+                  "gradeishidden": false,
+                  "gradeislocked": false,
+                  "gradeisoverridden": false,
+                  "gradeformatted": "-",
+                  "grademin": 1,
+                  "grademax": 2,
+                  "rangeformatted": "Absent&ndash;Present",
+                  "percentageformatted": "-",
+                  "feedback": "",
+                  "feedbackformat": 0
+                },
+                {
+                  "id": 392,
+                  "itemname": "Screening 3",
+                  "itemtype": "manual",
+                  "itemmodule": null,
+                  "iteminstance": null,
+                  "itemnumber": 0,
+                  "idnumber": "",
+                  "categoryid": 92,
+                  "outcomeid": null,
+                  "scaleid": null,
+                  "locked": false,
+                  "graderaw": null,
+                  "gradedatesubmitted": null,
+                  "gradedategraded": null,
+                  "gradehiddenbydate": false,
+                  "gradeneedsupdate": false,
+                  "gradeishidden": false,
+                  "gradeislocked": false,
+                  "gradeisoverridden": false,
+                  "gradeformatted": "-",
+                  "grademin": 1,
+                  "grademax": 2,
+                  "rangeformatted": "Absent&ndash;Present",
+                  "percentageformatted": "-",
+                  "feedback": "",
+                  "feedbackformat": 0
+                }
+              ]
+            }
+          ],
+          "warnings": []
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "path": "/webservice/rest/server.php",
+        "body": "courseid=62&userid=13&wsfunction=gradereport_user_get_grades_table&moodlewsrestformat=json&wstoken=wiremock-moodle-token"
+      },
+      "response": {
+        "body": {
+          "tables": [
+            {
+              "tabledata": [
+                {
+                  "itemname": {
+                    "class": "level3 item b1b column-itemname",
+                    "colspan": 1,
+                    "content": "<div class=\"item d-flex align-items-center\"><div class=\"me-1\"><i class=\"icon fa fa-pen-to-square fa-fw icon itemicon\" title=\"Manual item\" role=\"img\" aria-label=\"Manual item\"></i></div><div><span class=\"d-block text-uppercase small\" title=\"Manual item\">Manual item</span><div class=\"rowtitle\"><span class=\"gradeitemheader\" title=\"Screening 1 \" tabindex=\"0\">Screening 1 </span></div></div></div>",
+                    "id": "row_390_13"
+                  },
+                  "weight": {
+                    "class": "level3 item b1b itemcenter column-weight",
+                    "content": "-",
+                    "headers": "cat_92_13 row_390_13 weight13"
+                  },
+                  "grade": {
+                    "class": "level3 item b1b itemcenter column-grade",
+                    "content": "-",
+                    "headers": "cat_92_13 row_390_13 grade13"
+                  },
+                  "range": {
+                    "class": "level3 item b1b itemcenter column-range",
+                    "content": "Absent&ndash;Present",
+                    "headers": "cat_92_13 row_390_13 range13"
+                  },
+                  "percentage": {
+                    "class": "level3 item b1b itemcenter column-percentage",
+                    "content": "-",
+                    "headers": "cat_92_13 row_390_13 percentage13"
+                  },
+                  "feedback": {
+                    "class": "level3 item b1b feedbacktext column-feedback",
+                    "content": " ",
+                    "headers": "cat_92_13 row_390_13 feedback13"
+                  },
+                  "contributiontocoursetotal": {
+                    "class": "level3 item b1b itemcenter column-contributiontocoursetotal",
+                    "content": "-",
+                    "headers": "cat_92_13 row_390_13 contributiontocoursetotal13"
+                  },
+                  "parentcategories": [
+                    85,
+                    92
+                  ]
+                },
+                {
+                  "itemname": {
+                    "class": "level3 item b1b column-itemname",
+                    "colspan": 1,
+                    "content": "<div class=\"item d-flex align-items-center\"><div class=\"me-1\"><i class=\"icon fa fa-pen-to-square fa-fw icon itemicon\" title=\"Manual item\" role=\"img\" aria-label=\"Manual item\"></i></div><div><span class=\"d-block text-uppercase small\" title=\"Manual item\">Manual item</span><div class=\"rowtitle\"><span class=\"gradeitemheader\" title=\"Screening 2 \" tabindex=\"0\">Screening 2 </span></div></div></div>",
+                    "id": "row_391_13"
+                  },
+                  "weight": {
+                    "class": "level3 item b1b itemcenter column-weight",
+                    "content": "-",
+                    "headers": "cat_92_13 row_391_13 weight13"
+                  },
+                  "grade": {
+                    "class": "level3 item b1b itemcenter column-grade",
+                    "content": "-",
+                    "headers": "cat_92_13 row_391_13 grade13"
+                  },
+                  "range": {
+                    "class": "level3 item b1b itemcenter column-range",
+                    "content": "Absent&ndash;Present",
+                    "headers": "cat_92_13 row_391_13 range13"
+                  },
+                  "percentage": {
+                    "class": "level3 item b1b itemcenter column-percentage",
+                    "content": "-",
+                    "headers": "cat_92_13 row_391_13 percentage13"
+                  },
+                  "feedback": {
+                    "class": "level3 item b1b feedbacktext column-feedback",
+                    "content": " ",
+                    "headers": "cat_92_13 row_391_13 feedback13"
+                  },
+                  "contributiontocoursetotal": {
+                    "class": "level3 item b1b itemcenter column-contributiontocoursetotal",
+                    "content": "-",
+                    "headers": "cat_92_13 row_391_13 contributiontocoursetotal13"
+                  },
+                  "parentcategories": [
+                    85,
+                    92
+                  ]
+                },
+                {
+                  "itemname": {
+                    "class": "level3 item b1b column-itemname",
+                    "colspan": 1,
+                    "content": "<div class=\"item d-flex align-items-center\"><div class=\"me-1\"><i class=\"icon fa fa-pen-to-square fa-fw icon itemicon\" title=\"Manual item\" role=\"img\" aria-label=\"Manual item\"></i></div><div><span class=\"d-block text-uppercase small\" title=\"Manual item\">Manual item</span><div class=\"rowtitle\"><span class=\"gradeitemheader\" title=\"Screening 3\" tabindex=\"0\">Screening 3</span></div></div></div>",
+                    "id": "row_392_13"
+                  },
+                  "weight": {
+                    "class": "level3 item b1b itemcenter column-weight",
+                    "content": "-",
+                    "headers": "cat_92_13 row_392_13 weight13"
+                  },
+                  "grade": {
+                    "class": "level3 item b1b itemcenter column-grade",
+                    "content": "-",
+                    "headers": "cat_92_13 row_392_13 grade13"
+                  },
+                  "range": {
+                    "class": "level3 item b1b itemcenter column-range",
+                    "content": "Absent&ndash;Present",
+                    "headers": "cat_92_13 row_392_13 range13"
+                  },
+                  "percentage": {
+                    "class": "level3 item b1b itemcenter column-percentage",
+                    "content": "-",
+                    "headers": "cat_92_13 row_392_13 percentage13"
+                  },
+                  "feedback": {
+                    "class": "level3 item b1b feedbacktext column-feedback",
+                    "content": " ",
+                    "headers": "cat_92_13 row_392_13 feedback13"
+                  },
+                  "contributiontocoursetotal": {
+                    "class": "level3 item b1b itemcenter column-contributiontocoursetotal",
+                    "content": "-",
+                    "headers": "cat_92_13 row_392_13 contributiontocoursetotal13"
+                  },
+                  "parentcategories": [
+                    85,
+                    92
+                  ]
+                }
+              ]
+            }
+          ],
+          "warnings": []
+        }
+      }
+    }
+  ],
+  "endpoints": [
+    {
+      "request": {
+        "method": "POST",
+        "path": "/api/courses/62/grades/sync",
+        "headers": {
+          "Authorization": "******"
+        }
+      },
+      "expectedResponse": {
+        "status": 200,
+        "body": {
+          "gradeItems": [
+            {
+              "id": 370,
+              "itemType": "COURSE",
+              "position": 0,
+              "gradeMin": 0.0,
+              "gradeMax": 630.0,
+              "name": ""
+            },
+            {
+              "id": 379,
+              "itemType": "CATEGORY",
+              "parentId": 370,
+              "position": 1,
+              "gradeMin": 0.0,
+              "gradeMax": 100.0,
+              "name": "Analysis"
+            },
+            {
+              "id": 380,
+              "itemType": "CATEGORY",
+              "parentId": 370,
+              "position": 2,
+              "gradeMin": 0.0,
+              "gradeMax": 100.0,
+              "name": "Collaborative"
+            },
+            {
+              "id": 381,
+              "itemType": "CATEGORY",
+              "parentId": 370,
+              "position": 3,
+              "gradeMin": 0.0,
+              "gradeMax": 420.0,
+              "name": "Individual "
+            },
+            {
+              "id": 390,
+              "itemType": "MANUAL",
+              "parentId": 370,
+              "position": 4,
+              "gradeMin": 1.0,
+              "gradeMax": 2.0,
+              "name": "Screening 1 "
+            },
+            {
+              "id": 391,
+              "itemType": "MANUAL",
+              "parentId": 370,
+              "position": 5,
+              "gradeMin": 1.0,
+              "gradeMax": 2.0,
+              "name": "Screening 2 "
+            },
+            {
+              "id": 392,
+              "itemType": "MANUAL",
+              "parentId": 370,
+              "position": 6,
+              "gradeMin": 1.0,
+              "gradeMax": 2.0,
+              "name": "Screening 3"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -7,14 +7,13 @@ import es.ubu.lsi.ubumonitoranalytics.features.course.grades.domain.model.Course
 import es.ubu.lsi.ubumonitoranalytics.features.course.grades.domain.model.GradeItem;
 import es.ubu.lsi.ubumonitoranalytics.features.course.grades.domain.model.UserGrade;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.GlobalMapperConfig;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.*;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.*;
 
 @Mapper(config = GlobalMapperConfig.class)
 public interface MoodleGradesAdapterResponseMapper {

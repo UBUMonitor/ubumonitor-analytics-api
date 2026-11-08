@@ -43,15 +43,15 @@ public class MoodleGradesApiAdapter implements GradesApiPort {
    * href="https://moodle.atlassian.net/browse/MDL-64304">...</a>
    */
   private void fillCategoryParentIds(CourseGrade courseGrade, Long userId) {
-    List<GradeItem> categoriesNoParent =
+    List<GradeItem> itemsNoParent =
         courseGrade.getGradeItems().stream()
             .filter(
                 gradeItem ->
-                    Strings.CS.equalsAny(gradeItem.getItemType(), "category", "course")
+                    !Strings.CS.equals(gradeItem.getItemType(), "course")
                         && gradeItem.getParentId() == null)
             .toList();
 
-    if (categoriesNoParent.size() <= 1) {
+    if (itemsNoParent.isEmpty()) {
       return;
     }
 
@@ -61,6 +61,6 @@ public class MoodleGradesApiAdapter implements GradesApiPort {
         client.gradeReportUser().getGradesTable(getGradesTableRequestApi);
 
     moodleGradesAdapterTableResponseMapper.fillParent(
-        getGradesTableResponseApi, categoriesNoParent);
+        getGradesTableResponseApi, itemsNoParent, courseGrade.getGradeItems());
   }
 }

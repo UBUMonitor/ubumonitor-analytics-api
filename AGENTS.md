@@ -1,186 +1,109 @@
 # AGENTS.md
 
-Guidance for AI coding agents working in this repository. Humans should read `README.md`.
+Guidance for AI coding agents. Humans: see `README.md`.
 
-## Project overview
+## Project
 
-UBUMonitor Analytics is a Spring Boot REST API that serves Moodle analytics and persists the data of each Moodle site in its own encrypted SQLite database (tenant isolation).
-
-- **Stack:** Java 25, Spring Boot 4.1.1, Maven reactor, OpenAPI delegate generation, jOOQ, Flyway, SQLite (ChaCha20 via SQLite3MultipleCiphers), Logbook, WireMock (tests).
-- **Modules:**
-    - `ubumonitor-analytics`: REST API, application logic, jOOQ persistence, Moodle adapters.
-    - `moodle-java-client`: typed Moodle REST/AJAX client and Moodle models generated from JSON Schema.
-- The API consumes the client as a module of the same reactor. The root POM declares both modules and the Spotless configuration.
+UBUMonitor Analytics: Spring Boot 4.1.1 / Java 25 REST API for Moodle analytics. Each Moodle site is a tenant with its own encrypted SQLite database. Stack: OpenAPI delegates, jOOQ, Flyway, Logbook, WireMock (tests).
+Maven reactor: `ubumonitor-analytics` (API, logic, persistence, Moodle adapters) and `moodle-java-client` (Moodle REST client, models generated from JSON Schema).
 
 ## Commands
 
-Run the narrowest check first and the full clean build last. Builds generate OpenAPI/jOOQ sources and start the Spring context, so they are slower than a single fixture.
+Run the narrowest check first; the full clean build last. Keep single quotes around every `-D...`. Add `-B -ntp` for compact output. Spotless runs at `process-sources`, so every build also formats files.
 
-| Goal | Command (PowerShell, from the repo root) | Cost |
-|---|---|---|
-| One integration fixture (run first) | `mvn -pl ubumonitor-analytics -Dtest=MoodleAnalyticsIntegrationTest '-Dintegration.fixture.pattern=classpath:/integration/public/sites/info/happy_path/test-case.json' test` | One fixture; generates sources if needed. |
-| Regenerate sources | `mvn -pl ubumonitor-analytics generate-sources` (or `-pl moodle-java-client`) | Short. |
-| All tests | `mvn test` | Long; includes integration tests. |
-| Format | `mvn spotless:apply` | Short; may modify Java, XML and JSON files. |
-| Package API and reactor dependencies | `mvn -pl ubumonitor-analytics -am package` | Long; builds the needed modules and runs their tests. |
-| Run locally with the `dev` profile | `mvn -pl ubumonitor-analytics spring-boot:run '-Dspring-boot.run.profiles=dev'` | Compiles, then keeps the server in the foreground. |
-| Full clean build (run last) | `mvn clean install` | Longest; cleans, generates, tests and installs the reactor. |
+| Goal | Command (repo root) |
+|---|---|
+| One fixture (first) | `mvn -pl ubumonitor-analytics -Dtest=MoodleAnalyticsIntegrationTest '-Dintegration.fixture.pattern=classpath:/integration/<path>/test-case.json' test` |
+| Regenerate sources | `mvn -pl ubumonitor-analytics generate-sources` (or `-pl moodle-java-client`) |
+| Format | `mvn spotless:apply` |
+| Module build | `mvn -pl ubumonitor-analytics -am package` / `mvn -pl moodle-java-client package` |
+| All tests | `mvn test` |
+| Full clean build (last) | `mvn clean install` |
+| Run locally | `mvn -pl ubumonitor-analytics spring-boot:run '-Dspring-boot.run.profiles=dev'` |
 
-Notes:
+On a clean checkout, build/install `moodle-java-client` first if it is not in the local Maven repository.
 
-- The same commands work in bash. Keep the single quotes around every `-D...`.
-- Select a fixture with `integration.fixture.pattern`; replace the pattern with the desired `classpath:/integration/.../test-case.json`.
-- On a clean checkout, build/install the reactor first if `moodle-java-client` is not yet in the local Maven repository.
-- Spotless is bound to the `process-sources` phase, so any build also formats files.
-- Recommended JVM options for deployments that use the statistics endpoint (it streams rows without a limit): `-Xms64m -Xmx256m -XX:+UseSerialGC -XX:MaxMetaspaceSize=96m -Xss512k`.
-
-## Repository map
+## Layout
 
 ```text
-ubumonitor-analytics/src/main/java/.../features/<feature>/
-  domain/                          domain model and rules
-  application/{port,service,dto}/  use cases, services and contracts
-  infrastructure/{in,out}/         REST entry points and output adapters
-ubumonitor-analytics/src/main/java/.../shared/
-  domain/, application/, infrastructure/   cross-feature contracts and components
-ubumonitor-analytics/src/main/resources/
-  static/openapi/{openapi.yaml,paths,components}/   REST contract
-  db/migration/                    Flyway migrations (bootstrap/tenant DB)
-  application*.yml                 common configuration and profiles
-ubumonitor-analytics/src/test/
-  java/.../integration/            integration runner
-  resources/integration/           test-case.json files and shared auth fixtures
-moodle-java-client/src/main/java/      Moodle client and HTTP adapters
-moodle-java-client/src/main/resources/schema/   JSON Schema for Moodle requests/responses
+ubumonitor-analytics/src/main/java/.../features/<feature>/{domain,application/{port,service,dto},infrastructure/{in,out}}
+ubumonitor-analytics/src/main/java/.../shared/            cross-feature code only
+ubumonitor-analytics/src/main/resources/static/openapi/   REST contract (openapi.yaml, paths/, components/)
+ubumonitor-analytics/src/main/resources/db/migration/     Flyway migrations
+ubumonitor-analytics/src/test/resources/integration/      test-case.json fixtures + shared auth
+moodle-java-client/src/main/resources/schema/             Moodle JSON Schemas
 ```
 
-Generated code lives under `target` and must never be edited:
-
-- OpenAPI and jOOQ: `ubumonitor-analytics/target/generated-sources`
-- JSON Schema models: `moodle-java-client/target/generated-sources/jsonschema2pojo`
-
-Edit the source instead (OpenAPI YAML, Flyway migration or JSON Schema) and regenerate.
+Never edit generated code under `target/` (OpenAPI/jOOQ in `ubumonitor-analytics/target/generated-sources/`, JSON Schema models in `moodle-java-client/target/generated-sources/jsonschema2pojo/`). Edit the source (YAML, migration, schema) and regenerate.
 
 ## Architecture
 
-Hexagonal architecture, organized by feature. Keep this flow:
+Hexagonal, by feature: `infrastructure/in` (REST delegate) → `application/port/in` → `application/service` → `application/port/out` → `infrastructure/out` (jOOQ, Moodle, IO).
 
-`infrastructure/in` (REST delegate) → `application/port/in` (use case) → `application/service` → `application/port/out` → `infrastructure/out` (jOOQ, Moodle or other IO)
-
-- Output adapters implement output ports. A REST delegate must not access jOOQ or the Moodle client directly.
-- `domain` is independent of Spring, generated OpenAPI DTOs, Moodle models and jOOQ types. Convert types in the mappers of the corresponding adapter.
-- Put code in `shared` only when its contract or behavior is shared across features (for example sessions, exceptions, common configuration). Keep feature-specific models and rules inside the feature.
-- Canonical reference for the small endpoint `GET /api/public/sites/info`:
-    1. `ubumonitor-analytics/src/main/resources/static/openapi/paths/sites/public-info.yaml`
-    2. `features/sites/infrastructure/in/rest/SitesApiDelegateImpl.java`
-    3. `features/sites/application/port/in/GetPublicSiteInfoUseCase.java`
-    4. `features/sites/application/service/PublicSiteInfoService.java`
-    5. `features/sites/application/port/out/PublicSiteInfoApiPort.java`
-    6. `features/sites/infrastructure/out/moodle/PublicSiteInfoApiAdapter.java` and `SiteInfoApiAdapterMapper.java`
-    7. `ubumonitor-analytics/src/test/resources/integration/public/sites/info/happy_path/test-case.json`
+- Adapters implement output ports; a delegate never touches jOOQ or the Moodle client.
+- `domain` has no Spring, generated OpenAPI DTOs, Moodle models or jOOQ types; convert in the adapter's mapper.
+- Use `shared` only for contracts shared across features.
+- Reference slice (`GET /api/public/sites/info`): `openapi/paths/sites/public-info.yaml` → `features/sites/` (`SitesApiDelegateImpl`, `GetPublicSiteInfoUseCase`, `PublicSiteInfoService`, `PublicSiteInfoApiPort`, `PublicSiteInfoApiAdapter` + `SiteInfoApiAdapterMapper`) → `integration/public/sites/info/happy_path/test-case.json`.
 
 ## Recipes
 
 ### Add or change an endpoint
-
-1. Edit `ubumonitor-analytics/src/main/resources/static/openapi/paths/<resource>/<operation>.yaml` and its schemas under `components/schemas/`. Register the path in `static/openapi/openapi.yaml`.
-2. Run `mvn -pl ubumonitor-analytics generate-sources`. Inspect the generated interfaces/DTOs under `target/generated-sources/openapi/`; do not edit them.
-3. Implement the generated method in the feature's delegate, delegating to the use case.
-4. Define or update `application/port/in/*UseCase.java` and its `application/service/*Service.java`.
-5. If IO is needed, define `application/port/out/`, implement the port in `infrastructure/out/` and adapt data in a mapper.
-6. Add a `test-case.json` fixture under `ubumonitor-analytics/src/test/resources/integration` and run only that fixture.
+1. Edit `openapi/paths/<resource>/<op>.yaml` and `components/schemas/`; register the path in `openapi.yaml`.
+2. `generate-sources`; inspect the generated interfaces under `target/generated-sources/openapi/`.
+3. Implement the generated method in the feature delegate, calling the use case (`port/in` + `service`).
+4. If IO is needed: define `port/out`, implement it in `infrastructure/out`, map data in a mapper.
+5. Add a fixture and run only that fixture.
 
 ### Add a field or table
-
-1. Add a versioned migration `ubumonitor-analytics/src/main/resources/db/migration/V<N>__<description>.sql`. Never rewrite a migration that has already been applied.
-2. Run `mvn -pl ubumonitor-analytics generate-sources`: Flyway migrates `target/bootstrap.db` and jOOQ generates code from that SQLite database.
-3. Update the persistence mapper, then the jOOQ adapter that reads/writes the field or table.
-4. Update the integration fixture/data that is needed and validate the feature.
+1. New migration `db/migration/V<N>__<description>.sql`; never rewrite an applied one.
+2. `generate-sources` (Flyway migrates `target/bootstrap.db`, jOOQ generates from it).
+3. Update the persistence mapper, then the jOOQ adapter; update fixture data; validate.
 
 ### Add or change a Moodle mapping
-
-1. Edit the matching request/response in `moodle-java-client/src/main/resources/schema/<component>/...`. Respect the `title`, `$ref` and types of neighboring schemas.
-2. Implement or update the API method in `moodle-java-client/src/main/java/es/ubu/lsi/moodle/api/<component>/` using the models generated under `target/generated-sources/jsonschema2pojo/`.
-3. Run `mvn -pl moodle-java-client generate-sources` to verify generation.
-4. In `ubumonitor-analytics`, adapt the call in the feature's Moodle adapter and convert the client model to application/domain types in the mapper.
-5. Add or adjust the WireMock mock in the fixture. Never call a real Moodle.
+1. Edit the request/response in `moodle-java-client/src/main/resources/schema/<component>/` (respect `title`, `$ref`, neighboring types).
+2. Update the API method in `moodle-java-client/.../moodle/api/<component>/`; run `-pl moodle-java-client generate-sources`.
+3. Adapt the feature's Moodle adapter and mapper in `ubumonitor-analytics`; add/adjust the WireMock mock in the fixture.
 
 ### Add or update an integration fixture
-
-1. Create or update `ubumonitor-analytics/src/test/resources/integration/<group>/<endpoint>/<case>/test-case.json`.
-2. Include `request` and `expectedResponse`. Add `moodleMocks` when Moodle is called. For authenticated endpoints use `authFixture` (for example `classpath:/integration/shared/teacher-sso-auth.json`) or define `auth`. Add `databaseSetup` (a list of SQL statements) when initial state is needed.
-3. Run the "One integration fixture" command with `integration.fixture.pattern` set to the fixture's classpath path. The runner discovers `test-case.json` files and creates an isolated database per case under `target/test-moodle-dbs/`.
+1. `integration/<group>/<endpoint>/<case>/test-case.json` with `request` and `expectedResponse`, or an `endpoints` list of `{request, expectedResponse}` for multi-request flows; add `moodleMocks` when Moodle is called, `authFixture` (e.g. `classpath:/integration/shared/teacher-sso-auth.json`) or `auth` for authenticated endpoints, and `databaseSetup` (SQL list) for initial state.
+2. Run the one-fixture command. The runner makes an isolated DB per case under `target/test-moodle-dbs/`.
 
 ## Conventions
 
-### Code
-
-- Mark service reads with `@Transactional(readOnly = true)` and writes with `@Transactional`, as in the services of `features/course/content` and `features/course/enrollment`.
-- Prefer explicit `for` loops over lambdas and `forEach`. Use named static methods or method references instead of inline lambdas, and avoid `BiConsumer` where reasonable.
-- For maps with unique keys use `Collectors.toMap`, not `groupingBy`. Define a named merger when collisions are possible.
-- Check `null` with guard clauses and early returns.
-- When imperative and stream forms are equally clear, prefer the imperative one; use streams when they express the transformation better. Equivalent example: `for (User user : users) names.add(user.getName());` / `users.stream().map(User::getName).toList();`.
-- Use only Java 25-compatible APIs.
-
-### API and errors
-
-- Reuse the existing application exceptions and keep the `GlobalExceptionHandler` contract: 400 `BAD_REQUEST`, 401 `UNAUTHORIZED`, 404 `NOT_FOUND`, 409 `CONFLICT`, 500 `UNKNOWN_ERROR`. Validation errors return 400 `VALIDATION_ERROR`; unknown routes return 404 `RESOURCE_NOT_FOUND`.
-- Declare constraints and validation in OpenAPI; the generator enables `useBeanValidation`. Do not patch generated DTOs.
-
-### Security and logging
-
-- Never log tokens, passwords, keys or sensitive headers. Keep the Logbook masking of `Authorization`, `X-Moodle-Token`, `Cookie`, `password` and `token`.
-
-### Tests
-
-- Cover new behavior with focused fixtures, WireMock and the isolated SQLite Cipher databases created by the runner.
+- Service reads: `@Transactional(readOnly = true)`; writes: `@Transactional` (see `features/course/content`, `features/course/enrollment`).
+- Reuse existing application exceptions; keep the `GlobalExceptionHandler` contract: 400 `BAD_REQUEST`, 401 `UNAUTHORIZED`, 404 `NOT_FOUND`, 409 `CONFLICT`, 500 `UNKNOWN_ERROR`; validation 400 `VALIDATION_ERROR`; unknown route 404 `RESOURCE_NOT_FOUND`.
+- Declare validation in OpenAPI (`useBeanValidation`); never patch generated DTOs.
+- Never log tokens, passwords, keys or sensitive headers; keep Logbook masking of `Authorization`, `X-Moodle-Token`, `Cookie`, `password`, `token`.
+- Guard clauses and early returns for `null`.
+- Prefer explicit `for` loops to lambdas/`forEach`; named static methods or method references over inline lambdas; streams only when clearer. Unique-key maps: `Collectors.toMap` (named merger on collisions), not `groupingBy`.
+- Java 25 APIs only.
 
 ## Boundaries
 
-### Always (no need to ask)
+**Ask first:** REST contract changes; authentication/authorization or other security decisions; tenant configuration/isolation; DB schema/migrations; new dependencies.
 
-- Read and preserve the user's existing changes; keep the diff limited to the task.
-- Add focused coverage for new behavior and run the applicable checks.
-- Verify integrations with fixtures, WireMock and the runner's isolated SQLite Cipher databases.
+**Never:** edit `target/`; put secrets in code, fixtures, logs or docs; use a real Moodle in tests; run destructive Git (e.g. `reset --hard`) or commit without an explicit request; modify existing tests/fixtures when new coverage is enough, or delete/weaken assertions to pass a test.
 
-### Ask first
-
-- Changing REST contracts, authentication/authorization or other security decisions.
-- Changing tenant configuration or isolation, the database schema/migrations, or adding dependencies.
-
-### Never
-
-- Edit anything under `target`, or introduce secrets in code, fixtures, logs or documentation.
-- Log tokens or credentials, or use a real Moodle in tests.
-- Run destructive Git operations (for example `reset --hard`) or create commits without an explicit request.
-- Modify existing tests or fixtures when adding new coverage is enough. Never delete or weaken assertions to make a test pass.
+**Always:** preserve the user's changes, keep the diff to the task, add focused coverage, run the applicable checks.
 
 ## Gotchas
 
-| Symptom | Cause | Fix |
-|---|---|---|
-| Compilation fails with missing jOOQ types after `clean` | `flyway:migrate` and `jooq:generate` run in `generate-sources` against `target/bootstrap.db` | Run the Maven lifecycle from `generate-sources`; do not compile by hand. |
-| jOOQ code cannot find a table or column | Migrations declare identifiers in uppercase (`USERS`, `COURSES`, `USERS_IMAGES`) | Keep the SQL names exactly as in the DDL. |
-| A DTO change does not show up | OpenAPI/JSON Schema output is regenerated into `target` | Change the YAML/JSON Schema source and regenerate. |
-| Swagger is not available locally | `application-dev.yml` is not the default profile | Activate the `dev` profile for local use only. |
-| `run.bat` is slow and kills another process | It always runs `mvn clean install` and kills the listener on port 9090 | Iterate with module-targeted commands; check the port before using the `.bat`. Its H2/DBeaver section is legacy; tenant data is SQLite. |
-| Build fails or recent Java APIs are missing | Both modules pin Java 25 and the API uses Spring Boot 4.1.1 | Build with JDK 25 and avoid incompatible APIs. |
-| The integration test runs every fixture | The default pattern is `classpath:/integration/**/test-case.json` | Pass `-Dintegration.fixture.pattern=classpath:/integration/.../test-case.json`. |
-| Unexpected formatting changes after a build | Spotless runs at `process-sources` | Expected; keep only the formatting you intend. |
-| `features/users/info/appication/` looks misspelled | The package name is `appication` | Leave it; do not rename it as part of an unrelated change. |
+- Missing jOOQ types after `clean`: run the lifecycle from `generate-sources`; do not compile by hand.
+- jOOQ cannot find a table/column: DDL identifiers are uppercase (`USERS`, `COURSES`, `USERS_IMAGES`); keep them.
+- A DTO change does not appear: regenerate from the YAML/JSON Schema source.
+- Swagger only works with the `dev` profile (not the default); use it for local runs only.
+- `run.bat` always runs `mvn clean install` and kills the listener on port 9090; iterate with module commands instead. Its H2/DBeaver output is legacy (data is SQLite).
+- The integration test runs all fixtures by default (`classpath:/integration/**/test-case.json`); pass `-Dintegration.fixture.pattern=...` to narrow it.
+- `features/users/info/appication/` is misspelled; leave it unless asked to rename.
 
-## Definition of done
+## Done
 
 - [ ] The specific fixture passes and covers the change.
-- [ ] `mvn spotless:apply` completes; review and keep only the expected formatting.
-- [ ] The affected module builds: `mvn -pl ubumonitor-analytics -am package` or `mvn -pl moodle-java-client package`.
-- [ ] `git diff` is clean: no generated changes under `target` and no changes outside the task.
-- [ ] If the change touches shared generation or more than one module, `mvn clean install` also passes.
+- [ ] `mvn spotless:apply` done; keep only expected formatting.
+- [ ] Affected module builds (`mvn -pl ubumonitor-analytics -am package` or `mvn -pl moodle-java-client package`).
+- [ ] `git diff` has nothing under `target/` and nothing outside the task.
+- [ ] If shared generation or several modules changed: `mvn clean install` passes.
 
-## Git and release
+## Git
 
-- Commit messages follow Conventional Commits, as in the existing history:
-    - `refactor: clean up imports and improve assertions in integration tests`
-    - `chore: prepare next development version (0.0.4-SNAPSHOT)`
-    - `chore(release): v0.0.3`
-- The workflow `.github/workflows/maven.yml` publishes on push to `main`, then merges the release commit into `develop` and prepares the next `-SNAPSHOT` version. Do not assume any other branching flow.
+Conventional Commits, e.g. `refactor: clean up imports and improve assertions in integration tests`, `chore(release): v0.0.3`. `.github/workflows/maven.yml` publishes on push to `main`, merges the release commit into `develop` and prepares the next `-SNAPSHOT`; assume no other branch flow.
