@@ -18,6 +18,20 @@ public interface SessionPort {
   SessionToken generateSession(AuthInput authInput, UserInfo userInfo, RestClient restClient);
 
   /**
+   * Creates or reuses a session and reports whether this call created its token.
+   *
+   * @param authInput authenticated Moodle user and site details
+   * @param userInfo user info
+   * @param restClient authenticated Moodle web client, if required
+   * @return session token and whether it was newly created
+   */
+  SessionGeneration generateSessionWithStatus(
+      AuthInput authInput, UserInfo userInfo, RestClient restClient);
+
+  /** Result of creating or reusing an application session. */
+  record SessionGeneration(SessionToken sessionToken, boolean created) {}
+
+  /**
    * Replaces an existing session with one based on new authentication data.
    *
    * @param authInput new authenticated Moodle user and site details

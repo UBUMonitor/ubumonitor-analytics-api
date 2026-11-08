@@ -47,8 +47,10 @@ public class AuthService implements AuthUseCase {
    */
   @Override
   public SessionToken loginBySSO(AuthInput authInput) {
-    SessionToken sessionToken = sessionPort.generateSession(authInput, null, null);
+    SessionToken sessionToken = null;
+    boolean invalidateSessionOnFailure = true;
     try {
+      sessionToken = sessionPort.generateSession(authInput, null, null);
       SiteInfo siteInfo = siteInfoApiPort.fetchSiteInfo();
       if (siteInfo == null || siteInfo.getSite() == null) {
         throw new UnauthorizedException("Invalid token.");
@@ -58,15 +60,23 @@ public class AuthService implements AuthUseCase {
         throw new UnauthorizedException("Invalid token.");
       }
       authInput.setUsername(userName);
+      sessionPort.invalidateSession(sessionToken);
+      sessionToken = null;
+      invalidateSessionOnFailure = false;
       initializeTenantDatabase(authInput);
       RestClient restClient = moodleApiPort.getRestClientFromCookies(authInput);
-      sessionToken = sessionPort.updateSession(authInput, sessionToken, null, restClient);
+      SessionPort.SessionGeneration sessionGeneration =
+          sessionPort.generateSessionWithStatus(authInput, null, restClient);
+      sessionToken = sessionGeneration.sessionToken();
+      invalidateSessionOnFailure = sessionGeneration.created();
       siteInfoPersistencePort.save(siteInfo);
       UserInfo userInfo = syncUserInfoUseCase.syncActualUser(userName);
-      sessionToken = sessionPort.updateSession(authInput, sessionToken, userInfo, restClient);
+      sessionPort.updateSessionData(authInput, sessionToken, userInfo, restClient);
       return attachSiteUserInfo(sessionToken, siteInfo, userInfo);
     } catch (RuntimeException exception) {
-      sessionPort.invalidateSession(sessionToken);
+      if (sessionToken != null && invalidateSessionOnFailure) {
+        sessionPort.invalidateSession(sessionToken);
+      }
       throw exception;
     }
   }
@@ -103,7 +113,9 @@ public class AuthService implements AuthUseCase {
 
     authInput.setMoodleToken(moodleToken);
     initializeTenantDatabase(authInput);
-    SessionToken sessionToken = sessionPort.generateSession(authInput, null, restClient);
+    SessionPort.SessionGeneration sessionGeneration =
+        sessionPort.generateSessionWithStatus(authInput, null, restClient);
+    SessionToken sessionToken = sessionGeneration.sessionToken();
     try {
       SiteInfo siteInfo = siteInfoApiPort.fetchSiteInfo();
       if (siteInfo == null || siteInfo.getSite() == null) {
@@ -111,10 +123,12 @@ public class AuthService implements AuthUseCase {
       }
       siteInfoPersistencePort.save(siteInfo);
       UserInfo userInfo = syncUserInfoUseCase.syncActualUser(authInput.getUsername());
-      sessionToken = sessionPort.updateSession(authInput, sessionToken, userInfo, restClient);
+      sessionPort.updateSessionData(authInput, sessionToken, userInfo, restClient);
       return attachSiteUserInfo(sessionToken, siteInfo, userInfo);
     } catch (RuntimeException exception) {
-      sessionPort.invalidateSession(sessionToken);
+      if (sessionGeneration.created()) {
+        sessionPort.invalidateSession(sessionToken);
+      }
       throw exception;
     }
   }

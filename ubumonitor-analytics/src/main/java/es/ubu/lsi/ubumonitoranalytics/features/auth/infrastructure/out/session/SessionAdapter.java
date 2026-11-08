@@ -29,7 +29,12 @@ public class SessionAdapter implements SessionPort {
   @Override
   public SessionToken generateSession(
       AuthInput authInput, UserInfo userInfo, RestClient restClient) {
+    return generateSessionWithStatus(authInput, userInfo, restClient).sessionToken();
+  }
 
+  @Override
+  public synchronized SessionGeneration generateSessionWithStatus(
+      AuthInput authInput, UserInfo userInfo, RestClient restClient) {
     String username = authInput.getUsername();
     String moodleToken = authInput.getMoodleToken();
     URI hostUri = authInput.getHost();
@@ -41,12 +46,12 @@ public class SessionAdapter implements SessionPort {
 
       currentSessionContext.setSessionData(existingSession);
 
-      return toSessionToken(existingSession.getToken());
+      return new SessionGeneration(toSessionToken(existingSession.getToken()), false);
     }
 
     SessionData newSession = createSession(authInput, userInfo, restClient);
 
-    return toSessionToken(newSession.getToken());
+    return new SessionGeneration(toSessionToken(newSession.getToken()), true);
   }
 
   @Override
