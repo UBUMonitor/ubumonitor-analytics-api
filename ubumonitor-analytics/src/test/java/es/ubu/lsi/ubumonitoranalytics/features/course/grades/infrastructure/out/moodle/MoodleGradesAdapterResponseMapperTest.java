@@ -1,16 +1,15 @@
 package es.ubu.lsi.ubumonitoranalytics.features.course.grades.infrastructure.out.moodle;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import es.ubu.lsi.moodle.model.gradereport.user.getgradeitems.response.GetGradeItemsResponseApi;
 import es.ubu.lsi.moodle.model.gradereport.user.getgradeitems.response.GradeItemApi;
 import es.ubu.lsi.moodle.model.gradereport.user.getgradeitems.response.UserGradeApi;
 import es.ubu.lsi.ubumonitoranalytics.features.course.grades.domain.model.GradeItem;
 import es.ubu.lsi.ubumonitoranalytics.features.course.grades.domain.model.UserGrade;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class MoodleGradesAdapterResponseMapperTest {
 
