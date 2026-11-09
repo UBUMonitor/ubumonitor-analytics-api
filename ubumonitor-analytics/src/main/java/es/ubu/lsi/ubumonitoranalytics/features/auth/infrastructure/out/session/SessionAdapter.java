@@ -7,10 +7,8 @@ import es.ubu.lsi.ubumonitoranalytics.features.users.info.domain.model.UserInfo;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.SessionStorePort;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
-import java.net.URI;
 import java.security.SecureRandom;
 import java.util.Base64;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -28,77 +26,21 @@ public class SessionAdapter implements SessionPort {
   private final SessionAdapterMapper sessionAdapterMapper;
 
   @Override
-  public SessionToken generateSession(
-      AuthInput authInput, UserInfo userInfo, RestClient restClient) {
-    return generateSessionWithStatus(authInput, userInfo, restClient).sessionToken();
+  public void setAuthenticationContext(AuthInput authInput, RestClient restClient) {
+    SessionData sessionData = sessionAdapterMapper.toSessionData(authInput, null, null, restClient);
+    currentSessionContext.setSessionData(sessionData);
   }
 
   @Override
-  public synchronized SessionGeneration generateSessionWithStatus(
+  public synchronized SessionToken generateNewSession(
       AuthInput authInput, UserInfo userInfo, RestClient restClient) {
-    String username = authInput.getUsername();
-    String moodleToken = authInput.getMoodleToken();
-    URI hostUri = authInput.getHost();
-
-    if (sessionStore.hasSession(hostUri, username)) {
-
-      SessionData existingSession = sessionStore.getSession(hostUri, username);
-      existingSession.setMoodleToken(moodleToken);
-
-      currentSessionContext.setSessionData(existingSession);
-
-      return new SessionGeneration(toSessionToken(existingSession.getToken()), false);
-    }
-
-    SessionData newSession = createSession(authInput, userInfo, restClient);
-
-    return new SessionGeneration(toSessionToken(newSession.getToken()), true);
-  }
-
-  @Override
-  public SessionData findReusableOfflineSession(AuthInput authInput) {
-    if (authInput == null
-        || authInput.getHost() == null
-        || authInput.getUsername() == null
-        || authInput.getDbPassword() == null) {
-      return null;
-    }
-
     SessionData existingSession =
         sessionStore.getSession(authInput.getHost(), authInput.getUsername());
-    if (existingSession == null
-        || !Objects.equals(existingSession.getHost(), authInput.getHost())
-        || !Objects.equals(existingSession.getUsername(), authInput.getUsername())
-        || !Objects.equals(existingSession.getDbPassword(), authInput.getDbPassword())
-        || existingSession.getToken() == null
-        || existingSession.getUserId() == null
-        || existingSession.getActualUser() == null) {
-      return null;
-    }
-
-    currentSessionContext.setSessionData(existingSession);
-    return existingSession;
-  }
-
-  @Override
-  public SessionToken updateSession(
-      AuthInput authInput, SessionToken sessionToken, UserInfo userInfo, RestClient restClient) {
-
-    invalidateSession(sessionToken);
-
     SessionData newSession = createSession(authInput, userInfo, restClient);
-
+    if (existingSession != null && existingSession.getToken() != null) {
+      sessionStore.invalidateSession(existingSession.getToken());
+    }
     return toSessionToken(newSession.getToken());
-  }
-
-  @Override
-  public void updateSessionData(
-      AuthInput authInput, SessionToken sessionToken, UserInfo userInfo, RestClient restClient) {
-    SessionData sessionData =
-        sessionAdapterMapper.toSessionData(
-            authInput, sessionToken.getToken(), userInfo, restClient);
-    sessionStore.saveSession(sessionToken.getToken(), sessionData);
-    currentSessionContext.setSessionData(sessionData);
   }
 
   @Override

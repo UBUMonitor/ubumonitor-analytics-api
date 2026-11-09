@@ -24,5 +24,8 @@ public interface SitePersistenceAdapterMapper {
   SitesRecord toRecord(SiteInfo siteInfo);
 
   @Mapping(target = "site", source = "dto")
+  @Mapping(target = "site.firstName", ignore = true)
+  @Mapping(target = "site.lastName", ignore = true)
+  @Mapping(target = "site.fullName", ignore = true)
   SiteInfo toDomain(SitesRecord dto);
 }

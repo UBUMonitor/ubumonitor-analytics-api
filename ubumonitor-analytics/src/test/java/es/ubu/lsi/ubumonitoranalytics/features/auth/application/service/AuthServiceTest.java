@@ -10,6 +10,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -30,8 +31,6 @@ import es.ubu.lsi.ubumonitoranalytics.features.users.info.domain.model.UserInfo;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.exception.UnauthorizedException;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.database.TenantDatabasePort;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.DatabaseCreationException;
-import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.ActualUser;
-import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.concurrent.AsyncOperations;
 import java.net.URI;
 import java.util.concurrent.CountDownLatch;
@@ -45,7 +44,7 @@ import org.springframework.web.client.RestClient;
 class AuthServiceTest {
 
   @Test
-  void loginByCredentialsReusesMatchingSessionOnlyAfterValidatingSiteInfo() {
+  void loginByCredentialsCreatesFreshSessionAfterValidatingAndSynchronizingUser() {
     SessionPort sessionPort = mock(SessionPort.class);
     MoodleApiPort moodleApiPort = mock(MoodleApiPort.class);
     SiteInfoApiPort siteInfoApiPort = mock(SiteInfoApiPort.class);
@@ -61,23 +60,23 @@ class AuthServiceTest {
             "database-password",
             null,
             null);
-    SessionToken sessionToken = SessionToken.builder().token("unused-new-token").build();
+    SessionToken sessionToken = SessionToken.builder().token("new-credential-token").build();
     Site site = new Site();
     site.setUserId(13L);
     site.setUserName("teacher");
     site.setFirstName("Updated");
     site.setFullName("Updated Name");
     SiteInfo siteInfo = SiteInfo.builder().site(site).build();
-    SessionData existingSession = storedSession(authInput, 13L);
     RestClient restClient = mock(RestClient.class);
 
     when(moodleApiPort.login(authInput)).thenReturn("moodle-token");
     when(moodleApiPort.loginWeb("teacher", "moodle-password", authInput.getHost()))
         .thenReturn(restClient);
     when(siteInfoApiPort.fetchSiteInfo()).thenReturn(siteInfo);
-    when(sessionPort.generateSessionWithStatus(authInput, null, restClient))
-        .thenReturn(new SessionPort.SessionGeneration(sessionToken, false));
-    when(sessionPort.findReusableOfflineSession(authInput)).thenReturn(existingSession);
+    UserInfo userInfo = mock(UserInfo.class);
+    when(searchUserByUserNameUseCase.searchUserByUserName("teacher")).thenReturn(userInfo);
+    when(syncUserInfoUseCase.syncActualUser(userInfo)).thenReturn(userInfo);
+    when(sessionPort.generateNewSession(authInput, userInfo, restClient)).thenReturn(sessionToken);
 
     AuthService authService =
         new AuthService(
@@ -93,19 +92,18 @@ class AuthServiceTest {
 
     SessionToken result = authService.loginByCredentials(authInput);
 
-    assertEquals("reused-session-token", result.getToken());
-    assertEquals("Stored Name", result.getCurrentUser().getFullName());
-    InOrder inOrder = inOrder(siteInfoApiPort, sessionPort);
+    assertEquals("new-credential-token", result.getToken());
+    assertEquals("Updated Name", result.getCurrentUser().getFullName());
+    InOrder inOrder = inOrder(siteInfoApiPort, sessionPort, syncUserInfoUseCase);
     inOrder.verify(siteInfoApiPort).fetchSiteInfo();
-    inOrder.verify(sessionPort).findReusableOfflineSession(authInput);
+    inOrder.verify(syncUserInfoUseCase).syncActualUser(userInfo);
+    inOrder.verify(sessionPort).generateNewSession(authInput, userInfo, restClient);
     verify(siteInfoPersistencePort).save(siteInfo);
-    verify(sessionPort, never()).updateSessionData(any(), any(), any(), any());
     verify(searchUserByUserNameUseCase).searchUserByUserName("teacher");
-    verifyNoInteractions(syncUserInfoUseCase);
   }
 
   @Test
-  void loginBySSOReusesMatchingSessionAfterValidatingSiteInfo() {
+  void loginBySSOCreatesFreshSessionEvenWhenUserAlreadyHasASession() {
     SessionPort sessionPort = mock(SessionPort.class);
     MoodleApiPort moodleApiPort = mock(MoodleApiPort.class);
     SiteInfoApiPort siteInfoApiPort = mock(SiteInfoApiPort.class);
@@ -121,17 +119,20 @@ class AuthServiceTest {
             "database-password",
             "moodle-token",
             null);
-    SessionToken provisionalSession = SessionToken.builder().token("provisional-sso-token").build();
+    SessionToken newSession = SessionToken.builder().token("new-sso-token").build();
     Site site = new Site();
     site.setUserId(13L);
     site.setUserName("teacher");
     site.setFullName("Updated Name");
     SiteInfo siteInfo = SiteInfo.builder().site(site).build();
-    SessionData existingSession = storedSession(authInput, 13L);
+    RestClient restClient = mock(RestClient.class);
+    UserInfo userInfo = mock(UserInfo.class);
 
-    when(sessionPort.generateSession(authInput, null, null)).thenReturn(provisionalSession);
     when(siteInfoApiPort.fetchSiteInfo()).thenReturn(siteInfo);
-    when(sessionPort.findReusableOfflineSession(authInput)).thenReturn(existingSession);
+    when(moodleApiPort.getRestClientFromCookies(authInput)).thenReturn(restClient);
+    when(searchUserByUserNameUseCase.searchUserByUserName("teacher")).thenReturn(userInfo);
+    when(syncUserInfoUseCase.syncActualUser(userInfo)).thenReturn(userInfo);
+    when(sessionPort.generateNewSession(authInput, userInfo, restClient)).thenReturn(newSession);
 
     AuthService authService =
         new AuthService(
@@ -147,18 +148,17 @@ class AuthServiceTest {
 
     SessionToken result = authService.loginBySSO(authInput);
 
-    assertEquals("reused-session-token", result.getToken());
-    assertEquals("Stored Name", result.getCurrentUser().getFullName());
-    InOrder inOrder = inOrder(siteInfoApiPort, sessionPort);
+    assertEquals("new-sso-token", result.getToken());
+    InOrder inOrder = inOrder(siteInfoApiPort, syncUserInfoUseCase, sessionPort);
     inOrder.verify(siteInfoApiPort).fetchSiteInfo();
-    inOrder.verify(sessionPort).findReusableOfflineSession(authInput);
-    verify(sessionPort).invalidateSession(provisionalSession);
+    inOrder.verify(syncUserInfoUseCase).syncActualUser(userInfo);
+    inOrder.verify(sessionPort).generateNewSession(authInput, userInfo, restClient);
     verify(siteInfoPersistencePort).save(siteInfo);
-    verifyNoInteractions(searchUserByUserNameUseCase, syncUserInfoUseCase, moodleApiPort);
+    verify(searchUserByUserNameUseCase).searchUserByUserName("teacher");
   }
 
   @Test
-  void loginOfflineUpdatesSessionDataWithoutReplacingItsToken() {
+  void loginOfflineCreatesNewSessionAfterLoadingUserInfo() {
     SessionPort sessionPort = mock(SessionPort.class);
     GetUserInfoPersistenceAdapterPort userInfoPersistencePort =
         mock(GetUserInfoPersistenceAdapterPort.class);
@@ -167,7 +167,7 @@ class AuthServiceTest {
         new AuthInput(
             "teacher", null, URI.create("https://moodle.test"), "database-password", null, null);
     UserInfo userInfo = mock(UserInfo.class);
-    SessionToken sessionToken = mock(SessionToken.class);
+    SessionToken sessionToken = SessionToken.builder().token("offline-token").build();
     AuthService authService =
         new AuthService(
             mock(SearchUserByUserNameUseCase.class),
@@ -180,29 +180,17 @@ class AuthServiceTest {
             tenantDatabasePort,
             new AsyncOperations(Runnable::run));
     when(userInfoPersistencePort.getActualUser("teacher")).thenReturn(userInfo);
-    when(sessionPort.generateSession(authInput, null, null)).thenReturn(sessionToken);
+    when(sessionPort.generateNewSession(authInput, userInfo, null)).thenReturn(sessionToken);
 
-    authService.loginOffline(authInput);
+    InOrder inOrder = inOrder(userInfoPersistencePort, sessionPort);
+    SessionToken result = authService.loginOffline(authInput);
 
+    assertEquals("offline-token", result.getToken());
+    inOrder.verify(userInfoPersistencePort).getActualUser("teacher");
+    inOrder.verify(sessionPort).generateNewSession(authInput, userInfo, null);
     verify(tenantDatabasePort).initializeTenant(any());
-    verify(sessionPort).generateSession(authInput, null, null);
-    verify(sessionPort).updateSessionData(authInput, sessionToken, userInfo, null);
-    verify(sessionPort, never()).updateSession(any(), any(), any(), any());
-  }
-
-  private static SessionData storedSession(AuthInput authInput, long userId) {
-    ActualUser actualUser = new ActualUser();
-    actualUser.setFirstName("Stored");
-    actualUser.setLastName("Name");
-    actualUser.setFullName("Stored Name");
-    return SessionData.builder()
-        .token("reused-session-token")
-        .host(authInput.getHost())
-        .username("teacher")
-        .dbPassword(authInput.getDbPassword())
-        .userId(userId)
-        .actualUser(actualUser)
-        .build();
+    verify(sessionPort).setAuthenticationContext(authInput, null);
+    verify(sessionPort).generateNewSession(authInput, userInfo, null);
   }
 
   @Test
@@ -223,9 +211,7 @@ class AuthServiceTest {
             "database-password",
             "moodle-token",
             null);
-    SessionToken sessionToken = SessionToken.builder().token("existing-sso-token").build();
-    SessionToken provisionalSessionToken =
-        SessionToken.builder().token("provisional-sso-token").build();
+    SessionToken sessionToken = SessionToken.builder().token("new-sso-token").build();
     RestClient restClient = mock(RestClient.class);
     UserInfo userInfo = mock(UserInfo.class);
     Site site = new Site();
@@ -234,13 +220,11 @@ class AuthServiceTest {
     SiteInfo siteInfo = SiteInfo.builder().site(site).build();
     AsyncOperations asyncOperations = new AsyncOperations(Runnable::run);
 
-    when(sessionPort.generateSession(authInput, null, null)).thenReturn(provisionalSessionToken);
-    when(sessionPort.generateSessionWithStatus(authInput, null, restClient))
-        .thenReturn(new SessionPort.SessionGeneration(sessionToken, false));
     when(siteInfoApiPort.fetchSiteInfo()).thenReturn(siteInfo);
     when(moodleApiPort.getRestClientFromCookies(authInput)).thenReturn(restClient);
     when(searchUserByUserNameUseCase.searchUserByUserName("teacher")).thenReturn(userInfo);
     when(syncUserInfoUseCase.syncActualUser(userInfo)).thenReturn(userInfo);
+    when(sessionPort.generateNewSession(authInput, userInfo, restClient)).thenReturn(sessionToken);
 
     AuthService authService =
         new AuthService(
@@ -256,15 +240,14 @@ class AuthServiceTest {
 
     SessionToken result = authService.loginBySSO(authInput);
 
-    assertEquals("existing-sso-token", result.getToken());
+    assertEquals("new-sso-token", result.getToken());
     verify(tenantDatabasePort).initializeTenant(any());
-    verify(sessionPort).generateSession(authInput, null, null);
-    verify(sessionPort).invalidateSession(provisionalSessionToken);
-    verify(sessionPort).generateSessionWithStatus(authInput, null, restClient);
+    verify(sessionPort, times(2)).setAuthenticationContext(authInput, null);
+    verify(sessionPort).setAuthenticationContext(authInput, restClient);
+    verify(sessionPort).generateNewSession(authInput, userInfo, restClient);
     verify(siteInfoPersistencePort).save(siteInfo);
     verify(searchUserByUserNameUseCase).searchUserByUserName("teacher");
     verify(syncUserInfoUseCase).syncActualUser(userInfo);
-    verify(sessionPort).updateSessionData(authInput, sessionToken, userInfo, restClient);
   }
 
   @Test
@@ -284,8 +267,6 @@ class AuthServiceTest {
             "moodle-token",
             null);
     SessionToken sessionToken = SessionToken.builder().token("new-sso-token").build();
-    SessionToken provisionalSessionToken =
-        SessionToken.builder().token("provisional-sso-token").build();
     RestClient restClient = mock(RestClient.class);
     UserInfo userInfo = mock(UserInfo.class);
     Site site = new Site();
@@ -294,16 +275,15 @@ class AuthServiceTest {
 
     when(siteInfoApiPort.fetchSiteInfo()).thenReturn(SiteInfo.builder().site(site).build());
     when(moodleApiPort.getRestClientFromCookies(authInput)).thenReturn(restClient);
-    when(sessionPort.generateSession(authInput, null, null)).thenReturn(provisionalSessionToken);
-    when(sessionPort.generateSessionWithStatus(any(), isNull(), eq(restClient)))
+    when(searchUserByUserNameUseCase.searchUserByUserName("teacher")).thenReturn(userInfo);
+    when(syncUserInfoUseCase.syncActualUser(userInfo)).thenReturn(userInfo);
+    when(sessionPort.generateNewSession(any(), eq(userInfo), eq(restClient)))
         .thenAnswer(
             invocation -> {
               AuthInput sessionAuthInput = invocation.getArgument(0);
               assertEquals("teacher", sessionAuthInput.getUsername());
-              return new SessionPort.SessionGeneration(sessionToken, true);
+              return sessionToken;
             });
-    when(searchUserByUserNameUseCase.searchUserByUserName("teacher")).thenReturn(userInfo);
-    when(syncUserInfoUseCase.syncActualUser(userInfo)).thenReturn(userInfo);
 
     AuthService authService =
         new AuthService(
@@ -320,10 +300,7 @@ class AuthServiceTest {
     SessionToken result = authService.loginBySSO(authInput);
 
     assertEquals("new-sso-token", result.getToken());
-    verify(sessionPort).generateSession(authInput, null, null);
-    verify(sessionPort).invalidateSession(provisionalSessionToken);
-    verify(sessionPort).generateSessionWithStatus(authInput, null, restClient);
-    verify(sessionPort).updateSessionData(authInput, sessionToken, userInfo, restClient);
+    verify(sessionPort).generateNewSession(authInput, userInfo, restClient);
   }
 
   @Test
@@ -331,10 +308,6 @@ class AuthServiceTest {
     SessionPort sessionPort = mock(SessionPort.class);
     MoodleApiPort moodleApiPort = mock(MoodleApiPort.class);
     SiteInfoApiPort siteInfoApiPort = mock(SiteInfoApiPort.class);
-    SessionToken provisionalSessionToken =
-        SessionToken.builder().token("provisional-sso-token").build();
-    when(sessionPort.generateSession(any(), isNull(), isNull()))
-        .thenReturn(provisionalSessionToken);
     when(siteInfoApiPort.fetchSiteInfo()).thenReturn(new SiteInfo());
 
     AuthService authService =
@@ -351,8 +324,8 @@ class AuthServiceTest {
 
     assertThrows(UnauthorizedException.class, () -> authService.loginBySSO(new AuthInput()));
 
-    verify(sessionPort).generateSession(any(), isNull(), isNull());
-    verify(sessionPort).invalidateSession(provisionalSessionToken);
+    verify(sessionPort).setAuthenticationContext(any(), isNull());
+    verify(sessionPort, never()).generateNewSession(any(), any(), any());
     verifyNoInteractions(moodleApiPort);
   }
 
@@ -372,18 +345,14 @@ class AuthServiceTest {
             "database-password",
             "moodle-token",
             null);
-    SessionToken provisionalSessionToken =
-        SessionToken.builder().token("provisional-sso-token").build();
     SessionToken existingSessionToken = SessionToken.builder().token("existing-sso-token").build();
     RestClient restClient = mock(RestClient.class);
     Site site = new Site();
     site.setUserName("teacher");
+    site.setUserId(13L);
 
-    when(sessionPort.generateSession(authInput, null, null)).thenReturn(provisionalSessionToken);
     when(siteInfoApiPort.fetchSiteInfo()).thenReturn(SiteInfo.builder().site(site).build());
     when(moodleApiPort.getRestClientFromCookies(authInput)).thenReturn(restClient);
-    when(sessionPort.generateSessionWithStatus(authInput, null, restClient))
-        .thenReturn(new SessionPort.SessionGeneration(existingSessionToken, false));
     UserInfo userInfo = mock(UserInfo.class);
     when(searchUserByUserNameUseCase.searchUserByUserName("teacher")).thenReturn(userInfo);
     when(syncUserInfoUseCase.syncActualUser(userInfo))
@@ -403,8 +372,7 @@ class AuthServiceTest {
 
     assertThrows(IllegalStateException.class, () -> authService.loginBySSO(authInput));
 
-    verify(sessionPort).invalidateSession(provisionalSessionToken);
-    verify(sessionPort, never()).invalidateSession(existingSessionToken);
+    verify(sessionPort, never()).generateNewSession(any(), any(), any());
   }
 
   @Test
@@ -423,18 +391,13 @@ class AuthServiceTest {
             "database-password",
             "moodle-token",
             null);
-    SessionToken provisionalSessionToken =
-        SessionToken.builder().token("provisional-sso-token").build();
-    SessionToken newSessionToken = SessionToken.builder().token("new-sso-token").build();
     RestClient restClient = mock(RestClient.class);
     Site site = new Site();
     site.setUserName("teacher");
+    site.setUserId(13L);
 
-    when(sessionPort.generateSession(authInput, null, null)).thenReturn(provisionalSessionToken);
     when(siteInfoApiPort.fetchSiteInfo()).thenReturn(SiteInfo.builder().site(site).build());
     when(moodleApiPort.getRestClientFromCookies(authInput)).thenReturn(restClient);
-    when(sessionPort.generateSessionWithStatus(authInput, null, restClient))
-        .thenReturn(new SessionPort.SessionGeneration(newSessionToken, true));
     UserInfo userInfo = mock(UserInfo.class);
     when(searchUserByUserNameUseCase.searchUserByUserName("teacher")).thenReturn(userInfo);
     when(syncUserInfoUseCase.syncActualUser(userInfo))
@@ -454,8 +417,7 @@ class AuthServiceTest {
 
     assertThrows(IllegalStateException.class, () -> authService.loginBySSO(authInput));
 
-    verify(sessionPort).invalidateSession(provisionalSessionToken);
-    verify(sessionPort).invalidateSession(newSessionToken);
+    verify(sessionPort, never()).generateNewSession(any(), any(), any());
   }
 
   @Test
@@ -600,8 +562,7 @@ class AuthServiceTest {
     when(siteInfoApiPort.fetchSiteInfo()).thenReturn(SiteInfo.builder().site(site).build());
     when(searchUserByUserNameUseCase.searchUserByUserName("teacher")).thenReturn(userInfo);
     when(syncUserInfoUseCase.syncActualUser(userInfo)).thenReturn(userInfo);
-    when(sessionPort.generateSessionWithStatus(eq(authInput), isNull(), eq(restClient)))
-        .thenReturn(new SessionPort.SessionGeneration(sessionToken, false));
+    when(sessionPort.generateNewSession(authInput, userInfo, restClient)).thenReturn(sessionToken);
 
     AuthService authService =
         new AuthService(
@@ -619,8 +580,7 @@ class AuthServiceTest {
 
     assertEquals("existing-credential-token", result.getToken());
     verify(tenantDatabasePort).initializeTenant(any());
-    verify(sessionPort).generateSessionWithStatus(eq(authInput), isNull(), eq(restClient));
-    verify(sessionPort).updateSessionData(authInput, sessionToken, userInfo, restClient);
+    verify(sessionPort).generateNewSession(authInput, userInfo, restClient);
     verify(searchUserByUserNameUseCase).searchUserByUserName("teacher");
     verify(syncUserInfoUseCase).syncActualUser(userInfo);
   }
@@ -657,8 +617,7 @@ class AuthServiceTest {
     when(siteInfoApiPort.fetchSiteInfo()).thenReturn(SiteInfo.builder().site(site).build());
     when(searchUserByUserNameUseCase.searchUserByUserName("teacher")).thenReturn(userInfo);
     when(syncUserInfoUseCase.syncActualUser(userInfo)).thenReturn(userInfo);
-    when(sessionPort.generateSessionWithStatus(eq(authInput), isNull(), eq(restClient)))
-        .thenReturn(new SessionPort.SessionGeneration(sessionToken, false));
+    when(sessionPort.generateNewSession(authInput, userInfo, restClient)).thenReturn(sessionToken);
 
     AuthService authService =
         new AuthService(
@@ -677,12 +636,11 @@ class AuthServiceTest {
     assertEquals("existing-credential-token", result.getToken());
     verify(searchUserByUserNameUseCase).searchUserByUserName("teacher");
     verify(syncUserInfoUseCase).syncActualUser(userInfo);
-    verify(sessionPort).generateSessionWithStatus(eq(authInput), isNull(), eq(restClient));
-    verify(sessionPort).updateSessionData(authInput, sessionToken, userInfo, restClient);
+    verify(sessionPort).generateNewSession(authInput, userInfo, restClient);
   }
 
   @Test
-  void loginByCredentialsChecksForReusableSessionAfterFetchingSiteInfo() {
+  void loginByCredentialsCreatesSessionOnlyAfterFetchingAndValidatingSiteInfo() {
     SessionPort sessionPort = mock(SessionPort.class);
     MoodleApiPort moodleApiPort = mock(MoodleApiPort.class);
     SyncUserInfoUseCase syncUserInfoUseCase = mock(SyncUserInfoUseCase.class);
@@ -711,8 +669,7 @@ class AuthServiceTest {
     when(siteInfoApiPort.fetchSiteInfo()).thenReturn(siteInfo);
     when(searchUserByUserNameUseCase.searchUserByUserName("teacher")).thenReturn(userInfo);
     when(syncUserInfoUseCase.syncActualUser(userInfo)).thenReturn(userInfo);
-    when(sessionPort.generateSessionWithStatus(eq(authInput), isNull(), eq(restClient)))
-        .thenReturn(new SessionPort.SessionGeneration(sessionToken, false));
+    when(sessionPort.generateNewSession(authInput, userInfo, restClient)).thenReturn(sessionToken);
 
     AuthService authService =
         new AuthService(
@@ -731,7 +688,7 @@ class AuthServiceTest {
     assertEquals("credential-token", result.getToken());
     InOrder inOrder = inOrder(siteInfoApiPort, sessionPort);
     inOrder.verify(siteInfoApiPort).fetchSiteInfo();
-    inOrder.verify(sessionPort).findReusableOfflineSession(authInput);
+    inOrder.verify(sessionPort).generateNewSession(authInput, userInfo, restClient);
     verify(searchUserByUserNameUseCase).searchUserByUserName("teacher");
     verify(syncUserInfoUseCase).syncActualUser(userInfo);
     verify(siteInfoPersistencePort).save(siteInfo);
@@ -779,8 +736,7 @@ class AuthServiceTest {
               return userInfo;
             });
     when(syncUserInfoUseCase.syncActualUser(userInfo)).thenReturn(userInfo);
-    when(sessionPort.generateSessionWithStatus(authInput, null, restClient))
-        .thenReturn(new SessionPort.SessionGeneration(sessionToken, true));
+    when(sessionPort.generateNewSession(authInput, userInfo, restClient)).thenReturn(sessionToken);
 
     AuthService authService =
         new AuthService(
@@ -799,7 +755,6 @@ class AuthServiceTest {
       assertEquals("credential-token", result.getToken());
       verify(searchUserByUserNameUseCase).searchUserByUserName("teacher");
       verify(syncUserInfoUseCase).syncActualUser(userInfo);
-      verify(sessionPort).updateSessionData(authInput, sessionToken, userInfo, restClient);
     } finally {
       executor.shutdownNow();
     }
@@ -842,8 +797,6 @@ class AuthServiceTest {
     when(moodleApiPort.loginWeb("teacher", "moodle-password", authInput.getHost()))
         .thenReturn(restClient);
     when(siteInfoApiPort.fetchSiteInfo()).thenReturn(SiteInfo.builder().site(site).build());
-    when(sessionPort.generateSessionWithStatus(eq(authInput), isNull(), eq(restClient)))
-        .thenReturn(new SessionPort.SessionGeneration(existingSessionToken, false));
     UserInfo userInfo = mock(UserInfo.class);
     when(searchUserByUserNameUseCase.searchUserByUserName("teacher")).thenReturn(userInfo);
     when(syncUserInfoUseCase.syncActualUser(userInfo))

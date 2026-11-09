@@ -296,6 +296,101 @@
               "description": "Is the module visible on the course page",
               "type": "boolean"
             },
+            "activitybadge": {
+              "oneOf": [
+                {
+                  "title": "ActivityBadge",
+                  "type": "object",
+                  "properties": {
+                    "badgeelementid": {
+                      "nullable": true,
+                      "description": "Optional ID for module to add code for badge",
+                      "type": "string"
+                    },
+                    "badgeurl": {
+                      "nullable": true,
+                      "format": "uri",
+                      "description": "Optional URL to redirect the user when badge is clicked",
+                      "type": "string"
+                    },
+                    "badgecontent": {
+                      "nullable": true,
+                      "description": "The content to be displayed in the activity badge",
+                      "type": "string"
+                    },
+                    "badgestyle": {
+                      "nullable": true,
+                      "description": "The style for the activity badge",
+                      "type": "string"
+                    },
+                    "badgeextraattributes": {
+                      "nullable": true,
+                      "description": "Optional array of extra HTML attributes to add to badge element",
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "title": "BadgeAttribute",
+                        "properties": {
+                          "name": {
+                            "nullable": true,
+                            "description": "Attribute name",
+                            "type": "string"
+                          },
+                          "value": {
+                            "nullable": true,
+                            "description": "Attribute value",
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "title": "ActivityBadge",
+                    "type": "object",
+                    "properties": {
+                      "badgeelementid": {
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "badgeurl": {
+                        "nullable": true,
+                        "format": "uri",
+                        "type": "string"
+                      },
+                      "badgecontent": {
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "badgestyle": {
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "badgeextraattributes": {
+                        "nullable": true,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "value": {
+                              "nullable": true,
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            },
             "noviewlink": {
               "nullable": true,
               "description": "Whether the module has no view page",
