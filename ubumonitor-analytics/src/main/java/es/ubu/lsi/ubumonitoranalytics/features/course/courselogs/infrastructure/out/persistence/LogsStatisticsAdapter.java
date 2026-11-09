@@ -1,17 +1,15 @@
 package es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.infrastructure.out.persistence;
 
-import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Logs.LOGS;
-import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsComponents.LOGS_COMPONENTS;
-import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsEvents.LOGS_EVENTS;
-import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsOrigins.LOGS_ORIGINS;
-import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Modules.MODULES;
-import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Sections.SECTIONS;
-import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Users.USERS;
-
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.port.out.LogsStatisticsPort;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.statistics.*;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.exception.BadRequestException;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
+import lombok.RequiredArgsConstructor;
+import org.jooq.*;
+import org.jooq.Record;
+import org.jooq.impl.DSL;
+import org.springframework.stereotype.Component;
+
 import java.time.DateTimeException;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -21,11 +19,14 @@ import java.time.temporal.IsoFields;
 import java.util.*;
 import java.util.Comparator;
 import java.util.stream.Stream;
-import lombok.RequiredArgsConstructor;
-import org.jooq.*;
-import org.jooq.Record;
-import org.jooq.impl.DSL;
-import org.springframework.stereotype.Component;
+
+import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Logs.LOGS;
+import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsComponents.LOGS_COMPONENTS;
+import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsEvents.LOGS_EVENTS;
+import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsOrigins.LOGS_ORIGINS;
+import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Modules.MODULES;
+import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Sections.SECTIONS;
+import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Users.USERS;
 
 /** Calculates requested course log aggregates with jOOQ. */
 @Component
@@ -83,7 +84,8 @@ public class LogsStatisticsAdapter implements LogsStatisticsPort {
       ZoneId zone = resolveTimeZone(request.getTimeZone());
       Field<Long> bucketField = aggregatedLogs.field(TIME_BUCKET, Long.class);
       List<OrderField<?>> orderFields = new ArrayList<>();
-      orderFields.add(bucketField.asc());
+        assert bucketField != null;
+        orderFields.add(bucketField.asc());
       Set<Field<?>> stableOrderFields = new LinkedHashSet<>();
       for (CourseLogsSelectColumn field :
           request.getFields() == null ? List.<CourseLogsSelectColumn>of() : request.getFields()) {
@@ -265,11 +267,8 @@ public class LogsStatisticsAdapter implements LogsStatisticsPort {
   // =========================================================
   private boolean needsSection(CourseLogsStatisticsRequest request) {
 
-    boolean inFields =
-        request.getFields() != null
-            && request.getFields().stream().anyMatch(f -> f.name().contains("SECTION"));
-
-    return inFields;
+      return request.getFields() != null
+          && request.getFields().stream().anyMatch(f -> f.name().contains("SECTION"));
   }
 
   // =========================================================

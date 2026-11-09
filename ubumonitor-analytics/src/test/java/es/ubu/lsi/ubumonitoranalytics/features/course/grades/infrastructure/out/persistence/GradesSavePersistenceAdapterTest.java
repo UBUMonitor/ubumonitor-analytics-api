@@ -1,29 +1,29 @@
 package es.ubu.lsi.ubumonitoranalytics.features.course.grades.infrastructure.out.persistence;
 
-import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Grades.GRADES;
-import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.UsersGrades.USERS_GRADES;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import es.ubu.lsi.ubumonitoranalytics.features.course.grades.domain.model.CourseGrade;
 import es.ubu.lsi.ubumonitoranalytics.features.course.grades.domain.model.GradeItem;
 import es.ubu.lsi.ubumonitoranalytics.features.course.grades.domain.model.UserGrade;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
 import es.ubu.lsi.ubumonitoranalytics.util.DatabaseUtil;
-import java.math.BigDecimal;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.mapstruct.factory.Mappers;
+
+import java.math.BigDecimal;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Grades.GRADES;
+import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.UsersGrades.USERS_GRADES;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class GradesSavePersistenceAdapterTest {
 
@@ -57,28 +57,28 @@ class GradesSavePersistenceAdapterTest {
 
       adapter.saveCourseGradeItemsPersistence(currentGrades);
 
-      assertTrue(dsl.selectFrom(GRADES).where(GRADES.ID.eq(11L)).fetchOne().getActive());
-      assertFalse(dsl.selectFrom(GRADES).where(GRADES.ID.eq(12L)).fetchOne().getActive());
-      assertTrue(dsl.selectFrom(GRADES).where(GRADES.ID.eq(13L)).fetchOne().getActive());
-      assertTrue(dsl.selectFrom(GRADES).where(GRADES.ID.eq(14L)).fetchOne().getActive());
-      assertEquals(110L, dsl.selectFrom(GRADES).where(GRADES.ID.eq(11L)).fetchOne().getModuleId());
-      assertEquals(11, dsl.selectFrom(GRADES).where(GRADES.ID.eq(11L)).fetchOne().getPosition());
-      assertEquals(140L, dsl.selectFrom(GRADES).where(GRADES.ID.eq(14L)).fetchOne().getModuleId());
-      assertEquals(14, dsl.selectFrom(GRADES).where(GRADES.ID.eq(14L)).fetchOne().getPosition());
+      assertTrue(Objects.requireNonNull(dsl.selectFrom(GRADES).where(GRADES.ID.eq(11L)).fetchOne()).getActive());
+      assertFalse(Objects.requireNonNull(dsl.selectFrom(GRADES).where(GRADES.ID.eq(12L)).fetchOne()).getActive());
+      assertTrue(Objects.requireNonNull(dsl.selectFrom(GRADES).where(GRADES.ID.eq(13L)).fetchOne()).getActive());
+      assertTrue(Objects.requireNonNull(dsl.selectFrom(GRADES).where(GRADES.ID.eq(14L)).fetchOne()).getActive());
+      assertEquals(110L, Objects.requireNonNull(dsl.selectFrom(GRADES).where(GRADES.ID.eq(11L)).fetchOne()).getModuleId());
+      assertEquals(11, Objects.requireNonNull(dsl.selectFrom(GRADES).where(GRADES.ID.eq(11L)).fetchOne()).getPosition());
+      assertEquals(140L, Objects.requireNonNull(dsl.selectFrom(GRADES).where(GRADES.ID.eq(14L)).fetchOne()).getModuleId());
+      assertEquals(14, Objects.requireNonNull(dsl.selectFrom(GRADES).where(GRADES.ID.eq(14L)).fetchOne()).getPosition());
 
       assertEquals(
           0,
-          dsl.selectFrom(USERS_GRADES)
-              .where(USERS_GRADES.GRADE_ID.eq(11L))
-              .fetchOne()
+          Objects.requireNonNull(dsl.selectFrom(USERS_GRADES)
+                          .where(USERS_GRADES.GRADE_ID.eq(11L))
+                          .fetchOne())
               .getGrade()
               .compareTo(BigDecimal.valueOf(75)));
       assertFalse(
-          dsl.selectFrom(USERS_GRADES).where(USERS_GRADES.GRADE_ID.eq(12L)).fetchOne().getActive());
+          Objects.requireNonNull(dsl.selectFrom(USERS_GRADES).where(USERS_GRADES.GRADE_ID.eq(12L)).fetchOne()).getActive());
       assertTrue(
-          dsl.selectFrom(USERS_GRADES).where(USERS_GRADES.GRADE_ID.eq(13L)).fetchOne().getActive());
+          Objects.requireNonNull(dsl.selectFrom(USERS_GRADES).where(USERS_GRADES.GRADE_ID.eq(13L)).fetchOne()).getActive());
       assertTrue(
-          dsl.selectFrom(USERS_GRADES).where(USERS_GRADES.GRADE_ID.eq(14L)).fetchOne().getActive());
+          Objects.requireNonNull(dsl.selectFrom(USERS_GRADES).where(USERS_GRADES.GRADE_ID.eq(14L)).fetchOne()).getActive());
 
       CourseGrade emptyGrades = new CourseGrade();
       emptyGrades.setCourseId(7L);
@@ -87,13 +87,13 @@ class GradesSavePersistenceAdapterTest {
 
       adapter.saveCourseGradeItemsPersistence(emptyGrades);
 
-      assertFalse(dsl.selectFrom(GRADES).where(GRADES.ID.eq(11L)).fetchOne().getActive());
-      assertFalse(dsl.selectFrom(GRADES).where(GRADES.ID.eq(14L)).fetchOne().getActive());
+      assertFalse(Objects.requireNonNull(dsl.selectFrom(GRADES).where(GRADES.ID.eq(11L)).fetchOne()).getActive());
+      assertFalse(Objects.requireNonNull(dsl.selectFrom(GRADES).where(GRADES.ID.eq(14L)).fetchOne()).getActive());
       assertFalse(
-          dsl.selectFrom(USERS_GRADES).where(USERS_GRADES.GRADE_ID.eq(11L)).fetchOne().getActive());
-      assertTrue(dsl.selectFrom(GRADES).where(GRADES.ID.eq(13L)).fetchOne().getActive());
+          Objects.requireNonNull(dsl.selectFrom(USERS_GRADES).where(USERS_GRADES.GRADE_ID.eq(11L)).fetchOne()).getActive());
+      assertTrue(Objects.requireNonNull(dsl.selectFrom(GRADES).where(GRADES.ID.eq(13L)).fetchOne()).getActive());
       assertTrue(
-          dsl.selectFrom(USERS_GRADES).where(USERS_GRADES.GRADE_ID.eq(13L)).fetchOne().getActive());
+          Objects.requireNonNull(dsl.selectFrom(USERS_GRADES).where(USERS_GRADES.GRADE_ID.eq(13L)).fetchOne()).getActive());
     }
   }
 
@@ -127,25 +127,25 @@ class GradesSavePersistenceAdapterTest {
       saveAdapter.saveCourseGradeItemsPersistence(courseGrade);
 
       assertTrue(
-          dsl.selectFrom(USERS_GRADES).where(USERS_GRADES.GRADE_ID.eq(11L)).fetchOne().getActive());
+          Objects.requireNonNull(dsl.selectFrom(USERS_GRADES).where(USERS_GRADES.GRADE_ID.eq(11L)).fetchOne()).getActive());
       assertEquals(
           0,
-          dsl.selectFrom(USERS_GRADES)
-              .where(USERS_GRADES.GRADE_ID.eq(-92L))
-              .fetchOne()
+          Objects.requireNonNull(dsl.selectFrom(USERS_GRADES)
+                          .where(USERS_GRADES.GRADE_ID.eq(-92L))
+                          .fetchOne())
               .getGrade()
               .compareTo(BigDecimal.valueOf(80)));
       assertEquals(
           11L,
-          dsl.selectFrom(USERS_GRADES)
-              .where(USERS_GRADES.GRADE_ID.eq(11L))
-              .fetchOne()
+          Objects.requireNonNull(dsl.selectFrom(USERS_GRADES)
+                          .where(USERS_GRADES.GRADE_ID.eq(11L))
+                          .fetchOne())
               .getGradeId());
       assertEquals(
           -92L,
-          dsl.selectFrom(USERS_GRADES)
-              .where(USERS_GRADES.GRADE_ID.eq(-92L))
-              .fetchOne()
+          Objects.requireNonNull(dsl.selectFrom(USERS_GRADES)
+                          .where(USERS_GRADES.GRADE_ID.eq(-92L))
+                          .fetchOne())
               .getGradeId());
       GradeItem persistedCategory =
           fetchAdapter.fetchCourseGradeItemsPersistence(7L).stream()

@@ -1,15 +1,16 @@
 package es.ubu.lsi.ubumonitoranalytics.features.course.grades.infrastructure.out.moodle;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import es.ubu.lsi.moodle.model.gradereport.user.getgradeitems.response.GetGradeItemsResponseApi;
 import es.ubu.lsi.moodle.model.gradereport.user.getgradeitems.response.GradeItemApi;
 import es.ubu.lsi.moodle.model.gradereport.user.getgradeitems.response.UserGradeApi;
 import es.ubu.lsi.ubumonitoranalytics.features.course.grades.domain.model.GradeItem;
-import java.util.List;
+import es.ubu.lsi.ubumonitoranalytics.features.course.grades.domain.model.UserGrade;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class MoodleGradesAdapterResponseMapperTest {
 
@@ -38,7 +39,7 @@ class MoodleGradesAdapterResponseMapperTest {
     assertEquals(500L, mappedItems.getFirst().getCategoryId());
     assertEquals(700L, mappedItems.get(1).getCategoryId());
     assertEquals(500L, mappedItems.get(1).getParentCategoryId());
-    assertEquals(null, mappedItems.get(2).getCategoryId());
+    assertNull(mappedItems.get(2).getCategoryId());
     assertTrue(mappedItems.stream().allMatch(gradeItem -> gradeItem.getPosition() == null));
 
     mapper.assignPositions(mappedItems);
@@ -68,8 +69,8 @@ class MoodleGradesAdapterResponseMapperTest {
 
     assertEquals(
         List.of(30L, 50L, -700L),
-        mappedUserGrades.stream().map(userGrade -> userGrade.getGradeItemId()).toList());
-    assertEquals(null, mappedItem.getCategoryId());
+        mappedUserGrades.stream().map(UserGrade::getGradeItemId).toList());
+    assertNull(mappedItem.getCategoryId());
     assertEquals(700L, mappedItem.getParentCategoryId());
     GradeItem mappedCategory =
         mappedItems.stream().filter(item -> item.getId().equals(30L)).findFirst().orElseThrow();
