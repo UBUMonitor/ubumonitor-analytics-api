@@ -7,6 +7,8 @@ import lombok.Data;
 public class GradeItem {
   private Long id;
   private Long parentId;
+  private Long categoryId;
+  private Long parentCategoryId;
   private String name;
   private String itemType;
   private Long itemInstance;

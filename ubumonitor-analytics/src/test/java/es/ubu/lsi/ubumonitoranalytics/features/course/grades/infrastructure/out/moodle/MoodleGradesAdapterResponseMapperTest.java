@@ -35,11 +35,46 @@ class MoodleGradesAdapterResponseMapperTest {
 
     assertEquals(
         List.of(10L, 30L, 50L, 20L, 40L), mappedItems.stream().map(GradeItem::getId).toList());
+    assertEquals(500L, mappedItems.getFirst().getCategoryId());
+    assertEquals(700L, mappedItems.get(1).getCategoryId());
+    assertEquals(500L, mappedItems.get(1).getParentCategoryId());
+    assertEquals(null, mappedItems.get(2).getCategoryId());
     assertTrue(mappedItems.stream().allMatch(gradeItem -> gradeItem.getPosition() == null));
 
     mapper.assignPositions(mappedItems);
 
     assertEquals(List.of(0, 1, 2, 3, 4), mappedItems.stream().map(GradeItem::getPosition).toList());
+  }
+
+  @Test
+  void usesNegativeCategoryIdWhenGradeItemIsNotAvailableFromApi() {
+    GradeItemApi gradeItem = gradeItem(50L, "mod", 900L, 700L, null);
+    gradeItem.setParentcategoryid(600L);
+    GradeItemApi category = gradeItem(30L, "category", 700L, null, 600L);
+    UserGradeApi availableItems = new UserGradeApi();
+    availableItems.setUserid(21L);
+    availableItems.setGradeitems(List.of(category, gradeItem));
+    GradeItemApi itemNotAvailable = gradeItem(99L, "manual", null, 700L, null);
+    UserGradeApi gradeWithUnavailableItem = new UserGradeApi();
+    gradeWithUnavailableItem.setUserid(22L);
+    gradeWithUnavailableItem.setGradeitems(List.of(itemNotAvailable));
+    GetGradeItemsResponseApi response = new GetGradeItemsResponseApi();
+    response.setUsergrades(List.of(availableItems, gradeWithUnavailableItem));
+
+    var mappedUserGrades = mapper.toUserGrades(response);
+    List<GradeItem> mappedItems = mapper.toGradeItems(response);
+    GradeItem mappedItem =
+        mappedItems.stream().filter(item -> item.getId().equals(50L)).findFirst().orElseThrow();
+
+    assertEquals(
+        List.of(30L, 50L, -700L),
+        mappedUserGrades.stream().map(userGrade -> userGrade.getGradeItemId()).toList());
+    assertEquals(null, mappedItem.getCategoryId());
+    assertEquals(700L, mappedItem.getParentCategoryId());
+    GradeItem mappedCategory =
+        mappedItems.stream().filter(item -> item.getId().equals(30L)).findFirst().orElseThrow();
+    assertEquals(700L, mappedCategory.getCategoryId());
+    assertEquals(600L, mappedCategory.getParentCategoryId());
   }
 
   private GradeItemApi gradeItem(

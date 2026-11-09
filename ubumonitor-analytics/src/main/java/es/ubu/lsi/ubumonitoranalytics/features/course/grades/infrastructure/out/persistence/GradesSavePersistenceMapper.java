@@ -21,6 +21,8 @@ public interface GradesSavePersistenceMapper {
   @Mapping(target = "moduleId", source = "gradeItem.moduleId")
   @Mapping(target = "position", source = "gradeItem.position")
   @Mapping(target = "parentId", source = "gradeItem.parentId")
+  @Mapping(target = "categoryId", source = "gradeItem.categoryId")
+  @Mapping(target = "parentCategoryId", source = "gradeItem.parentCategoryId")
   @Mapping(target = "itemType", source = "gradeItem.itemType")
   @Mapping(target = "name", source = "gradeItem.name")
   GradesRecord toRecord(GradeItem gradeItem, Long courseId, Long now);

@@ -14,6 +14,8 @@ public interface GradesFetchPersistenceMapper {
   @Mapping(target = "itemInstance", ignore = true)
   @Mapping(target = "moduleId", source = "moduleId")
   @Mapping(target = "position", source = "position")
+  @Mapping(target = "categoryId", source = "categoryId")
+  @Mapping(target = "parentCategoryId", source = "parentCategoryId")
   GradeItem toGradeItem(GradesRecord record);
 
   @Mapping(source = "gradeId", target = "gradeItemId")

@@ -24,17 +24,18 @@
               "maxdepth": 3,
               "gradeitems": [
                 {
-                  "id": 370,
-                  "itemname": "",
-                  "itemtype": "course",
-                  "itemmodule": null,
-                  "iteminstance": 85,
-                  "itemnumber": null,
+                  "id": 378,
+                  "itemname": "From Concept to Reality: Trauma and Film",
+                  "itemtype": "mod",
+                  "itemmodule": "assign",
+                  "iteminstance": 111,
+                  "itemnumber": 0,
                   "idnumber": "",
-                  "categoryid": null,
+                  "categoryid": 86,
                   "outcomeid": null,
                   "scaleid": null,
                   "locked": false,
+                  "cmid": 724,
                   "graderaw": null,
                   "gradedatesubmitted": null,
                   "gradedategraded": null,
@@ -45,8 +46,37 @@
                   "gradeisoverridden": false,
                   "gradeformatted": "-",
                   "grademin": 0,
-                  "grademax": 630,
-                  "rangeformatted": "0&ndash;630",
+                  "grademax": 100,
+                  "rangeformatted": "0&ndash;100",
+                  "percentageformatted": "-",
+                  "feedback": "",
+                  "feedbackformat": 0
+                },
+                {
+                  "id": 377,
+                  "itemname": "Course discussion",
+                  "itemtype": "mod",
+                  "itemmodule": "forum",
+                  "iteminstance": 77,
+                  "itemnumber": 0,
+                  "idnumber": "",
+                  "categoryid": 86,
+                  "outcomeid": null,
+                  "scaleid": null,
+                  "locked": false,
+                  "cmid": 706,
+                  "graderaw": null,
+                  "gradedatesubmitted": null,
+                  "gradedategraded": null,
+                  "gradehiddenbydate": false,
+                  "gradeneedsupdate": false,
+                  "gradeishidden": false,
+                  "gradeislocked": false,
+                  "gradeisoverridden": false,
+                  "gradeformatted": "-",
+                  "grademin": 1,
+                  "grademax": 3,
+                  "rangeformatted": "Fair point&ndash;Excellent point",
                   "percentageformatted": "-",
                   "feedback": "",
                   "feedbackformat": 0
@@ -84,6 +114,35 @@
                   "parentcategoryid": 85
                 },
                 {
+                  "id": 371,
+                  "itemname": "Group Project",
+                  "itemtype": "mod",
+                  "itemmodule": "assign",
+                  "iteminstance": 107,
+                  "itemnumber": 0,
+                  "idnumber": "",
+                  "categoryid": 87,
+                  "outcomeid": null,
+                  "scaleid": null,
+                  "locked": false,
+                  "cmid": 715,
+                  "graderaw": null,
+                  "gradedatesubmitted": null,
+                  "gradedategraded": null,
+                  "gradehiddenbydate": false,
+                  "gradeneedsupdate": false,
+                  "gradeishidden": false,
+                  "gradeislocked": false,
+                  "gradeisoverridden": false,
+                  "gradeformatted": "-",
+                  "grademin": 0,
+                  "grademax": 100,
+                  "rangeformatted": "0&ndash;100",
+                  "percentageformatted": "-",
+                  "feedback": "",
+                  "feedbackformat": 0
+                },
+                {
                   "id": 380,
                   "itemname": "Collaborative",
                   "itemtype": "category",
@@ -114,6 +173,265 @@
                   "feedback": "",
                   "feedbackformat": 0,
                   "parentcategoryid": 85
+                },
+                {
+                  "id": 376,
+                  "itemname": "Factual recall test",
+                  "itemtype": "mod",
+                  "itemmodule": "quiz",
+                  "iteminstance": 80,
+                  "itemnumber": 0,
+                  "idnumber": "",
+                  "categoryid": 88,
+                  "outcomeid": null,
+                  "scaleid": null,
+                  "locked": false,
+                  "cmid": 723,
+                  "graderaw": null,
+                  "gradedatesubmitted": null,
+                  "gradedategraded": null,
+                  "gradehiddenbydate": false,
+                  "gradeneedsupdate": false,
+                  "gradeishidden": false,
+                  "gradeislocked": false,
+                  "gradeisoverridden": false,
+                  "gradeformatted": "-",
+                  "grademin": 0,
+                  "grademax": 10,
+                  "rangeformatted": "0&ndash;10",
+                  "percentageformatted": "-",
+                  "feedback": "",
+                  "feedbackformat": 0
+                },
+                {
+                  "id": 372,
+                  "itemname": "Dissertation: Fight club",
+                  "itemtype": "mod",
+                  "itemmodule": "assign",
+                  "iteminstance": 108,
+                  "itemnumber": 0,
+                  "idnumber": "",
+                  "categoryid": 88,
+                  "outcomeid": null,
+                  "scaleid": null,
+                  "locked": false,
+                  "cmid": 716,
+                  "graderaw": null,
+                  "gradedatesubmitted": null,
+                  "gradedategraded": null,
+                  "gradehiddenbydate": false,
+                  "gradeneedsupdate": false,
+                  "gradeishidden": false,
+                  "gradeislocked": false,
+                  "gradeisoverridden": false,
+                  "gradeformatted": "-",
+                  "grademin": 0,
+                  "grademax": 100,
+                  "rangeformatted": "0&ndash;100",
+                  "percentageformatted": "-",
+                  "feedback": "",
+                  "feedbackformat": 0
+                },
+                {
+                  "id": 373,
+                  "itemname": "Dissertation: A Beautiful Mind",
+                  "itemtype": "mod",
+                  "itemmodule": "assign",
+                  "iteminstance": 109,
+                  "itemnumber": 0,
+                  "idnumber": "",
+                  "categoryid": 88,
+                  "outcomeid": null,
+                  "scaleid": null,
+                  "locked": false,
+                  "cmid": 717,
+                  "graderaw": null,
+                  "gradedatesubmitted": null,
+                  "gradedategraded": null,
+                  "gradehiddenbydate": false,
+                  "gradeneedsupdate": false,
+                  "gradeishidden": false,
+                  "gradeislocked": false,
+                  "gradeisoverridden": false,
+                  "gradeformatted": "-",
+                  "grademin": 0,
+                  "grademax": 100,
+                  "rangeformatted": "0&ndash;100",
+                  "percentageformatted": "-",
+                  "feedback": "",
+                  "feedbackformat": 0
+                },
+                {
+                  "id": 374,
+                  "itemname": "Dissertation: Spider",
+                  "itemtype": "mod",
+                  "itemmodule": "assign",
+                  "iteminstance": 110,
+                  "itemnumber": 0,
+                  "idnumber": "",
+                  "categoryid": 88,
+                  "outcomeid": null,
+                  "scaleid": null,
+                  "locked": false,
+                  "cmid": 718,
+                  "graderaw": null,
+                  "gradedatesubmitted": null,
+                  "gradedategraded": null,
+                  "gradehiddenbydate": false,
+                  "gradeneedsupdate": false,
+                  "gradeishidden": false,
+                  "gradeislocked": false,
+                  "gradeisoverridden": false,
+                  "gradeformatted": "-",
+                  "grademin": 0,
+                  "grademax": 100,
+                  "rangeformatted": "0&ndash;100",
+                  "percentageformatted": "-",
+                  "feedback": "",
+                  "feedbackformat": 0
+                },
+                {
+                  "id": 382,
+                  "itemname": "F2F Session",
+                  "itemtype": "manual",
+                  "itemmodule": null,
+                  "iteminstance": null,
+                  "itemnumber": 0,
+                  "idnumber": "",
+                  "categoryid": 88,
+                  "outcomeid": 4,
+                  "scaleid": 4,
+                  "locked": false,
+                  "graderaw": null,
+                  "gradedatesubmitted": null,
+                  "gradedategraded": null,
+                  "gradehiddenbydate": false,
+                  "gradeneedsupdate": false,
+                  "gradeishidden": false,
+                  "gradeislocked": false,
+                  "gradeisoverridden": false,
+                  "gradeformatted": "-",
+                  "grademin": 1,
+                  "grademax": 4,
+                  "rangeformatted": "Inadequate&ndash;Outstanding",
+                  "percentageformatted": "-",
+                  "feedback": "",
+                  "feedbackformat": 0
+                },
+                {
+                  "id": 393,
+                  "itemname": "Class presentation",
+                  "itemtype": "manual",
+                  "itemmodule": null,
+                  "iteminstance": null,
+                  "itemnumber": 0,
+                  "idnumber": "",
+                  "categoryid": 88,
+                  "outcomeid": null,
+                  "scaleid": null,
+                  "locked": false,
+                  "graderaw": null,
+                  "gradedatesubmitted": null,
+                  "gradedategraded": null,
+                  "gradehiddenbydate": false,
+                  "gradeneedsupdate": false,
+                  "gradeishidden": false,
+                  "gradeislocked": false,
+                  "gradeisoverridden": false,
+                  "gradeformatted": "-",
+                  "grademin": 0,
+                  "grademax": 100,
+                  "rangeformatted": "0&ndash;100",
+                  "percentageformatted": "-",
+                  "feedback": "",
+                  "feedbackformat": 0
+                },
+                {
+                  "id": 394,
+                  "itemname": "Reflective journal",
+                  "itemtype": "mod",
+                  "itemmodule": "assign",
+                  "iteminstance": 113,
+                  "itemnumber": 0,
+                  "idnumber": "",
+                  "categoryid": 88,
+                  "outcomeid": null,
+                  "scaleid": null,
+                  "locked": false,
+                  "cmid": 748,
+                  "graderaw": null,
+                  "gradedatesubmitted": null,
+                  "gradedategraded": null,
+                  "gradehiddenbydate": false,
+                  "gradeneedsupdate": false,
+                  "gradeishidden": false,
+                  "gradeislocked": false,
+                  "gradeisoverridden": false,
+                  "gradeformatted": "-",
+                  "grademin": 0,
+                  "grademax": 10,
+                  "rangeformatted": "0&ndash;10",
+                  "percentageformatted": "-",
+                  "feedback": "",
+                  "feedbackformat": 0
+                },
+                {
+                  "id": 396,
+                  "itemname": "Commitment",
+                  "itemtype": "mod",
+                  "itemmodule": "assign",
+                  "iteminstance": 113,
+                  "itemnumber": 1001,
+                  "idnumber": null,
+                  "categoryid": 88,
+                  "outcomeid": 6,
+                  "scaleid": 6,
+                  "locked": false,
+                  "cmid": 748,
+                  "graderaw": null,
+                  "gradedatesubmitted": null,
+                  "gradedategraded": null,
+                  "gradehiddenbydate": false,
+                  "gradeneedsupdate": false,
+                  "gradeishidden": false,
+                  "gradeislocked": false,
+                  "gradeisoverridden": false,
+                  "gradeformatted": "-",
+                  "grademin": 1,
+                  "grademax": 3,
+                  "rangeformatted": "Inadequate&ndash;Full",
+                  "percentageformatted": "-",
+                  "feedback": "",
+                  "feedbackformat": 0
+                },
+                {
+                  "id": 395,
+                  "itemname": "Participation",
+                  "itemtype": "mod",
+                  "itemmodule": "assign",
+                  "iteminstance": 113,
+                  "itemnumber": 1000,
+                  "idnumber": null,
+                  "categoryid": 88,
+                  "outcomeid": 5,
+                  "scaleid": 5,
+                  "locked": false,
+                  "cmid": 748,
+                  "graderaw": null,
+                  "gradedatesubmitted": null,
+                  "gradedategraded": null,
+                  "gradehiddenbydate": false,
+                  "gradeneedsupdate": false,
+                  "gradeishidden": false,
+                  "gradeislocked": false,
+                  "gradeisoverridden": false,
+                  "gradeformatted": "-",
+                  "grademin": 1,
+                  "grademax": 3,
+                  "rangeformatted": "Inadequate&ndash;Full",
+                  "percentageformatted": "-",
+                  "feedback": "",
+                  "feedbackformat": 0
                 },
                 {
                   "id": 381,
@@ -230,6 +548,66 @@
                   "percentageformatted": "-",
                   "feedback": "",
                   "feedbackformat": 0
+                },
+                {
+                  "id": 399,
+                  "itemname": "Grammar help with your essays",
+                  "itemtype": "mod",
+                  "itemmodule": "quiz",
+                  "iteminstance": 83,
+                  "itemnumber": 0,
+                  "idnumber": "",
+                  "categoryid": 85,
+                  "outcomeid": null,
+                  "scaleid": null,
+                  "locked": false,
+                  "cmid": 757,
+                  "weightraw": 0,
+                  "weightformatted": "0.00 %",
+                  "status": "novalue",
+                  "graderaw": null,
+                  "gradedatesubmitted": null,
+                  "gradedategraded": null,
+                  "gradehiddenbydate": false,
+                  "gradeneedsupdate": false,
+                  "gradeishidden": false,
+                  "gradeislocked": false,
+                  "gradeisoverridden": false,
+                  "gradeformatted": "-",
+                  "grademin": 0,
+                  "grademax": 10,
+                  "rangeformatted": "0&ndash;10",
+                  "percentageformatted": "-",
+                  "feedback": "",
+                  "feedbackformat": 0
+                },
+                {
+                  "id": 370,
+                  "itemname": "",
+                  "itemtype": "course",
+                  "itemmodule": null,
+                  "iteminstance": 85,
+                  "itemnumber": null,
+                  "idnumber": "",
+                  "categoryid": null,
+                  "outcomeid": null,
+                  "scaleid": null,
+                  "locked": false,
+                  "graderaw": null,
+                  "gradedatesubmitted": null,
+                  "gradedategraded": null,
+                  "gradehiddenbydate": false,
+                  "gradeneedsupdate": false,
+                  "gradeishidden": false,
+                  "gradeislocked": false,
+                  "gradeisoverridden": false,
+                  "gradeformatted": "-",
+                  "grademin": 0,
+                  "grademax": 630,
+                  "rangeformatted": "0&ndash;630",
+                  "percentageformatted": "-",
+                  "feedback": "",
+                  "feedbackformat": 0
                 }
               ]
             }
@@ -248,41 +626,777 @@
         "body": {
           "tables": [
             {
+              "courseid": 62,
+              "userid": 13,
+              "userfullname": "Jeffrey Sanders",
+              "maxdepth": 3,
               "tabledata": [
+                {
+                  "itemname": {
+                    "class": "level1 d1 b1b b1t category column-itemname",
+                    "colspan": 9,
+                    "content": "<div class=\"d-flex category-content\">\n    <a aria-expanded=\"true\" role=\"button\" data-categoryid=85 data-target=\".cat_85[data-hidden='false']\" class=\"btn btn-icon me-1 toggle-category\" href=\"#\">\n        <span class=\"collapsed text-nowrap\" title=\"Collapse\">\n            <i class=\"icon fa fa-chevron-down fa-fw\" title=\"Collapse\" role=\"img\" aria-label=\"Collapse\"></i>\n        </span>\n        <span class=\"expanded text-nowrap\" title=\"Expand\">\n            <i class=\"icon fa fa-chevron-right fa-fw\" title=\"Expand\" role=\"img\" aria-label=\"Expand\"></i>\n        </span>\n    </a>\n    <span>Psychology in Cinema</span>\n</div>",
+                    "id": "cat_85_13"
+                  },
+                  "parentcategories": []
+                },
+                {
+                  "leader": {
+                    "class": "level1 d1 b1t b2b b1l",
+                    "rowspan": 29
+                  },
+                  "parentcategories": [
+                    85
+                  ]
+                },
+                {
+                  "itemname": {
+                    "class": "level2 d2 b1b b1t category column-itemname",
+                    "colspan": 8,
+                    "content": "<div class=\"d-flex category-content\">\n    <a aria-expanded=\"true\" role=\"button\" data-categoryid=86 data-target=\".cat_86[data-hidden='false']\" class=\"btn btn-icon me-1 toggle-category\" href=\"#\">\n        <span class=\"collapsed text-nowrap\" title=\"Collapse\">\n            <i class=\"icon fa fa-chevron-down fa-fw\" title=\"Collapse\" role=\"img\" aria-label=\"Collapse\"></i>\n        </span>\n        <span class=\"expanded text-nowrap\" title=\"Expand\">\n            <i class=\"icon fa fa-chevron-right fa-fw\" title=\"Expand\" role=\"img\" aria-label=\"Expand\"></i>\n        </span>\n    </a>\n    <span>Analysis</span>\n</div>",
+                    "id": "cat_86_13"
+                  },
+                  "parentcategories": [
+                    85
+                  ]
+                },
+                {
+                  "leader": {
+                    "class": "level2 d2 b1t b2b b1l",
+                    "rowspan": 4
+                  },
+                  "parentcategories": [
+                    85,
+                    86
+                  ]
+                },
                 {
                   "itemname": {
                     "class": "level3 item b1b column-itemname",
                     "colspan": 1,
-                    "content": "<div class=\"item d-flex align-items-center\"><div class=\"me-1\"><i class=\"icon fa fa-pen-to-square fa-fw icon itemicon\" title=\"Manual item\" role=\"img\" aria-label=\"Manual item\"></i></div><div><span class=\"d-block text-uppercase small\" title=\"Manual item\">Manual item</span><div class=\"rowtitle\"><span class=\"gradeitemheader\" title=\"Screening 1 \" tabindex=\"0\">Screening 1 </span></div></div></div>",
+                    "content": "<div class=\"item d-flex align-items-center\"><div class=\"me-1\"><img class=\"icon itemicon\" src=\"https://school.moodledemo.net/theme/image.php/boost/assign/1794214917/monologo?filtericon=1\" alt=\"Assignment\" /></div><div><span class=\"d-block text-uppercase small \" title=\"Assignment\">Assignment</span><div class=\"rowtitle\"><a title=\"Assignment activity From Concept to Reality: Trauma and Film\" class=\"gradeitemheader \" href=\"https://school.moodledemo.net/mod/assign/view.php?id=724\">From Concept to Reality: Trauma and Film</a></div></div></div>",
+                    "id": "row_378_13"
+                  },
+                  "weight": {
+                    "class": "level3 item b1b itemcenter  column-weight",
+                    "content": "-",
+                    "headers": "cat_86_13 row_378_13 weight13"
+                  },
+                  "grade": {
+                    "class": "level3 item b1b itemcenter   column-grade",
+                    "content": "<div class=\"d-flex align-items-center\"><div>-</div><div class=\"ps-1 d-flex align-items-center\"><div class=\"action-menu moodle-actionmenu\" id=\"action-menu-0\" data-enhance=\"moodle-core-actionmenu\">\n\n        <div class=\"menubar d-flex \" id=\"action-menu-0-menubar\">\n\n            \n\n\n                <div class=\"action-menu-trigger\">\n                    <div class=\"dropdown\">\n                        <a\n                            href=\"#\"\n                            tabindex=\"0\"\n                            class=\"btn btn-link btn-icon d-flex no-caret dropdown-toggle icon-no-margin\"\n                            id=\"action-menu-toggle-0\"\n                            aria-label=\"Actions\"\n                            data-bs-toggle=\"dropdown\"\n                            role=\"button\"\n                            aria-haspopup=\"true\"\n                            aria-expanded=\"false\"\n                            aria-controls=\"action-menu-0-menu\"\n                            title=\"Actions\"\n                        >\n                            \n                            <i class=\"icon fa fa-ellipsis fa-fw \" aria-hidden=\"true\" ></i><span class=\"visually-hidden d-inline-block\">Actions</span>\n                                \n                            <b class=\"caret\"></b>\n                        </a>\n                            <div class=\"dropdown-menu menu dropdown-menu-start\" id=\"action-menu-0-menu\" data-rel=\"menu-content\" aria-labelledby=\"action-menu-toggle-0\" role=\"menu\">\n                                                                <a href=\"https://school.moodledemo.net/mod/assign/grade.php?id=724&amp;itemid=378&amp;itemnumber=0&amp;gradeid&amp;userid=13\" class=\"dropdown-item menu-action\" role=\"menuitem\" tabindex=\"-1\" >\n                                <span class=\"menu-action-text\">Grade analysis</span>\n                        </a>\n                            </div>\n                    </div>\n                </div>\n\n        </div>\n\n</div></div></div>",
+                    "headers": "cat_86_13 row_378_13 grade13"
+                  },
+                  "range": {
+                    "class": "level3 item b1b itemcenter  column-range",
+                    "content": "0&ndash;100",
+                    "headers": "cat_86_13 row_378_13 range13"
+                  },
+                  "percentage": {
+                    "class": "level3 item b1b itemcenter  column-percentage",
+                    "content": "-",
+                    "headers": "cat_86_13 row_378_13 percentage13"
+                  },
+                  "feedback": {
+                    "class": "level3 item b1b feedbacktext column-feedback",
+                    "content": "&nbsp;",
+                    "headers": "cat_86_13 row_378_13 feedback13"
+                  },
+                  "contributiontocoursetotal": {
+                    "class": "level3 item b1b itemcenter  column-contributiontocoursetotal",
+                    "content": "-",
+                    "headers": "cat_86_13 row_378_13 contributiontocoursetotal13"
+                  },
+                  "parentcategories": [
+                    85,
+                    86
+                  ]
+                },
+                {
+                  "itemname": {
+                    "class": "level3 item b1b column-itemname",
+                    "colspan": 1,
+                    "content": "<div class=\"item d-flex align-items-center\"><div class=\"me-1\"><img class=\"icon itemicon\" src=\"https://school.moodledemo.net/theme/image.php/boost/forum/1794214917/monologo?filtericon=1\" alt=\"Forum\" /></div><div><span class=\"d-block text-uppercase small \" title=\"Forum\">Forum</span><div class=\"rowtitle\"><a title=\"Forum activity Course discussion\" class=\"gradeitemheader \" href=\"https://school.moodledemo.net/mod/forum/view.php?id=706\">Course discussion</a></div></div></div>",
+                    "id": "row_377_13"
+                  },
+                  "weight": {
+                    "class": "level3 item b1b itemcenter  column-weight",
+                    "content": "-",
+                    "headers": "cat_86_13 row_377_13 weight13"
+                  },
+                  "grade": {
+                    "class": "level3 item b1b itemcenter   column-grade",
+                    "content": "-",
+                    "headers": "cat_86_13 row_377_13 grade13"
+                  },
+                  "range": {
+                    "class": "level3 item b1b itemcenter  column-range",
+                    "content": "Fair point&ndash;Excellent point",
+                    "headers": "cat_86_13 row_377_13 range13"
+                  },
+                  "percentage": {
+                    "class": "level3 item b1b itemcenter  column-percentage",
+                    "content": "-",
+                    "headers": "cat_86_13 row_377_13 percentage13"
+                  },
+                  "feedback": {
+                    "class": "level3 item b1b feedbacktext column-feedback",
+                    "content": "&nbsp;",
+                    "headers": "cat_86_13 row_377_13 feedback13"
+                  },
+                  "contributiontocoursetotal": {
+                    "class": "level3 item b1b itemcenter  column-contributiontocoursetotal",
+                    "content": "-",
+                    "headers": "cat_86_13 row_377_13 contributiontocoursetotal13"
+                  },
+                  "parentcategories": [
+                    85,
+                    86
+                  ]
+                },
+                {
+                  "itemname": {
+                    "class": "level2 d2 baggt b2b column-itemname",
+                    "colspan": 1,
+                    "content": "<div class=\"categoryitem d-flex align-items-center\"><div class=\"me-1\"><img class=\"icon icon itemicon\" alt=\"Simple weighted mean of grades\" title=\"Simple weighted mean of grades\" src=\"https://school.moodledemo.net/theme/image.php/boost/core/1794214917/i/agg_mean\" /></div><div><span class=\"d-block text-uppercase small \" title=\"Aggregation\">Aggregation</span><div class=\"rowtitle\"><span class=\"gradeitemheader \" title=\"Analysis total\" tabindex=\"0\">Analysis total</span></div></div></div>",
+                    "id": "row_379_13"
+                  },
+                  "weight": {
+                    "class": "level2 d2 baggt b2b itemcenter  column-weight",
+                    "content": "0.00 %<br>( Empty )",
+                    "headers": "cat_86_13 row_379_13 weight13"
+                  },
+                  "grade": {
+                    "class": "level2 d2 baggt b2b itemcenter   column-grade",
+                    "content": "-",
+                    "headers": "cat_86_13 row_379_13 grade13"
+                  },
+                  "range": {
+                    "class": "level2 d2 baggt b2b itemcenter  column-range",
+                    "content": "0&ndash;100",
+                    "headers": "cat_86_13 row_379_13 range13"
+                  },
+                  "percentage": {
+                    "class": "level2 d2 baggt b2b itemcenter  column-percentage",
+                    "content": "-",
+                    "headers": "cat_86_13 row_379_13 percentage13"
+                  },
+                  "feedback": {
+                    "class": "level2 d2 baggt b2b feedbacktext column-feedback",
+                    "content": "&nbsp;",
+                    "headers": "cat_86_13 row_379_13 feedback13"
+                  },
+                  "contributiontocoursetotal": {
+                    "class": "level2 d2 baggt b2b itemcenter  column-contributiontocoursetotal",
+                    "content": "-",
+                    "headers": "cat_86_13 row_379_13 contributiontocoursetotal13"
+                  },
+                  "parentcategories": [
+                    85,
+                    86
+                  ]
+                },
+                {
+                  "itemname": {
+                    "class": "level2 d2 b1b b1t category column-itemname",
+                    "colspan": 8,
+                    "content": "<div class=\"d-flex category-content\">\n    <a aria-expanded=\"true\" role=\"button\" data-categoryid=87 data-target=\".cat_87[data-hidden='false']\" class=\"btn btn-icon me-1 toggle-category\" href=\"#\">\n        <span class=\"collapsed text-nowrap\" title=\"Collapse\">\n            <i class=\"icon fa fa-chevron-down fa-fw\" title=\"Collapse\" role=\"img\" aria-label=\"Collapse\"></i>\n        </span>\n        <span class=\"expanded text-nowrap\" title=\"Expand\">\n            <i class=\"icon fa fa-chevron-right fa-fw\" title=\"Expand\" role=\"img\" aria-label=\"Expand\"></i>\n        </span>\n    </a>\n    <span>Collaborative</span>\n</div>",
+                    "id": "cat_87_13"
+                  },
+                  "parentcategories": [
+                    85
+                  ]
+                },
+                {
+                  "leader": {
+                    "class": "level2 d2 b1t b2b b1l",
+                    "rowspan": 3
+                  },
+                  "parentcategories": [
+                    85,
+                    87
+                  ]
+                },
+                {
+                  "itemname": {
+                    "class": "level3 item b1b column-itemname",
+                    "colspan": 1,
+                    "content": "<div class=\"item d-flex align-items-center\"><div class=\"me-1\"><img class=\"icon itemicon\" src=\"https://school.moodledemo.net/theme/image.php/boost/assign/1794214917/monologo?filtericon=1\" alt=\"Assignment\" /></div><div><span class=\"d-block text-uppercase small \" title=\"Assignment\">Assignment</span><div class=\"rowtitle\"><a title=\"Assignment activity Group Project\" class=\"gradeitemheader \" href=\"https://school.moodledemo.net/mod/assign/view.php?id=715\">Group Project</a></div></div></div>",
+                    "id": "row_371_13"
+                  },
+                  "weight": {
+                    "class": "level3 item b1b itemcenter  column-weight",
+                    "content": "-",
+                    "headers": "cat_87_13 row_371_13 weight13"
+                  },
+                  "grade": {
+                    "class": "level3 item b1b itemcenter   column-grade",
+                    "content": "<div class=\"d-flex align-items-center\"><div>-</div><div class=\"ps-1 d-flex align-items-center\"><div class=\"action-menu moodle-actionmenu\" id=\"action-menu-1\" data-enhance=\"moodle-core-actionmenu\">\n\n        <div class=\"menubar d-flex \" id=\"action-menu-1-menubar\">\n\n            \n\n\n                <div class=\"action-menu-trigger\">\n                    <div class=\"dropdown\">\n                        <a\n                            href=\"#\"\n                            tabindex=\"0\"\n                            class=\"btn btn-link btn-icon d-flex no-caret dropdown-toggle icon-no-margin\"\n                            id=\"action-menu-toggle-1\"\n                            aria-label=\"Actions\"\n                            data-bs-toggle=\"dropdown\"\n                            role=\"button\"\n                            aria-haspopup=\"true\"\n                            aria-expanded=\"false\"\n                            aria-controls=\"action-menu-1-menu\"\n                            title=\"Actions\"\n                        >\n                            \n                            <i class=\"icon fa fa-ellipsis fa-fw \" aria-hidden=\"true\" ></i><span class=\"visually-hidden d-inline-block\">Actions</span>\n                                \n                            <b class=\"caret\"></b>\n                        </a>\n                            <div class=\"dropdown-menu menu dropdown-menu-start\" id=\"action-menu-1-menu\" data-rel=\"menu-content\" aria-labelledby=\"action-menu-toggle-1\" role=\"menu\">\n                                                                <a href=\"https://school.moodledemo.net/mod/assign/grade.php?id=715&amp;itemid=371&amp;itemnumber=0&amp;gradeid&amp;userid=13\" class=\"dropdown-item menu-action\" role=\"menuitem\" tabindex=\"-1\" >\n                                <span class=\"menu-action-text\">Grade analysis</span>\n                        </a>\n                            </div>\n                    </div>\n                </div>\n\n        </div>\n\n</div></div></div>",
+                    "headers": "cat_87_13 row_371_13 grade13"
+                  },
+                  "range": {
+                    "class": "level3 item b1b itemcenter  column-range",
+                    "content": "0&ndash;100",
+                    "headers": "cat_87_13 row_371_13 range13"
+                  },
+                  "percentage": {
+                    "class": "level3 item b1b itemcenter  column-percentage",
+                    "content": "-",
+                    "headers": "cat_87_13 row_371_13 percentage13"
+                  },
+                  "feedback": {
+                    "class": "level3 item b1b feedbacktext column-feedback",
+                    "content": "&nbsp;",
+                    "headers": "cat_87_13 row_371_13 feedback13"
+                  },
+                  "contributiontocoursetotal": {
+                    "class": "level3 item b1b itemcenter  column-contributiontocoursetotal",
+                    "content": "-",
+                    "headers": "cat_87_13 row_371_13 contributiontocoursetotal13"
+                  },
+                  "parentcategories": [
+                    85,
+                    87
+                  ]
+                },
+                {
+                  "itemname": {
+                    "class": "level2 d2 baggt b2b column-itemname",
+                    "colspan": 1,
+                    "content": "<div class=\"categoryitem d-flex align-items-center\"><div class=\"me-1\"><img class=\"icon icon itemicon\" alt=\"Natural\" title=\"Natural\" src=\"https://school.moodledemo.net/theme/image.php/boost/core/1794214917/i/agg_sum\" /></div><div><span class=\"d-block text-uppercase small \" title=\"Aggregation\">Aggregation</span><div class=\"rowtitle\"><span class=\"gradeitemheader \" title=\"Collaborative total\" tabindex=\"0\">Collaborative total</span></div></div></div>",
+                    "id": "row_380_13"
+                  },
+                  "weight": {
+                    "class": "level2 d2 baggt b2b itemcenter  column-weight",
+                    "content": "0.00 %<br>( Empty )",
+                    "headers": "cat_87_13 row_380_13 weight13"
+                  },
+                  "grade": {
+                    "class": "level2 d2 baggt b2b itemcenter   column-grade",
+                    "content": "-",
+                    "headers": "cat_87_13 row_380_13 grade13"
+                  },
+                  "range": {
+                    "class": "level2 d2 baggt b2b itemcenter  column-range",
+                    "content": "0&ndash;100",
+                    "headers": "cat_87_13 row_380_13 range13"
+                  },
+                  "percentage": {
+                    "class": "level2 d2 baggt b2b itemcenter  column-percentage",
+                    "content": "-",
+                    "headers": "cat_87_13 row_380_13 percentage13"
+                  },
+                  "feedback": {
+                    "class": "level2 d2 baggt b2b feedbacktext column-feedback",
+                    "content": "&nbsp;",
+                    "headers": "cat_87_13 row_380_13 feedback13"
+                  },
+                  "contributiontocoursetotal": {
+                    "class": "level2 d2 baggt b2b itemcenter  column-contributiontocoursetotal",
+                    "content": "-",
+                    "headers": "cat_87_13 row_380_13 contributiontocoursetotal13"
+                  },
+                  "parentcategories": [
+                    85,
+                    87
+                  ]
+                },
+                {
+                  "itemname": {
+                    "class": "level2 d2 b1b b1t category column-itemname",
+                    "colspan": 8,
+                    "content": "<div class=\"d-flex category-content\">\n    <a aria-expanded=\"true\" role=\"button\" data-categoryid=88 data-target=\".cat_88[data-hidden='false']\" class=\"btn btn-icon me-1 toggle-category\" href=\"#\">\n        <span class=\"collapsed text-nowrap\" title=\"Collapse\">\n            <i class=\"icon fa fa-chevron-down fa-fw\" title=\"Collapse\" role=\"img\" aria-label=\"Collapse\"></i>\n        </span>\n        <span class=\"expanded text-nowrap\" title=\"Expand\">\n            <i class=\"icon fa fa-chevron-right fa-fw\" title=\"Expand\" role=\"img\" aria-label=\"Expand\"></i>\n        </span>\n    </a>\n    <span>Individual </span>\n</div>",
+                    "id": "cat_88_13"
+                  },
+                  "parentcategories": [
+                    85
+                  ]
+                },
+                {
+                  "leader": {
+                    "class": "level2 d2 b1t b2b b1l",
+                    "rowspan": 11
+                  },
+                  "parentcategories": [
+                    85,
+                    88
+                  ]
+                },
+                {
+                  "itemname": {
+                    "class": "level3 item b1b column-itemname",
+                    "colspan": 1,
+                    "content": "<div class=\"item d-flex align-items-center\"><div class=\"me-1\"><img class=\"icon itemicon\" src=\"https://school.moodledemo.net/theme/image.php/boost/quiz/1794214917/monologo?filtericon=1\" alt=\"Quiz\" /></div><div><span class=\"d-block text-uppercase small \" title=\"Quiz\">Quiz</span><div class=\"rowtitle\"><a title=\"Quiz activity Factual recall test\" class=\"gradeitemheader \" href=\"https://school.moodledemo.net/mod/quiz/view.php?id=723\">Factual recall test</a></div></div></div>",
+                    "id": "row_376_13"
+                  },
+                  "weight": {
+                    "class": "level3 item b1b itemcenter  column-weight",
+                    "content": "-",
+                    "headers": "cat_88_13 row_376_13 weight13"
+                  },
+                  "grade": {
+                    "class": "level3 item b1b itemcenter   column-grade",
+                    "content": "<div class=\"d-flex align-items-center\"><div>-</div><div class=\"ps-1 d-flex align-items-center\"><div class=\"action-menu moodle-actionmenu\" id=\"action-menu-2\" data-enhance=\"moodle-core-actionmenu\">\n\n        <div class=\"menubar d-flex \" id=\"action-menu-2-menubar\">\n\n            \n\n\n                <div class=\"action-menu-trigger\">\n                    <div class=\"dropdown\">\n                        <a\n                            href=\"#\"\n                            tabindex=\"0\"\n                            class=\"btn btn-link btn-icon d-flex no-caret dropdown-toggle icon-no-margin\"\n                            id=\"action-menu-toggle-2\"\n                            aria-label=\"Actions\"\n                            data-bs-toggle=\"dropdown\"\n                            role=\"button\"\n                            aria-haspopup=\"true\"\n                            aria-expanded=\"false\"\n                            aria-controls=\"action-menu-2-menu\"\n                            title=\"Actions\"\n                        >\n                            \n                            <i class=\"icon fa fa-ellipsis fa-fw \" aria-hidden=\"true\" ></i><span class=\"visually-hidden d-inline-block\">Actions</span>\n                                \n                            <b class=\"caret\"></b>\n                        </a>\n                            <div class=\"dropdown-menu menu dropdown-menu-start\" id=\"action-menu-2-menu\" data-rel=\"menu-content\" aria-labelledby=\"action-menu-toggle-2\" role=\"menu\">\n                                                                <a href=\"https://school.moodledemo.net/mod/quiz/grade.php?id=723&amp;itemid=376&amp;itemnumber=0&amp;gradeid&amp;userid=13\" class=\"dropdown-item menu-action\" role=\"menuitem\" tabindex=\"-1\" >\n                                <span class=\"menu-action-text\">Grade analysis</span>\n                        </a>\n                            </div>\n                    </div>\n                </div>\n\n        </div>\n\n</div></div></div>",
+                    "headers": "cat_88_13 row_376_13 grade13"
+                  },
+                  "range": {
+                    "class": "level3 item b1b itemcenter  column-range",
+                    "content": "0&ndash;10",
+                    "headers": "cat_88_13 row_376_13 range13"
+                  },
+                  "percentage": {
+                    "class": "level3 item b1b itemcenter  column-percentage",
+                    "content": "-",
+                    "headers": "cat_88_13 row_376_13 percentage13"
+                  },
+                  "feedback": {
+                    "class": "level3 item b1b feedbacktext column-feedback",
+                    "content": "&nbsp;",
+                    "headers": "cat_88_13 row_376_13 feedback13"
+                  },
+                  "contributiontocoursetotal": {
+                    "class": "level3 item b1b itemcenter  column-contributiontocoursetotal",
+                    "content": "-",
+                    "headers": "cat_88_13 row_376_13 contributiontocoursetotal13"
+                  },
+                  "parentcategories": [
+                    85,
+                    88
+                  ]
+                },
+                {
+                  "itemname": {
+                    "class": "level3 item b1b column-itemname",
+                    "colspan": 1,
+                    "content": "<div class=\"item d-flex align-items-center\"><div class=\"me-1\"><img class=\"icon itemicon\" src=\"https://school.moodledemo.net/theme/image.php/boost/assign/1794214917/monologo?filtericon=1\" alt=\"Assignment\" /></div><div><span class=\"d-block text-uppercase small \" title=\"Assignment\">Assignment</span><div class=\"rowtitle\"><a title=\"Assignment activity Dissertation: Fight club\" class=\"gradeitemheader \" href=\"https://school.moodledemo.net/mod/assign/view.php?id=716\">Dissertation: Fight club</a></div></div></div>",
+                    "id": "row_372_13"
+                  },
+                  "weight": {
+                    "class": "level3 item b1b itemcenter  column-weight",
+                    "content": "-",
+                    "headers": "cat_88_13 row_372_13 weight13"
+                  },
+                  "grade": {
+                    "class": "level3 item b1b itemcenter   column-grade",
+                    "content": "<div class=\"d-flex align-items-center\"><div>-</div><div class=\"ps-1 d-flex align-items-center\"><div class=\"action-menu moodle-actionmenu\" id=\"action-menu-3\" data-enhance=\"moodle-core-actionmenu\">\n\n        <div class=\"menubar d-flex \" id=\"action-menu-3-menubar\">\n\n            \n\n\n                <div class=\"action-menu-trigger\">\n                    <div class=\"dropdown\">\n                        <a\n                            href=\"#\"\n                            tabindex=\"0\"\n                            class=\"btn btn-link btn-icon d-flex no-caret dropdown-toggle icon-no-margin\"\n                            id=\"action-menu-toggle-3\"\n                            aria-label=\"Actions\"\n                            data-bs-toggle=\"dropdown\"\n                            role=\"button\"\n                            aria-haspopup=\"true\"\n                            aria-expanded=\"false\"\n                            aria-controls=\"action-menu-3-menu\"\n                            title=\"Actions\"\n                        >\n                            \n                            <i class=\"icon fa fa-ellipsis fa-fw \" aria-hidden=\"true\" ></i><span class=\"visually-hidden d-inline-block\">Actions</span>\n                                \n                            <b class=\"caret\"></b>\n                        </a>\n                            <div class=\"dropdown-menu menu dropdown-menu-start\" id=\"action-menu-3-menu\" data-rel=\"menu-content\" aria-labelledby=\"action-menu-toggle-3\" role=\"menu\">\n                                                                <a href=\"https://school.moodledemo.net/mod/assign/grade.php?id=716&amp;itemid=372&amp;itemnumber=0&amp;gradeid&amp;userid=13\" class=\"dropdown-item menu-action\" role=\"menuitem\" tabindex=\"-1\" >\n                                <span class=\"menu-action-text\">Grade analysis</span>\n                        </a>\n                            </div>\n                    </div>\n                </div>\n\n        </div>\n\n</div></div></div>",
+                    "headers": "cat_88_13 row_372_13 grade13"
+                  },
+                  "range": {
+                    "class": "level3 item b1b itemcenter  column-range",
+                    "content": "0&ndash;100",
+                    "headers": "cat_88_13 row_372_13 range13"
+                  },
+                  "percentage": {
+                    "class": "level3 item b1b itemcenter  column-percentage",
+                    "content": "-",
+                    "headers": "cat_88_13 row_372_13 percentage13"
+                  },
+                  "feedback": {
+                    "class": "level3 item b1b feedbacktext column-feedback",
+                    "content": "&nbsp;",
+                    "headers": "cat_88_13 row_372_13 feedback13"
+                  },
+                  "contributiontocoursetotal": {
+                    "class": "level3 item b1b itemcenter  column-contributiontocoursetotal",
+                    "content": "-",
+                    "headers": "cat_88_13 row_372_13 contributiontocoursetotal13"
+                  },
+                  "parentcategories": [
+                    85,
+                    88
+                  ]
+                },
+                {
+                  "itemname": {
+                    "class": "level3 item b1b column-itemname",
+                    "colspan": 1,
+                    "content": "<div class=\"item d-flex align-items-center\"><div class=\"me-1\"><img class=\"icon itemicon\" src=\"https://school.moodledemo.net/theme/image.php/boost/assign/1794214917/monologo?filtericon=1\" alt=\"Assignment\" /></div><div><span class=\"d-block text-uppercase small \" title=\"Assignment\">Assignment</span><div class=\"rowtitle\"><a title=\"Assignment activity Dissertation: A Beautiful Mind\" class=\"gradeitemheader \" href=\"https://school.moodledemo.net/mod/assign/view.php?id=717\">Dissertation: A Beautiful Mind</a></div></div></div>",
+                    "id": "row_373_13"
+                  },
+                  "weight": {
+                    "class": "level3 item b1b itemcenter  column-weight",
+                    "content": "-",
+                    "headers": "cat_88_13 row_373_13 weight13"
+                  },
+                  "grade": {
+                    "class": "level3 item b1b itemcenter   column-grade",
+                    "content": "<div class=\"d-flex align-items-center\"><div>-</div><div class=\"ps-1 d-flex align-items-center\"><div class=\"action-menu moodle-actionmenu\" id=\"action-menu-4\" data-enhance=\"moodle-core-actionmenu\">\n\n        <div class=\"menubar d-flex \" id=\"action-menu-4-menubar\">\n\n            \n\n\n                <div class=\"action-menu-trigger\">\n                    <div class=\"dropdown\">\n                        <a\n                            href=\"#\"\n                            tabindex=\"0\"\n                            class=\"btn btn-link btn-icon d-flex no-caret dropdown-toggle icon-no-margin\"\n                            id=\"action-menu-toggle-4\"\n                            aria-label=\"Actions\"\n                            data-bs-toggle=\"dropdown\"\n                            role=\"button\"\n                            aria-haspopup=\"true\"\n                            aria-expanded=\"false\"\n                            aria-controls=\"action-menu-4-menu\"\n                            title=\"Actions\"\n                        >\n                            \n                            <i class=\"icon fa fa-ellipsis fa-fw \" aria-hidden=\"true\" ></i><span class=\"visually-hidden d-inline-block\">Actions</span>\n                                \n                            <b class=\"caret\"></b>\n                        </a>\n                            <div class=\"dropdown-menu menu dropdown-menu-start\" id=\"action-menu-4-menu\" data-rel=\"menu-content\" aria-labelledby=\"action-menu-toggle-4\" role=\"menu\">\n                                                                <a href=\"https://school.moodledemo.net/mod/assign/grade.php?id=717&amp;itemid=373&amp;itemnumber=0&amp;gradeid&amp;userid=13\" class=\"dropdown-item menu-action\" role=\"menuitem\" tabindex=\"-1\" >\n                                <span class=\"menu-action-text\">Grade analysis</span>\n                        </a>\n                            </div>\n                    </div>\n                </div>\n\n        </div>\n\n</div></div></div>",
+                    "headers": "cat_88_13 row_373_13 grade13"
+                  },
+                  "range": {
+                    "class": "level3 item b1b itemcenter  column-range",
+                    "content": "0&ndash;100",
+                    "headers": "cat_88_13 row_373_13 range13"
+                  },
+                  "percentage": {
+                    "class": "level3 item b1b itemcenter  column-percentage",
+                    "content": "-",
+                    "headers": "cat_88_13 row_373_13 percentage13"
+                  },
+                  "feedback": {
+                    "class": "level3 item b1b feedbacktext column-feedback",
+                    "content": "&nbsp;",
+                    "headers": "cat_88_13 row_373_13 feedback13"
+                  },
+                  "contributiontocoursetotal": {
+                    "class": "level3 item b1b itemcenter  column-contributiontocoursetotal",
+                    "content": "-",
+                    "headers": "cat_88_13 row_373_13 contributiontocoursetotal13"
+                  },
+                  "parentcategories": [
+                    85,
+                    88
+                  ]
+                },
+                {
+                  "itemname": {
+                    "class": "level3 item b1b column-itemname",
+                    "colspan": 1,
+                    "content": "<div class=\"item d-flex align-items-center\"><div class=\"me-1\"><img class=\"icon itemicon\" src=\"https://school.moodledemo.net/theme/image.php/boost/assign/1794214917/monologo?filtericon=1\" alt=\"Assignment\" /></div><div><span class=\"d-block text-uppercase small \" title=\"Assignment\">Assignment</span><div class=\"rowtitle\"><a title=\"Assignment activity Dissertation: Spider\" class=\"gradeitemheader \" href=\"https://school.moodledemo.net/mod/assign/view.php?id=718\">Dissertation: Spider</a></div></div></div>",
+                    "id": "row_374_13"
+                  },
+                  "weight": {
+                    "class": "level3 item b1b itemcenter  column-weight",
+                    "content": "-",
+                    "headers": "cat_88_13 row_374_13 weight13"
+                  },
+                  "grade": {
+                    "class": "level3 item b1b itemcenter   column-grade",
+                    "content": "<div class=\"d-flex align-items-center\"><div>-</div><div class=\"ps-1 d-flex align-items-center\"><div class=\"action-menu moodle-actionmenu\" id=\"action-menu-5\" data-enhance=\"moodle-core-actionmenu\">\n\n        <div class=\"menubar d-flex \" id=\"action-menu-5-menubar\">\n\n            \n\n\n                <div class=\"action-menu-trigger\">\n                    <div class=\"dropdown\">\n                        <a\n                            href=\"#\"\n                            tabindex=\"0\"\n                            class=\"btn btn-link btn-icon d-flex no-caret dropdown-toggle icon-no-margin\"\n                            id=\"action-menu-toggle-5\"\n                            aria-label=\"Actions\"\n                            data-bs-toggle=\"dropdown\"\n                            role=\"button\"\n                            aria-haspopup=\"true\"\n                            aria-expanded=\"false\"\n                            aria-controls=\"action-menu-5-menu\"\n                            title=\"Actions\"\n                        >\n                            \n                            <i class=\"icon fa fa-ellipsis fa-fw \" aria-hidden=\"true\" ></i><span class=\"visually-hidden d-inline-block\">Actions</span>\n                                \n                            <b class=\"caret\"></b>\n                        </a>\n                            <div class=\"dropdown-menu menu dropdown-menu-start\" id=\"action-menu-5-menu\" data-rel=\"menu-content\" aria-labelledby=\"action-menu-toggle-5\" role=\"menu\">\n                                                                <a href=\"https://school.moodledemo.net/mod/assign/grade.php?id=718&amp;itemid=374&amp;itemnumber=0&amp;gradeid&amp;userid=13\" class=\"dropdown-item menu-action\" role=\"menuitem\" tabindex=\"-1\" >\n                                <span class=\"menu-action-text\">Grade analysis</span>\n                        </a>\n                            </div>\n                    </div>\n                </div>\n\n        </div>\n\n</div></div></div>",
+                    "headers": "cat_88_13 row_374_13 grade13"
+                  },
+                  "range": {
+                    "class": "level3 item b1b itemcenter  column-range",
+                    "content": "0&ndash;100",
+                    "headers": "cat_88_13 row_374_13 range13"
+                  },
+                  "percentage": {
+                    "class": "level3 item b1b itemcenter  column-percentage",
+                    "content": "-",
+                    "headers": "cat_88_13 row_374_13 percentage13"
+                  },
+                  "feedback": {
+                    "class": "level3 item b1b feedbacktext column-feedback",
+                    "content": "&nbsp;",
+                    "headers": "cat_88_13 row_374_13 feedback13"
+                  },
+                  "contributiontocoursetotal": {
+                    "class": "level3 item b1b itemcenter  column-contributiontocoursetotal",
+                    "content": "-",
+                    "headers": "cat_88_13 row_374_13 contributiontocoursetotal13"
+                  },
+                  "parentcategories": [
+                    85,
+                    88
+                  ]
+                },
+                {
+                  "itemname": {
+                    "class": "level3 item b1b column-itemname",
+                    "colspan": 1,
+                    "content": "<div class=\"item d-flex align-items-center\"><div class=\"me-1\"><i class=\"icon fa fa-list-check fa-fw icon itemicon\"  title=\"Learning outcome\" role=\"img\" aria-label=\"Learning outcome\"></i></div><div><span class=\"d-block text-uppercase small \" title=\"Learning outcome\">Learning outcome</span><div class=\"rowtitle\"><span class=\"gradeitemheader \" title=\"F2F Session\" tabindex=\"0\">F2F Session</span></div></div></div>",
+                    "id": "row_382_13"
+                  },
+                  "weight": {
+                    "class": "level3 item b1b itemcenter  column-weight",
+                    "content": "-",
+                    "headers": "cat_88_13 row_382_13 weight13"
+                  },
+                  "grade": {
+                    "class": "level3 item b1b itemcenter   column-grade",
+                    "content": "-",
+                    "headers": "cat_88_13 row_382_13 grade13"
+                  },
+                  "range": {
+                    "class": "level3 item b1b itemcenter  column-range",
+                    "content": "Inadequate&ndash;Outstanding",
+                    "headers": "cat_88_13 row_382_13 range13"
+                  },
+                  "percentage": {
+                    "class": "level3 item b1b itemcenter  column-percentage",
+                    "content": "-",
+                    "headers": "cat_88_13 row_382_13 percentage13"
+                  },
+                  "feedback": {
+                    "class": "level3 item b1b feedbacktext column-feedback",
+                    "content": "&nbsp;",
+                    "headers": "cat_88_13 row_382_13 feedback13"
+                  },
+                  "contributiontocoursetotal": {
+                    "class": "level3 item b1b itemcenter  column-contributiontocoursetotal",
+                    "content": "-",
+                    "headers": "cat_88_13 row_382_13 contributiontocoursetotal13"
+                  },
+                  "parentcategories": [
+                    85,
+                    88
+                  ]
+                },
+                {
+                  "itemname": {
+                    "class": "level3 item b1b column-itemname",
+                    "colspan": 1,
+                    "content": "<div class=\"item d-flex align-items-center\"><div class=\"me-1\"><i class=\"icon fa fa-pen-to-square fa-fw icon itemicon\"  title=\"Manual item\" role=\"img\" aria-label=\"Manual item\"></i></div><div><span class=\"d-block text-uppercase small \" title=\"Manual item\">Manual item</span><div class=\"rowtitle\"><span class=\"gradeitemheader \" title=\"Class presentation\" tabindex=\"0\">Class presentation</span></div></div></div>",
+                    "id": "row_393_13"
+                  },
+                  "weight": {
+                    "class": "level3 item b1b itemcenter  column-weight",
+                    "content": "-",
+                    "headers": "cat_88_13 row_393_13 weight13"
+                  },
+                  "grade": {
+                    "class": "level3 item b1b itemcenter   column-grade",
+                    "content": "-",
+                    "headers": "cat_88_13 row_393_13 grade13"
+                  },
+                  "range": {
+                    "class": "level3 item b1b itemcenter  column-range",
+                    "content": "0&ndash;100",
+                    "headers": "cat_88_13 row_393_13 range13"
+                  },
+                  "percentage": {
+                    "class": "level3 item b1b itemcenter  column-percentage",
+                    "content": "-",
+                    "headers": "cat_88_13 row_393_13 percentage13"
+                  },
+                  "feedback": {
+                    "class": "level3 item b1b feedbacktext column-feedback",
+                    "content": "&nbsp;",
+                    "headers": "cat_88_13 row_393_13 feedback13"
+                  },
+                  "contributiontocoursetotal": {
+                    "class": "level3 item b1b itemcenter  column-contributiontocoursetotal",
+                    "content": "-",
+                    "headers": "cat_88_13 row_393_13 contributiontocoursetotal13"
+                  },
+                  "parentcategories": [
+                    85,
+                    88
+                  ]
+                },
+                {
+                  "itemname": {
+                    "class": "level3 item b1b column-itemname",
+                    "colspan": 1,
+                    "content": "<div class=\"item d-flex align-items-center\"><div class=\"me-1\"><img class=\"icon itemicon\" src=\"https://school.moodledemo.net/theme/image.php/boost/assign/1794214917/monologo?filtericon=1\" alt=\"Assignment\" /></div><div><span class=\"d-block text-uppercase small \" title=\"Assignment\">Assignment</span><div class=\"rowtitle\"><a title=\"Assignment activity Reflective journal\" class=\"gradeitemheader \" href=\"https://school.moodledemo.net/mod/assign/view.php?id=748\">Reflective journal</a></div></div></div>",
+                    "id": "row_394_13"
+                  },
+                  "weight": {
+                    "class": "level3 item b1b itemcenter  column-weight",
+                    "content": "-",
+                    "headers": "cat_88_13 row_394_13 weight13"
+                  },
+                  "grade": {
+                    "class": "level3 item b1b itemcenter   column-grade",
+                    "content": "<div class=\"d-flex align-items-center\"><div>-</div><div class=\"ps-1 d-flex align-items-center\"><div class=\"action-menu moodle-actionmenu\" id=\"action-menu-6\" data-enhance=\"moodle-core-actionmenu\">\n\n        <div class=\"menubar d-flex \" id=\"action-menu-6-menubar\">\n\n            \n\n\n                <div class=\"action-menu-trigger\">\n                    <div class=\"dropdown\">\n                        <a\n                            href=\"#\"\n                            tabindex=\"0\"\n                            class=\"btn btn-link btn-icon d-flex no-caret dropdown-toggle icon-no-margin\"\n                            id=\"action-menu-toggle-6\"\n                            aria-label=\"Actions\"\n                            data-bs-toggle=\"dropdown\"\n                            role=\"button\"\n                            aria-haspopup=\"true\"\n                            aria-expanded=\"false\"\n                            aria-controls=\"action-menu-6-menu\"\n                            title=\"Actions\"\n                        >\n                            \n                            <i class=\"icon fa fa-ellipsis fa-fw \" aria-hidden=\"true\" ></i><span class=\"visually-hidden d-inline-block\">Actions</span>\n                                \n                            <b class=\"caret\"></b>\n                        </a>\n                            <div class=\"dropdown-menu menu dropdown-menu-start\" id=\"action-menu-6-menu\" data-rel=\"menu-content\" aria-labelledby=\"action-menu-toggle-6\" role=\"menu\">\n                                                                <a href=\"https://school.moodledemo.net/mod/assign/grade.php?id=748&amp;itemid=394&amp;itemnumber=0&amp;gradeid&amp;userid=13\" class=\"dropdown-item menu-action\" role=\"menuitem\" tabindex=\"-1\" >\n                                <span class=\"menu-action-text\">Grade analysis</span>\n                        </a>\n                            </div>\n                    </div>\n                </div>\n\n        </div>\n\n</div></div></div>",
+                    "headers": "cat_88_13 row_394_13 grade13"
+                  },
+                  "range": {
+                    "class": "level3 item b1b itemcenter  column-range",
+                    "content": "0&ndash;10",
+                    "headers": "cat_88_13 row_394_13 range13"
+                  },
+                  "percentage": {
+                    "class": "level3 item b1b itemcenter  column-percentage",
+                    "content": "-",
+                    "headers": "cat_88_13 row_394_13 percentage13"
+                  },
+                  "feedback": {
+                    "class": "level3 item b1b feedbacktext column-feedback",
+                    "content": "&nbsp;",
+                    "headers": "cat_88_13 row_394_13 feedback13"
+                  },
+                  "contributiontocoursetotal": {
+                    "class": "level3 item b1b itemcenter  column-contributiontocoursetotal",
+                    "content": "-",
+                    "headers": "cat_88_13 row_394_13 contributiontocoursetotal13"
+                  },
+                  "parentcategories": [
+                    85,
+                    88
+                  ]
+                },
+                {
+                  "itemname": {
+                    "class": "level3 item b1b column-itemname",
+                    "colspan": 1,
+                    "content": "<div class=\"item d-flex align-items-center\"><div class=\"me-1\"><i class=\"icon fa fa-list-check fa-fw icon itemicon\"  title=\"Learning outcome\" role=\"img\" aria-label=\"Learning outcome\"></i></div><div><span class=\"d-block text-uppercase small \" title=\"Learning outcome\">Learning outcome</span><div class=\"rowtitle\"><a title=\"Assignment activity Commitment\" class=\"gradeitemheader \" href=\"https://school.moodledemo.net/mod/assign/view.php?id=748\">Commitment</a></div></div></div>",
+                    "id": "row_396_13"
+                  },
+                  "weight": {
+                    "class": "level3 item b1b itemcenter  column-weight",
+                    "content": "-",
+                    "headers": "cat_88_13 row_396_13 weight13"
+                  },
+                  "grade": {
+                    "class": "level3 item b1b itemcenter   column-grade",
+                    "content": "<div class=\"d-flex align-items-center\"><div>-</div><div class=\"ps-1 d-flex align-items-center\"><div class=\"action-menu moodle-actionmenu\" id=\"action-menu-7\" data-enhance=\"moodle-core-actionmenu\">\n\n        <div class=\"menubar d-flex \" id=\"action-menu-7-menubar\">\n\n            \n\n\n                <div class=\"action-menu-trigger\">\n                    <div class=\"dropdown\">\n                        <a\n                            href=\"#\"\n                            tabindex=\"0\"\n                            class=\"btn btn-link btn-icon d-flex no-caret dropdown-toggle icon-no-margin\"\n                            id=\"action-menu-toggle-7\"\n                            aria-label=\"Actions\"\n                            data-bs-toggle=\"dropdown\"\n                            role=\"button\"\n                            aria-haspopup=\"true\"\n                            aria-expanded=\"false\"\n                            aria-controls=\"action-menu-7-menu\"\n                            title=\"Actions\"\n                        >\n                            \n                            <i class=\"icon fa fa-ellipsis fa-fw \" aria-hidden=\"true\" ></i><span class=\"visually-hidden d-inline-block\">Actions</span>\n                                \n                            <b class=\"caret\"></b>\n                        </a>\n                            <div class=\"dropdown-menu menu dropdown-menu-start\" id=\"action-menu-7-menu\" data-rel=\"menu-content\" aria-labelledby=\"action-menu-toggle-7\" role=\"menu\">\n                                                                <a href=\"https://school.moodledemo.net/mod/assign/grade.php?id=748&amp;itemid=396&amp;itemnumber=1001&amp;gradeid&amp;userid=13\" class=\"dropdown-item menu-action\" role=\"menuitem\" tabindex=\"-1\" >\n                                <span class=\"menu-action-text\">Grade analysis</span>\n                        </a>\n                            </div>\n                    </div>\n                </div>\n\n        </div>\n\n</div></div></div>",
+                    "headers": "cat_88_13 row_396_13 grade13"
+                  },
+                  "range": {
+                    "class": "level3 item b1b itemcenter  column-range",
+                    "content": "Inadequate&ndash;Full",
+                    "headers": "cat_88_13 row_396_13 range13"
+                  },
+                  "percentage": {
+                    "class": "level3 item b1b itemcenter  column-percentage",
+                    "content": "-",
+                    "headers": "cat_88_13 row_396_13 percentage13"
+                  },
+                  "feedback": {
+                    "class": "level3 item b1b feedbacktext column-feedback",
+                    "content": "&nbsp;",
+                    "headers": "cat_88_13 row_396_13 feedback13"
+                  },
+                  "contributiontocoursetotal": {
+                    "class": "level3 item b1b itemcenter  column-contributiontocoursetotal",
+                    "content": "-",
+                    "headers": "cat_88_13 row_396_13 contributiontocoursetotal13"
+                  },
+                  "parentcategories": [
+                    85,
+                    88
+                  ]
+                },
+                {
+                  "itemname": {
+                    "class": "level3 item b1b column-itemname",
+                    "colspan": 1,
+                    "content": "<div class=\"item d-flex align-items-center\"><div class=\"me-1\"><i class=\"icon fa fa-list-check fa-fw icon itemicon\"  title=\"Learning outcome\" role=\"img\" aria-label=\"Learning outcome\"></i></div><div><span class=\"d-block text-uppercase small \" title=\"Learning outcome\">Learning outcome</span><div class=\"rowtitle\"><a title=\"Assignment activity Participation\" class=\"gradeitemheader \" href=\"https://school.moodledemo.net/mod/assign/view.php?id=748\">Participation</a></div></div></div>",
+                    "id": "row_395_13"
+                  },
+                  "weight": {
+                    "class": "level3 item b1b itemcenter  column-weight",
+                    "content": "-",
+                    "headers": "cat_88_13 row_395_13 weight13"
+                  },
+                  "grade": {
+                    "class": "level3 item b1b itemcenter   column-grade",
+                    "content": "<div class=\"d-flex align-items-center\"><div>-</div><div class=\"ps-1 d-flex align-items-center\"><div class=\"action-menu moodle-actionmenu\" id=\"action-menu-8\" data-enhance=\"moodle-core-actionmenu\">\n\n        <div class=\"menubar d-flex \" id=\"action-menu-8-menubar\">\n\n            \n\n\n                <div class=\"action-menu-trigger\">\n                    <div class=\"dropdown\">\n                        <a\n                            href=\"#\"\n                            tabindex=\"0\"\n                            class=\"btn btn-link btn-icon d-flex no-caret dropdown-toggle icon-no-margin\"\n                            id=\"action-menu-toggle-8\"\n                            aria-label=\"Actions\"\n                            data-bs-toggle=\"dropdown\"\n                            role=\"button\"\n                            aria-haspopup=\"true\"\n                            aria-expanded=\"false\"\n                            aria-controls=\"action-menu-8-menu\"\n                            title=\"Actions\"\n                        >\n                            \n                            <i class=\"icon fa fa-ellipsis fa-fw \" aria-hidden=\"true\" ></i><span class=\"visually-hidden d-inline-block\">Actions</span>\n                                \n                            <b class=\"caret\"></b>\n                        </a>\n                            <div class=\"dropdown-menu menu dropdown-menu-start\" id=\"action-menu-8-menu\" data-rel=\"menu-content\" aria-labelledby=\"action-menu-toggle-8\" role=\"menu\">\n                                                                <a href=\"https://school.moodledemo.net/mod/assign/grade.php?id=748&amp;itemid=395&amp;itemnumber=1000&amp;gradeid&amp;userid=13\" class=\"dropdown-item menu-action\" role=\"menuitem\" tabindex=\"-1\" >\n                                <span class=\"menu-action-text\">Grade analysis</span>\n                        </a>\n                            </div>\n                    </div>\n                </div>\n\n        </div>\n\n</div></div></div>",
+                    "headers": "cat_88_13 row_395_13 grade13"
+                  },
+                  "range": {
+                    "class": "level3 item b1b itemcenter  column-range",
+                    "content": "Inadequate&ndash;Full",
+                    "headers": "cat_88_13 row_395_13 range13"
+                  },
+                  "percentage": {
+                    "class": "level3 item b1b itemcenter  column-percentage",
+                    "content": "-",
+                    "headers": "cat_88_13 row_395_13 percentage13"
+                  },
+                  "feedback": {
+                    "class": "level3 item b1b feedbacktext column-feedback",
+                    "content": "&nbsp;",
+                    "headers": "cat_88_13 row_395_13 feedback13"
+                  },
+                  "contributiontocoursetotal": {
+                    "class": "level3 item b1b itemcenter  column-contributiontocoursetotal",
+                    "content": "-",
+                    "headers": "cat_88_13 row_395_13 contributiontocoursetotal13"
+                  },
+                  "parentcategories": [
+                    85,
+                    88
+                  ]
+                },
+                {
+                  "itemname": {
+                    "class": "level2 d2 baggt b2b column-itemname",
+                    "colspan": 1,
+                    "content": "<div class=\"categoryitem d-flex align-items-center\"><div class=\"me-1\"><img class=\"icon icon itemicon\" alt=\"Natural\" title=\"Natural\" src=\"https://school.moodledemo.net/theme/image.php/boost/core/1794214917/i/agg_sum\" /></div><div><span class=\"d-block text-uppercase small \" title=\"Aggregation\">Aggregation</span><div class=\"rowtitle\"><span class=\"gradeitemheader \" title=\"Individual  total\" tabindex=\"0\">Individual  total</span></div></div></div>",
+                    "id": "row_381_13"
+                  },
+                  "weight": {
+                    "class": "level2 d2 baggt b2b itemcenter  column-weight",
+                    "content": "0.00 %<br>( Empty )",
+                    "headers": "cat_88_13 row_381_13 weight13"
+                  },
+                  "grade": {
+                    "class": "level2 d2 baggt b2b itemcenter   column-grade",
+                    "content": "-",
+                    "headers": "cat_88_13 row_381_13 grade13"
+                  },
+                  "range": {
+                    "class": "level2 d2 baggt b2b itemcenter  column-range",
+                    "content": "0&ndash;420",
+                    "headers": "cat_88_13 row_381_13 range13"
+                  },
+                  "percentage": {
+                    "class": "level2 d2 baggt b2b itemcenter  column-percentage",
+                    "content": "-",
+                    "headers": "cat_88_13 row_381_13 percentage13"
+                  },
+                  "feedback": {
+                    "class": "level2 d2 baggt b2b feedbacktext column-feedback",
+                    "content": "&nbsp;",
+                    "headers": "cat_88_13 row_381_13 feedback13"
+                  },
+                  "contributiontocoursetotal": {
+                    "class": "level2 d2 baggt b2b itemcenter  column-contributiontocoursetotal",
+                    "content": "-",
+                    "headers": "cat_88_13 row_381_13 contributiontocoursetotal13"
+                  },
+                  "parentcategories": [
+                    85,
+                    88
+                  ]
+                },
+                {
+                  "itemname": {
+                    "class": "level2 d2 b1b b1t category column-itemname",
+                    "colspan": 8,
+                    "content": "<div class=\"d-flex category-content\">\n    <a aria-expanded=\"true\" role=\"button\" data-categoryid=92 data-target=\".cat_92[data-hidden='false']\" class=\"btn btn-icon me-1 toggle-category\" href=\"#\">\n        <span class=\"collapsed text-nowrap\" title=\"Collapse\">\n            <i class=\"icon fa fa-chevron-down fa-fw\" title=\"Collapse\" role=\"img\" aria-label=\"Collapse\"></i>\n        </span>\n        <span class=\"expanded text-nowrap\" title=\"Expand\">\n            <i class=\"icon fa fa-chevron-right fa-fw\" title=\"Expand\" role=\"img\" aria-label=\"Expand\"></i>\n        </span>\n    </a>\n    <span>Ungraded (Attendance)</span>\n</div>",
+                    "id": "cat_92_13"
+                  },
+                  "parentcategories": [
+                    85
+                  ]
+                },
+                {
+                  "leader": {
+                    "class": "level2 d2 b1t b2b b1l",
+                    "rowspan": 4
+                  },
+                  "parentcategories": [
+                    85,
+                    92
+                  ]
+                },
+                {
+                  "itemname": {
+                    "class": "level3 item b1b column-itemname",
+                    "colspan": 1,
+                    "content": "<div class=\"item d-flex align-items-center\"><div class=\"me-1\"><i class=\"icon fa fa-pen-to-square fa-fw icon itemicon\"  title=\"Manual item\" role=\"img\" aria-label=\"Manual item\"></i></div><div><span class=\"d-block text-uppercase small \" title=\"Manual item\">Manual item</span><div class=\"rowtitle\"><span class=\"gradeitemheader \" title=\"Screening 1 \" tabindex=\"0\">Screening 1 </span></div></div></div>",
                     "id": "row_390_13"
                   },
                   "weight": {
-                    "class": "level3 item b1b itemcenter column-weight",
+                    "class": "level3 item b1b itemcenter  column-weight",
                     "content": "-",
                     "headers": "cat_92_13 row_390_13 weight13"
                   },
                   "grade": {
-                    "class": "level3 item b1b itemcenter column-grade",
+                    "class": "level3 item b1b itemcenter   column-grade",
                     "content": "-",
                     "headers": "cat_92_13 row_390_13 grade13"
                   },
                   "range": {
-                    "class": "level3 item b1b itemcenter column-range",
+                    "class": "level3 item b1b itemcenter  column-range",
                     "content": "Absent&ndash;Present",
                     "headers": "cat_92_13 row_390_13 range13"
                   },
                   "percentage": {
-                    "class": "level3 item b1b itemcenter column-percentage",
+                    "class": "level3 item b1b itemcenter  column-percentage",
                     "content": "-",
                     "headers": "cat_92_13 row_390_13 percentage13"
                   },
                   "feedback": {
                     "class": "level3 item b1b feedbacktext column-feedback",
-                    "content": " ",
+                    "content": "&nbsp;",
                     "headers": "cat_92_13 row_390_13 feedback13"
                   },
                   "contributiontocoursetotal": {
-                    "class": "level3 item b1b itemcenter column-contributiontocoursetotal",
+                    "class": "level3 item b1b itemcenter  column-contributiontocoursetotal",
                     "content": "-",
                     "headers": "cat_92_13 row_390_13 contributiontocoursetotal13"
                   },
@@ -295,36 +1409,36 @@
                   "itemname": {
                     "class": "level3 item b1b column-itemname",
                     "colspan": 1,
-                    "content": "<div class=\"item d-flex align-items-center\"><div class=\"me-1\"><i class=\"icon fa fa-pen-to-square fa-fw icon itemicon\" title=\"Manual item\" role=\"img\" aria-label=\"Manual item\"></i></div><div><span class=\"d-block text-uppercase small\" title=\"Manual item\">Manual item</span><div class=\"rowtitle\"><span class=\"gradeitemheader\" title=\"Screening 2 \" tabindex=\"0\">Screening 2 </span></div></div></div>",
+                    "content": "<div class=\"item d-flex align-items-center\"><div class=\"me-1\"><i class=\"icon fa fa-pen-to-square fa-fw icon itemicon\"  title=\"Manual item\" role=\"img\" aria-label=\"Manual item\"></i></div><div><span class=\"d-block text-uppercase small \" title=\"Manual item\">Manual item</span><div class=\"rowtitle\"><span class=\"gradeitemheader \" title=\"Screening 2 \" tabindex=\"0\">Screening 2 </span></div></div></div>",
                     "id": "row_391_13"
                   },
                   "weight": {
-                    "class": "level3 item b1b itemcenter column-weight",
+                    "class": "level3 item b1b itemcenter  column-weight",
                     "content": "-",
                     "headers": "cat_92_13 row_391_13 weight13"
                   },
                   "grade": {
-                    "class": "level3 item b1b itemcenter column-grade",
+                    "class": "level3 item b1b itemcenter   column-grade",
                     "content": "-",
                     "headers": "cat_92_13 row_391_13 grade13"
                   },
                   "range": {
-                    "class": "level3 item b1b itemcenter column-range",
+                    "class": "level3 item b1b itemcenter  column-range",
                     "content": "Absent&ndash;Present",
                     "headers": "cat_92_13 row_391_13 range13"
                   },
                   "percentage": {
-                    "class": "level3 item b1b itemcenter column-percentage",
+                    "class": "level3 item b1b itemcenter  column-percentage",
                     "content": "-",
                     "headers": "cat_92_13 row_391_13 percentage13"
                   },
                   "feedback": {
                     "class": "level3 item b1b feedbacktext column-feedback",
-                    "content": " ",
+                    "content": "&nbsp;",
                     "headers": "cat_92_13 row_391_13 feedback13"
                   },
                   "contributiontocoursetotal": {
-                    "class": "level3 item b1b itemcenter column-contributiontocoursetotal",
+                    "class": "level3 item b1b itemcenter  column-contributiontocoursetotal",
                     "content": "-",
                     "headers": "cat_92_13 row_391_13 contributiontocoursetotal13"
                   },
@@ -337,42 +1451,124 @@
                   "itemname": {
                     "class": "level3 item b1b column-itemname",
                     "colspan": 1,
-                    "content": "<div class=\"item d-flex align-items-center\"><div class=\"me-1\"><i class=\"icon fa fa-pen-to-square fa-fw icon itemicon\" title=\"Manual item\" role=\"img\" aria-label=\"Manual item\"></i></div><div><span class=\"d-block text-uppercase small\" title=\"Manual item\">Manual item</span><div class=\"rowtitle\"><span class=\"gradeitemheader\" title=\"Screening 3\" tabindex=\"0\">Screening 3</span></div></div></div>",
+                    "content": "<div class=\"item d-flex align-items-center\"><div class=\"me-1\"><i class=\"icon fa fa-pen-to-square fa-fw icon itemicon\"  title=\"Manual item\" role=\"img\" aria-label=\"Manual item\"></i></div><div><span class=\"d-block text-uppercase small \" title=\"Manual item\">Manual item</span><div class=\"rowtitle\"><span class=\"gradeitemheader \" title=\"Screening 3\" tabindex=\"0\">Screening 3</span></div></div></div>",
                     "id": "row_392_13"
                   },
                   "weight": {
-                    "class": "level3 item b1b itemcenter column-weight",
+                    "class": "level3 item b1b itemcenter  column-weight",
                     "content": "-",
                     "headers": "cat_92_13 row_392_13 weight13"
                   },
                   "grade": {
-                    "class": "level3 item b1b itemcenter column-grade",
+                    "class": "level3 item b1b itemcenter   column-grade",
                     "content": "-",
                     "headers": "cat_92_13 row_392_13 grade13"
                   },
                   "range": {
-                    "class": "level3 item b1b itemcenter column-range",
+                    "class": "level3 item b1b itemcenter  column-range",
                     "content": "Absent&ndash;Present",
                     "headers": "cat_92_13 row_392_13 range13"
                   },
                   "percentage": {
-                    "class": "level3 item b1b itemcenter column-percentage",
+                    "class": "level3 item b1b itemcenter  column-percentage",
                     "content": "-",
                     "headers": "cat_92_13 row_392_13 percentage13"
                   },
                   "feedback": {
                     "class": "level3 item b1b feedbacktext column-feedback",
-                    "content": " ",
+                    "content": "&nbsp;",
                     "headers": "cat_92_13 row_392_13 feedback13"
                   },
                   "contributiontocoursetotal": {
-                    "class": "level3 item b1b itemcenter column-contributiontocoursetotal",
+                    "class": "level3 item b1b itemcenter  column-contributiontocoursetotal",
                     "content": "-",
                     "headers": "cat_92_13 row_392_13 contributiontocoursetotal13"
                   },
                   "parentcategories": [
                     85,
                     92
+                  ]
+                },
+                {
+                  "itemname": {
+                    "class": "level2 item b1b column-itemname",
+                    "colspan": 2,
+                    "content": "<div class=\"item d-flex align-items-center\"><div class=\"me-1\"><img class=\"icon itemicon\" src=\"https://school.moodledemo.net/theme/image.php/boost/quiz/1794214917/monologo?filtericon=1\" alt=\"Quiz\" /></div><div><span class=\"d-block text-uppercase small \" title=\"Quiz\">Quiz</span><div class=\"rowtitle\"><a title=\"Quiz activity Grammar help with your essays\" class=\"gradeitemheader \" href=\"https://school.moodledemo.net/mod/quiz/view.php?id=757\">Grammar help with your essays</a></div></div></div>",
+                    "id": "row_399_13"
+                  },
+                  "weight": {
+                    "class": "level2 item b1b itemcenter  column-weight",
+                    "content": "0.00 %<br>( Empty )",
+                    "headers": "cat_85_13 row_399_13 weight13"
+                  },
+                  "grade": {
+                    "class": "level2 item b1b itemcenter   column-grade",
+                    "content": "<div class=\"d-flex align-items-center\"><div>-</div><div class=\"ps-1 d-flex align-items-center\"><div class=\"action-menu moodle-actionmenu\" id=\"action-menu-9\" data-enhance=\"moodle-core-actionmenu\">\n\n        <div class=\"menubar d-flex \" id=\"action-menu-9-menubar\">\n\n            \n\n\n                <div class=\"action-menu-trigger\">\n                    <div class=\"dropdown\">\n                        <a\n                            href=\"#\"\n                            tabindex=\"0\"\n                            class=\"btn btn-link btn-icon d-flex no-caret dropdown-toggle icon-no-margin\"\n                            id=\"action-menu-toggle-9\"\n                            aria-label=\"Actions\"\n                            data-bs-toggle=\"dropdown\"\n                            role=\"button\"\n                            aria-haspopup=\"true\"\n                            aria-expanded=\"false\"\n                            aria-controls=\"action-menu-9-menu\"\n                            title=\"Actions\"\n                        >\n                            \n                            <i class=\"icon fa fa-ellipsis fa-fw \" aria-hidden=\"true\" ></i><span class=\"visually-hidden d-inline-block\">Actions</span>\n                                \n                            <b class=\"caret\"></b>\n                        </a>\n                            <div class=\"dropdown-menu menu dropdown-menu-start\" id=\"action-menu-9-menu\" data-rel=\"menu-content\" aria-labelledby=\"action-menu-toggle-9\" role=\"menu\">\n                                                                <a href=\"https://school.moodledemo.net/mod/quiz/grade.php?id=757&amp;itemid=399&amp;itemnumber=0&amp;gradeid=1624&amp;userid=13\" class=\"dropdown-item menu-action\" role=\"menuitem\" tabindex=\"-1\" >\n                                <span class=\"menu-action-text\">Grade analysis</span>\n                        </a>\n                            </div>\n                    </div>\n                </div>\n\n        </div>\n\n</div></div></div>",
+                    "headers": "cat_85_13 row_399_13 grade13"
+                  },
+                  "range": {
+                    "class": "level2 item b1b itemcenter  column-range",
+                    "content": "0&ndash;10",
+                    "headers": "cat_85_13 row_399_13 range13"
+                  },
+                  "percentage": {
+                    "class": "level2 item b1b itemcenter  column-percentage",
+                    "content": "-",
+                    "headers": "cat_85_13 row_399_13 percentage13"
+                  },
+                  "feedback": {
+                    "class": "level2 item b1b feedbacktext column-feedback",
+                    "content": "&nbsp;",
+                    "headers": "cat_85_13 row_399_13 feedback13"
+                  },
+                  "contributiontocoursetotal": {
+                    "class": "level2 item b1b itemcenter  column-contributiontocoursetotal",
+                    "content": "0.00 %",
+                    "headers": "cat_85_13 row_399_13 contributiontocoursetotal13"
+                  },
+                  "parentcategories": [
+                    85
+                  ]
+                },
+                {
+                  "itemname": {
+                    "class": "level1 d1 baggt b2b column-itemname",
+                    "colspan": 2,
+                    "content": "<div class=\"courseitem d-flex align-items-center\"><div class=\"me-1\"><img class=\"icon icon itemicon\" alt=\"Natural\" title=\"Natural\" src=\"https://school.moodledemo.net/theme/image.php/boost/core/1794214917/i/agg_sum\" /></div><div><span class=\"d-block text-uppercase small \" title=\"Aggregation\">Aggregation</span><div class=\"rowtitle\"><span class=\"gradeitemheader \" title=\"Course total\" tabindex=\"0\">Course total</span></div></div></div>",
+                    "id": "row_370_13"
+                  },
+                  "weight": {
+                    "class": "level1 d1 baggt b2b itemcenter  column-weight",
+                    "content": "-",
+                    "headers": "cat_85_13 row_370_13 weight13"
+                  },
+                  "grade": {
+                    "class": "level1 d1 baggt b2b itemcenter   column-grade",
+                    "content": "-",
+                    "headers": "cat_85_13 row_370_13 grade13"
+                  },
+                  "range": {
+                    "class": "level1 d1 baggt b2b itemcenter  column-range",
+                    "content": "0&ndash;630",
+                    "headers": "cat_85_13 row_370_13 range13"
+                  },
+                  "percentage": {
+                    "class": "level1 d1 baggt b2b itemcenter  column-percentage",
+                    "content": "-",
+                    "headers": "cat_85_13 row_370_13 percentage13"
+                  },
+                  "feedback": {
+                    "class": "level1 d1 baggt b2b feedbacktext column-feedback",
+                    "content": "&nbsp;",
+                    "headers": "cat_85_13 row_370_13 feedback13"
+                  },
+                  "contributiontocoursetotal": {
+                    "class": "level1 d1 baggt b2b itemcenter  column-contributiontocoursetotal",
+                    "content": "-",
+                    "headers": "cat_85_13 row_370_13 contributiontocoursetotal13"
+                  },
+                  "parentcategories": [
+                    85
                   ]
                 }
               ]
@@ -399,6 +1595,7 @@
             {
               "id": 370,
               "itemType": "COURSE",
+              "categoryId": 85,
               "position": 0,
               "gradeMin": 0.0,
               "gradeMax": 630.0,
@@ -408,34 +1605,191 @@
               "id": 379,
               "itemType": "CATEGORY",
               "parentId": 370,
+              "categoryId": 86,
+              "parentCategoryId": 85,
               "position": 1,
               "gradeMin": 0.0,
               "gradeMax": 100.0,
               "name": "Analysis"
             },
             {
+              "id": 378,
+              "itemType": "MOD",
+              "parentId": 379,
+              "parentCategoryId": 86,
+              "moduleId": 724,
+              "position": 2,
+              "name": "From Concept to Reality: Trauma and Film",
+              "gradeMin": 0.0,
+              "gradeMax": 100.0
+            },
+            {
+              "id": 377,
+              "itemType": "MOD",
+              "parentId": 379,
+              "parentCategoryId": 86,
+              "moduleId": 706,
+              "position": 3,
+              "name": "Course discussion",
+              "gradeMin": 1.0,
+              "gradeMax": 3.0
+            },
+            {
               "id": 380,
               "itemType": "CATEGORY",
               "parentId": 370,
-              "position": 2,
+              "categoryId": 87,
+              "parentCategoryId": 85,
+              "position": 4,
               "gradeMin": 0.0,
               "gradeMax": 100.0,
               "name": "Collaborative"
             },
             {
+              "id": 371,
+              "itemType": "MOD",
+              "parentId": 380,
+              "parentCategoryId": 87,
+              "moduleId": 715,
+              "position": 5,
+              "name": "Group Project",
+              "gradeMin": 0.0,
+              "gradeMax": 100.0
+            },
+            {
               "id": 381,
               "itemType": "CATEGORY",
               "parentId": 370,
-              "position": 3,
+              "categoryId": 88,
+              "parentCategoryId": 85,
+              "position": 6,
               "gradeMin": 0.0,
               "gradeMax": 420.0,
               "name": "Individual "
             },
             {
+              "id": 376,
+              "itemType": "MOD",
+              "parentId": 381,
+              "parentCategoryId": 88,
+              "moduleId": 723,
+              "position": 7,
+              "name": "Factual recall test",
+              "gradeMin": 0.0,
+              "gradeMax": 10.0
+            },
+            {
+              "id": 372,
+              "itemType": "MOD",
+              "parentId": 381,
+              "parentCategoryId": 88,
+              "moduleId": 716,
+              "position": 8,
+              "name": "Dissertation: Fight club",
+              "gradeMin": 0.0,
+              "gradeMax": 100.0
+            },
+            {
+              "id": 373,
+              "itemType": "MOD",
+              "parentId": 381,
+              "parentCategoryId": 88,
+              "moduleId": 717,
+              "position": 9,
+              "name": "Dissertation: A Beautiful Mind",
+              "gradeMin": 0.0,
+              "gradeMax": 100.0
+            },
+            {
+              "id": 374,
+              "itemType": "MOD",
+              "parentId": 381,
+              "parentCategoryId": 88,
+              "moduleId": 718,
+              "position": 10,
+              "name": "Dissertation: Spider",
+              "gradeMin": 0.0,
+              "gradeMax": 100.0
+            },
+            {
+              "id": 382,
+              "itemType": "MANUAL",
+              "parentId": 381,
+              "parentCategoryId": 88,
+              "position": 11,
+              "gradeMin": 1.0,
+              "gradeMax": 4.0,
+              "name": "F2F Session"
+            },
+            {
+              "id": 393,
+              "itemType": "MANUAL",
+              "parentId": 381,
+              "parentCategoryId": 88,
+              "position": 12,
+              "gradeMin": 0.0,
+              "gradeMax": 100.0,
+              "name": "Class presentation"
+            },
+            {
+              "id": 394,
+              "itemType": "MOD",
+              "parentId": 381,
+              "parentCategoryId": 88,
+              "moduleId": 748,
+              "position": 13,
+              "name": "Reflective journal",
+              "gradeMin": 0.0,
+              "gradeMax": 10.0
+            },
+            {
+              "id": 396,
+              "itemType": "MOD",
+              "parentId": 381,
+              "parentCategoryId": 88,
+              "moduleId": 748,
+              "position": 14,
+              "name": "Commitment",
+              "gradeMin": 1.0,
+              "gradeMax": 3.0
+            },
+            {
+              "id": 395,
+              "itemType": "MOD",
+              "parentId": 381,
+              "parentCategoryId": 88,
+              "moduleId": 748,
+              "position": 15,
+              "name": "Participation",
+              "gradeMin": 1.0,
+              "gradeMax": 3.0
+            },
+            {
+              "id": 399,
+              "itemType": "MOD",
+              "parentId": 370,
+              "parentCategoryId": 85,
+              "moduleId": 757,
+              "position": 16,
+              "name": "Grammar help with your essays",
+              "gradeMin": 0.0,
+              "gradeMax": 10.0
+            },
+            {
+              "id": -92,
+              "itemType": "CATEGORY",
+              "parentId": 370,
+              "categoryId": 92,
+              "parentCategoryId": 85,
+              "position": 17,
+              "name": "Ungraded (Attendance)"
+            },
+            {
               "id": 390,
               "itemType": "MANUAL",
-              "parentId": 370,
-              "position": 4,
+              "parentId": -92,
+              "parentCategoryId": 92,
+              "position": 18,
               "gradeMin": 1.0,
               "gradeMax": 2.0,
               "name": "Screening 1 "
@@ -443,8 +1797,9 @@
             {
               "id": 391,
               "itemType": "MANUAL",
-              "parentId": 370,
-              "position": 5,
+              "parentId": -92,
+              "parentCategoryId": 92,
+              "position": 19,
               "gradeMin": 1.0,
               "gradeMax": 2.0,
               "name": "Screening 2 "
@@ -452,8 +1807,9 @@
             {
               "id": 392,
               "itemType": "MANUAL",
-              "parentId": 370,
-              "position": 6,
+              "parentId": -92,
+              "parentCategoryId": 92,
+              "position": 20,
               "gradeMin": 1.0,
               "gradeMax": 2.0,
               "name": "Screening 3"

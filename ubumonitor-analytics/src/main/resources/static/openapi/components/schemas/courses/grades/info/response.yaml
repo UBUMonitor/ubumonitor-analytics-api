@@ -12,8 +12,6 @@ CourseGradeItemsResponse:
           - id
           - itemType
           - position
-          - gradeMin
-          - gradeMax
         properties:
           id:
             type: integer
@@ -32,6 +30,14 @@ CourseGradeItemsResponse:
             type: integer
             format: int64
             description: Unique identifier for the parent grade item, if applicable
+          categoryId:
+            type: integer
+            format: int64
+            description: Moodle category identifier containing this grade item, if applicable
+          parentCategoryId:
+            type: integer
+            format: int64
+            description: Moodle parent category identifier for this category grade item, if applicable
           moduleId:
             type: integer
             format: int64

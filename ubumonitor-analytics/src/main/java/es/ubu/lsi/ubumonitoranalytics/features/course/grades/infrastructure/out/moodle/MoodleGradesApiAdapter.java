@@ -8,6 +8,7 @@ import es.ubu.lsi.moodle.model.gradereport.user.getgradestable.response.GetGrade
 import es.ubu.lsi.ubumonitoranalytics.features.course.grades.application.port.out.GradesApiPort;
 import es.ubu.lsi.ubumonitoranalytics.features.course.grades.domain.model.CourseGrade;
 import es.ubu.lsi.ubumonitoranalytics.features.course.grades.domain.model.GradeItem;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.Strings;
@@ -33,6 +34,7 @@ public class MoodleGradesApiAdapter implements GradesApiPort {
     CourseGrade courseGrade =
         moodleGradesAdapterResponseMapper.toCourseGradeItems(courseId, getGradeItemsResponseApi);
 
+    courseGrade.setGradeItems(new ArrayList<>(courseGrade.getGradeItems()));
     fillCategoryParentIds(courseGrade, actualUserId);
     moodleGradesAdapterResponseMapper.assignPositions(courseGrade.getGradeItems());
 

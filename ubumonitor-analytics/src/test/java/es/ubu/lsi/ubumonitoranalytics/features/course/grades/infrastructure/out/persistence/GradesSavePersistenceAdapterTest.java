@@ -15,6 +15,9 @@ import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
 import es.ubu.lsi.ubumonitoranalytics.util.DatabaseUtil;
 import java.math.BigDecimal;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
@@ -94,12 +97,85 @@ class GradesSavePersistenceAdapterTest {
     }
   }
 
+  @Test
+  void assignsNegativeCategoryIdToGradesWhoseItemIsMissing() throws Exception {
+    String jdbcUrl =
+        "jdbc:sqlite:" + tempDir.resolve("grades-missing-item.db").toString().replace("\\", "/");
+    try (var connection = DatabaseUtil.createDataSource(jdbcUrl, "test-key").getConnection()) {
+      DSLContext dsl = DSL.using(connection, SQLDialect.SQLITE);
+      createTables(dsl);
+
+      Jooq jooq = mock(Jooq.class);
+      when(jooq.dsl()).thenReturn(dsl);
+      GradesSavePersistenceAdapter saveAdapter =
+          new GradesSavePersistenceAdapter(
+              jooq, Mappers.getMapper(GradesSavePersistenceMapper.class));
+      GradesFetchPersistenceAdapter fetchAdapter =
+          new GradesFetchPersistenceAdapter(
+              jooq, Mappers.getMapper(GradesFetchPersistenceMapper.class));
+
+      CourseGrade courseGrade = new CourseGrade();
+      courseGrade.setCourseId(7L);
+      GradeItem category = gradeItem(92L);
+      category.setCategoryId(92L);
+      category.setParentCategoryId(80L);
+      courseGrade.setGradeItems(List.of(gradeItem(11L), category));
+      UserGrade normalGrade = userGrade(11L, 21L, 75);
+      UserGrade gradeWithoutItem = userGrade(-92L, 21L, 80);
+      courseGrade.setUserGrades(List.of(normalGrade, gradeWithoutItem));
+
+      saveAdapter.saveCourseGradeItemsPersistence(courseGrade);
+
+      assertTrue(
+          dsl.selectFrom(USERS_GRADES).where(USERS_GRADES.GRADE_ID.eq(11L)).fetchOne().getActive());
+      assertEquals(
+          0,
+          dsl.selectFrom(USERS_GRADES)
+              .where(USERS_GRADES.GRADE_ID.eq(-92L))
+              .fetchOne()
+              .getGrade()
+              .compareTo(BigDecimal.valueOf(80)));
+      assertEquals(
+          11L,
+          dsl.selectFrom(USERS_GRADES)
+              .where(USERS_GRADES.GRADE_ID.eq(11L))
+              .fetchOne()
+              .getGradeId());
+      assertEquals(
+          -92L,
+          dsl.selectFrom(USERS_GRADES)
+              .where(USERS_GRADES.GRADE_ID.eq(-92L))
+              .fetchOne()
+              .getGradeId());
+      GradeItem persistedCategory =
+          fetchAdapter.fetchCourseGradeItemsPersistence(7L).stream()
+              .filter(item -> item.getId().equals(92L))
+              .findFirst()
+              .orElseThrow();
+      assertEquals(92L, persistedCategory.getCategoryId());
+      assertEquals(80L, persistedCategory.getParentCategoryId());
+
+      List<UserGrade> fetchedGrades =
+          fetchAdapter.fetchCourseUserGradesPersistence(7L, List.of(11L), List.of(21L));
+
+      assertEquals(1, fetchedGrades.size());
+      assertEquals(
+          Set.of(11L),
+          fetchedGrades.stream().map(UserGrade::getGradeItemId).collect(Collectors.toSet()));
+      assertEquals(
+          Set.of(BigDecimal.valueOf(75)),
+          fetchedGrades.stream().map(UserGrade::getGradeRaw).collect(Collectors.toSet()));
+    }
+  }
+
   private void createTables(DSLContext dsl) {
     dsl.execute(
         """
         CREATE TABLE GRADES (
           ID BIGINT PRIMARY KEY,
           PARENT_ID BIGINT,
+          CATEGORY_ID BIGINT,
+          PARENT_CATEGORY_ID BIGINT,
           COURSE_ID BIGINT NOT NULL,
           NAME VARCHAR(255),
           ITEM_TYPE VARCHAR(50),

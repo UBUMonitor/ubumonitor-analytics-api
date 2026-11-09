@@ -62,6 +62,8 @@ CREATE TABLE grades
 (
     id         BIGINT PRIMARY KEY,
     parent_id  BIGINT,
+    category_id BIGINT UNIQUE,
+    parent_category_id BIGINT,
     course_id  BIGINT           NOT NULL,
     name       TEXT,
     item_type  TEXT,
