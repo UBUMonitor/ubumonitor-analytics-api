@@ -4,6 +4,7 @@ import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.por
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.importlogs.ProcessLogLine;
 import io.krakens.grok.api.Grok;
 import io.krakens.grok.api.Match;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -27,11 +28,32 @@ public class LogParserService {
       CSVRecord row,
       Map<MoodleLogCatalog.Key, MoodleLogCatalog.Entry> logEvents,
       Map<String, Byte> logOrigins) {
+    return processRow(courseId, moodleTimeZone, row, logEvents, logOrigins, null);
+  }
+
+  /**
+   * Parses one CSV row.
+   *
+   * @param newerThan rows whose time is not after this instant are skipped before the costly Grok
+   *     matching and return {@code null}; {@code null} disables the check
+   * @return the parsed line, or {@code null} if the row was skipped or has no known mapping
+   */
+  public ProcessLogLine processRow(
+      Long courseId,
+      ZoneId moodleTimeZone,
+      CSVRecord row,
+      Map<MoodleLogCatalog.Key, MoodleLogCatalog.Entry> logEvents,
+      Map<String, Byte> logOrigins,
+      Instant newerThan) {
+
+    Instant time = parseTime(row.get("Time"), moodleTimeZone);
+    if (newerThan != null && !newerThan.isBefore(time)) {
+      return null;
+    }
 
     String component = row.get("Component");
     String event = row.get("Event name");
     String origin = row.get("Origin");
-    String time = row.get("Time");
     String ip = row.get("IP address");
     String description = row.get("Description");
 
@@ -49,8 +71,7 @@ public class LogParserService {
     }
 
     ProcessLogLine line = new ProcessLogLine();
-    line.setTime(
-        LocalDateTime.parse(time, MOODLE_TIME_FORMATTER).atZone(moodleTimeZone).toInstant());
+    line.setTime(time);
     line.setCourseId(courseId);
     line.setComponentId(logEvent.getComponentId());
     line.setEventId(logEvent.getEventId());
@@ -59,6 +80,10 @@ public class LogParserService {
 
     applyAdditionalData(component, event, description, line, logEvent.getGroks());
     return line;
+  }
+
+  private static Instant parseTime(String time, ZoneId moodleTimeZone) {
+    return LocalDateTime.parse(time, MOODLE_TIME_FORMATTER).atZone(moodleTimeZone).toInstant();
   }
 
   private void applyAdditionalData(

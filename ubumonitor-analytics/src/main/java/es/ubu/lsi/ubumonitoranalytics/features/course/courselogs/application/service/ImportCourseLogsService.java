@@ -1,38 +1,31 @@
 package es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.service;
 
+import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.csv.MoodleCsvReader;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.port.in.ImportCourseLogsUseCase;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.port.out.CourseLogsInfoPort;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.port.out.LogPersistencePort;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.port.out.MoodlePort;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.importlogs.LogContext;
-import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.importlogs.LogImportStats;
-import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.importlogs.ProcessLogLine;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.importlogs.ProcessLogsResult;
-import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.info.CourseLogsInfoResult;
-import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
+import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.concurrent.AsyncOperations;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
-import org.apache.commons.io.input.BOMInputStream;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.InputStream;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 /** Imports course logs from uploaded CSV files or synchronizes them from Moodle. */
 @Service
@@ -40,17 +33,19 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 public class ImportCourseLogsService implements ImportCourseLogsUseCase {
 
-  private static final int BATCH_SIZE = 1000;
+  /** Beyond this age of the last stored log, a single full export is cheaper than daily ones. */
+  private static final Duration FULL_DOWNLOAD_THRESHOLD = Duration.ofDays(30);
+
+  /** Window requested from Moodle on each incremental download. */
+  private static final long INCREMENTAL_STEP_SECONDS = Duration.ofDays(1).toSeconds();
 
   private final LogParserService logParserService;
   private final LogPersistencePort logPersistencePort;
   private final CourseLogsInfoPort courseLogsInfoPort;
   private final MoodlePort moodlePort;
   private final CurrentSessionContext currentSessionContext;
+  private final AsyncOperations asyncOperations;
 
-  // =========================
-  // LOCAL FILE IMPORT
-  // =========================
   /**
    * @param courseId Moodle course identifier
    * @param file uploaded log CSV
@@ -60,182 +55,87 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
   @Transactional
   @SneakyThrows
   public ProcessLogsResult process(Long courseId, MultipartFile file) {
+    InputStream inputStream = file.getInputStream();
+    LogContext logContext = logPersistencePort.getLogContext(courseId);
 
-    return processStream(
-        courseId, file.getInputStream(), logPersistencePort.getLogContext(courseId));
+    logPersistencePort.createIfNotExists(courseId);
+    LogImportRun run = newRun(courseId, logContext);
+
+    try (CSVParser parser = MoodleCsvReader.open(inputStream)) {
+      for (CSVRecord csvRecord : parser) {
+        run.handle(csvRecord);
+      }
+    } catch (Exception e) {
+      log.error("Error processing stream", e);
+    }
+
+    return run.finish();
   }
 
-  // =========================
-  // REMOTE SYNC
-  // =========================
   /**
    * @param courseId Moodle course identifier
    * @return synchronization statistics and refreshed course log information
    */
   @Override
   @Transactional
-  @SneakyThrows
   public ProcessLogsResult sync(Long courseId) {
-
-    SessionData sessionData = currentSessionContext.getSessionData();
-
-    RestClient restClient = sessionData.getRestClient();
+    RestClient restClient = currentSessionContext.getSessionData().getRestClient();
 
     LogContext logContext = logPersistencePort.getLogContext(courseId);
     logPersistencePort.createIfNotExists(courseId);
-    Instant lastLogDateTime = logContext.getLastLogTime();
+    LogImportRun run = newRun(courseId, logContext);
 
-    List<ProcessLogLine> batch = new ArrayList<>(BATCH_SIZE);
-
-    AtomicInteger saved = new AtomicInteger(0);
-    AtomicInteger ignored = new AtomicInteger(0);
-    AtomicInteger failed = new AtomicInteger(0);
-
-    Consumer<CSVRecord> consumer =
-        csvRecord -> handleRecord(csvRecord, logContext, batch, saved, ignored, failed);
-
-    if (lastLogDateTime == null
-        || lastLogDateTime.isBefore(Instant.now().minus(30, ChronoUnit.DAYS))) {
-
-      moodlePort.downloadAllLogs(courseId, restClient, consumer);
-
+    Instant lastLogTime = logContext.getLastLogTime();
+    if (lastLogTime == null || lastLogTime.isBefore(Instant.now().minus(FULL_DOWNLOAD_THRESHOLD))) {
+      moodlePort.downloadAllLogs(courseId, restClient, run);
     } else {
-
-      long now = Instant.now().getEpochSecond();
-
-      long start = lastLogDateTime.getEpochSecond();
-      long step = 86400;
-
-      for (long ts = start; ts <= now; ts += step) {
-
-        moodlePort.downloadPartialLogs(courseId, ts, restClient, consumer);
-      }
-    }
-
-    flushBatch(batch, saved, failed, true);
-    CourseLogsInfoResult courseLogsInfoResult = courseLogsInfoPort.getCourseLogsInfo(courseId);
-    LogImportStats logImportStats = new LogImportStats(saved.get(), ignored.get(), failed.get());
-    return new ProcessLogsResult(logImportStats, courseLogsInfoResult);
-  }
-
-  // =========================
-  // CORE PIPELINE (REUSE)
-  // =========================
-  private ProcessLogsResult processStream(
-      Long courseId, InputStream inputStream, LogContext logContext) {
-    logPersistencePort.createIfNotExists(courseId);
-
-    List<ProcessLogLine> batch = new ArrayList<>(BATCH_SIZE);
-
-    AtomicInteger saved = new AtomicInteger(0);
-    AtomicInteger ignored = new AtomicInteger(0);
-    AtomicInteger failed = new AtomicInteger(0);
-
-    try (BufferedReader reader = buildReader(inputStream);
-        CSVParser parser = buildCsvParser(reader)) {
-
-      for (CSVRecord csvRecord : parser) {
-
-        handleRecord(csvRecord, logContext, batch, saved, ignored, failed);
-
-        flushBatch(batch, saved, failed, false);
-      }
-
-    } catch (Exception e) {
-      log.error("Error processing stream", e);
-    }
-
-    flushBatch(batch, saved, failed, true);
-    CourseLogsInfoResult courseLogsInfoResult = courseLogsInfoPort.getCourseLogsInfo(courseId);
-    LogImportStats logImportStats = new LogImportStats(saved.get(), ignored.get(), failed.get());
-    return new ProcessLogsResult(logImportStats, courseLogsInfoResult);
-  }
-
-  // =========================
-  // RECORD HANDLER
-  // =========================
-  private void handleRecord(
-      CSVRecord csvRecord,
-      LogContext logContext,
-      List<ProcessLogLine> batch,
-      AtomicInteger saved,
-      AtomicInteger ignored,
-      AtomicInteger failed) {
-
-    try {
-      ProcessLogLine line =
-          logParserService.processRow(
-              logContext.getCourseId(),
-              logContext.getMoodleTimeZone(),
-              csvRecord,
-              logContext.getMoodleLogCatalog().getEvents(),
-              logContext.getLogOrigins());
-
-      if (isValidLog(line, logContext.getLastLogTime())) {
-        batch.add(line);
-        if (batch.size() >= BATCH_SIZE) {
-          flushBatch(batch, saved, failed, false);
+      // Downloads run in parallel; rows are still processed and saved here, in day order, because
+      // the transaction is bound to this thread.
+      for (CompletableFuture<List<CSVRecord>> download :
+          startIncrementalDownloads(courseId, lastLogTime, restClient)) {
+        for (CSVRecord csvRecord : await(download)) {
+          run.handle(csvRecord);
         }
-      } else {
-        ignored.incrementAndGet();
       }
-
-    } catch (Exception e) {
-      log.warn("Error processing CSV row: {}", csvRecord, e);
-      failed.incrementAndGet();
     }
+
+    return run.finish();
   }
 
-  // =========================
-  // BATCH FLUSH
-  // =========================
-  private void flushBatch(
-      List<ProcessLogLine> batch, AtomicInteger saved, AtomicInteger failed, boolean force) {
+  /** Starts one asynchronous download per day, from the last stored log until now. */
+  private List<CompletableFuture<List<CSVRecord>>> startIncrementalDownloads(
+      Long courseId, Instant lastLogTime, RestClient restClient) {
+    long now = Instant.now().getEpochSecond();
 
-    if (batch.isEmpty() || (batch.size() < BATCH_SIZE && !force)) {
-      return;
+    List<CompletableFuture<List<CSVRecord>>> downloads = new ArrayList<>();
+    for (long since = lastLogTime.getEpochSecond();
+        since <= now;
+        since += INCREMENTAL_STEP_SECONDS) {
+      downloads.add(asyncOperations.supplyAsync(
+              new DayLogsDownload(moodlePort, courseId, since, restClient)));
     }
+    return downloads;
+  }
 
+  /** Waits for a download, rethrowing its original exception instead of a wrapper. */
+  private static List<CSVRecord> await(CompletableFuture<List<CSVRecord>> download) {
     try {
-      logPersistencePort.saveBatch(new ArrayList<>(batch));
-      saved.addAndGet(batch.size());
-    } catch (Exception e) {
-      log.error("Error persisting batch", e);
-      failed.addAndGet(batch.size());
-    } finally {
-      batch.clear();
+      return download.join();
+    } catch (CompletionException e) {
+      if (e.getCause() instanceof RuntimeException cause) {
+        throw cause;
+      }
+      throw e;
     }
   }
 
-  // =========================
-  // VALIDATION
-  // =========================
-  private boolean isValidLog(ProcessLogLine line, Instant lastLogDateTime) {
-    return line != null && (lastLogDateTime == null || lastLogDateTime.isBefore(line.getTime()));
-  }
-
-  // =========================
-  // CSV HELPERS
-  // =========================
-  @SneakyThrows
-  private BufferedReader buildReader(InputStream inputStream) {
-
-    InputStream withBom = BOMInputStream.builder().setInputStream(inputStream).get();
-
-    return new BufferedReader(new InputStreamReader(withBom, StandardCharsets.UTF_8), 64 * 1024);
-  }
-
-  private CSVParser buildCsvParser(BufferedReader reader) throws IOException {
-
-    CSVFormat format =
-        CSVFormat.DEFAULT
-            .builder()
-            .setHeader() // usa la primera fila como header real
-            .setSkipHeaderRecord(true)
-            .setIgnoreSurroundingSpaces(true)
-            .setTrim(true)
-            .get();
-
-    return format.parse(reader);
+  private LogImportRun newRun(Long courseId, LogContext logContext) {
+    return new LogImportRun(
+        asyncOperations,
+        logParserService,
+        logPersistencePort,
+        courseLogsInfoPort,
+        courseId,
+        logContext);
   }
 }

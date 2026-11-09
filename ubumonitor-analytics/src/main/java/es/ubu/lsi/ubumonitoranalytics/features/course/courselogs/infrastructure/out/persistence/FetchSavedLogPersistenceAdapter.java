@@ -33,7 +33,7 @@ public class FetchSavedLogPersistenceAdapter implements FetchLogPersistencePort 
   @Override
   public FetchCourseLogsResult getLogs(CourseLogsInfoRequest request) {
     CourseLogsInfoRequestPagination pagination = request.getPagination();
-    List<Condition> conditions = buildConditions(request);
+    Condition conditions = buildConditions(request);
     List<FetchLogLine> logs = fetchLogLines(request, conditions, pagination);
 
     return buildResult(request, logs, conditions, pagination);
@@ -45,7 +45,7 @@ public class FetchSavedLogPersistenceAdapter implements FetchLogPersistencePort 
 
   private @NonNull List<FetchLogLine> fetchLogLines(
       CourseLogsInfoRequest request,
-      List<Condition> conditions,
+      Condition conditions,
       CourseLogsInfoRequestPagination pagination) {
     List<LogViewColumn> columns = resolveColumns(request);
     Set<LogViewColumn> requiredColumns = determineRequiredColumns(columns, request.getSort());
@@ -69,7 +69,7 @@ public class FetchSavedLogPersistenceAdapter implements FetchLogPersistencePort 
   private FetchCourseLogsResult buildResult(
       CourseLogsInfoRequest request,
       List<FetchLogLine> logs,
-      List<Condition> conditions,
+      Condition conditions,
       CourseLogsInfoRequestPagination pagination) {
     FetchCourseLogsResult.FetchCourseLogsResultBuilder builder =
         FetchCourseLogsResult.builder()
@@ -95,7 +95,7 @@ public class FetchSavedLogPersistenceAdapter implements FetchLogPersistencePort 
     return builder.build();
   }
 
-  private int fetchTotal(List<Condition> conditions) {
+  private int fetchTotal(Condition conditions) {
     Integer totalRecord =
         jooq.dsl().selectCount().from(LOGS).where(conditions).fetchOneInto(Integer.class);
 
@@ -140,57 +140,32 @@ public class FetchSavedLogPersistenceAdapter implements FetchLogPersistencePort 
     return query;
   }
 
-  private List<Condition> buildConditions(CourseLogsInfoRequest request) {
-    List<Condition> conditions = new ArrayList<>();
+  private Condition buildConditions(CourseLogsInfoRequest request) {
     CourseLogsInfoRequestTimeRange timeRange = request.getTimeRange();
     CourseLogsInfoRequestFilters filters = request.getFilters();
 
-    // 1. Filtros base y de tiempo
-    conditions.add(LOGS.COURSE_ID.eq(request.getCourseId()));
+    Condition condition = LOGS.COURSE_ID.eq(request.getCourseId());
 
     if (timeRange != null) {
-      if (timeRange.getFrom() != null) {
-        conditions.add(LOGS.LOGGED_AT.greaterOrEqual(timeRange.getFrom()));
-      }
-      if (timeRange.getTo() != null) {
-        conditions.add(LOGS.LOGGED_AT.lessOrEqual(timeRange.getTo()));
-      }
+      condition = condition.and(LogConditions.timeRange(timeRange.getFrom(), timeRange.getTo()));
     }
 
-    // 2. Dynamic filters.
     if (filters != null) {
-      addInFilter(conditions, LOGS.USER_ID, filters.getUserIds());
-      addInFilter(conditions, LOGS.MODULE_ID, filters.getModuleIds());
-      addInFilter(conditions, LOGS.ORIGIN_ID, filters.getOriginIds());
-      addInFilter(conditions, LOGS.COMPONENT_ID, filters.getComponentIds());
-      addInFilter(conditions, LOGS.EVENT_ID, filters.getEventIds());
-      addInFilter(conditions, LOGS.IP_ADDRESS, filters.getIpAddresses());
-
-      if (filters.getSectionIds() != null) {
-        if (filters.getSectionIds().isEmpty()) {
-          conditions.add(DSL.falseCondition());
-        } else {
-          conditions.add(
-              LOGS.MODULE_ID.in(
-                  DSL.select(MODULES.ID)
-                      .from(MODULES)
-                      .where(MODULES.SECTION_ID.in(filters.getSectionIds()))));
-        }
-      }
-      conditions.add(CompositeLogFilterConditions.build(filters.getCompositeFilters()));
+      condition =
+          condition
+              .and(
+                  LogConditions.filters(
+                      filters.getUserIds(),
+                      filters.getModuleIds(),
+                      filters.getComponentIds(),
+                      filters.getEventIds(),
+                      filters.getOriginIds(),
+                      filters.getIpAddresses(),
+                      filters.getSectionIds()))
+              .and(CompositeLogFilterConditions.build(filters.getCompositeFilters()));
     }
 
-    return conditions;
-  }
-
-  private <T> void addInFilter(List<Condition> conditions, Field<T> field, Collection<T> values) {
-    if (values == null) return;
-
-    if (values.isEmpty()) {
-      conditions.add(DSL.falseCondition());
-    } else {
-      conditions.add(field.in(values));
-    }
+    return condition;
   }
 
   private List<SortField<?>> buildSortFields(List<CourseLogsInfoRequestSortItem> sortList) {
@@ -198,18 +173,17 @@ public class FetchSavedLogPersistenceAdapter implements FetchLogPersistencePort 
       return List.of(LOGS.LOGGED_AT.asc());
     }
 
-    return sortList.stream()
-        .map(
-            sort -> {
-              Field<?> field = fieldFor(sort.getField());
-              if (field == null) return null;
-
-              return sort.getDirection() == CourseLogsInfoRequestSortItem.Direction.DESC
-                  ? field.desc()
-                  : field.asc();
-            })
-        .filter(Objects::nonNull)
-        .toList();
+    List<SortField<?>> sortFields = new ArrayList<>();
+    for (CourseLogsInfoRequestSortItem sort : sortList) {
+      Field<?> field = fieldFor(sort.getField());
+      if (field != null) {
+        sortFields.add(
+            sort.getDirection() == CourseLogsInfoRequestSortItem.Direction.DESC
+                ? field.desc()
+                : field.asc());
+      }
+    }
+    return sortFields;
   }
 
   // =================================================================================
@@ -233,11 +207,14 @@ public class FetchSavedLogPersistenceAdapter implements FetchLogPersistencePort 
   }
 
   private List<SelectFieldOrAsterisk> mapToSelectFields(List<LogViewColumn> columns) {
-    return columns.stream()
-        .map(this::fieldFor)
-        .filter(Objects::nonNull)
-        .map(SelectFieldOrAsterisk.class::cast)
-        .toList();
+    List<SelectFieldOrAsterisk> fields = new ArrayList<>();
+    for (LogViewColumn column : columns) {
+      Field<?> field = fieldFor(column);
+      if (field != null) {
+        fields.add(field);
+      }
+    }
+    return fields;
   }
 
   private Field<?> fieldFor(LogViewColumn column) {

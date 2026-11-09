@@ -39,6 +39,14 @@ public class LogPersistenceAdapter implements LogPersistencePort {
   private final MoodleRulesConfig moodleRulesConfig;
   private final CurrentSessionContext currentSessionContext;
 
+  /**
+   * Rules and origins are identical for every tenant and do not change while the application
+   * runs, so they are loaded once. Both are shared and read-only.
+   */
+  private volatile MoodleLogCatalog cachedCatalog;
+
+  private volatile Map<String, Byte> cachedOrigins;
+
   @Override
   public void createIfNotExists(Long courseId) {
     DSLContext dsl = jooq.dsl();
@@ -92,7 +100,7 @@ public class LogPersistenceAdapter implements LogPersistencePort {
 
     ZoneId zoneId = getZoneId(userName);
     MoodleLogCatalog moodleLogCatalog = getMoodleLogCatalog();
-    Map<String, Byte> logOrigins = getLogOrigins();
+    Map<String, Byte> logOrigins = getCachedLogOrigins();
     return LogContext.builder()
         .courseId(courseId)
         .lastLogTime(lastLogTime)
@@ -121,6 +129,20 @@ public class LogPersistenceAdapter implements LogPersistencePort {
   }
 
   private MoodleLogCatalog getMoodleLogCatalog() {
+    MoodleLogCatalog catalog = cachedCatalog;
+    if (catalog == null) {
+      synchronized (this) {
+        catalog = cachedCatalog;
+        if (catalog == null) {
+          catalog = loadMoodleLogCatalog();
+          cachedCatalog = catalog;
+        }
+      }
+    }
+    return catalog;
+  }
+
+  private MoodleLogCatalog loadMoodleLogCatalog() {
     var records =
         jooq.dsl()
             .select(
@@ -159,7 +181,21 @@ public class LogPersistenceAdapter implements LogPersistencePort {
     return moodleRulesConfig.compileRules(rules);
   }
 
-  private Map<String, Byte> getLogOrigins() {
+  private Map<String, Byte> getCachedLogOrigins() {
+    Map<String, Byte> origins = cachedOrigins;
+    if (origins == null) {
+      synchronized (this) {
+        origins = cachedOrigins;
+        if (origins == null) {
+          origins = Map.copyOf(loadLogOrigins());
+          cachedOrigins = origins;
+        }
+      }
+    }
+    return origins;
+  }
+
+  private Map<String, Byte> loadLogOrigins() {
     return jooq.dsl()
         .select(LOGS_ORIGINS.CODE, LOGS_ORIGINS.ID)
         .from(LOGS_ORIGINS)
