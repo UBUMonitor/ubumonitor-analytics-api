@@ -50,7 +50,7 @@ public class CourseLogsInfoAdapter implements CourseLogsInfoPort {
 
     var records =
         jooq.dsl()
-            .select(
+            .selectDistinct(
                 LOGS_COMPONENTS.ID,
                 LOGS_COMPONENTS.CODE,
                 LOGS_COMPONENTS.NAME,
