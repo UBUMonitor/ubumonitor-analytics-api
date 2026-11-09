@@ -30,7 +30,7 @@ Read the AGENTS.md recipe that matches the task, mirror an existing endpoint of 
 
 ## Verify (quiet Maven)
 
-Use `-q -B -ntp` and single quotes around `-D...`. In order: `generate-sources` (if OpenAPI, migrations or schemas changed) → the focused fixture from AGENTS.md "Commands" → `mvn -q -B -ntp spotless:apply`. Act on the first error only; at most 2 fix attempts, then report. Do not run module or full builds (the Orchestrator does).
+Use `-q -B -ntp` and single quotes around `-D...`. In order: `generate-sources` (if OpenAPI, migrations or schemas changed) → the focused fixture from AGENTS.md "Commands". Act on the first error only; at most 2 fix attempts, then report. Do not run module or full builds (the Orchestrator does). Do not run `spotless:apply`; the user formats the code.
 
 ## Return (≤150 words)
 

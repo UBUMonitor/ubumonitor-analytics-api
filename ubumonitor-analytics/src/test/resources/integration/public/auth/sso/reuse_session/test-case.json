@@ -1,0 +1,32 @@
+{
+  "authFixture": "classpath:/integration/shared/teacher-sso-auth.json",
+  "request": {
+    "method": "POST",
+    "path": "/api/public/auth/sso",
+    "body": {
+      "host": "${MOODLE_HOST}",
+      "moodleLaunchCredential": "moodlemobile://token=eHh4Ojo6d2lyZW1vY2stbW9vZGxlLXRva2Vu",
+      "dbPassword": "analytics-test-password",
+      "cookies": []
+    }
+  },
+  "expectedResponse": {
+    "status": 200,
+    "body": {
+      "tokenType": "Bearer",
+      "accessToken": "${JWT}",
+      "user": {
+        "id": 13,
+        "userName": "teacher",
+        "fullName": "Jeffrey Sanders",
+        "firstName": "Jeffrey",
+        "lastName": "Sanders",
+        "initials": "JS",
+        "email": "jeffreysanders199@example.com",
+        "timeZone": "Etc/GMT-1",
+        "userImageUrl": "https://school.moodledemo.net/pluginfile.php/160/user/icon/boost/f1?rev=75854",
+        "lang": "en"
+      }
+    }
+  }
+}

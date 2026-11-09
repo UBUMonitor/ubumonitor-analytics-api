@@ -3,6 +3,7 @@ package es.ubu.lsi.ubumonitoranalytics.features.auth.application.port.out;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.AuthInput;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.SessionToken;
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.domain.model.UserInfo;
+import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
 import org.springframework.web.client.RestClient;
 
 /** Outbound operations for creating and invalidating application sessions. */
@@ -27,6 +28,14 @@ public interface SessionPort {
    */
   SessionGeneration generateSessionWithStatus(
       AuthInput authInput, UserInfo userInfo, RestClient restClient);
+
+  /**
+   * Finds an existing offline session for the same site, user, and tenant database key.
+   *
+   * @param authInput offline authentication details
+   * @return the matching active session, or {@code null} when it cannot be reused
+   */
+  SessionData findReusableOfflineSession(AuthInput authInput);
 
   /** Result of creating or reusing an application session. */
   record SessionGeneration(SessionToken sessionToken, boolean created) {}

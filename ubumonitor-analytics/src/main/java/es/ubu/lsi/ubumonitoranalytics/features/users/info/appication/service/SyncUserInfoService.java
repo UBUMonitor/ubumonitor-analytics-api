@@ -1,5 +1,6 @@
 package es.ubu.lsi.ubumonitoranalytics.features.users.info.appication.service;
 
+import es.ubu.lsi.ubumonitoranalytics.features.users.info.appication.port.in.SearchUserByUserNameUseCase;
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.appication.port.in.SyncUserInfoUseCase;
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.appication.port.out.SearchUsersByFieldPort;
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.appication.port.out.ServerTimeZonePort;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class SyncUserInfoService implements SyncUserInfoUseCase {
+public class SyncUserInfoService implements SyncUserInfoUseCase, SearchUserByUserNameUseCase {
 
   private final CurrentSessionContext currentSessionContext;
   private final SearchUsersByFieldPort searchUsersByFieldPort;
@@ -19,9 +20,12 @@ public class SyncUserInfoService implements SyncUserInfoUseCase {
   private final SyncUserInfoPersistencePort syncUserInfoPersistencePort;
 
   @Override
-  public UserInfo syncActualUser(String userName) {
-    UserInfo userInfo = searchUsersByFieldPort.getUserByUserName(userName);
+  public UserInfo searchUserByUserName(String userName) {
+    return searchUsersByFieldPort.getUserByUserName(userName);
+  }
 
+  @Override
+  public UserInfo syncActualUser(UserInfo userInfo) {
     if (userInfo.isServerTimeZone()) {
       userInfo.setTimeZone(serverTimeZonePort.getServerTimezone());
     }
@@ -34,6 +38,6 @@ public class SyncUserInfoService implements SyncUserInfoUseCase {
   public UserInfo syncActualUser() {
 
     String userName = currentSessionContext.getSessionData().getUsername();
-    return syncActualUser(userName);
+    return syncActualUser(searchUserByUserName(userName));
   }
 }

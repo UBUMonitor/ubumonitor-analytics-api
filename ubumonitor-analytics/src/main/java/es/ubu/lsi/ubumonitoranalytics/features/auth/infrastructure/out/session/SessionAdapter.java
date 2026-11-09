@@ -10,6 +10,7 @@ import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessi
 import java.net.URI;
 import java.security.SecureRandom;
 import java.util.Base64;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -52,6 +53,31 @@ public class SessionAdapter implements SessionPort {
     SessionData newSession = createSession(authInput, userInfo, restClient);
 
     return new SessionGeneration(toSessionToken(newSession.getToken()), true);
+  }
+
+  @Override
+  public SessionData findReusableOfflineSession(AuthInput authInput) {
+    if (authInput == null
+        || authInput.getHost() == null
+        || authInput.getUsername() == null
+        || authInput.getDbPassword() == null) {
+      return null;
+    }
+
+    SessionData existingSession =
+        sessionStore.getSession(authInput.getHost(), authInput.getUsername());
+    if (existingSession == null
+        || !Objects.equals(existingSession.getHost(), authInput.getHost())
+        || !Objects.equals(existingSession.getUsername(), authInput.getUsername())
+        || !Objects.equals(existingSession.getDbPassword(), authInput.getDbPassword())
+        || existingSession.getToken() == null
+        || existingSession.getUserId() == null
+        || existingSession.getActualUser() == null) {
+      return null;
+    }
+
+    currentSessionContext.setSessionData(existingSession);
+    return existingSession;
   }
 
   @Override

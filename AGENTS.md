@@ -9,13 +9,13 @@ Maven reactor: `ubumonitor-analytics` (API, logic, persistence, Moodle adapters)
 
 ## Commands
 
-Run the narrowest check first; the full clean build last. Keep single quotes around every `-D...`. Add `-B -ntp` for compact output. Spotless runs at `process-sources`, so every build also formats files.
+Run the narrowest check first; the full clean build last. Keep single quotes around every `-D...`. Add `-B -ntp` for compact output. Spotless is bound to `process-sources`, so builds may reformat files; ignore formatting-only diffs.
 
 | Goal | Command (repo root) |
 |---|---|
 | One fixture (first) | `mvn -pl ubumonitor-analytics -Dtest=MoodleAnalyticsIntegrationTest '-Dintegration.fixture.pattern=classpath:/integration/<path>/test-case.json' test` |
 | Regenerate sources | `mvn -pl ubumonitor-analytics generate-sources` (or `-pl moodle-java-client`) |
-| Format | `mvn spotless:apply` |
+| Format (the maintainer runs it; agents do not) | `mvn spotless:apply` |
 | Module build | `mvn -pl ubumonitor-analytics -am package` / `mvn -pl moodle-java-client package` |
 | All tests | `mvn test` |
 | Full clean build (last) | `mvn clean install` |
@@ -99,7 +99,6 @@ Hexagonal, by feature: `infrastructure/in` (REST delegate) → `application/port
 ## Done
 
 - [ ] The specific fixture passes and covers the change.
-- [ ] `mvn spotless:apply` done; keep only expected formatting.
 - [ ] Affected module builds (`mvn -pl ubumonitor-analytics -am package` or `mvn -pl moodle-java-client package`).
 - [ ] `git diff` has nothing under `target/` and nothing outside the task.
 - [ ] If shared generation or several modules changed: `mvn clean install` passes.

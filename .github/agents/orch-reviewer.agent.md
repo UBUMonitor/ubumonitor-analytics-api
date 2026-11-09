@@ -15,7 +15,7 @@ You start with an empty context (the brief). Never edit files. Use `execute` onl
 
 **Should fix:** missing `@Transactional(readOnly = true)` / `@Transactional`; validation not in OpenAPI; broken `GlobalExceptionHandler` contract; `null` without guard clauses; scope creep.
 
-**Nits (max 3, skip what Spotless fixes):** inline lambdas/`forEach` where a loop is clearer; `groupingBy` for unique keys.
+**Nits (max 3, skip formatting-only issues):** inline lambdas/`forEach` where a loop is clearer; `groupingBy` for unique keys.
 
 Return (≤250 words):
 
