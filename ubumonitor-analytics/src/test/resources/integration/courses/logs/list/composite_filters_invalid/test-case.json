@@ -1,0 +1,22 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/courses/2/logs/list",
+    "headers": {
+      "Authorization": "******"
+    },
+    "body": {
+      "filters": {
+        "compositeFilters": [
+          {
+            "userId": 13
+          }
+        ]
+      }
+    }
+  },
+  "expectedResponse": {
+    "status": 400
+  },
+  "authFixture": "classpath:/integration/shared/teacher-sso-auth.json"
+}

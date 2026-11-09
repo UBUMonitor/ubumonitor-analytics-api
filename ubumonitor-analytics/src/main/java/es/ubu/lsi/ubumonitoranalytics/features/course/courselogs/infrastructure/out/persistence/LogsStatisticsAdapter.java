@@ -384,6 +384,7 @@ public class LogsStatisticsAdapter implements LogsStatisticsPort {
                     .from(MODULES)
                     .where(MODULES.SECTION_ID.in(filters.getSectionIds()))));
       }
+      conditions.add(CompositeLogFilterConditions.build(filters.getCompositeFilters()));
     }
 
     return conditions;

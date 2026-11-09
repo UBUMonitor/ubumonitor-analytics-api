@@ -1,5 +1,6 @@
 package es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.statistics;
 
+import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.CompositeLogFilter;
 import java.util.List;
 import lombok.Data;
 
@@ -13,4 +14,5 @@ public class CourseLogsStatisticsRequestFilters {
   private List<Byte> originIds;
   private List<String> ipAddresses;
   private List<Long> sectionIds;
+  private List<CompositeLogFilter> compositeFilters;
 }

@@ -177,6 +177,7 @@ public class FetchSavedLogPersistenceAdapter implements FetchLogPersistencePort 
                       .where(MODULES.SECTION_ID.in(filters.getSectionIds()))));
         }
       }
+      conditions.add(CompositeLogFilterConditions.build(filters.getCompositeFilters()));
     }
 
     return conditions;

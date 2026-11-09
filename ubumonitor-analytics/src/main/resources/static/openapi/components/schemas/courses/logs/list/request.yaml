@@ -88,6 +88,45 @@ CourseLogsListRequest:
             type: string
           example: ["192.168.1.1", "10.0.0.1"]
 
+        compositeFilters:
+          type: array
+          description: >
+            OR alternatives of compound filters. Populated dimensions within each
+            entry are combined with AND; each entry must populate at least two dimensions.
+            The compound expression is ANDed with the ordinary filters above.
+          items:
+            title: CourseLogsListRequestCompositeFilter
+            type: object
+            minProperties: 2
+            properties:
+              userId:
+                type: integer
+                format: int64
+                nullable: true
+              moduleId:
+                type: integer
+                format: int64
+                nullable: true
+              componentId:
+                type: integer
+                format: int32
+                nullable: true
+              eventId:
+                type: integer
+                format: int32
+                nullable: true
+              originId:
+                type: integer
+                format: int32
+                nullable: true
+              sectionId:
+                type: integer
+                format: int64
+                nullable: true
+              ipAddress:
+                type: string
+                nullable: true
+
     fields:
       title: CourseLogsInfoRequestFields
       type: array
