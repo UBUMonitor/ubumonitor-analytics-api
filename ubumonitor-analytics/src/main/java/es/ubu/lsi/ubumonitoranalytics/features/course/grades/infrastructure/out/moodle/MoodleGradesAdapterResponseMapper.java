@@ -7,13 +7,15 @@ import es.ubu.lsi.ubumonitoranalytics.features.course.grades.domain.model.Course
 import es.ubu.lsi.ubumonitoranalytics.features.course.grades.domain.model.GradeItem;
 import es.ubu.lsi.ubumonitoranalytics.features.course.grades.domain.model.UserGrade;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.GlobalMapperConfig;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.*;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.*;
+import java.util.stream.Stream;
 
 @Mapper(config = GlobalMapperConfig.class)
 public interface MoodleGradesAdapterResponseMapper {
@@ -28,10 +30,25 @@ public interface MoodleGradesAdapterResponseMapper {
   // Course grade
   // ---------------------------------------------------------------------------------------------
 
-  @Mapping(target = "courseId", source = "courseId")
   @Mapping(target = "gradeItems", source = "getGradeItemsResponseApi")
   @Mapping(target = "userGrades", source = "getGradeItemsResponseApi")
   CourseGrade toCourseGradeItems(Long courseId, GetGradeItemsResponseApi getGradeItemsResponseApi);
+
+  /**
+   * Assigns a zero-based {@code position} to each item following the order of the list. Null items
+   * are skipped and do not consume a position.
+   */
+  default void assignPositions(List<GradeItem> gradeItems) {
+    if (gradeItems == null) {
+      return;
+    }
+    int position = 0;
+    for (GradeItem gradeItem : gradeItems) {
+      if (gradeItem != null) {
+        gradeItem.setPosition(position++);
+      }
+    }
+  }
 
   // ---------------------------------------------------------------------------------------------
   // Grade items
@@ -41,84 +58,65 @@ public interface MoodleGradesAdapterResponseMapper {
    * Maps the grade items of the first user grade that contains items, sorted by hierarchy (course
    * item first, then each category followed by its children).
    */
-  default List<GradeItem> toGradeItems(GetGradeItemsResponseApi getGradeItemsResponseApi) {
-    return firstGradeItems(getGradeItemsResponseApi)
-        .map(
-            gradeItems -> {
-              List<GradeItemApi> orderedGradeItems = hierarchyOrder(gradeItems);
-              return orderedGradeItems.stream()
-                  .map(gradeItem -> toGradeItem(gradeItem, orderedGradeItems))
-                  .toList();
-            })
-        .orElseGet(List::of);
+  default List<GradeItem> toGradeItems(GetGradeItemsResponseApi response) {
+    List<GradeItemApi> items =
+            firstGradeItems(response).stream().flatMap(List::stream).filter(Objects::nonNull).toList();
+    Map<Object, Long> containerIds = containerIdsByInstance(items);
+
+    return hierarchyOrder(items, containerIds).stream()
+            .map(item -> toGradeItem(item, containerIds))
+            .toList();
   }
 
-  @Mapping(target = "id", source = "id")
+  @Mapping(target = "position", ignore = true)
   @Mapping(target = "parentId", source = "gradeItemApi", qualifiedByName = "parentId")
-  @Mapping(target = "position", source = "gradeItemApi", qualifiedByName = "position")
   @Mapping(target = "itemInstance", source = "iteminstance")
   @Mapping(target = "moduleId", source = "cmid")
   @Mapping(target = "itemType", source = "itemtype")
   @Mapping(target = "name", source = "itemname")
   @Mapping(target = "gradeMax", source = "grademax")
   @Mapping(target = "gradeMin", source = "grademin")
-  GradeItem toGradeItem(GradeItemApi gradeItemApi, @Context List<GradeItemApi> allGradeItems);
+  GradeItem toGradeItem(GradeItemApi gradeItemApi, @Context Map<Object, Long> containerIds);
 
   @Named("parentId")
-  default Long parentId(GradeItemApi gradeItemApi, @Context List<GradeItemApi> allGradeItems) {
-    String itemType = gradeItemApi.getItemtype();
-    if (COURSE_ITEM_TYPE.equals(itemType)) {
-      return null;
-    }
-    Object parentInstance =
-        CATEGORY_ITEM_TYPE.equals(itemType)
-            ? gradeItemApi.getParentcategoryid()
-            : gradeItemApi.getCategoryid();
-    return findItemIdByInstance(allGradeItems, parentInstance);
-  }
-
-  @Named("position")
-  default Integer position(GradeItemApi gradeItemApi, @Context List<GradeItemApi> allGradeItems) {
-    return allGradeItems.indexOf(gradeItemApi);
+  default Long parentId(GradeItemApi gradeItemApi, @Context Map<Object, Long> containerIds) {
+    return parentIdOf(gradeItemApi, containerIds);
   }
 
   // ---------------------------------------------------------------------------------------------
   // User grades
   // ---------------------------------------------------------------------------------------------
 
-  default List<UserGrade> toUserGrades(GetGradeItemsResponseApi getGradeItemsResponseApi) {
-    if (getGradeItemsResponseApi == null || getGradeItemsResponseApi.getUsergrades() == null) {
+  default List<UserGrade> toUserGrades(GetGradeItemsResponseApi response) {
+    if (response == null || response.getUsergrades() == null) {
       return List.of();
     }
-    return getGradeItemsResponseApi.getUsergrades().stream()
-        .filter(Objects::nonNull)
-        .filter(userGradeApi -> userGradeApi.getGradeitems() != null)
-        .flatMap(
-            userGradeApi ->
-                userGradeApi.getGradeitems().stream()
-                    .filter(Objects::nonNull)
-                    .map(gradeItemApi -> toUserGrade(userGradeApi, gradeItemApi)))
-        .toList();
+    return response.getUsergrades().stream()
+            .filter(Objects::nonNull)
+            .flatMap(
+                    userGradeApi ->
+                            nonNullItems(userGradeApi).map(item -> toUserGrade(userGradeApi, item)))
+            .toList();
   }
 
   @Mapping(target = "userId", source = "userGradeApi.userid")
   @Mapping(target = "gradeItemId", source = "gradeItemApi.id")
   @Mapping(target = "gradeRaw", source = "gradeItemApi.graderaw")
   @Mapping(
-      target = "gradePercentageRaw",
-      source = "gradeItemApi",
-      qualifiedByName = "gradePercentageRaw")
+          target = "gradePercentageRaw",
+          source = "gradeItemApi",
+          qualifiedByName = "gradePercentageRaw")
   UserGrade toUserGrade(UserGradeApi userGradeApi, GradeItemApi gradeItemApi);
 
   @Named("gradePercentageRaw")
   default BigDecimal gradePercentageRaw(GradeItemApi gradeItemApi) {
-    Double gradeRaw = gradeItemApi.getGraderaw();
+    Double raw = gradeItemApi.getGraderaw();
     Double min = gradeItemApi.getGrademin();
     Double max = gradeItemApi.getGrademax();
-    if (gradeRaw == null || min == null || max == null || Double.compare(max, min) == 0) {
+    if (raw == null || min == null || max == null || Double.compare(max, min) == 0) {
       return null;
     }
-    double percentage = (gradeRaw - min) / (max - min) * ONE_HUNDRED;
+    double percentage = (raw - min) / (max - min) * ONE_HUNDRED;
     return BigDecimal.valueOf(percentage).setScale(PERCENTAGE_SCALE, RoundingMode.HALF_UP);
   }
 
@@ -127,12 +125,34 @@ public interface MoodleGradesAdapterResponseMapper {
   // ---------------------------------------------------------------------------------------------
 
   /**
+   * Indexes course and category items by their {@code iteminstance}. Only these item types can be
+   * parents, so instances of other types (e.g. modules) can never be mistaken for a parent.
+   */
+  private static Map<Object, Long> containerIdsByInstance(List<GradeItemApi> items) {
+    Map<Object, Long> containerIds = new HashMap<>();
+    for (GradeItemApi item : items) {
+      String type = item.getItemtype();
+      if (COURSE_ITEM_TYPE.equals(type) || CATEGORY_ITEM_TYPE.equals(type)) {
+        containerIds.putIfAbsent(item.getIteminstance(), item.getId());
+      }
+    }
+    return containerIds;
+  }
+
+  private static Long parentIdOf(GradeItemApi item, Map<Object, Long> containerIds) {
+    return switch (String.valueOf(item.getItemtype())) {
+      case COURSE_ITEM_TYPE -> null;
+      case CATEGORY_ITEM_TYPE -> containerIds.get(item.getParentcategoryid());
+      default -> containerIds.get(item.getCategoryid());
+    };
+  }
+
+  /**
    * Sorts the items depth-first: course items first, then the remaining root items, and finally any
    * orphan item (so that no item is lost even if the hierarchy is inconsistent).
    */
-  default List<GradeItemApi> hierarchyOrder(List<GradeItemApi> gradeItems) {
-    List<GradeItemApi> items = gradeItems.stream().filter(Objects::nonNull).toList();
-
+  private static List<GradeItemApi> hierarchyOrder(
+          List<GradeItemApi> items, Map<Object, Long> containerIds) {
     Map<Long, List<GradeItemApi>> childrenByParentId = new HashMap<>();
     List<GradeItemApi> courseItems = new ArrayList<>();
     List<GradeItemApi> rootItems = new ArrayList<>();
@@ -141,7 +161,7 @@ public interface MoodleGradesAdapterResponseMapper {
       if (COURSE_ITEM_TYPE.equals(item.getItemtype())) {
         courseItems.add(item);
       }
-      Long parentId = parentId(item, items);
+      Long parentId = parentIdOf(item, containerIds);
       if (parentId == null) {
         rootItems.add(item);
       } else {
@@ -152,43 +172,40 @@ public interface MoodleGradesAdapterResponseMapper {
     List<GradeItemApi> ordered = new ArrayList<>(items.size());
     Set<GradeItemApi> visited = Collections.newSetFromMap(new IdentityHashMap<>());
 
-    courseItems.forEach(item -> appendHierarchy(item, childrenByParentId, visited, ordered));
-    rootItems.forEach(item -> appendHierarchy(item, childrenByParentId, visited, ordered));
-    items.forEach(item -> appendHierarchy(item, childrenByParentId, visited, ordered));
+    Stream.of(courseItems, rootItems, items)
+            .flatMap(List::stream)
+            .forEach(item -> appendHierarchy(item, childrenByParentId, visited, ordered));
     return ordered;
   }
 
   private static void appendHierarchy(
-      GradeItemApi gradeItem,
-      Map<Long, List<GradeItemApi>> childrenByParentId,
-      Set<GradeItemApi> visited,
-      List<GradeItemApi> ordered) {
-    if (!visited.add(gradeItem)) {
+          GradeItemApi item,
+          Map<Long, List<GradeItemApi>> childrenByParentId,
+          Set<GradeItemApi> visited,
+          List<GradeItemApi> ordered) {
+    if (!visited.add(item)) {
       return;
     }
-    ordered.add(gradeItem);
+    ordered.add(item);
     childrenByParentId
-        .getOrDefault(gradeItem.getId(), List.of())
-        .forEach(child -> appendHierarchy(child, childrenByParentId, visited, ordered));
+            .getOrDefault(item.getId(), List.of())
+            .forEach(child -> appendHierarchy(child, childrenByParentId, visited, ordered));
   }
 
-  private static Long findItemIdByInstance(List<GradeItemApi> gradeItems, Object itemInstance) {
-    return gradeItems.stream()
-        .filter(candidate -> Objects.equals(candidate.getIteminstance(), itemInstance))
-        .findFirst()
-        .map(GradeItemApi::getId)
-        .orElse(null);
-  }
-
-  private static Optional<List<GradeItemApi>> firstGradeItems(
-      GetGradeItemsResponseApi getGradeItemsResponseApi) {
-    if (getGradeItemsResponseApi == null || getGradeItemsResponseApi.getUsergrades() == null) {
+  private static Optional<List<GradeItemApi>> firstGradeItems(GetGradeItemsResponseApi response) {
+    if (response == null || response.getUsergrades() == null) {
       return Optional.empty();
     }
-    return getGradeItemsResponseApi.getUsergrades().stream()
-        .filter(Objects::nonNull)
-        .map(UserGradeApi::getGradeitems)
-        .filter(Objects::nonNull)
-        .findFirst();
+    return response.getUsergrades().stream()
+            .filter(Objects::nonNull)
+            .map(UserGradeApi::getGradeitems)
+            .filter(Objects::nonNull)
+            .findFirst();
+  }
+
+  private static Stream<GradeItemApi> nonNullItems(UserGradeApi userGradeApi) {
+    return userGradeApi.getGradeitems() == null
+            ? Stream.empty()
+            : userGradeApi.getGradeitems().stream().filter(Objects::nonNull);
   }
 }

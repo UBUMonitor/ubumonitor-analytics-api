@@ -1,6 +1,7 @@
 package es.ubu.lsi.ubumonitoranalytics.features.course.grades.infrastructure.out.moodle;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import es.ubu.lsi.moodle.model.gradereport.user.getgradeitems.response.GetGradeItemsResponseApi;
 import es.ubu.lsi.moodle.model.gradereport.user.getgradeitems.response.GradeItemApi;
@@ -16,7 +17,7 @@ class MoodleGradesAdapterResponseMapperTest {
       Mappers.getMapper(MoodleGradesAdapterResponseMapper.class);
 
   @Test
-  void assignsPositionsFromRootFirstHierarchyWhenCourseItemIsLast() {
+  void assignsPositionZeroToCourseRootAndFollowingPositionsToItsChildren() {
     GradeItemApi childOfCategoryB = gradeItem(50L, "mod", 900L, 700L, null);
     GradeItemApi categoryB = gradeItem(30L, "category", 700L, null, 500L);
     GradeItemApi childOfCategoryA = gradeItem(40L, "mod", 901L, 600L, null);
@@ -34,6 +35,10 @@ class MoodleGradesAdapterResponseMapperTest {
 
     assertEquals(
         List.of(10L, 30L, 50L, 20L, 40L), mappedItems.stream().map(GradeItem::getId).toList());
+    assertTrue(mappedItems.stream().allMatch(gradeItem -> gradeItem.getPosition() == null));
+
+    mapper.assignPositions(mappedItems);
+
     assertEquals(List.of(0, 1, 2, 3, 4), mappedItems.stream().map(GradeItem::getPosition).toList());
   }
 

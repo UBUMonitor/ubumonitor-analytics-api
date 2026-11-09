@@ -34,6 +34,7 @@ public class MoodleGradesApiAdapter implements GradesApiPort {
         moodleGradesAdapterResponseMapper.toCourseGradeItems(courseId, getGradeItemsResponseApi);
 
     fillCategoryParentIds(courseGrade, actualUserId);
+    moodleGradesAdapterResponseMapper.assignPositions(courseGrade.getGradeItems());
 
     return courseGrade;
   }
