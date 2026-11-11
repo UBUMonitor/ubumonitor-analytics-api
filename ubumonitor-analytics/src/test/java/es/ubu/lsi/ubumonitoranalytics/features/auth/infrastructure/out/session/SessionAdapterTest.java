@@ -15,7 +15,6 @@ import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.SessionToken;
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.domain.model.UserInfo;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.SessionStorePort;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
 import java.net.URI;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestClient;
@@ -23,11 +22,10 @@ import org.springframework.web.client.RestClient;
 class SessionAdapterTest {
 
   @Test
-  void setAuthenticationContextDoesNotCreateOrStoreAnApplicationSession() {
+  void buildAuthenticationContextDoesNotCreateOrStoreAnApplicationSession() {
     SessionStorePort sessionStore = mock(SessionStorePort.class);
-    CurrentSessionContext currentSessionContext = new CurrentSessionContext();
     SessionAdapterMapper mapper = mock(SessionAdapterMapper.class);
-    SessionAdapter sessionAdapter = new SessionAdapter(sessionStore, currentSessionContext, mapper);
+    SessionAdapter sessionAdapter = new SessionAdapter(sessionStore, mapper);
     AuthInput authInput =
         new AuthInput(
             "teacher",
@@ -41,22 +39,16 @@ class SessionAdapterTest {
         SessionData.builder().username("teacher").moodleToken("moodle-token").build();
     when(mapper.toSessionData(authInput, null, null, restClient)).thenReturn(temporaryContext);
 
-    currentSessionContext.runWithSessionData(
-        null,
-        () -> {
-          sessionAdapter.setAuthenticationContext(authInput, restClient);
-
-          assertEquals(temporaryContext, currentSessionContext.getSessionData());
-          verify(sessionStore, never()).saveSession(anyString(), any());
-        });
+    assertEquals(
+        temporaryContext, sessionAdapter.buildAuthenticationContext(authInput, restClient));
+    verify(sessionStore, never()).saveSession(anyString(), any());
   }
 
   @Test
   void generateNewSessionReplacesExistingTokenWithFreshToken() {
     SessionStorePort sessionStore = mock(SessionStorePort.class);
-    CurrentSessionContext currentSessionContext = new CurrentSessionContext();
     SessionAdapterMapper mapper = mock(SessionAdapterMapper.class);
-    SessionAdapter sessionAdapter = new SessionAdapter(sessionStore, currentSessionContext, mapper);
+    SessionAdapter sessionAdapter = new SessionAdapter(sessionStore, mapper);
     URI host = URI.create("https://moodle.test");
     AuthInput authInput =
         new AuthInput("teacher", null, host, "database-password", "moodle-token", null);
@@ -69,15 +61,10 @@ class SessionAdapterTest {
             invocation ->
                 SessionData.builder().token(invocation.getArgument(1, String.class)).build());
 
-    currentSessionContext.runWithSessionData(
-        null,
-        () -> {
-          SessionToken result = sessionAdapter.generateNewSession(authInput, userInfo, restClient);
+    SessionToken result = sessionAdapter.generateNewSession(authInput, userInfo, restClient);
 
-          assertNotEquals("old-token", result.getToken());
-          verify(sessionStore).saveSession(eq(result.getToken()), any());
-          verify(sessionStore).invalidateSession("old-token");
-          assertEquals(result.getToken(), currentSessionContext.getSessionData().getToken());
-        });
+    assertNotEquals("old-token", result.getToken());
+    verify(sessionStore).saveSession(eq(result.getToken()), any());
+    verify(sessionStore).invalidateSession("old-token");
   }
 }

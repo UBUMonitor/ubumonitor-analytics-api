@@ -38,24 +38,26 @@ public class GetUserProfileImageService implements GetUserProfileImageUseCase {
       return getPlaceHolder(normalized);
     }
 
-    currentSessionContext.setSessionData(sessionData);
-    String imageHash = imagePersistencePort.getImageHash(userId);
+    return currentSessionContext.callWithSessionData(
+        sessionData,
+        () -> {
+          String imageHash = imagePersistencePort.getImageHash(userId);
 
-    // Return the placeholder when the user has no stored image.
-    if (imageHash == null) {
-      return getPlaceHolder(normalized);
-    }
+          // Return the placeholder when the user has no stored image.
+          if (imageHash == null) {
+            return getPlaceHolder(normalized);
+          }
 
-    // Return an unmodified result when the ETag matches.
-    if (imageHash.equals(normalized)) {
+          // Return an unmodified result when the ETag matches.
+          if (imageHash.equals(normalized)) {
+            return UserImage.builder().hexHash(imageHash).image(null).isModified(false).build();
+          }
 
-      return UserImage.builder().hexHash(imageHash).image(null).isModified(false).build();
-    }
+          UserImage userImage = imagePersistencePort.fetchUserImage(userId);
+          userImage.setModified(true);
 
-    UserImage userImage = imagePersistencePort.fetchUserImage(userId);
-    userImage.setModified(true);
-
-    return userImage;
+          return userImage;
+        });
   }
 
   private static UserImage getPlaceHolder(String normalized) {

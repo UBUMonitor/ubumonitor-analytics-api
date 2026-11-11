@@ -6,11 +6,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.ArgumentMatchers.nullable;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -31,7 +32,9 @@ import es.ubu.lsi.ubumonitoranalytics.features.users.info.domain.model.UserInfo;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.exception.UnauthorizedException;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.database.TenantDatabasePort;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.DatabaseCreationException;
+import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.concurrent.AsyncOperations;
+import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
 import java.net.URI;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -46,6 +49,7 @@ class AuthServiceTest {
   @Test
   void loginByCredentialsCreatesFreshSessionAfterValidatingAndSynchronizingUser() {
     SessionPort sessionPort = mock(SessionPort.class);
+    stubAuthenticationContext(sessionPort);
     MoodleApiPort moodleApiPort = mock(MoodleApiPort.class);
     SiteInfoApiPort siteInfoApiPort = mock(SiteInfoApiPort.class);
     SiteInfoPersistencePort siteInfoPersistencePort = mock(SiteInfoPersistencePort.class);
@@ -88,7 +92,8 @@ class AuthServiceTest {
             sessionPort,
             moodleApiPort,
             mock(TenantDatabasePort.class),
-            new AsyncOperations(Runnable::run));
+            new AsyncOperations(Runnable::run),
+            new CurrentSessionContext());
 
     SessionToken result = authService.loginByCredentials(authInput);
 
@@ -105,6 +110,7 @@ class AuthServiceTest {
   @Test
   void loginBySSOCreatesFreshSessionEvenWhenUserAlreadyHasASession() {
     SessionPort sessionPort = mock(SessionPort.class);
+    stubAuthenticationContext(sessionPort);
     MoodleApiPort moodleApiPort = mock(MoodleApiPort.class);
     SiteInfoApiPort siteInfoApiPort = mock(SiteInfoApiPort.class);
     SiteInfoPersistencePort siteInfoPersistencePort = mock(SiteInfoPersistencePort.class);
@@ -144,7 +150,8 @@ class AuthServiceTest {
             sessionPort,
             moodleApiPort,
             mock(TenantDatabasePort.class),
-            new AsyncOperations(Runnable::run));
+            new AsyncOperations(Runnable::run),
+            new CurrentSessionContext());
 
     SessionToken result = authService.loginBySSO(authInput);
 
@@ -160,6 +167,7 @@ class AuthServiceTest {
   @Test
   void loginOfflineCreatesNewSessionAfterLoadingUserInfo() {
     SessionPort sessionPort = mock(SessionPort.class);
+    stubAuthenticationContext(sessionPort);
     GetUserInfoPersistenceAdapterPort userInfoPersistencePort =
         mock(GetUserInfoPersistenceAdapterPort.class);
     TenantDatabasePort tenantDatabasePort = mock(TenantDatabasePort.class);
@@ -168,6 +176,33 @@ class AuthServiceTest {
             "teacher", null, URI.create("https://moodle.test"), "database-password", null, null);
     UserInfo userInfo = mock(UserInfo.class);
     SessionToken sessionToken = SessionToken.builder().token("offline-token").build();
+    SessionData authSessionData =
+        SessionData.builder()
+            .host(authInput.getHost())
+            .username(authInput.getUsername())
+            .dbPassword(authInput.getDbPassword())
+            .build();
+    CurrentSessionContext currentSessionContext = new CurrentSessionContext();
+    when(sessionPort.buildAuthenticationContext(authInput, null)).thenReturn(authSessionData);
+    doAnswer(
+            invocation -> {
+              assertEquals(authSessionData, currentSessionContext.getSessionData());
+              return false;
+            })
+        .when(tenantDatabasePort)
+        .initializeTenant(any());
+    when(userInfoPersistencePort.getActualUser("teacher"))
+        .thenAnswer(
+            invocation -> {
+              assertEquals(authSessionData, currentSessionContext.getSessionData());
+              return userInfo;
+            });
+    when(sessionPort.generateNewSession(authInput, userInfo, null))
+        .thenAnswer(
+            invocation -> {
+              assertEquals(authSessionData, currentSessionContext.getSessionData());
+              return sessionToken;
+            });
     AuthService authService =
         new AuthService(
             mock(SearchUserByUserNameUseCase.class),
@@ -178,10 +213,8 @@ class AuthServiceTest {
             sessionPort,
             mock(MoodleApiPort.class),
             tenantDatabasePort,
-            new AsyncOperations(Runnable::run));
-    when(userInfoPersistencePort.getActualUser("teacher")).thenReturn(userInfo);
-    when(sessionPort.generateNewSession(authInput, userInfo, null)).thenReturn(sessionToken);
-
+            new AsyncOperations(Runnable::run),
+            currentSessionContext);
     InOrder inOrder = inOrder(userInfoPersistencePort, sessionPort);
     SessionToken result = authService.loginOffline(authInput);
 
@@ -189,13 +222,14 @@ class AuthServiceTest {
     inOrder.verify(userInfoPersistencePort).getActualUser("teacher");
     inOrder.verify(sessionPort).generateNewSession(authInput, userInfo, null);
     verify(tenantDatabasePort).initializeTenant(any());
-    verify(sessionPort).setAuthenticationContext(authInput, null);
+    verify(sessionPort).buildAuthenticationContext(authInput, null);
     verify(sessionPort).generateNewSession(authInput, userInfo, null);
   }
 
   @Test
   void loginBySSOResolvesTheMoodleUserAndSynchronizesUserInfo() {
     SessionPort sessionPort = mock(SessionPort.class);
+    stubAuthenticationContext(sessionPort);
     MoodleApiPort moodleApiPort = mock(MoodleApiPort.class);
     TenantDatabasePort tenantDatabasePort = mock(TenantDatabasePort.class);
     SyncUserInfoUseCase syncUserInfoUseCase = mock(SyncUserInfoUseCase.class);
@@ -236,14 +270,15 @@ class AuthServiceTest {
             sessionPort,
             moodleApiPort,
             tenantDatabasePort,
-            asyncOperations);
+            asyncOperations,
+            new CurrentSessionContext());
 
     SessionToken result = authService.loginBySSO(authInput);
 
     assertEquals("new-sso-token", result.getToken());
     verify(tenantDatabasePort).initializeTenant(any());
-    verify(sessionPort, times(2)).setAuthenticationContext(authInput, null);
-    verify(sessionPort).setAuthenticationContext(authInput, restClient);
+    verify(sessionPort).buildAuthenticationContext(authInput, null);
+    verify(sessionPort).buildAuthenticationContext(authInput, restClient);
     verify(sessionPort).generateNewSession(authInput, userInfo, restClient);
     verify(siteInfoPersistencePort).save(siteInfo);
     verify(searchUserByUserNameUseCase).searchUserByUserName("teacher");
@@ -253,6 +288,7 @@ class AuthServiceTest {
   @Test
   void loginBySSOCreatesSessionAfterResolvingUserWhenNoSessionExists() {
     SessionPort sessionPort = mock(SessionPort.class);
+    stubAuthenticationContext(sessionPort);
     MoodleApiPort moodleApiPort = mock(MoodleApiPort.class);
     SiteInfoApiPort siteInfoApiPort = mock(SiteInfoApiPort.class);
     SyncUserInfoUseCase syncUserInfoUseCase = mock(SyncUserInfoUseCase.class);
@@ -295,7 +331,8 @@ class AuthServiceTest {
             sessionPort,
             moodleApiPort,
             mock(TenantDatabasePort.class),
-            new AsyncOperations(Runnable::run));
+            new AsyncOperations(Runnable::run),
+            new CurrentSessionContext());
 
     SessionToken result = authService.loginBySSO(authInput);
 
@@ -306,6 +343,7 @@ class AuthServiceTest {
   @Test
   void invalidSSOUserInvalidatesTheProvisionalSession() {
     SessionPort sessionPort = mock(SessionPort.class);
+    stubAuthenticationContext(sessionPort);
     MoodleApiPort moodleApiPort = mock(MoodleApiPort.class);
     SiteInfoApiPort siteInfoApiPort = mock(SiteInfoApiPort.class);
     when(siteInfoApiPort.fetchSiteInfo()).thenReturn(new SiteInfo());
@@ -320,11 +358,12 @@ class AuthServiceTest {
             sessionPort,
             moodleApiPort,
             mock(TenantDatabasePort.class),
-            new AsyncOperations(Runnable::run));
+            new AsyncOperations(Runnable::run),
+            new CurrentSessionContext());
 
     assertThrows(UnauthorizedException.class, () -> authService.loginBySSO(new AuthInput()));
 
-    verify(sessionPort).setAuthenticationContext(any(), isNull());
+    verify(sessionPort).buildAuthenticationContext(any(), isNull());
     verify(sessionPort, never()).generateNewSession(any(), any(), any());
     verifyNoInteractions(moodleApiPort);
   }
@@ -332,6 +371,7 @@ class AuthServiceTest {
   @Test
   void loginBySSODoesNotInvalidateAnExistingSessionWhenLaterProcessingFails() {
     SessionPort sessionPort = mock(SessionPort.class);
+    stubAuthenticationContext(sessionPort);
     MoodleApiPort moodleApiPort = mock(MoodleApiPort.class);
     SiteInfoApiPort siteInfoApiPort = mock(SiteInfoApiPort.class);
     SyncUserInfoUseCase syncUserInfoUseCase = mock(SyncUserInfoUseCase.class);
@@ -368,7 +408,8 @@ class AuthServiceTest {
             sessionPort,
             moodleApiPort,
             mock(TenantDatabasePort.class),
-            new AsyncOperations(Runnable::run));
+            new AsyncOperations(Runnable::run),
+            new CurrentSessionContext());
 
     assertThrows(IllegalStateException.class, () -> authService.loginBySSO(authInput));
 
@@ -378,6 +419,7 @@ class AuthServiceTest {
   @Test
   void loginBySSOCleansUpNewSessionWhenLaterProcessingFails() {
     SessionPort sessionPort = mock(SessionPort.class);
+    stubAuthenticationContext(sessionPort);
     MoodleApiPort moodleApiPort = mock(MoodleApiPort.class);
     SiteInfoApiPort siteInfoApiPort = mock(SiteInfoApiPort.class);
     SyncUserInfoUseCase syncUserInfoUseCase = mock(SyncUserInfoUseCase.class);
@@ -413,7 +455,8 @@ class AuthServiceTest {
             sessionPort,
             moodleApiPort,
             mock(TenantDatabasePort.class),
-            new AsyncOperations(Runnable::run));
+            new AsyncOperations(Runnable::run),
+            new CurrentSessionContext());
 
     assertThrows(IllegalStateException.class, () -> authService.loginBySSO(authInput));
 
@@ -423,6 +466,7 @@ class AuthServiceTest {
   @Test
   void doesNotInitializeTenantDatabaseWhenMoodleRejectsCredentials() {
     SessionPort sessionPort = mock(SessionPort.class);
+    stubAuthenticationContext(sessionPort);
     MoodleApiPort moodleApiPort = mock(MoodleApiPort.class);
     TenantDatabasePort tenantDatabasePort = mock(TenantDatabasePort.class);
     AsyncOperations asyncOperations = new AsyncOperations(Runnable::run);
@@ -441,7 +485,8 @@ class AuthServiceTest {
             sessionPort,
             moodleApiPort,
             tenantDatabasePort,
-            asyncOperations);
+            asyncOperations,
+            new CurrentSessionContext());
     AuthInput authInput =
         new AuthInput(
             "teacher",
@@ -459,6 +504,7 @@ class AuthServiceTest {
   @Test
   void mapsMoodleUnauthorizedExceptionToApplicationUnauthorizedException() {
     SessionPort sessionPort = mock(SessionPort.class);
+    stubAuthenticationContext(sessionPort);
     MoodleApiPort moodleApiPort = mock(MoodleApiPort.class);
     TenantDatabasePort tenantDatabasePort = mock(TenantDatabasePort.class);
     AsyncOperations asyncOperations = new AsyncOperations(Runnable::run);
@@ -484,7 +530,8 @@ class AuthServiceTest {
             sessionPort,
             moodleApiPort,
             tenantDatabasePort,
-            asyncOperations);
+            asyncOperations,
+            new CurrentSessionContext());
 
     assertThrows(UnauthorizedException.class, () -> authService.loginByCredentials(authInput));
     verify(moodleApiPort).login(authInput);
@@ -494,6 +541,7 @@ class AuthServiceTest {
   @Test
   void doesNotCreateSessionWhenTenantDatabasePasswordIsRejected() {
     SessionPort sessionPort = mock(SessionPort.class);
+    stubAuthenticationContext(sessionPort);
     MoodleApiPort moodleApiPort = mock(MoodleApiPort.class);
     TenantDatabasePort tenantDatabasePort = mock(TenantDatabasePort.class);
     AsyncOperations asyncOperations = new AsyncOperations(Runnable::run);
@@ -523,16 +571,19 @@ class AuthServiceTest {
             sessionPort,
             moodleApiPort,
             tenantDatabasePort,
-            asyncOperations);
+            asyncOperations,
+            new CurrentSessionContext());
 
     assertThrows(DatabaseCreationException.class, () -> authService.loginByCredentials(authInput));
     verify(tenantDatabasePort).initializeTenant(any());
-    verifyNoInteractions(sessionPort);
+    verify(sessionPort).buildAuthenticationContext(eq(authInput), any());
+    verify(sessionPort, never()).generateNewSession(any(), any(), any());
   }
 
   @Test
   void synchronizesUserInfoAfterCreatingTenantDatabase() {
     SessionPort sessionPort = mock(SessionPort.class);
+    stubAuthenticationContext(sessionPort);
     MoodleApiPort moodleApiPort = mock(MoodleApiPort.class);
     TenantDatabasePort tenantDatabasePort = mock(TenantDatabasePort.class);
     SyncUserInfoUseCase syncUserInfoUseCase = mock(SyncUserInfoUseCase.class);
@@ -574,7 +625,8 @@ class AuthServiceTest {
             sessionPort,
             moodleApiPort,
             tenantDatabasePort,
-            asyncOperations);
+            asyncOperations,
+            new CurrentSessionContext());
 
     SessionToken result = authService.loginByCredentials(authInput);
 
@@ -588,6 +640,7 @@ class AuthServiceTest {
   @Test
   void synchronizesUserInfoWhenTenantDatabaseAlreadyExists() {
     SessionPort sessionPort = mock(SessionPort.class);
+    stubAuthenticationContext(sessionPort);
     MoodleApiPort moodleApiPort = mock(MoodleApiPort.class);
     TenantDatabasePort tenantDatabasePort = mock(TenantDatabasePort.class);
     SyncUserInfoUseCase syncUserInfoUseCase = mock(SyncUserInfoUseCase.class);
@@ -629,7 +682,8 @@ class AuthServiceTest {
             sessionPort,
             moodleApiPort,
             tenantDatabasePort,
-            asyncOperations);
+            asyncOperations,
+            new CurrentSessionContext());
 
     SessionToken result = authService.loginByCredentials(authInput);
 
@@ -642,6 +696,7 @@ class AuthServiceTest {
   @Test
   void loginByCredentialsCreatesSessionOnlyAfterFetchingAndValidatingSiteInfo() {
     SessionPort sessionPort = mock(SessionPort.class);
+    stubAuthenticationContext(sessionPort);
     MoodleApiPort moodleApiPort = mock(MoodleApiPort.class);
     SyncUserInfoUseCase syncUserInfoUseCase = mock(SyncUserInfoUseCase.class);
     SearchUserByUserNameUseCase searchUserByUserNameUseCase =
@@ -681,7 +736,8 @@ class AuthServiceTest {
             sessionPort,
             moodleApiPort,
             mock(TenantDatabasePort.class),
-            new AsyncOperations(Runnable::run));
+            new AsyncOperations(Runnable::run),
+            new CurrentSessionContext());
 
     SessionToken result = authService.loginByCredentials(authInput);
 
@@ -697,6 +753,7 @@ class AuthServiceTest {
   @Test
   void loginByCredentialsFetchesSiteInfoAndSearchesUserConcurrently() {
     SessionPort sessionPort = mock(SessionPort.class);
+    stubAuthenticationContext(sessionPort);
     MoodleApiPort moodleApiPort = mock(MoodleApiPort.class);
     SiteInfoApiPort siteInfoApiPort = mock(SiteInfoApiPort.class);
     SearchUserByUserNameUseCase searchUserByUserNameUseCase =
@@ -748,7 +805,8 @@ class AuthServiceTest {
             sessionPort,
             moodleApiPort,
             mock(TenantDatabasePort.class),
-            new AsyncOperations(executor));
+            new AsyncOperations(executor),
+            new CurrentSessionContext());
 
     try {
       SessionToken result = authService.loginByCredentials(authInput);
@@ -773,6 +831,7 @@ class AuthServiceTest {
   @Test
   void loginByCredentialsDoesNotInvalidateAnExistingSessionWhenLaterProcessingFails() {
     SessionPort sessionPort = mock(SessionPort.class);
+    stubAuthenticationContext(sessionPort);
     MoodleApiPort moodleApiPort = mock(MoodleApiPort.class);
     SyncUserInfoUseCase syncUserInfoUseCase = mock(SyncUserInfoUseCase.class);
     SearchUserByUserNameUseCase searchUserByUserNameUseCase =
@@ -812,12 +871,29 @@ class AuthServiceTest {
             sessionPort,
             moodleApiPort,
             mock(TenantDatabasePort.class),
-            new AsyncOperations(Runnable::run));
+            new AsyncOperations(Runnable::run),
+            new CurrentSessionContext());
 
     assertThrows(IllegalStateException.class, () -> authService.loginByCredentials(authInput));
 
     verify(searchUserByUserNameUseCase).searchUserByUserName("teacher");
     verify(syncUserInfoUseCase).syncActualUser(userInfo);
     verify(sessionPort, never()).invalidateSession(existingSessionToken);
+  }
+
+  private static void stubAuthenticationContext(SessionPort sessionPort) {
+    when(sessionPort.buildAuthenticationContext(any(), nullable(RestClient.class)))
+        .thenAnswer(
+            invocation -> {
+              AuthInput input = invocation.getArgument(0);
+              RestClient restClient = invocation.getArgument(1);
+              return SessionData.builder()
+                  .host(input.getHost())
+                  .username(input.getUsername())
+                  .dbPassword(input.getDbPassword())
+                  .moodleToken(input.getMoodleToken())
+                  .restClient(restClient)
+                  .build();
+            });
   }
 }

@@ -8,15 +8,14 @@ import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.im
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.importlogs.ProcessLogLine;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.importlogs.ProcessLogsResult;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.concurrent.AsyncOperations;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.csv.CSVRecord;
-
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.csv.CSVRecord;
 
 /**
  * State of one import. Rows are grouped in chunks that are parsed concurrently, while reading and
@@ -64,8 +63,7 @@ class LogImportRun implements CsvRecordHandler {
     }
     flush(true);
     return new ProcessLogsResult(
-        new LogImportStats(saved, ignored, failed),
-        courseLogsInfoPort.getCourseLogsInfo(courseId));
+        new LogImportStats(saved, ignored, failed), courseLogsInfoPort.getCourseLogsInfo(courseId));
   }
 
   private void startParsingChunk() {

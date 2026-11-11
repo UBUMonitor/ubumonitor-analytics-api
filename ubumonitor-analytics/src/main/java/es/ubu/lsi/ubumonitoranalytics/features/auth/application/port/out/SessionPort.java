@@ -3,19 +3,21 @@ package es.ubu.lsi.ubumonitoranalytics.features.auth.application.port.out;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.AuthInput;
 import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.SessionToken;
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.domain.model.UserInfo;
+import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
 import org.springframework.web.client.RestClient;
 
-/** Outbound operations for preparing authentication context and creating sessions. */
+/** Outbound operations for preparing session data and creating sessions. */
 public interface SessionPort {
 
   /**
-   * Sets authentication and tenant details for downstream work without creating an application
+   * Builds authentication and tenant details for downstream work without creating an application
    * session.
    *
    * @param authInput Moodle authentication and tenant details
    * @param restClient authenticated Moodle web client, if required
+   * @return session data for the authentication scope
    */
-  void setAuthenticationContext(AuthInput authInput, RestClient restClient);
+  SessionData buildAuthenticationContext(AuthInput authInput, RestClient restClient);
 
   /**
    * Creates a new application session and replaces any current session for the same site and user.

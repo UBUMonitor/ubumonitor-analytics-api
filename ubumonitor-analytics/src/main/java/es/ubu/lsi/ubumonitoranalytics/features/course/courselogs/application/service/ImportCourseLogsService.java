@@ -9,6 +9,13 @@ import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.im
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.importlogs.ProcessLogsResult;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.concurrent.AsyncOperations;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
+import java.io.InputStream;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -18,14 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.InputStream;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 
 /** Imports course logs from uploaded CSV files or synchronizes them from Moodle. */
 @Service
@@ -111,7 +110,8 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
     for (long since = lastLogTime.getEpochSecond();
         since <= now;
         since += INCREMENTAL_STEP_SECONDS) {
-      downloads.add(asyncOperations.supplyAsync(
+      downloads.add(
+          asyncOperations.supplyAsync(
               new DayLogsDownload(moodlePort, courseId, since, restClient)));
     }
     return downloads;

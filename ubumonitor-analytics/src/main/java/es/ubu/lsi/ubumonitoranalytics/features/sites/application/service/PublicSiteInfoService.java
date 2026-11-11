@@ -23,7 +23,7 @@ public class PublicSiteInfoService implements GetPublicSiteInfoUseCase {
   @Override
   public PublicSiteInfo getPublicSiteInfo(URI host) {
     SessionData sessionData = SessionData.builder().host(host).build();
-    currentSessionContext.setSessionData(sessionData);
-    return siteInfoApiPort.fetchPublicSiteInfo();
+    return currentSessionContext.callWithSessionData(
+        sessionData, siteInfoApiPort::fetchPublicSiteInfo);
   }
 }

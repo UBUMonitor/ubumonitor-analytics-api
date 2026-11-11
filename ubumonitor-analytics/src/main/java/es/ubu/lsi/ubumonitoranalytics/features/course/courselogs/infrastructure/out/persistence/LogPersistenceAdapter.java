@@ -40,8 +40,8 @@ public class LogPersistenceAdapter implements LogPersistencePort {
   private final CurrentSessionContext currentSessionContext;
 
   /**
-   * Rules and origins are identical for every tenant and do not change while the application
-   * runs, so they are loaded once. Both are shared and read-only.
+   * Rules and origins are identical for every tenant and do not change while the application runs,
+   * so they are loaded once. Both are shared and read-only.
    */
   private volatile MoodleLogCatalog cachedCatalog;
 
