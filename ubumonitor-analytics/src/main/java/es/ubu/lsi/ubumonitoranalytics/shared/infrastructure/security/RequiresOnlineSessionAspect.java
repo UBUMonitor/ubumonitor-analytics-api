@@ -1,4 +1,4 @@
-package es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session;
+package es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security;
 
 import es.ubu.lsi.ubumonitoranalytics.shared.application.exception.OfflineSessionNotAllowedException;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.CurrentSessionPort;
@@ -16,12 +16,11 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class RequiresOnlineSessionAspect {
 
-  private final CurrentSessionPort currentSessionContext;
+  private final CurrentSessionPort currentSessionPort;
 
-  @Around(
-      "@annotation(es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security.RequiresOnlineSession)")
+  @Around("@annotation(RequiresOnlineSession)")
   public Object requireOnlineSession(ProceedingJoinPoint joinPoint) throws Throwable {
-    SessionData sessionData = currentSessionContext.getSessionData();
+    SessionData sessionData = currentSessionPort.getSessionData();
     if (sessionData != null && sessionData.getLoginMode() == LoginMode.OFFLINE) {
       throw new OfflineSessionNotAllowedException();
     }

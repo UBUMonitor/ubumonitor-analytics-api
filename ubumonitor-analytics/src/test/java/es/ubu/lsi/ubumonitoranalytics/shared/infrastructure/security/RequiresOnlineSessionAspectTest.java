@@ -1,4 +1,4 @@
-package es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session;
+package es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -16,14 +16,14 @@ import org.junit.jupiter.api.Test;
 
 class RequiresOnlineSessionAspectTest {
 
-  private final CurrentSessionPort currentSessionContext = mock(CurrentSessionPort.class);
+  private final CurrentSessionPort currentSessionPort = mock(CurrentSessionPort.class);
   private final RequiresOnlineSessionAspect aspect =
-      new RequiresOnlineSessionAspect(currentSessionContext);
+      new RequiresOnlineSessionAspect(currentSessionPort);
   private final ProceedingJoinPoint joinPoint = mock(ProceedingJoinPoint.class);
 
   @Test
   void rejectsOfflineSessionWithoutProceeding() throws Throwable {
-    when(currentSessionContext.getSessionData())
+    when(currentSessionPort.getSessionData())
         .thenReturn(SessionData.builder().loginMode(LoginMode.OFFLINE).build());
 
     assertThrows(
@@ -34,7 +34,7 @@ class RequiresOnlineSessionAspectTest {
 
   @Test
   void allowsOnlineSession() throws Throwable {
-    when(currentSessionContext.getSessionData())
+    when(currentSessionPort.getSessionData())
         .thenReturn(SessionData.builder().loginMode(LoginMode.CREDENTIALS).build());
     when(joinPoint.proceed()).thenReturn("result");
 
@@ -45,7 +45,7 @@ class RequiresOnlineSessionAspectTest {
 
   @Test
   void allowsMissingSession() throws Throwable {
-    when(currentSessionContext.getSessionData()).thenReturn(null);
+    when(currentSessionPort.getSessionData()).thenReturn(null);
     when(joinPoint.proceed()).thenReturn("result");
 
     assertEquals("result", aspect.requireOnlineSession(joinPoint));

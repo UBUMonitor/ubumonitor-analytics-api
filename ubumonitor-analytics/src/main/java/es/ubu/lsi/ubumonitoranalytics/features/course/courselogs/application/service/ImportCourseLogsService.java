@@ -8,7 +8,7 @@ import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.por
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.importlogs.LogContext;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.importlogs.ProcessLogsResult;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.concurrent.AsyncExecutionPort;
-import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.CurrentSessionPort;
+import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.CurrentMoodleRestClientPort;
 import java.io.InputStream;
 import java.time.Duration;
 import java.time.Instant;
@@ -40,7 +40,7 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
   private final LogPersistencePort logPersistencePort;
   private final CourseLogsInfoPort courseLogsInfoPort;
   private final MoodlePort moodlePort;
-  private final CurrentSessionPort currentSessionContext;
+  private final CurrentMoodleRestClientPort currentMoodleRestClientPort;
   private final AsyncExecutionPort asyncExecution;
 
   /**
@@ -74,7 +74,7 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
   @Override
   @Transactional
   public ProcessLogsResult sync(Long courseId) {
-    RestClient restClient = currentSessionContext.getSessionData().getRestClient();
+    RestClient restClient = currentMoodleRestClientPort.requireOnlineRestClient();
 
     LogContext logContext = logPersistencePort.getLogContext(courseId);
     logPersistencePort.createIfNotExists(courseId);
