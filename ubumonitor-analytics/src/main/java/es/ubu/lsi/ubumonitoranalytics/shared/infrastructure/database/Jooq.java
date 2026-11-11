@@ -1,7 +1,7 @@
 package es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database;
 
+import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.CurrentSessionPort;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jspecify.annotations.NonNull;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class Jooq {
 
   private final JooqProvider provider;
-  private final CurrentSessionContext currentSessionContext;
+  private final CurrentSessionPort currentSessionContext;
 
   /** Returns a jOOQ context for the tenant associated with the current request. */
   public @NonNull DSLContext dsl() {

@@ -43,6 +43,8 @@ Hexagonal, by feature: `infrastructure/in` (REST delegate) → `application/port
 - Adapters implement output ports; a delegate never touches jOOQ or the Moodle client.
 - `domain` has no Spring, generated OpenAPI DTOs, Moodle models or jOOQ types; convert in the adapter's mapper.
 - Use `shared` only for contracts shared across features.
+- Request session context is thread-bound: `SessionAuthenticationFilter` sets it for a valid session and always clears it after the request; `VirtualThreadConfig` propagates it to async tasks and clears it on completion. Login services set authentication `SessionData` while login work runs, but session creation does not replace it with the generated token/user data. Do not assume the completed session is available from the context after session generation.
+- Some services pass `SessionData` explicitly instead of using request context: public site-info fetches receive host-only session data because no authenticated session exists, and profile-image persistence receives session data looked up from the session store. Preserve these explicit port parameters; do not open a nested context for these operations.
 - Reference slice (`GET /api/public/sites/info`): `openapi/paths/sites/public-info.yaml` → `features/sites/` (`SitesApiDelegateImpl`, `GetPublicSiteInfoUseCase`, `PublicSiteInfoService`, `PublicSiteInfoApiPort`, `PublicSiteInfoApiAdapter` + `SiteInfoApiAdapterMapper`) → `integration/public/sites/info/happy_path/test-case.json`.
 
 ## Recipes

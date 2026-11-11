@@ -7,8 +7,8 @@ import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.por
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.port.out.MoodlePort;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.importlogs.LogContext;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.importlogs.ProcessLogsResult;
+import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.CurrentSessionPort;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.concurrent.AsyncOperations;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
 import java.io.InputStream;
 import java.time.Duration;
 import java.time.Instant;
@@ -42,7 +42,7 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
   private final LogPersistencePort logPersistencePort;
   private final CourseLogsInfoPort courseLogsInfoPort;
   private final MoodlePort moodlePort;
-  private final CurrentSessionContext currentSessionContext;
+  private final CurrentSessionPort currentSessionContext;
   private final AsyncOperations asyncOperations;
 
   /**

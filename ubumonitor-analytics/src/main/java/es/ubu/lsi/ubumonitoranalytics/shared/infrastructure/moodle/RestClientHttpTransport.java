@@ -3,8 +3,8 @@ package es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.moodle;
 import es.ubu.lsi.moodle.core.HttpTransport;
 import es.ubu.lsi.moodle.model.ajax.AjaxResponse;
 import es.ubu.lsi.moodle.model.login.token.response.LoginTokenResponseApi;
+import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.CurrentSessionPort;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +29,7 @@ public class RestClientHttpTransport implements HttpTransport {
   @Qualifier("moodleRestClient")
   private final RestClient restClient;
 
-  private final CurrentSessionContext currentSessionContext;
+  private final CurrentSessionPort currentSessionContext;
 
   @Override
   public LoginTokenResponseApi login(URI baseUrl, String context, Map<String, String> form)

@@ -10,14 +10,14 @@ import org.springframework.web.client.RestClient;
 public interface SessionPort {
 
   /**
-   * Builds authentication and tenant details for downstream work without creating an application
-   * session.
+   * Builds and activates authentication and tenant details for downstream work without creating an
+   * application session.
    *
    * @param authInput Moodle authentication and tenant details
    * @param restClient authenticated Moodle web client, if required
-   * @return session data for the authentication scope
+   * @return session data for the active authentication context
    */
-  SessionData buildAuthenticationContext(AuthInput authInput, RestClient restClient);
+  SessionData activateAuthenticationContext(AuthInput authInput, RestClient restClient);
 
   /**
    * Creates a new application session and replaces any current session for the same site and user.

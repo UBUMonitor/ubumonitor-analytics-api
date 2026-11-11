@@ -6,7 +6,7 @@ import es.ubu.lsi.ubumonitoranalytics.features.users.info.appication.port.out.Se
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.appication.port.out.ServerTimeZonePort;
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.appication.port.out.SyncUserInfoPersistencePort;
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.domain.model.UserInfo;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
+import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.CurrentSessionPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class SyncUserInfoService implements SyncUserInfoUseCase, SearchUserByUserNameUseCase {
 
-  private final CurrentSessionContext currentSessionContext;
+  private final CurrentSessionPort currentSessionContext;
   private final SearchUsersByFieldPort searchUsersByFieldPort;
   private final ServerTimeZonePort serverTimeZonePort;
   private final SyncUserInfoPersistencePort syncUserInfoPersistencePort;

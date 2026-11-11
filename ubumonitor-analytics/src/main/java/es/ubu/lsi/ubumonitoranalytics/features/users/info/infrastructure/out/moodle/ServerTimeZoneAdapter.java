@@ -3,8 +3,8 @@ package es.ubu.lsi.ubumonitoranalytics.features.users.info.infrastructure.out.mo
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Sites.SITES;
 
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.appication.port.out.ServerTimeZonePort;
+import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.CurrentSessionPort;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ import org.springframework.web.client.RestClient;
 @RequiredArgsConstructor
 public class ServerTimeZoneAdapter implements ServerTimeZonePort {
 
-  private final CurrentSessionContext currentSessionContext;
+  private final CurrentSessionPort currentSessionContext;
   private final Jooq jooq;
 
   @Override

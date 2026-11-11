@@ -1,15 +1,17 @@
 package es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session;
 
+import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.CurrentSessionPort;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
 import org.springframework.stereotype.Component;
 
 /** Exposes the session data associated with the current request. */
 @Component
-public class CurrentSessionContext {
+public class CurrentSessionContext implements CurrentSessionPort {
 
   private static final ThreadLocal<SessionData> SESSION = new ThreadLocal<>();
 
   /** Returns the current session data, or {@code null} when no session is set. */
+  @Override
   public SessionData getSessionData() {
     return SESSION.get();
   }

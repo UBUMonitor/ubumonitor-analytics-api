@@ -115,7 +115,8 @@ public interface Client {
       String context, List<? extends AjaxRequest<?>> requests, Class<T> responseType);
 
   /**
-   * Executes AJAX requests against an explicit Moodle site and context.
+   * Executes AJAX requests against an explicit Moodle site and context. Implementations that do not
+   * support per-request base URLs use their configured site.
    *
    * @param baseUrl Moodle site base URI
    * @param context AJAX endpoint path
@@ -124,8 +125,10 @@ public interface Client {
    * @param <T> response data type
    * @return the first mapped AJAX response
    */
-  <T> AjaxResponse<T> executeAjax(
-      URI baseUrl, String context, List<? extends AjaxRequest<?>> requests, Class<T> responseType);
+  default <T> AjaxResponse<T> executeAjax(
+      URI baseUrl, String context, List<? extends AjaxRequest<?>> requests, Class<T> responseType) {
+    return executeAjax(context, requests, responseType);
+  }
 
   /** Executes multiple AJAX requests using Moodle's default AJAX endpoint. */
   default <T> List<AjaxResponse<T>> executeAjaxList(

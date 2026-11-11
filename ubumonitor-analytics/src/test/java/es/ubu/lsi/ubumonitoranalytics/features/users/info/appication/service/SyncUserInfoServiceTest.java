@@ -13,8 +13,8 @@ import es.ubu.lsi.ubumonitoranalytics.features.users.info.appication.port.out.Se
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.appication.port.out.ServerTimeZonePort;
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.appication.port.out.SyncUserInfoPersistencePort;
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.domain.model.UserInfo;
+import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.CurrentSessionPort;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
 import java.time.ZoneId;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
@@ -63,7 +63,7 @@ class SyncUserInfoServiceTest {
     SearchUsersByFieldPort searchPort = mock(SearchUsersByFieldPort.class);
     ServerTimeZonePort timeZonePort = mock(ServerTimeZonePort.class);
     SyncUserInfoPersistencePort persistencePort = mock(SyncUserInfoPersistencePort.class);
-    CurrentSessionContext currentSessionContext = mock(CurrentSessionContext.class);
+    CurrentSessionPort currentSessionContext = mock(CurrentSessionPort.class);
     SyncUserInfoService service =
         new SyncUserInfoService(currentSessionContext, searchPort, timeZonePort, persistencePort);
     UserInfo userInfo = serverTimeZoneUserInfo();
@@ -86,7 +86,7 @@ class SyncUserInfoServiceTest {
       ServerTimeZonePort timeZonePort,
       SyncUserInfoPersistencePort persistencePort) {
     return new SyncUserInfoService(
-        mock(CurrentSessionContext.class), searchPort, timeZonePort, persistencePort);
+        mock(CurrentSessionPort.class), searchPort, timeZonePort, persistencePort);
   }
 
   private static UserInfo serverTimeZoneUserInfo() {

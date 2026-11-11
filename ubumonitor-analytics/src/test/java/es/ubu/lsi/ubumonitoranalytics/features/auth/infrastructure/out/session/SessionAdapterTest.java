@@ -15,6 +15,7 @@ import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.SessionToken;
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.domain.model.UserInfo;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.SessionStorePort;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
+import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
 import java.net.URI;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
@@ -42,10 +43,11 @@ class SessionAdapterTest {
   }
 
   @Test
-  void buildAuthenticationContextDoesNotCreateOrStoreAnApplicationSession() {
+  void activatesAuthenticationContextWithoutCreatingAnApplicationSession() {
     SessionStorePort sessionStore = mock(SessionStorePort.class);
     SessionAdapterMapper mapper = mock(SessionAdapterMapper.class);
-    SessionAdapter sessionAdapter = new SessionAdapter(sessionStore, mapper);
+    CurrentSessionContext currentSessionContext = new CurrentSessionContext();
+    SessionAdapter sessionAdapter = new SessionAdapter(sessionStore, mapper, currentSessionContext);
     AuthInput authInput =
         new AuthInput(
             "teacher",
@@ -60,15 +62,18 @@ class SessionAdapterTest {
     when(mapper.toSessionData(authInput, null, null, restClient)).thenReturn(temporaryContext);
 
     assertEquals(
-        temporaryContext, sessionAdapter.buildAuthenticationContext(authInput, restClient));
+        temporaryContext, sessionAdapter.activateAuthenticationContext(authInput, restClient));
+    assertEquals(temporaryContext, currentSessionContext.getSessionData());
     verify(sessionStore, never()).saveSession(anyString(), any());
+    currentSessionContext.clear();
   }
 
   @Test
   void generateNewSessionReplacesExistingTokenWithFreshToken() {
     SessionStorePort sessionStore = mock(SessionStorePort.class);
     SessionAdapterMapper mapper = mock(SessionAdapterMapper.class);
-    SessionAdapter sessionAdapter = new SessionAdapter(sessionStore, mapper);
+    SessionAdapter sessionAdapter =
+        new SessionAdapter(sessionStore, mapper, new CurrentSessionContext());
     URI host = URI.create("https://moodle.test");
     AuthInput authInput =
         new AuthInput("teacher", null, host, "database-password", "moodle-token", null);

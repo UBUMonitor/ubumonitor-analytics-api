@@ -19,7 +19,6 @@ import es.ubu.lsi.ubumonitoranalytics.shared.application.exception.UnauthorizedE
 import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.database.TenantDatabasePort;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.concurrent.AsyncOperations;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -41,7 +40,6 @@ public class AuthService implements AuthUseCase {
   private final MoodleApiPort moodleApiPort;
   private final TenantDatabasePort tenantDatabasePort;
   private final AsyncOperations asyncOperations;
-  private final CurrentSessionContext currentSessionContext;
 
   /**
    * Authenticates an SSO launch request and associates a web client with the session.
@@ -52,8 +50,7 @@ public class AuthService implements AuthUseCase {
    */
   @Override
   public SessionToken loginBySSO(AuthInput authInput) {
-    SessionData initialSessionData = sessionPort.buildAuthenticationContext(authInput, null);
-    currentSessionContext.setSessionData(initialSessionData);
+    sessionPort.activateAuthenticationContext(authInput, null);
     SiteInfo siteInfo = siteInfoApiPort.fetchSiteInfo();
     if (siteInfo == null || siteInfo.getSite() == null) {
       throw new UnauthorizedException("Invalid token.");
@@ -64,8 +61,7 @@ public class AuthService implements AuthUseCase {
     }
     authInput.setUsername(userName);
     RestClient restClient = moodleApiPort.getRestClientFromCookies(authInput);
-    SessionData sessionData = sessionPort.buildAuthenticationContext(authInput, restClient);
-    currentSessionContext.setSessionData(sessionData);
+    SessionData sessionData = sessionPort.activateAuthenticationContext(authInput, restClient);
     initializeTenantDatabase(sessionData);
     siteInfoPersistencePort.save(siteInfo);
     SessionToken sessionToken = null;
@@ -115,8 +111,7 @@ public class AuthService implements AuthUseCase {
     RestClient restClient = restClientFuture.join();
 
     authInput.setMoodleToken(moodleToken);
-    SessionData sessionData = sessionPort.buildAuthenticationContext(authInput, restClient);
-    currentSessionContext.setSessionData(sessionData);
+    SessionData sessionData = sessionPort.activateAuthenticationContext(authInput, restClient);
     initializeTenantDatabase(sessionData);
     SessionToken sessionToken = null;
     CompletableFuture<UserInfo> searchedUserFuture = null;
@@ -160,8 +155,7 @@ public class AuthService implements AuthUseCase {
   @Override
   public SessionToken loginOffline(AuthInput authInput) {
 
-    SessionData sessionData = sessionPort.buildAuthenticationContext(authInput, null);
-    currentSessionContext.setSessionData(sessionData);
+    SessionData sessionData = sessionPort.activateAuthenticationContext(authInput, null);
     initializeTenantDatabase(sessionData);
     SessionToken sessionToken = null;
     try {

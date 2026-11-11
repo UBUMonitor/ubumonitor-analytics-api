@@ -6,6 +6,7 @@ import es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model.SessionToken;
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.domain.model.UserInfo;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.SessionStorePort;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
+import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
 import java.security.SecureRandom;
 import java.util.Base64;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +23,13 @@ public class SessionAdapter implements SessionPort {
 
   private final SessionStorePort sessionStore;
   private final SessionAdapterMapper sessionAdapterMapper;
+  private final CurrentSessionContext currentSessionContext;
 
   @Override
-  public SessionData buildAuthenticationContext(AuthInput authInput, RestClient restClient) {
-    return sessionAdapterMapper.toSessionData(authInput, null, null, restClient);
+  public SessionData activateAuthenticationContext(AuthInput authInput, RestClient restClient) {
+    SessionData sessionData = sessionAdapterMapper.toSessionData(authInput, null, null, restClient);
+    currentSessionContext.setSessionData(sessionData);
+    return sessionData;
   }
 
   @Override

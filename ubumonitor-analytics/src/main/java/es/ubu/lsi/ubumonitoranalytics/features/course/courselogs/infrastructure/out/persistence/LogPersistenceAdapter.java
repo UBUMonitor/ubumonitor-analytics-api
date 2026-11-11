@@ -14,8 +14,8 @@ import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.im
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.importlogs.ProcessLogLine;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.rules.MoodleLogRule;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.infrastructure.config.MoodleRulesConfig;
+import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.CurrentSessionPort;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ public class LogPersistenceAdapter implements LogPersistencePort {
 
   private final Jooq jooq;
   private final MoodleRulesConfig moodleRulesConfig;
-  private final CurrentSessionContext currentSessionContext;
+  private final CurrentSessionPort currentSessionContext;
 
   /**
    * Rules and origins are identical for every tenant and do not change while the application runs,

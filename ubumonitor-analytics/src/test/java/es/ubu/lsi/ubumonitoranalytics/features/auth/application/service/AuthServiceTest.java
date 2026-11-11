@@ -105,8 +105,7 @@ class AuthServiceTest {
             sessionPort,
             moodleApiPort,
             mock(TenantDatabasePort.class),
-            new AsyncOperations(Runnable::run),
-            new CurrentSessionContext());
+            new AsyncOperations(Runnable::run));
 
     SessionToken result = authService.loginByCredentials(authInput);
 
@@ -163,8 +162,7 @@ class AuthServiceTest {
             sessionPort,
             moodleApiPort,
             mock(TenantDatabasePort.class),
-            new AsyncOperations(Runnable::run),
-            new CurrentSessionContext());
+            new AsyncOperations(Runnable::run));
 
     SessionToken result = authService.loginBySSO(authInput);
 
@@ -196,7 +194,12 @@ class AuthServiceTest {
             .dbPassword(authInput.getDbPassword())
             .build();
     CurrentSessionContext currentSessionContext = new CurrentSessionContext();
-    when(sessionPort.buildAuthenticationContext(authInput, null)).thenReturn(authSessionData);
+    when(sessionPort.activateAuthenticationContext(authInput, null))
+        .thenAnswer(
+            invocation -> {
+              currentSessionContext.setSessionData(authSessionData);
+              return authSessionData;
+            });
     doAnswer(
             invocation -> {
               assertEquals(authSessionData, currentSessionContext.getSessionData());
@@ -226,8 +229,7 @@ class AuthServiceTest {
             sessionPort,
             mock(MoodleApiPort.class),
             tenantDatabasePort,
-            new AsyncOperations(Runnable::run),
-            currentSessionContext);
+            new AsyncOperations(Runnable::run));
     InOrder inOrder = inOrder(userInfoPersistencePort, sessionPort);
     SessionToken result = authService.loginOffline(authInput);
 
@@ -236,7 +238,7 @@ class AuthServiceTest {
     inOrder.verify(sessionPort).generateNewSession(authInput, userInfo, null);
     verify(tenantDatabasePort).initializeTenant(any());
     assertTenantSessionData(tenantDatabasePort, authInput, "teacher");
-    verify(sessionPort).buildAuthenticationContext(authInput, null);
+    verify(sessionPort).activateAuthenticationContext(authInput, null);
     verify(sessionPort).generateNewSession(authInput, userInfo, null);
   }
 
@@ -284,16 +286,15 @@ class AuthServiceTest {
             sessionPort,
             moodleApiPort,
             tenantDatabasePort,
-            asyncOperations,
-            new CurrentSessionContext());
+            asyncOperations);
 
     SessionToken result = authService.loginBySSO(authInput);
 
     assertEquals("new-sso-token", result.getToken());
     verify(tenantDatabasePort).initializeTenant(any());
     assertTenantSessionData(tenantDatabasePort, authInput, "teacher");
-    verify(sessionPort).buildAuthenticationContext(authInput, null);
-    verify(sessionPort).buildAuthenticationContext(authInput, restClient);
+    verify(sessionPort).activateAuthenticationContext(authInput, null);
+    verify(sessionPort).activateAuthenticationContext(authInput, restClient);
     verify(sessionPort).generateNewSession(authInput, userInfo, restClient);
     verify(siteInfoPersistencePort).save(siteInfo);
     verify(searchUserByUserNameUseCase).searchUserByUserName("teacher");
@@ -346,8 +347,7 @@ class AuthServiceTest {
             sessionPort,
             moodleApiPort,
             mock(TenantDatabasePort.class),
-            new AsyncOperations(Runnable::run),
-            new CurrentSessionContext());
+            new AsyncOperations(Runnable::run));
 
     SessionToken result = authService.loginBySSO(authInput);
 
@@ -373,12 +373,11 @@ class AuthServiceTest {
             sessionPort,
             moodleApiPort,
             mock(TenantDatabasePort.class),
-            new AsyncOperations(Runnable::run),
-            new CurrentSessionContext());
+            new AsyncOperations(Runnable::run));
 
     assertThrows(UnauthorizedException.class, () -> authService.loginBySSO(new AuthInput()));
 
-    verify(sessionPort).buildAuthenticationContext(any(), isNull());
+    verify(sessionPort).activateAuthenticationContext(any(), isNull());
     verify(sessionPort, never()).generateNewSession(any(), any(), any());
     verifyNoInteractions(moodleApiPort);
   }
@@ -423,8 +422,7 @@ class AuthServiceTest {
             sessionPort,
             moodleApiPort,
             mock(TenantDatabasePort.class),
-            new AsyncOperations(Runnable::run),
-            new CurrentSessionContext());
+            new AsyncOperations(Runnable::run));
 
     assertThrows(IllegalStateException.class, () -> authService.loginBySSO(authInput));
 
@@ -470,8 +468,7 @@ class AuthServiceTest {
             sessionPort,
             moodleApiPort,
             mock(TenantDatabasePort.class),
-            new AsyncOperations(Runnable::run),
-            new CurrentSessionContext());
+            new AsyncOperations(Runnable::run));
 
     assertThrows(IllegalStateException.class, () -> authService.loginBySSO(authInput));
 
@@ -500,8 +497,7 @@ class AuthServiceTest {
             sessionPort,
             moodleApiPort,
             tenantDatabasePort,
-            asyncOperations,
-            new CurrentSessionContext());
+            asyncOperations);
     AuthInput authInput =
         new AuthInput(
             "teacher",
@@ -545,8 +541,7 @@ class AuthServiceTest {
             sessionPort,
             moodleApiPort,
             tenantDatabasePort,
-            asyncOperations,
-            new CurrentSessionContext());
+            asyncOperations);
 
     assertThrows(UnauthorizedException.class, () -> authService.loginByCredentials(authInput));
     verify(moodleApiPort).login(authInput);
@@ -610,8 +605,7 @@ class AuthServiceTest {
             sessionPort,
             moodleApiPort,
             mock(TenantDatabasePort.class),
-            new AsyncOperations(Runnable::run),
-            new CurrentSessionContext());
+            new AsyncOperations(Runnable::run));
 
     assertThrows(IllegalStateException.class, () -> authService.loginByCredentials(authInput));
 
@@ -651,13 +645,12 @@ class AuthServiceTest {
             sessionPort,
             moodleApiPort,
             tenantDatabasePort,
-            asyncOperations,
-            new CurrentSessionContext());
+            asyncOperations);
 
     assertThrows(DatabaseCreationException.class, () -> authService.loginByCredentials(authInput));
     verify(tenantDatabasePort).initializeTenant(any());
     assertTenantSessionData(tenantDatabasePort, authInput, "teacher");
-    verify(sessionPort).buildAuthenticationContext(eq(authInput), any());
+    verify(sessionPort).activateAuthenticationContext(eq(authInput), any());
     verify(sessionPort, never()).generateNewSession(any(), any(), any());
   }
 
@@ -706,8 +699,7 @@ class AuthServiceTest {
             sessionPort,
             moodleApiPort,
             tenantDatabasePort,
-            asyncOperations,
-            new CurrentSessionContext());
+            asyncOperations);
 
     SessionToken result = authService.loginByCredentials(authInput);
 
@@ -763,8 +755,7 @@ class AuthServiceTest {
             sessionPort,
             moodleApiPort,
             tenantDatabasePort,
-            asyncOperations,
-            new CurrentSessionContext());
+            asyncOperations);
 
     SessionToken result = authService.loginByCredentials(authInput);
 
@@ -817,8 +808,7 @@ class AuthServiceTest {
             sessionPort,
             moodleApiPort,
             mock(TenantDatabasePort.class),
-            new AsyncOperations(Runnable::run),
-            new CurrentSessionContext());
+            new AsyncOperations(Runnable::run));
 
     SessionToken result = authService.loginByCredentials(authInput);
 
@@ -922,8 +912,7 @@ class AuthServiceTest {
             sessionPort,
             moodleApiPort,
             tenantDatabasePort,
-            new AsyncOperations(contextAwareExecutor),
-            currentSessionContext);
+            new AsyncOperations(contextAwareExecutor));
 
     try {
       SessionToken result = authService.loginByCredentials(authInput);
@@ -991,8 +980,7 @@ class AuthServiceTest {
             sessionPort,
             moodleApiPort,
             tenantDatabasePort,
-            asyncOperations,
-            currentSessionContext);
+            asyncOperations);
 
     assertThrows(UnauthorizedException.class, () -> authService.loginByCredentials(authInput));
 
@@ -1085,8 +1073,7 @@ class AuthServiceTest {
             sessionPort,
             moodleApiPort,
             mock(TenantDatabasePort.class),
-            new AsyncOperations(Runnable::run),
-            new CurrentSessionContext());
+            new AsyncOperations(Runnable::run));
 
     assertThrows(IllegalStateException.class, () -> authService.loginByCredentials(authInput));
 
@@ -1096,18 +1083,22 @@ class AuthServiceTest {
   }
 
   private static void stubAuthenticationContext(SessionPort sessionPort) {
-    when(sessionPort.buildAuthenticationContext(any(), nullable(RestClient.class)))
+    CurrentSessionContext currentSessionContext = new CurrentSessionContext();
+    when(sessionPort.activateAuthenticationContext(any(), nullable(RestClient.class)))
         .thenAnswer(
             invocation -> {
               AuthInput input = invocation.getArgument(0);
               RestClient restClient = invocation.getArgument(1);
-              return SessionData.builder()
-                  .host(input.getHost())
-                  .username(input.getUsername())
-                  .dbPassword(input.getDbPassword())
-                  .moodleToken(input.getMoodleToken())
-                  .restClient(restClient)
-                  .build();
+              SessionData sessionData =
+                  SessionData.builder()
+                      .host(input.getHost())
+                      .username(input.getUsername())
+                      .dbPassword(input.getDbPassword())
+                      .moodleToken(input.getMoodleToken())
+                      .restClient(restClient)
+                      .build();
+              currentSessionContext.setSessionData(sessionData);
+              return sessionData;
             });
   }
 }
