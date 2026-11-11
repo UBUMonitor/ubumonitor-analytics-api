@@ -6,6 +6,7 @@ import es.ubu.lsi.ubumonitoranalytics.features.users.info.appication.port.out.Us
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.domain.model.image.UserImage;
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.infrastructure.out.persistence.mapper.UserImageMapper;
 import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.UsersImagesRecord;
+import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -19,8 +20,8 @@ public class UserProfileImagePersistenceAdapter implements UserProfileImagePersi
   private final UserImageMapper userImageMapper;
 
   @Override
-  public String getImageHash(Long userId) {
-    return jooq.dsl()
+  public String getImageHash(Long userId, SessionData sessionData) {
+    return jooq.dsl(sessionData)
         .select(USERS_IMAGES.IMAGE_HASH)
         .from(USERS_IMAGES)
         .where(USERS_IMAGES.USER_ID.eq(userId))
@@ -28,8 +29,9 @@ public class UserProfileImagePersistenceAdapter implements UserProfileImagePersi
   }
 
   @Override
-  public UserImage fetchUserImage(Long userId) {
-    UsersImagesRecord dto = jooq.dsl().fetchOne(USERS_IMAGES, USERS_IMAGES.USER_ID.eq(userId));
+  public UserImage fetchUserImage(Long userId, SessionData sessionData) {
+    UsersImagesRecord dto =
+        jooq.dsl(sessionData).fetchOne(USERS_IMAGES, USERS_IMAGES.USER_ID.eq(userId));
 
     return userImageMapper.toDomain(dto);
   }

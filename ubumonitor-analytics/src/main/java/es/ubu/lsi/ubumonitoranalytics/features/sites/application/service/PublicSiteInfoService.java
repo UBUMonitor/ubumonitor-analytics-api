@@ -4,7 +4,6 @@ import es.ubu.lsi.ubumonitoranalytics.features.sites.application.dto.PublicSiteI
 import es.ubu.lsi.ubumonitoranalytics.features.sites.application.port.in.GetPublicSiteInfoUseCase;
 import es.ubu.lsi.ubumonitoranalytics.features.sites.application.port.out.PublicSiteInfoApiPort;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class PublicSiteInfoService implements GetPublicSiteInfoUseCase {
   private final PublicSiteInfoApiPort siteInfoApiPort;
-  private final CurrentSessionContext currentSessionContext;
 
   /**
    * @param host Moodle site URI
@@ -23,7 +21,6 @@ public class PublicSiteInfoService implements GetPublicSiteInfoUseCase {
   @Override
   public PublicSiteInfo getPublicSiteInfo(URI host) {
     SessionData sessionData = SessionData.builder().host(host).build();
-    return currentSessionContext.callWithSessionData(
-        sessionData, siteInfoApiPort::fetchPublicSiteInfo);
+    return siteInfoApiPort.fetchPublicSiteInfo(sessionData);
   }
 }

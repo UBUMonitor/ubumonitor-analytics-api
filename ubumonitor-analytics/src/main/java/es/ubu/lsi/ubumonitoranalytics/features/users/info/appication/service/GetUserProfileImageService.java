@@ -5,7 +5,6 @@ import es.ubu.lsi.ubumonitoranalytics.features.users.info.appication.port.out.Us
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.domain.model.image.UserImage;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.SessionStorePort;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
 import es.ubu.lsi.ubumonitoranalytics.util.ImageUtil;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +19,6 @@ public class GetUserProfileImageService implements GetUserProfileImageUseCase {
 
   private final UserProfileImagePersistencePort imagePersistencePort;
   private final SessionStorePort sessionStorePort;
-  private final CurrentSessionContext currentSessionContext;
 
   /**
    * @param userId Moodle user identifier
@@ -38,26 +36,22 @@ public class GetUserProfileImageService implements GetUserProfileImageUseCase {
       return getPlaceHolder(normalized);
     }
 
-    return currentSessionContext.callWithSessionData(
-        sessionData,
-        () -> {
-          String imageHash = imagePersistencePort.getImageHash(userId);
+    String imageHash = imagePersistencePort.getImageHash(userId, sessionData);
 
-          // Return the placeholder when the user has no stored image.
-          if (imageHash == null) {
-            return getPlaceHolder(normalized);
-          }
+    // Return the placeholder when the user has no stored image.
+    if (imageHash == null) {
+      return getPlaceHolder(normalized);
+    }
 
-          // Return an unmodified result when the ETag matches.
-          if (imageHash.equals(normalized)) {
-            return UserImage.builder().hexHash(imageHash).image(null).isModified(false).build();
-          }
+    // Return an unmodified result when the ETag matches.
+    if (imageHash.equals(normalized)) {
+      return UserImage.builder().hexHash(imageHash).image(null).isModified(false).build();
+    }
 
-          UserImage userImage = imagePersistencePort.fetchUserImage(userId);
-          userImage.setModified(true);
+    UserImage userImage = imagePersistencePort.fetchUserImage(userId, sessionData);
+    userImage.setModified(true);
 
-          return userImage;
-        });
+    return userImage;
   }
 
   private static UserImage getPlaceHolder(String normalized) {

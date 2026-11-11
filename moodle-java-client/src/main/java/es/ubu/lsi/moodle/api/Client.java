@@ -13,6 +13,7 @@ import es.ubu.lsi.moodle.model.ajax.AjaxRequest;
 import es.ubu.lsi.moodle.model.ajax.AjaxResponse;
 import es.ubu.lsi.moodle.model.login.token.request.LoginTokenRequestApi;
 import es.ubu.lsi.moodle.model.login.token.response.LoginTokenResponseApi;
+import java.net.URI;
 import java.util.List;
 
 /** Entry point for Moodle web-service and AJAX operations. */
@@ -95,6 +96,12 @@ public interface Client {
     return executeAjax("/lib/ajax/service.php", List.of(request), responseType);
   }
 
+  /** Executes one AJAX request against an explicit Moodle site. */
+  default <T> AjaxResponse<T> executeAjax(
+      URI baseUrl, AjaxRequest<?> request, Class<T> responseType) {
+    return executeAjax(baseUrl, "/lib/ajax/service.php", List.of(request), responseType);
+  }
+
   /**
    * Executes AJAX requests against the specified Moodle context.
    *
@@ -106,6 +113,19 @@ public interface Client {
    */
   <T> AjaxResponse<T> executeAjax(
       String context, List<? extends AjaxRequest<?>> requests, Class<T> responseType);
+
+  /**
+   * Executes AJAX requests against an explicit Moodle site and context.
+   *
+   * @param baseUrl Moodle site base URI
+   * @param context AJAX endpoint path
+   * @param requests requests to execute
+   * @param responseType response data class
+   * @param <T> response data type
+   * @return the first mapped AJAX response
+   */
+  <T> AjaxResponse<T> executeAjax(
+      URI baseUrl, String context, List<? extends AjaxRequest<?>> requests, Class<T> responseType);
 
   /** Executes multiple AJAX requests using Moodle's default AJAX endpoint. */
   default <T> List<AjaxResponse<T>> executeAjaxList(

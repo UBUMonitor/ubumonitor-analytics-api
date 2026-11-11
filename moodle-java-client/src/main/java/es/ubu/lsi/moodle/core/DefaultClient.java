@@ -26,6 +26,7 @@ import es.ubu.lsi.moodle.model.ajax.AjaxResponse;
 import es.ubu.lsi.moodle.model.login.token.request.LoginTokenRequestApi;
 import es.ubu.lsi.moodle.model.login.token.response.LoginTokenResponseApi;
 import es.ubu.lsi.moodle.utils.PhpQueryParamBuilder;
+import java.net.URI;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -165,12 +166,27 @@ public class DefaultClient implements Client {
   @Override
   public <T> AjaxResponse<T> executeAjax(
       String context, List<? extends AjaxRequest<?>> requests, Class<T> responseType) {
-    List<AjaxResponse<T>> responses;
     try {
-      responses = transport.postJsonAjaxArray(context, requests, responseType);
+      return requireSingleAjaxResponse(
+          transport.postJsonAjaxArray(context, requests, responseType));
     } catch (Exception e) {
       throw new MoodleApiException(e);
     }
+  }
+
+  /** Executes AJAX requests against an explicit Moodle site. */
+  @Override
+  public <T> AjaxResponse<T> executeAjax(
+      URI baseUrl, String context, List<? extends AjaxRequest<?>> requests, Class<T> responseType) {
+    try {
+      return requireSingleAjaxResponse(
+          transport.postJsonAjaxArray(baseUrl, context, requests, responseType));
+    } catch (Exception e) {
+      throw new MoodleApiException(e);
+    }
+  }
+
+  private <T> AjaxResponse<T> requireSingleAjaxResponse(List<AjaxResponse<T>> responses) {
     if (responses.size() != 1) {
       throw new MoodleApiException("Expected one Ajax response but received " + responses.size());
     }

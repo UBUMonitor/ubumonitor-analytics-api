@@ -136,13 +136,19 @@ public class RestClientHttpTransport implements HttpTransport {
   @Override
   public <T> List<AjaxResponse<T>> postJsonAjaxArray(
       String context, Object body, Class<T> dataType) {
+    return postJsonAjaxArray(
+        currentSessionContext.getSessionData().getHost(), context, body, dataType);
+  }
+
+  @Override
+  public <T> List<AjaxResponse<T>> postJsonAjaxArray(
+      URI baseUrl, String context, Object body, Class<T> dataType) {
     ResolvableType responseType = ResolvableType.forClassWithGenerics(AjaxResponse.class, dataType);
     ParameterizedTypeReference<List<AjaxResponse<T>>> typeRef =
         ParameterizedTypeReference.forType(
             ResolvableType.forClassWithGenerics(List.class, responseType).getType());
 
-    SessionData sessionData = currentSessionContext.getSessionData();
-    URI finalUri = getUri(sessionData.getHost(), context);
+    URI finalUri = getUri(baseUrl, context);
 
     return restClient
         .post()

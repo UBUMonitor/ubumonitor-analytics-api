@@ -36,11 +36,18 @@ import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.concurrent.AsyncOperations;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import org.springframework.web.client.RestClient;
 
@@ -222,6 +229,7 @@ class AuthServiceTest {
     inOrder.verify(userInfoPersistencePort).getActualUser("teacher");
     inOrder.verify(sessionPort).generateNewSession(authInput, userInfo, null);
     verify(tenantDatabasePort).initializeTenant(any());
+    assertTenantSessionData(tenantDatabasePort, authInput, "teacher");
     verify(sessionPort).buildAuthenticationContext(authInput, null);
     verify(sessionPort).generateNewSession(authInput, userInfo, null);
   }
@@ -277,6 +285,7 @@ class AuthServiceTest {
 
     assertEquals("new-sso-token", result.getToken());
     verify(tenantDatabasePort).initializeTenant(any());
+    assertTenantSessionData(tenantDatabasePort, authInput, "teacher");
     verify(sessionPort).buildAuthenticationContext(authInput, null);
     verify(sessionPort).buildAuthenticationContext(authInput, restClient);
     verify(sessionPort).generateNewSession(authInput, userInfo, restClient);
@@ -539,6 +548,71 @@ class AuthServiceTest {
   }
 
   @Test
+  void loginByCredentialsRejectsNullSiteInfoAndCancelsThePendingUserSearch() {
+    assertCredentialsSiteInfoFailure(null);
+  }
+
+  @Test
+  void loginByCredentialsRejectsMismatchedSiteUsernameAndCancelsThePendingUserSearch() {
+    Site site = new Site();
+    site.setUserId(13L);
+    site.setUserName("another-user");
+    assertCredentialsSiteInfoFailure(SiteInfo.builder().site(site).build());
+  }
+
+  @Test
+  void loginByCredentialsInvalidatesTheGeneratedSessionWhenAttachingUserInfoFails() {
+    SessionPort sessionPort = mock(SessionPort.class);
+    stubAuthenticationContext(sessionPort);
+    MoodleApiPort moodleApiPort = mock(MoodleApiPort.class);
+    SiteInfoApiPort siteInfoApiPort = mock(SiteInfoApiPort.class);
+    SearchUserByUserNameUseCase searchUserByUserNameUseCase =
+        mock(SearchUserByUserNameUseCase.class);
+    SyncUserInfoUseCase syncUserInfoUseCase = mock(SyncUserInfoUseCase.class);
+    AuthInput authInput =
+        new AuthInput(
+            "teacher",
+            "moodle-password",
+            URI.create("https://moodle.test"),
+            "database-password",
+            null,
+            null);
+    RestClient restClient = mock(RestClient.class);
+    SessionToken generatedSession = SessionToken.builder().token("generated-token").build();
+    Site site = new Site();
+    site.setUserId(13L);
+    site.setUserName("teacher");
+    UserInfo userInfo = mock(UserInfo.class);
+
+    when(moodleApiPort.login(authInput)).thenReturn("moodle-token");
+    when(moodleApiPort.loginWeb("teacher", "moodle-password", authInput.getHost()))
+        .thenReturn(restClient);
+    when(siteInfoApiPort.fetchSiteInfo()).thenReturn(SiteInfo.builder().site(site).build());
+    when(searchUserByUserNameUseCase.searchUserByUserName("teacher")).thenReturn(userInfo);
+    when(syncUserInfoUseCase.syncActualUser(userInfo)).thenReturn(userInfo);
+    when(sessionPort.generateNewSession(authInput, userInfo, restClient))
+        .thenReturn(generatedSession);
+    when(userInfo.getInitials()).thenThrow(new IllegalStateException("User info unavailable"));
+
+    AuthService authService =
+        new AuthService(
+            searchUserByUserNameUseCase,
+            syncUserInfoUseCase,
+            mock(GetUserInfoPersistenceAdapterPort.class),
+            siteInfoApiPort,
+            mock(SiteInfoPersistencePort.class),
+            sessionPort,
+            moodleApiPort,
+            mock(TenantDatabasePort.class),
+            new AsyncOperations(Runnable::run),
+            new CurrentSessionContext());
+
+    assertThrows(IllegalStateException.class, () -> authService.loginByCredentials(authInput));
+
+    verify(sessionPort).invalidateSession(generatedSession);
+  }
+
+  @Test
   void doesNotCreateSessionWhenTenantDatabasePasswordIsRejected() {
     SessionPort sessionPort = mock(SessionPort.class);
     stubAuthenticationContext(sessionPort);
@@ -576,6 +650,7 @@ class AuthServiceTest {
 
     assertThrows(DatabaseCreationException.class, () -> authService.loginByCredentials(authInput));
     verify(tenantDatabasePort).initializeTenant(any());
+    assertTenantSessionData(tenantDatabasePort, authInput, "teacher");
     verify(sessionPort).buildAuthenticationContext(eq(authInput), any());
     verify(sessionPort, never()).generateNewSession(any(), any(), any());
   }
@@ -755,12 +830,20 @@ class AuthServiceTest {
     SessionPort sessionPort = mock(SessionPort.class);
     stubAuthenticationContext(sessionPort);
     MoodleApiPort moodleApiPort = mock(MoodleApiPort.class);
+    TenantDatabasePort tenantDatabasePort = mock(TenantDatabasePort.class);
     SiteInfoApiPort siteInfoApiPort = mock(SiteInfoApiPort.class);
     SearchUserByUserNameUseCase searchUserByUserNameUseCase =
         mock(SearchUserByUserNameUseCase.class);
     SyncUserInfoUseCase syncUserInfoUseCase = mock(SyncUserInfoUseCase.class);
     CountDownLatch concurrentCallsStarted = new CountDownLatch(2);
     ExecutorService executor = Executors.newFixedThreadPool(2);
+    CurrentSessionContext currentSessionContext = new CurrentSessionContext();
+    Executor contextAwareExecutor =
+        command -> {
+          SessionData capturedSessionData = currentSessionContext.getSessionData();
+          executor.execute(
+              () -> currentSessionContext.runWithSessionData(capturedSessionData, command));
+        };
     AuthInput authInput =
         new AuthInput(
             "teacher",
@@ -776,19 +859,38 @@ class AuthServiceTest {
     site.setUserId(13L);
     site.setUserName("teacher");
     SiteInfo siteInfo = SiteInfo.builder().site(site).build();
+    SessionData expectedSessionData =
+        SessionData.builder()
+            .host(authInput.getHost())
+            .username(authInput.getUsername())
+            .dbPassword(authInput.getDbPassword())
+            .moodleToken("moodle-token")
+            .restClient(restClient)
+            .build();
 
     when(moodleApiPort.login(authInput)).thenReturn("moodle-token");
     when(moodleApiPort.loginWeb("teacher", "moodle-password", authInput.getHost()))
         .thenReturn(restClient);
+    doAnswer(
+            invocation -> {
+              assertEquals(expectedSessionData, currentSessionContext.getSessionData());
+              assertTenantSessionDataValue(
+                  invocation.getArgument(0, SessionData.class), authInput, "teacher");
+              return true;
+            })
+        .when(tenantDatabasePort)
+        .initializeTenant(any());
     when(siteInfoApiPort.fetchSiteInfo())
         .thenAnswer(
             invocation -> {
+              assertEquals(expectedSessionData, currentSessionContext.getSessionData());
               awaitConcurrentCall(concurrentCallsStarted);
               return siteInfo;
             });
     when(searchUserByUserNameUseCase.searchUserByUserName("teacher"))
         .thenAnswer(
             invocation -> {
+              assertEquals(expectedSessionData, currentSessionContext.getSessionData());
               awaitConcurrentCall(concurrentCallsStarted);
               return userInfo;
             });
@@ -804,13 +906,15 @@ class AuthServiceTest {
             mock(SiteInfoPersistencePort.class),
             sessionPort,
             moodleApiPort,
-            mock(TenantDatabasePort.class),
-            new AsyncOperations(executor),
-            new CurrentSessionContext());
+            tenantDatabasePort,
+            new AsyncOperations(contextAwareExecutor),
+            currentSessionContext);
 
     try {
       SessionToken result = authService.loginByCredentials(authInput);
       assertEquals("credential-token", result.getToken());
+      verify(tenantDatabasePort).initializeTenant(any());
+      assertTenantSessionData(tenantDatabasePort, authInput, "teacher");
       verify(searchUserByUserNameUseCase).searchUserByUserName("teacher");
       verify(syncUserInfoUseCase).syncActualUser(userInfo);
     } finally {
@@ -825,6 +929,101 @@ class AuthServiceTest {
     } catch (InterruptedException exception) {
       Thread.currentThread().interrupt();
       throw new AssertionError(exception);
+    }
+  }
+
+  private static void assertCredentialsSiteInfoFailure(SiteInfo siteInfo) {
+    SessionPort sessionPort = mock(SessionPort.class);
+    stubAuthenticationContext(sessionPort);
+    MoodleApiPort moodleApiPort = mock(MoodleApiPort.class);
+    TenantDatabasePort tenantDatabasePort = mock(TenantDatabasePort.class);
+    SiteInfoApiPort siteInfoApiPort = mock(SiteInfoApiPort.class);
+    SearchUserByUserNameUseCase searchUserByUserNameUseCase =
+        mock(SearchUserByUserNameUseCase.class);
+    CurrentSessionContext currentSessionContext = new CurrentSessionContext();
+    AtomicInteger scopedTaskCount = new AtomicInteger();
+    Executor controlledExecutor =
+        command -> {
+          if (currentSessionContext.getSessionData() == null
+              || scopedTaskCount.getAndIncrement() == 0) {
+            command.run();
+          }
+        };
+    TrackingAsyncOperations asyncOperations =
+        new TrackingAsyncOperations(controlledExecutor, currentSessionContext);
+    AuthInput authInput =
+        new AuthInput(
+            "teacher",
+            "moodle-password",
+            URI.create("https://moodle.test"),
+            "database-password",
+            null,
+            null);
+    RestClient restClient = mock(RestClient.class);
+
+    when(moodleApiPort.login(authInput)).thenReturn("moodle-token");
+    when(moodleApiPort.loginWeb("teacher", "moodle-password", authInput.getHost()))
+        .thenReturn(restClient);
+    when(siteInfoApiPort.fetchSiteInfo()).thenReturn(siteInfo);
+
+    AuthService authService =
+        new AuthService(
+            searchUserByUserNameUseCase,
+            mock(SyncUserInfoUseCase.class),
+            mock(GetUserInfoPersistenceAdapterPort.class),
+            siteInfoApiPort,
+            mock(SiteInfoPersistencePort.class),
+            sessionPort,
+            moodleApiPort,
+            tenantDatabasePort,
+            asyncOperations,
+            currentSessionContext);
+
+    assertThrows(UnauthorizedException.class, () -> authService.loginByCredentials(authInput));
+
+    assertTenantSessionData(tenantDatabasePort, authInput, "teacher");
+    assertEquals(2, asyncOperations.scopedFutures().size());
+    assertTrue(asyncOperations.scopedFutures().get(1).isCancelled());
+    verify(searchUserByUserNameUseCase, never()).searchUserByUserName(any());
+    verify(sessionPort, never()).generateNewSession(any(), any(), any());
+  }
+
+  private static void assertTenantSessionData(
+      TenantDatabasePort tenantDatabasePort, AuthInput authInput, String username) {
+    ArgumentCaptor<SessionData> sessionDataCaptor = ArgumentCaptor.forClass(SessionData.class);
+    verify(tenantDatabasePort).initializeTenant(sessionDataCaptor.capture());
+    assertTenantSessionDataValue(sessionDataCaptor.getValue(), authInput, username);
+  }
+
+  private static void assertTenantSessionDataValue(
+      SessionData sessionData, AuthInput authInput, String username) {
+    assertEquals(authInput.getHost(), sessionData.getHost());
+    assertEquals(username, sessionData.getUsername());
+    assertEquals(authInput.getDbPassword(), sessionData.getDbPassword());
+  }
+
+  private static final class TrackingAsyncOperations extends AsyncOperations {
+
+    private final CurrentSessionContext currentSessionContext;
+    private final List<CompletableFuture<?>> scopedFutures = new ArrayList<>();
+
+    private TrackingAsyncOperations(
+        Executor executor, CurrentSessionContext currentSessionContext) {
+      super(executor);
+      this.currentSessionContext = currentSessionContext;
+    }
+
+    @Override
+    public <T> CompletableFuture<T> supplyAsync(Supplier<T> task) {
+      CompletableFuture<T> future = super.supplyAsync(task);
+      if (currentSessionContext.getSessionData() != null) {
+        scopedFutures.add(future);
+      }
+      return future;
+    }
+
+    private List<CompletableFuture<?>> scopedFutures() {
+      return scopedFutures;
     }
   }
 

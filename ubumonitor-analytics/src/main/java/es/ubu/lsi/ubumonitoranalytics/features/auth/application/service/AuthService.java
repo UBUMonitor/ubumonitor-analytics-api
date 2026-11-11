@@ -52,44 +52,40 @@ public class AuthService implements AuthUseCase {
    */
   @Override
   public SessionToken loginBySSO(AuthInput authInput) {
-    try {
-      SessionData initialSessionData = sessionPort.buildAuthenticationContext(authInput, null);
-      SiteInfo siteInfo =
-          currentSessionContext.callWithSessionData(
-              initialSessionData, siteInfoApiPort::fetchSiteInfo);
-      if (siteInfo == null || siteInfo.getSite() == null) {
-        throw new UnauthorizedException("Invalid token.");
-      }
-      String userName = siteInfo.getSite().getUserName();
-      if (userName == null || userName.isBlank()) {
-        throw new UnauthorizedException("Invalid token.");
-      }
-      authInput.setUsername(userName);
-      RestClient restClient = moodleApiPort.getRestClientFromCookies(authInput);
-      SessionData sessionData = sessionPort.buildAuthenticationContext(authInput, restClient);
-      return currentSessionContext.callWithSessionData(
-          sessionData,
-          () -> {
-            initializeTenantDatabase(sessionData);
-            siteInfoPersistencePort.save(siteInfo);
-            SessionToken sessionToken = null;
-            try {
-              UserInfo userInfo =
-                  syncUserInfoUseCase.syncActualUser(
-                      searchUserByUserNameUseCase.searchUserByUserName(userName));
-              validateSiteUser(siteInfo);
-              sessionToken = sessionPort.generateNewSession(authInput, userInfo, restClient);
-              return attachSiteUserInfo(sessionToken, siteInfo, userInfo);
-            } catch (RuntimeException exception) {
-              if (sessionToken != null) {
-                sessionPort.invalidateSession(sessionToken);
-              }
-              throw exception;
-            }
-          });
-    } catch (RuntimeException exception) {
-      throw exception;
+    SessionData initialSessionData = sessionPort.buildAuthenticationContext(authInput, null);
+    SiteInfo siteInfo =
+        currentSessionContext.callWithSessionData(
+            initialSessionData, siteInfoApiPort::fetchSiteInfo);
+    if (siteInfo == null || siteInfo.getSite() == null) {
+      throw new UnauthorizedException("Invalid token.");
     }
+    String userName = siteInfo.getSite().getUserName();
+    if (userName == null || userName.isBlank()) {
+      throw new UnauthorizedException("Invalid token.");
+    }
+    authInput.setUsername(userName);
+    RestClient restClient = moodleApiPort.getRestClientFromCookies(authInput);
+    SessionData sessionData = sessionPort.buildAuthenticationContext(authInput, restClient);
+    return currentSessionContext.callWithSessionData(
+        sessionData,
+        () -> {
+          initializeTenantDatabase(sessionData);
+          siteInfoPersistencePort.save(siteInfo);
+          SessionToken sessionToken = null;
+          try {
+            UserInfo userInfo =
+                syncUserInfoUseCase.syncActualUser(
+                    searchUserByUserNameUseCase.searchUserByUserName(userName));
+            validateSiteUser(siteInfo);
+            sessionToken = sessionPort.generateNewSession(authInput, userInfo, restClient);
+            return attachSiteUserInfo(sessionToken, siteInfo, userInfo);
+          } catch (RuntimeException exception) {
+            if (sessionToken != null) {
+              sessionPort.invalidateSession(sessionToken);
+            }
+            throw exception;
+          }
+        });
   }
 
   /**

@@ -17,9 +17,29 @@ import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.Sessio
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
 import java.net.URI;
 import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
 import org.springframework.web.client.RestClient;
 
 class SessionAdapterTest {
+
+  @Test
+  void mapperCopiesTenantConnectionDetailsFromAuthenticationInput() {
+    SessionAdapterMapper mapper = Mappers.getMapper(SessionAdapterMapper.class);
+    AuthInput authInput =
+        new AuthInput(
+            "teacher",
+            "moodle-password",
+            URI.create("https://moodle.test"),
+            "database-password",
+            "moodle-token",
+            null);
+
+    SessionData result = mapper.toSessionData(authInput, null, null, null);
+
+    assertEquals(authInput.getHost(), result.getHost());
+    assertEquals(authInput.getUsername(), result.getUsername());
+    assertEquals(authInput.getDbPassword(), result.getDbPassword());
+  }
 
   @Test
   void buildAuthenticationContextDoesNotCreateOrStoreAnApplicationSession() {

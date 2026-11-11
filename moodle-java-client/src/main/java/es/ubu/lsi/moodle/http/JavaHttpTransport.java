@@ -70,7 +70,19 @@ public class JavaHttpTransport implements HttpTransport {
     return mapper.fromJsonAjaxArray(responseBody, dataType);
   }
 
+  /** Sends JSON to an explicit Moodle site and maps Moodle AJAX responses. */
+  @Override
+  public <T> List<AjaxResponse<T>> postJsonAjaxArray(
+      URI baseUrl, String context, Object body, Class<T> dataType) throws Exception {
+    String responseBody = executeJson(baseUrl, context, body);
+    return mapper.fromJsonAjaxArray(responseBody, dataType);
+  }
+
   private String executeJson(String context, Object body) throws Exception {
+    return executeJson(baseUrl, context, body);
+  }
+
+  private String executeJson(URI baseUrl, String context, Object body) throws Exception {
     HttpRequest request =
         HttpRequest.newBuilder()
             .uri(baseUrl.resolve(context))
