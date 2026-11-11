@@ -41,11 +41,14 @@ class SessionAdapterTest {
         SessionData.builder().username("teacher").moodleToken("moodle-token").build();
     when(mapper.toSessionData(authInput, null, null, restClient)).thenReturn(temporaryContext);
 
-    sessionAdapter.setAuthenticationContext(authInput, restClient);
+    currentSessionContext.runWithSessionData(
+        null,
+        () -> {
+          sessionAdapter.setAuthenticationContext(authInput, restClient);
 
-    assertEquals(temporaryContext, currentSessionContext.getSessionData());
-    verify(sessionStore, never()).saveSession(anyString(), any());
-    currentSessionContext.clear();
+          assertEquals(temporaryContext, currentSessionContext.getSessionData());
+          verify(sessionStore, never()).saveSession(anyString(), any());
+        });
   }
 
   @Test
@@ -66,12 +69,15 @@ class SessionAdapterTest {
             invocation ->
                 SessionData.builder().token(invocation.getArgument(1, String.class)).build());
 
-    SessionToken result = sessionAdapter.generateNewSession(authInput, userInfo, restClient);
+    currentSessionContext.runWithSessionData(
+        null,
+        () -> {
+          SessionToken result = sessionAdapter.generateNewSession(authInput, userInfo, restClient);
 
-    assertNotEquals("old-token", result.getToken());
-    verify(sessionStore).saveSession(eq(result.getToken()), any());
-    verify(sessionStore).invalidateSession("old-token");
-    assertEquals(result.getToken(), currentSessionContext.getSessionData().getToken());
-    currentSessionContext.clear();
+          assertNotEquals("old-token", result.getToken());
+          verify(sessionStore).saveSession(eq(result.getToken()), any());
+          verify(sessionStore).invalidateSession("old-token");
+          assertEquals(result.getToken(), currentSessionContext.getSessionData().getToken());
+        });
   }
 }

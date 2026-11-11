@@ -17,20 +17,16 @@ public class LogoutService implements LogoutUseCase {
   private final CurrentSessionContext currentSessionContext;
   private final TenantDatabasePort tenantDatabasePort;
 
-  /** Clears the current session context even when tenant cleanup fails. */
+  /** Invalidates the current session even when tenant cleanup fails. */
   @Override
   public void logout() {
 
     SessionData sessionData = currentSessionContext.getSessionData();
 
-    try {
-      if (sessionData != null) {
+    if (sessionData != null) {
 
-        tenantDatabasePort.clearAll();
-        sessionStorePort.invalidateSession(sessionData.getToken());
-      }
-    } finally {
-      currentSessionContext.clear();
+      tenantDatabasePort.clearAll();
+      sessionStorePort.invalidateSession(sessionData.getToken());
     }
   }
 }

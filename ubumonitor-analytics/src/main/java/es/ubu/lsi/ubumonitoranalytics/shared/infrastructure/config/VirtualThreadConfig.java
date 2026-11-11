@@ -29,18 +29,7 @@ public class VirtualThreadConfig {
     return command -> {
       SessionData captured = sessionContext.getSessionData();
 
-      virtualThreadExecutor.execute(
-          () -> {
-            if (captured != null) {
-              sessionContext.setSessionData(captured);
-            }
-
-            try {
-              command.run();
-            } finally {
-              sessionContext.clear();
-            }
-          });
+      virtualThreadExecutor.execute(() -> sessionContext.runWithSessionData(captured, command));
     };
   }
 }
