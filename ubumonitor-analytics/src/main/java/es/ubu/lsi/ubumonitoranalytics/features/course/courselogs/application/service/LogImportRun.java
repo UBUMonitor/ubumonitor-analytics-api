@@ -31,7 +31,7 @@ class LogImportRun implements CsvRecordHandler {
   /** Rows handed to one parsing task. */
   private static final int PARSE_CHUNK_SIZE = 2000;
 
-  private final AsyncExecutionPort asyncOperations;
+  private final AsyncExecutionPort asyncExecution;
   private final LogParserService logParserService;
   private final LogPersistencePort logPersistencePort;
   private final CourseLogsInfoPort courseLogsInfoPort;
@@ -70,8 +70,7 @@ class LogImportRun implements CsvRecordHandler {
     if (chunk.isEmpty()) {
       return;
     }
-    parsing.add(
-        asyncOperations.supplyAsync(new LogChunkParse(logParserService, logContext, chunk)));
+    parsing.add(asyncExecution.supplyAsync(new LogChunkParse(logParserService, logContext, chunk)));
     chunk = new ArrayList<>(PARSE_CHUNK_SIZE);
   }
 

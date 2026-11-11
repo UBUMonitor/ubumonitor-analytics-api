@@ -39,7 +39,7 @@ public class AuthService implements AuthUseCase {
   private final SessionPort sessionPort;
   private final MoodleApiPort moodleApiPort;
   private final TenantDatabasePort tenantDatabasePort;
-  private final AsyncExecutionPort asyncOperations;
+  private final AsyncExecutionPort asyncExecution;
 
   /**
    * Authenticates an SSO launch request and associates a web client with the session.
@@ -91,9 +91,9 @@ public class AuthService implements AuthUseCase {
   public SessionToken loginByCredentials(AuthInput authInput) {
 
     CompletableFuture<String> moodleTokenFuture =
-        asyncOperations.supplyAsync(() -> fetchMoodleToken(authInput));
+        asyncExecution.supplyAsync(() -> fetchMoodleToken(authInput));
     CompletableFuture<RestClient> restClientFuture =
-        asyncOperations.supplyAsync(() -> fetchRestClient(authInput));
+        asyncExecution.supplyAsync(() -> fetchRestClient(authInput));
 
     String moodleToken;
     try {
@@ -117,9 +117,9 @@ public class AuthService implements AuthUseCase {
     CompletableFuture<UserInfo> searchedUserFuture = null;
     try {
       CompletableFuture<SiteInfo> siteInfoFuture =
-          asyncOperations.supplyAsync(siteInfoApiPort::fetchSiteInfo);
+          asyncExecution.supplyAsync(siteInfoApiPort::fetchSiteInfo);
       searchedUserFuture =
-          asyncOperations.supplyAsync(
+          asyncExecution.supplyAsync(
               () -> searchUserByUserNameUseCase.searchUserByUserName(authInput.getUsername()));
       SiteInfo siteInfo = joinCompletedFuture(siteInfoFuture);
       if (siteInfo == null || siteInfo.getSite() == null) {

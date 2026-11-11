@@ -41,17 +41,16 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
   private final CourseLogsInfoPort courseLogsInfoPort;
   private final MoodlePort moodlePort;
   private final CurrentSessionPort currentSessionContext;
-  private final AsyncExecutionPort asyncOperations;
+  private final AsyncExecutionPort asyncExecution;
 
   /**
    * @param courseId Moodle course identifier
    * @param inputStream uploaded log CSV content
-   * @param fileName original uploaded filename
    * @return import statistics and refreshed course log information
    */
   @Override
   @Transactional
-  public ProcessLogsResult process(Long courseId, InputStream inputStream, String fileName) {
+  public ProcessLogsResult process(Long courseId, InputStream inputStream) {
     LogContext logContext = logPersistencePort.getLogContext(courseId);
 
     logPersistencePort.createIfNotExists(courseId);
@@ -108,8 +107,7 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
         since <= now;
         since += INCREMENTAL_STEP_SECONDS) {
       downloads.add(
-          asyncOperations.supplyAsync(
-              new DayLogsDownload(moodlePort, courseId, since, restClient)));
+          asyncExecution.supplyAsync(new DayLogsDownload(moodlePort, courseId, since, restClient)));
     }
     return downloads;
   }
@@ -128,7 +126,7 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
 
   private LogImportRun newRun(Long courseId, LogContext logContext) {
     return new LogImportRun(
-        asyncOperations,
+        asyncExecution,
         logParserService,
         logPersistencePort,
         courseLogsInfoPort,

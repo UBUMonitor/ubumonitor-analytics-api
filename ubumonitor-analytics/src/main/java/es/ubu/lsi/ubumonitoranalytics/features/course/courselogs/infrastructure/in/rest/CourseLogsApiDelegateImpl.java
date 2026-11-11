@@ -45,10 +45,10 @@ public class CourseLogsApiDelegateImpl implements CourseLogsApiDelegate {
   @Override
   @SneakyThrows
   public ResponseEntity<CourseLogsResponseDto> importCourseLogs(Long courseId, MultipartFile file) {
-
-    InputStream inputStream = file.getInputStream();
-    ProcessLogsResult processLogsResult =
-        importCourseLogsUseCase.process(courseId, inputStream, file.getOriginalFilename());
+    ProcessLogsResult processLogsResult;
+    try (InputStream inputStream = file.getInputStream()) {
+      processLogsResult = importCourseLogsUseCase.process(courseId, inputStream);
+    }
 
     return ResponseEntity.ok(importLogsMapper.toDto(processLogsResult));
   }

@@ -17,7 +17,7 @@ public class FetchCourseActivityCompletionAdapter implements FetchActivityComple
 
   private final Client client;
   private final FetchActivityCompletionAdapterMapper fetchCourseContentAdapterMapper;
-  private final AsyncExecutionPort asyncOperations;
+  private final AsyncExecutionPort asyncExecution;
 
   @Override
   public ActivityCompletionResult fetchCourseActivityCompletion(Long courseId, List<Long> userIds) {
@@ -31,7 +31,7 @@ public class FetchCourseActivityCompletionAdapter implements FetchActivityComple
     return userIds.stream()
         .map(
             userId ->
-                asyncOperations.supplyAsync(() -> getUserActivitiesCompletion(courseId, userId)))
+                asyncExecution.supplyAsync(() -> getUserActivitiesCompletion(courseId, userId)))
         .toList()
         .stream()
         .map(CompletableFuture::join)

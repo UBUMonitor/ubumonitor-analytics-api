@@ -9,10 +9,9 @@ public interface ImportCourseLogsUseCase {
   /**
    * @param course course identifier
    * @param inputStream uploaded CSV file content
-   * @param fileName original uploaded filename
    * @return import statistics and updated log information
    */
-  ProcessLogsResult process(Long course, InputStream inputStream, String fileName);
+  ProcessLogsResult process(Long course, InputStream inputStream);
 
   /**
    * @param course course identifier

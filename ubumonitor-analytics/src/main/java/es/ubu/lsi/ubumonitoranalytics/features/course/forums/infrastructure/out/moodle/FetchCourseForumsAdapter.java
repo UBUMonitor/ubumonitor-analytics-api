@@ -29,7 +29,7 @@ public class FetchCourseForumsAdapter implements FetchCourseForumsPort {
 
   private final Client client;
   private final CourseForumsMoodleMapper mapper;
-  private final AsyncExecutionPort asyncOperations;
+  private final AsyncExecutionPort asyncExecution;
 
   @Override
   public CourseForums fetchCourseForums(Long courseId) {
@@ -82,7 +82,7 @@ public class FetchCourseForumsAdapter implements FetchCourseForumsPort {
   }
 
   private CompletableFuture<List<ForumPost>> fetchDiscussionPostsAsync(Long discussionId) {
-    return asyncOperations.supplyAsync(
+    return asyncExecution.supplyAsync(
         () -> {
           GetDiscussionPostsArgsApi args = new GetDiscussionPostsArgsApi();
           args.setDiscussionid(discussionId);

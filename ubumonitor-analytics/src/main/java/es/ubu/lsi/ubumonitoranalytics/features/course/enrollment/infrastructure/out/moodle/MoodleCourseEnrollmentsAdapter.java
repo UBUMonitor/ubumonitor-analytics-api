@@ -31,7 +31,7 @@ public class MoodleCourseEnrollmentsAdapter implements FetchCourseEnrollmentsPor
   private final Client client;
   private final EnrolledUsersMapper enrolledUsersMapper;
   private final MoodleDownloaderPort moodleDownloaderPort;
-  private final AsyncExecutionPort asyncOperations;
+  private final AsyncExecutionPort asyncExecution;
 
   @Override
   public CourseEnrollments fetchCourseEnrollments(Long courseId, String token) {
@@ -53,7 +53,7 @@ public class MoodleCourseEnrollmentsAdapter implements FetchCourseEnrollmentsPor
         users.stream()
             .map(User::getUserPicture)
             .filter(picture -> picture != null && picture.getUrl() != null)
-            .map(picture -> asyncOperations.runAsync(() -> downloadProfileImage(picture, token)))
+            .map(picture -> asyncExecution.runAsync(() -> downloadProfileImage(picture, token)))
             .toArray(CompletableFuture<?>[]::new);
 
     CompletableFuture.allOf(downloads).join();
