@@ -76,6 +76,7 @@ class AuthServiceTest {
             URI.create("https://moodle.test"),
             "database-password",
             null,
+            null,
             null);
     SessionToken sessionToken = SessionToken.builder().token("new-credential-token").build();
     Site site = new Site();
@@ -136,6 +137,7 @@ class AuthServiceTest {
             URI.create("https://moodle.test"),
             "database-password",
             "moodle-token",
+            null,
             null);
     SessionToken newSession = SessionToken.builder().token("new-sso-token").build();
     Site site = new Site();
@@ -184,7 +186,13 @@ class AuthServiceTest {
     TenantDatabasePort tenantDatabasePort = mock(TenantDatabasePort.class);
     AuthInput authInput =
         new AuthInput(
-            "teacher", null, URI.create("https://moodle.test"), "database-password", null, null);
+            "teacher",
+            null,
+            URI.create("https://moodle.test"),
+            "database-password",
+            null,
+            null,
+            null);
     UserInfo userInfo = mock(UserInfo.class);
     SessionToken sessionToken = SessionToken.builder().token("offline-token").build();
     SessionData authSessionData =
@@ -260,6 +268,7 @@ class AuthServiceTest {
             URI.create("https://moodle.test"),
             "database-password",
             "moodle-token",
+            null,
             null);
     SessionToken sessionToken = SessionToken.builder().token("new-sso-token").build();
     RestClient restClient = mock(RestClient.class);
@@ -317,6 +326,7 @@ class AuthServiceTest {
             URI.create("https://moodle.test"),
             "database-password",
             "moodle-token",
+            null,
             null);
     SessionToken sessionToken = SessionToken.builder().token("new-sso-token").build();
     RestClient restClient = mock(RestClient.class);
@@ -398,6 +408,7 @@ class AuthServiceTest {
             URI.create("https://moodle.test"),
             "database-password",
             "moodle-token",
+            null,
             null);
     SessionToken existingSessionToken = SessionToken.builder().token("existing-sso-token").build();
     RestClient restClient = mock(RestClient.class);
@@ -445,6 +456,7 @@ class AuthServiceTest {
             URI.create("https://moodle.test"),
             "database-password",
             "moodle-token",
+            null,
             null);
     RestClient restClient = mock(RestClient.class);
     Site site = new Site();
@@ -483,7 +495,7 @@ class AuthServiceTest {
     TenantDatabasePort tenantDatabasePort = mock(TenantDatabasePort.class);
     AsyncOperations asyncOperations = new AsyncOperations(Runnable::run);
 
-    when(moodleApiPort.login(any())).thenReturn(null);
+    when(moodleApiPort.login(any())).thenReturn(null, null);
     when(moodleApiPort.loginWeb("teacher", "wrong-password", URI.create("https://moodle.test")))
         .thenReturn(mock(RestClient.class));
 
@@ -505,6 +517,7 @@ class AuthServiceTest {
             URI.create("https://moodle.test"),
             "db-password",
             null,
+            null,
             null);
 
     assertThrows(UnauthorizedException.class, () -> authService.loginByCredentials(authInput));
@@ -525,6 +538,7 @@ class AuthServiceTest {
             "wrong-password",
             URI.create("https://moodle.test"),
             "db-password",
+            null,
             null,
             null);
 
@@ -577,6 +591,7 @@ class AuthServiceTest {
             URI.create("https://moodle.test"),
             "database-password",
             null,
+            null,
             null);
     RestClient restClient = mock(RestClient.class);
     SessionToken generatedSession = SessionToken.builder().token("generated-token").build();
@@ -626,6 +641,7 @@ class AuthServiceTest {
             URI.create("https://moodle.test"),
             "wrong-database-password",
             null,
+            null,
             null);
 
     when(moodleApiPort.login(authInput)).thenReturn("moodle-token");
@@ -674,6 +690,7 @@ class AuthServiceTest {
             "moodle-password",
             URI.create("https://moodle.test"),
             "database-password",
+            null,
             null,
             null);
 
@@ -731,6 +748,7 @@ class AuthServiceTest {
             URI.create("https://moodle.test"),
             "database-password",
             null,
+            null,
             null);
 
     when(moodleApiPort.login(authInput)).thenReturn("moodle-token");
@@ -784,6 +802,7 @@ class AuthServiceTest {
             "moodle-password",
             URI.create("https://moodle.test"),
             "database-password",
+            null,
             null,
             null);
     Site site = new Site();
@@ -855,6 +874,7 @@ class AuthServiceTest {
             "moodle-password",
             URI.create("https://moodle.test"),
             "database-password",
+            null,
             null,
             null);
     RestClient restClient = mock(RestClient.class);
@@ -962,6 +982,7 @@ class AuthServiceTest {
             URI.create("https://moodle.test"),
             "database-password",
             null,
+            null,
             null);
     RestClient restClient = mock(RestClient.class);
 
@@ -1048,6 +1069,7 @@ class AuthServiceTest {
             "moodle-password",
             URI.create("https://moodle.test"),
             "database-password",
+            null,
             null,
             null);
     Site site = new Site();

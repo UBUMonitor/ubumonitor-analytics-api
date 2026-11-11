@@ -14,6 +14,7 @@ public interface SessionAdapterMapper {
 
   @Mapping(target = "userId", source = "userInfo.id")
   @Mapping(target = "username", source = "authInput.username")
+  @Mapping(target = "loginMode", source = "authInput.loginMode")
   @Mapping(target = "actualUser", source = "userInfo")
   @Mapping(target = "token", source = "token")
   SessionData toSessionData(

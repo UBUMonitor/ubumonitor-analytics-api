@@ -213,6 +213,7 @@ class MoodleAnalyticsIntegrationTest {
     wireMock.start();
 
     String accessToken = null;
+    List<String> sessionTokens = new ArrayList<>();
 
     try {
       JsonNode databaseSetup = testCase.path("databaseSetup");
@@ -252,33 +253,50 @@ class MoodleAnalyticsIntegrationTest {
               + authResponse.getBody());
       accessToken = OBJECT_MAPPER.readTree(authResponse.getBody()).path("accessToken").asText();
       assertFalse(accessToken.isBlank(), "Auth response must include an access token");
+      sessionTokens.add(accessToken);
       ObjectNode expectedAuthBody = authDefinition.path("expectedResponse").path("body").deepCopy();
       expectedAuthBody.put("accessToken", accessToken);
       assertEquals(expectedAuthBody, OBJECT_MAPPER.readTree(authResponse.getBody()));
       applyDatabaseSetup(databaseSetup, wireMock.baseUrl(), authBody);
+      if (testCase.path("resetMoodleRequestsBeforeEndpoints").asBoolean(false)) {
+        wireMock.resetRequests();
+      }
 
       JsonNode endpoints = testCase.path("endpoints");
       if (endpoints.isArray()) {
+        String endpointAccessToken = accessToken;
         for (JsonNode endpoint : endpoints) {
-          runFixtureEndpoint(endpoint, accessToken, wireMock.baseUrl());
+          endpointAccessToken =
+              runFixtureEndpoint(endpoint, endpointAccessToken, wireMock.baseUrl(), sessionTokens);
         }
+        accessToken = null;
       } else {
-        runFixtureEndpoint(testCase, accessToken, wireMock.baseUrl());
+        runFixtureEndpoint(testCase, accessToken, wireMock.baseUrl(), sessionTokens);
+      }
+      if (testCase.has("expectedMoodleRequestCount")) {
+        assertEquals(
+            testCase.path("expectedMoodleRequestCount").asInt(),
+            wireMock.getAllServeEvents().size(),
+            "Unexpected number of Moodle requests");
       }
     } finally {
-      if (accessToken != null && !accessToken.isBlank()) {
-        SessionData sessionData = sessionStore.getSession(accessToken);
+      if (accessToken != null && !accessToken.isBlank() && sessionTokens.isEmpty()) {
+        sessionTokens.add(accessToken);
+      }
+      for (String sessionToken : sessionTokens) {
+        SessionData sessionData = sessionStore.getSession(sessionToken);
         if (sessionData != null) {
           jooqProvider.closeTenant(sessionData);
         }
-        sessionStore.invalidateSession(accessToken);
+        sessionStore.invalidateSession(sessionToken);
       }
       moodleConfig.getDb().setBasePath(previousDatabasePath);
       wireMock.stop();
     }
   }
 
-  private void runFixtureEndpoint(JsonNode endpoint, String accessToken, String moodleHost)
+  private String runFixtureEndpoint(
+      JsonNode endpoint, String accessToken, String moodleHost, List<String> sessionTokens)
       throws IOException {
     JsonNode request = endpoint.path("request");
     String requestPath = request.path("path").asText().replace("${MOODLE_HOST}", moodleHost);
@@ -292,6 +310,15 @@ class MoodleAnalyticsIntegrationTest {
         response.getStatusCode().value(),
         "Unexpected status for " + requestPath + ": " + response.getBody());
     assertExpectedBody(endpoint, response, moodleHost);
+    if (endpoint.path("captureAccessToken").asBoolean(false)) {
+      String capturedToken =
+          OBJECT_MAPPER.readTree(response.getBody()).path("accessToken").asText();
+      assertFalse(
+          capturedToken.isBlank(), "Captured session response must include an access token");
+      sessionTokens.add(capturedToken);
+      return capturedToken;
+    }
+    return accessToken;
   }
 
   private String configureFixtureDatabase(String fixtureName) {

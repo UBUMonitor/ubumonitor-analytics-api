@@ -15,3 +15,6 @@ post:
 
     '401':
       $ref: '../../../components/responses/unauthorized_401.yaml'
+
+    '403':
+      $ref: '../../../components/responses/forbidden_403.yaml'

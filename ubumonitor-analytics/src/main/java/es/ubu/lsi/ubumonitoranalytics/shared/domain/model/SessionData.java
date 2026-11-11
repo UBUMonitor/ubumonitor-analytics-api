@@ -14,6 +14,7 @@ public class SessionData {
   private ActualUser actualUser;
   private Long userId;
   private String username;
+  private LoginMode loginMode;
   @ToString.Exclude private String password;
   private URI host;
 

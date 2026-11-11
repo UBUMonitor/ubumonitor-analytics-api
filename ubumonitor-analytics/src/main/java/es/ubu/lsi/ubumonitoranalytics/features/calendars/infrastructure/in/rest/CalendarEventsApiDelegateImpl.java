@@ -4,6 +4,7 @@ import es.ubu.lsi.ubumonitoranalytics.api.generated.api.CalendarsApiDelegate;
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.CalendarEventsResponseDto;
 import es.ubu.lsi.ubumonitoranalytics.features.calendars.application.port.in.GetCalendarEventsUseCase;
 import es.ubu.lsi.ubumonitoranalytics.features.calendars.application.port.in.SyncCalendarEventsUseCase;
+import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security.RequiresOnlineSession;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ public class CalendarEventsApiDelegateImpl implements CalendarsApiDelegate {
   private final CalendarEventsApiDelegateMapper calendarEventsApiDelegateMapper;
 
   @Override
+  @RequiresOnlineSession
   public ResponseEntity<CalendarEventsResponseDto> syncCalendarEvents(List<Long> courseIds) {
     return ResponseEntity.ok(
         calendarEventsApiDelegateMapper.toDto(

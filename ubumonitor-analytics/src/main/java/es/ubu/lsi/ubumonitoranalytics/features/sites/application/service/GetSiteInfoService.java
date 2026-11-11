@@ -22,7 +22,7 @@ public class GetSiteInfoService implements GetSiteInfoUseCase {
    */
   @Override
   @Transactional(readOnly = true)
-  public SiteInfo getIteInfo() {
+  public SiteInfo getSiteInfo() {
     SessionData sessionData = currentSessionContext.getSessionData();
     return siteInfoPersistencePort.fetchSiteInfo(sessionData.getUsername());
   }

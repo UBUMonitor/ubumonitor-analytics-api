@@ -6,6 +6,7 @@ import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.application.por
 import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.application.port.in.SyncCourseEnrollmentsUseCase;
 import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.CourseEnrollments;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.CurrentSessionPort;
+import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security.RequiresOnlineSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -22,6 +23,7 @@ public class CourseEnrollmentsApiDelegateImpl implements CourseEnrollmentsApiDel
   private final CurrentSessionPort currentSessionContext;
 
   @Override
+  @RequiresOnlineSession
   public ResponseEntity<CourseEnrollmentsResponseDto> syncCourseEnrollments(Long courseId) {
     return ResponseEntity.ok(
         toResponse(syncCourseEnrollmentsUseCase.syncCourseEnrollments(courseId)));

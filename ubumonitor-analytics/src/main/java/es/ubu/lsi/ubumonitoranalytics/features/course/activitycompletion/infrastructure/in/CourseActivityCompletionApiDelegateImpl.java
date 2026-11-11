@@ -3,6 +3,7 @@ package es.ubu.lsi.ubumonitoranalytics.features.course.activitycompletion.infras
 import es.ubu.lsi.ubumonitoranalytics.api.generated.api.CourseActivityCompletionApiDelegate;
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.CourseActivityCompletionResponseDto;
 import es.ubu.lsi.ubumonitoranalytics.features.course.activitycompletion.application.port.in.CourseActivityCompletionUseCase;
+import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security.RequiresOnlineSession;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ public class CourseActivityCompletionApiDelegateImpl
   private final CourseActivityCompletionUseCase courseActivityCompletionUseCase;
 
   @Override
+  @RequiresOnlineSession
   public ResponseEntity<CourseActivityCompletionResponseDto> syncCourseActivityCompletions(
       Long courseId) {
     return ResponseEntity.ok(

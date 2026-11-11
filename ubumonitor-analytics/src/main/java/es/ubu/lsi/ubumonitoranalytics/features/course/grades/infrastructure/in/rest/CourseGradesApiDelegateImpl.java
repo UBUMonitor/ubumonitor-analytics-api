@@ -4,6 +4,7 @@ import es.ubu.lsi.ubumonitoranalytics.api.generated.api.CourseGradesApiDelegate;
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.CourseGradeItemsResponseDto;
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.CourseGradesValuesResponseDto;
 import es.ubu.lsi.ubumonitoranalytics.features.course.grades.application.port.in.GradesUseCase;
+import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security.RequiresOnlineSession;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,7 @@ public class CourseGradesApiDelegateImpl implements CourseGradesApiDelegate {
   }
 
   @Override
+  @RequiresOnlineSession
   public ResponseEntity<CourseGradeItemsResponseDto> syncCourseGrades(Long courseId) {
     return ResponseEntity.ok(
         courseGradesMapper.toCourseGradeItemsResponseDto(gradesUseCase.sync(courseId), courseId));

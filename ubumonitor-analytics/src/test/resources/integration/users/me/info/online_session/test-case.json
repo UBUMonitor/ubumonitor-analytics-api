@@ -1,0 +1,13 @@
+{
+  "authFixture": "classpath:/integration/shared/teacher-sso-auth.json",
+  "request": {
+    "method": "GET",
+    "path": "/api/users/me/info",
+    "headers": {
+      "Authorization": "******"
+    }
+  },
+  "expectedResponse": {
+    "status": 200
+  }
+}

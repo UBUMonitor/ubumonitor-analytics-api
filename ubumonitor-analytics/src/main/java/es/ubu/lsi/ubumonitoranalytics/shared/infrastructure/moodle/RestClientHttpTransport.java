@@ -3,7 +3,9 @@ package es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.moodle;
 import es.ubu.lsi.moodle.core.HttpTransport;
 import es.ubu.lsi.moodle.model.ajax.AjaxResponse;
 import es.ubu.lsi.moodle.model.login.token.response.LoginTokenResponseApi;
+import es.ubu.lsi.ubumonitoranalytics.shared.application.exception.OfflineSessionNotAllowedException;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.CurrentSessionPort;
+import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.LoginMode;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
 import java.net.URI;
 import java.util.List;
@@ -34,6 +36,7 @@ public class RestClientHttpTransport implements HttpTransport {
   @Override
   public LoginTokenResponseApi login(URI baseUrl, String context, Map<String, String> form)
       throws Exception {
+    ensureOnlineSession();
     URI finalUri = getUri(baseUrl, context);
     MultiValueMap<String, String> formData = toFormData(form);
     log.trace(
@@ -69,6 +72,7 @@ public class RestClientHttpTransport implements HttpTransport {
 
   @Override
   public <T> T postForm(String context, Map<String, String> form, Class<T> clazz) {
+    ensureOnlineSession();
     SessionData sessionData = currentSessionContext.getSessionData();
 
     URI finalUri = getUri(sessionData.getHost(), context);
@@ -84,6 +88,7 @@ public class RestClientHttpTransport implements HttpTransport {
 
   @Override
   public <T> List<T> postFormArray(String context, Map<String, String> form, Class<T> elementType) {
+    ensureOnlineSession();
 
     ParameterizedTypeReference<List<T>> typeRef =
         ParameterizedTypeReference.forType(
@@ -103,6 +108,7 @@ public class RestClientHttpTransport implements HttpTransport {
 
   @Override
   public <T> T postJson(String context, Object body, Class<T> responseType) {
+    ensureOnlineSession();
     SessionData sessionData = currentSessionContext.getSessionData();
     URI finalUri = getUri(sessionData.getHost(), context);
 
@@ -117,6 +123,7 @@ public class RestClientHttpTransport implements HttpTransport {
 
   @Override
   public <T> List<T> postJsonArray(String context, Object body, Class<T> elementType) {
+    ensureOnlineSession();
     ParameterizedTypeReference<List<T>> typeRef =
         ParameterizedTypeReference.forType(
             ResolvableType.forClassWithGenerics(List.class, elementType).getType());
@@ -143,6 +150,7 @@ public class RestClientHttpTransport implements HttpTransport {
   @Override
   public <T> List<AjaxResponse<T>> postJsonAjaxArray(
       URI baseUrl, String context, Object body, Class<T> dataType) {
+    ensureOnlineSession();
     ResolvableType responseType = ResolvableType.forClassWithGenerics(AjaxResponse.class, dataType);
     ParameterizedTypeReference<List<AjaxResponse<T>>> typeRef =
         ParameterizedTypeReference.forType(
@@ -175,6 +183,13 @@ public class RestClientHttpTransport implements HttpTransport {
         map.size(),
         map.keySet());
     return map;
+  }
+
+  private void ensureOnlineSession() {
+    SessionData sessionData = currentSessionContext.getSessionData();
+    if (sessionData != null && sessionData.getLoginMode() == LoginMode.OFFLINE) {
+      throw new OfflineSessionNotAllowedException();
+    }
   }
 
   private static URI getUri(URI host, String context) {

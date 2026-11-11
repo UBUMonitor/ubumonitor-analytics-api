@@ -8,5 +8,5 @@ public interface GetSiteInfoUseCase {
   /**
    * @return site and current-user information
    */
-  SiteInfo getIteInfo();
+  SiteInfo getSiteInfo();
 }

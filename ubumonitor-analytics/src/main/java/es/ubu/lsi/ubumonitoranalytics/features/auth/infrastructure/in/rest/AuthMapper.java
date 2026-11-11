@@ -23,6 +23,7 @@ public interface AuthMapper {
   @Mapping(target = "username", source = "username")
   @Mapping(target = "password", source = "password")
   @Mapping(target = "host", source = "host")
+  @Mapping(target = "loginMode", constant = "CREDENTIALS")
   AuthInput toDomain(AuthLoginRequestDto authLoginRequestDto);
 
   /** Maps offline authentication input to the application model. */
@@ -32,6 +33,7 @@ public interface AuthMapper {
   @Mapping(target = "username", source = "username")
   @Mapping(target = "password", ignore = true)
   @Mapping(target = "host", source = "host")
+  @Mapping(target = "loginMode", constant = "OFFLINE")
   AuthInput toDomain(AuthOfflineRequestDto authOfflineRequestDto);
 
   /** Maps an application session token to the generated REST response. */
@@ -49,6 +51,7 @@ public interface AuthMapper {
       target = "moodleToken",
       source = "moodleLaunchCredential",
       qualifiedByName = "extractMoodleToken")
+  @Mapping(target = "loginMode", constant = "SSO")
   AuthInput toDomain(AuthSSORequestDto authSSORequestDto);
 
   @Named("extractMoodleToken")

@@ -14,6 +14,7 @@ import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.infrastructure.
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.infrastructure.in.rest.mapper.GetCourseLogsMapper;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.infrastructure.in.rest.mapper.GetCourseLogsStatisticsMapper;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.infrastructure.in.rest.mapper.ImportLogsMapper;
+import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security.RequiresOnlineSession;
 import java.io.InputStream;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -35,6 +36,7 @@ public class CourseLogsApiDelegateImpl implements CourseLogsApiDelegate {
   private final ColumnInfoMapper columnInfoMapper;
 
   @Override
+  @RequiresOnlineSession
   public ResponseEntity<CourseLogsResponseDto> syncCourseLogs(Long courseId) {
 
     ProcessLogsResult processLogsResult = importCourseLogsUseCase.sync(courseId);

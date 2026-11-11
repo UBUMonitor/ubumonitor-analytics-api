@@ -15,4 +15,5 @@ post:
             $ref: '../../../components/schemas/courses/grades/info/response.yaml#/CourseGradeItemsResponse'
     '401':
       $ref: '../../../components/responses/unauthorized_401.yaml'
-
+    '403':
+      $ref: '../../../components/responses/forbidden_403.yaml'

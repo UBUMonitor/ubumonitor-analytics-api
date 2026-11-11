@@ -1,0 +1,154 @@
+{
+  "authFixture": "classpath:/integration/shared/teacher-sso-auth.json",
+  "resetMoodleRequestsBeforeEndpoints": true,
+  "expectedMoodleRequestCount": 0,
+  "endpoints": [
+    {
+      "request": {
+        "method": "POST",
+        "path": "/api/public/auth/offline",
+        "body": {
+          "host": "${MOODLE_HOST}",
+          "username": "teacher",
+          "dbPassword": "analytics-test-password"
+        }
+      },
+      "captureAccessToken": true,
+      "expectedResponse": {
+        "status": 200
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "path": "/api/enrollments/sync",
+        "headers": {
+          "Authorization": "******"
+        }
+      },
+      "expectedResponse": {
+        "status": 403
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "path": "/api/calendars/events/sync",
+        "headers": {
+          "Authorization": "******"
+        }
+      },
+      "expectedResponse": {
+        "status": 403
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "path": "/api/sites/sync",
+        "headers": {
+          "Authorization": "******"
+        }
+      },
+      "expectedResponse": {
+        "status": 403
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "path": "/api/courses/2/activitycompletion/sync",
+        "headers": {
+          "Authorization": "******"
+        }
+      },
+      "expectedResponse": {
+        "status": 403
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "path": "/api/courses/2/content/sync",
+        "headers": {
+          "Authorization": "******"
+        }
+      },
+      "expectedResponse": {
+        "status": 403
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "path": "/api/courses/2/enrollments/sync",
+        "headers": {
+          "Authorization": "******"
+        }
+      },
+      "expectedResponse": {
+        "status": 403
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "path": "/api/courses/2/forums/sync",
+        "headers": {
+          "Authorization": "******"
+        }
+      },
+      "expectedResponse": {
+        "status": 403
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "path": "/api/courses/2/grades/sync",
+        "headers": {
+          "Authorization": "******"
+        }
+      },
+      "expectedResponse": {
+        "status": 403
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "path": "/api/courses/2/logs/sync",
+        "headers": {
+          "Authorization": "******"
+        }
+      },
+      "expectedResponse": {
+        "status": 403
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "path": "/api/users/me/info",
+        "headers": {
+          "Authorization": "******"
+        }
+      },
+      "expectedResponse": {
+        "status": 200
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "path": "/api/courses/2/content/info",
+        "headers": {
+          "Authorization": "******"
+        }
+      },
+      "expectedResponse": {
+        "status": 200
+      }
+    }
+  ]
+}
