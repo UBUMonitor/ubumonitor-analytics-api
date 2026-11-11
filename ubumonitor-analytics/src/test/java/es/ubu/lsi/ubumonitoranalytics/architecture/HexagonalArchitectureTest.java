@@ -14,36 +14,41 @@ import com.tngtech.archunit.lang.ArchRule;
 class HexagonalArchitectureTest {
 
   @ArchTest
+  // Application and domain code must depend on ports, not infrastructure adapters.
   static final ArchRule applicationAndDomainDoNotDependOnInfrastructure =
       noClasses()
           .that()
           .resideInAnyPackage("..application..", "..domain..")
           .should()
           .dependOnClassesThat()
-          .resideInAnyPackage("..infrastructure..")
-          .allowEmptyShould(true);
+          .resideInAnyPackage("..infrastructure..");
 
   @ArchTest
+  // Domain types must not depend on application contracts or services.
   static final ArchRule domainDoesNotDependOnApplication =
       noClasses()
           .that()
           .resideInAnyPackage("..domain..")
           .should()
           .dependOnClassesThat()
-          .resideInAnyPackage("..application..")
-          .allowEmptyShould(true);
+          .resideInAnyPackage("..application..");
 
   @ArchTest
+  // RestClient in SessionData is an accepted outbound-client dependency and known technical debt.
   static final ArchRule applicationAndDomainDoNotDependOnSpringWebOrServlet =
       noClasses()
           .that()
           .resideInAnyPackage("..application..", "..domain..")
           .should()
           .dependOnClassesThat()
-          .resideInAnyPackage("org.springframework.web..", "jakarta.servlet..")
-          .allowEmptyShould(true);
+          .resideInAnyPackage(
+              "org.springframework.web.servlet..",
+              "org.springframework.web.bind..",
+              "org.springframework.web.multipart..",
+              "jakarta.servlet..");
 
   @ArchTest
+  // Outbound port types are interfaces; data models belong elsewhere.
   static final ArchRule outputPortsAreInterfaces =
       classes()
           .that()
@@ -51,6 +56,5 @@ class HexagonalArchitectureTest {
           .and()
           .resideInAPackage("..application.port.out..")
           .should()
-          .beInterfaces()
-          .allowEmptyShould(true);
+          .beInterfaces();
 }

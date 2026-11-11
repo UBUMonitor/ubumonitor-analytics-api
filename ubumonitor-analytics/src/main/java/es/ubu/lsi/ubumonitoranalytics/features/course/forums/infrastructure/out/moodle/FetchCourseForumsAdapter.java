@@ -16,7 +16,7 @@ import es.ubu.lsi.ubumonitoranalytics.features.course.forums.domain.model.Course
 import es.ubu.lsi.ubumonitoranalytics.features.course.forums.domain.model.Forum;
 import es.ubu.lsi.ubumonitoranalytics.features.course.forums.domain.model.ForumDiscussion;
 import es.ubu.lsi.ubumonitoranalytics.features.course.forums.domain.model.ForumPost;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.concurrent.AsyncOperations;
+import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.concurrent.AsyncExecutionPort;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -29,7 +29,7 @@ public class FetchCourseForumsAdapter implements FetchCourseForumsPort {
 
   private final Client client;
   private final CourseForumsMoodleMapper mapper;
-  private final AsyncOperations asyncOperations;
+  private final AsyncExecutionPort asyncOperations;
 
   @Override
   public CourseForums fetchCourseForums(Long courseId) {

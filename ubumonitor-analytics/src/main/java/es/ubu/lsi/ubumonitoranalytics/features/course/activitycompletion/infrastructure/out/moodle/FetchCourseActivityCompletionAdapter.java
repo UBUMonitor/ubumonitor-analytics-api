@@ -4,7 +4,7 @@ import es.ubu.lsi.moodle.api.Client;
 import es.ubu.lsi.ubumonitoranalytics.features.course.activitycompletion.application.port.out.FetchActivityCompletionPort;
 import es.ubu.lsi.ubumonitoranalytics.features.course.activitycompletion.domain.model.ActivityCompletion;
 import es.ubu.lsi.ubumonitoranalytics.features.course.activitycompletion.domain.model.ActivityCompletionResult;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.concurrent.AsyncOperations;
+import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.concurrent.AsyncExecutionPort;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ public class FetchCourseActivityCompletionAdapter implements FetchActivityComple
 
   private final Client client;
   private final FetchActivityCompletionAdapterMapper fetchCourseContentAdapterMapper;
-  private final AsyncOperations asyncOperations;
+  private final AsyncExecutionPort asyncOperations;
 
   @Override
   public ActivityCompletionResult fetchCourseActivityCompletion(Long courseId, List<Long> userIds) {

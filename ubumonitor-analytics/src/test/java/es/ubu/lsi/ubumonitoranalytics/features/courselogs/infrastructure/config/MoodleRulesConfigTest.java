@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.port.out.MoodleLogCatalog;
+import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.importlogs.MoodleLogCatalog;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.rules.MoodleLogRule;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.infrastructure.config.GrokCompilerConfig;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.infrastructure.config.MoodleRulesConfig;

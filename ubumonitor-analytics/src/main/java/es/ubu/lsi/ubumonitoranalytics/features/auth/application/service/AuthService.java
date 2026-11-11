@@ -16,9 +16,9 @@ import es.ubu.lsi.ubumonitoranalytics.features.users.info.appication.port.in.Syn
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.appication.port.out.GetUserInfoPersistenceAdapterPort;
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.domain.model.UserInfo;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.exception.UnauthorizedException;
+import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.concurrent.AsyncExecutionPort;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.database.TenantDatabasePort;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.concurrent.AsyncOperations;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -39,7 +39,7 @@ public class AuthService implements AuthUseCase {
   private final SessionPort sessionPort;
   private final MoodleApiPort moodleApiPort;
   private final TenantDatabasePort tenantDatabasePort;
-  private final AsyncOperations asyncOperations;
+  private final AsyncExecutionPort asyncOperations;
 
   /**
    * Authenticates an SSO launch request and associates a web client with the session.

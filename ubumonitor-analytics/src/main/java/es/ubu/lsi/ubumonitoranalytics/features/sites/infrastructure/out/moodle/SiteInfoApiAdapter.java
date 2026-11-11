@@ -5,8 +5,8 @@ import es.ubu.lsi.moodle.model.core.webservice.getsiteinfo.request.GetSiteInfoRe
 import es.ubu.lsi.moodle.model.core.webservice.getsiteinfo.response.GetSiteInfoResponseApi;
 import es.ubu.lsi.ubumonitoranalytics.features.sites.application.dto.SiteInfo;
 import es.ubu.lsi.ubumonitoranalytics.features.sites.application.port.out.SiteInfoApiPort;
+import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.concurrent.AsyncExecutionPort;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.CurrentSessionPort;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.concurrent.AsyncOperations;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +17,7 @@ public class SiteInfoApiAdapter implements SiteInfoApiPort {
 
   private final Client client;
   private final SiteInfoApiAdapterMapper siteInfoApiAdapterMapper;
-  private final AsyncOperations asyncOperations;
+  private final AsyncExecutionPort asyncOperations;
   private final CurrentSessionPort currentSessionContext;
 
   @Override

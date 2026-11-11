@@ -1,4 +1,4 @@
-package es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.port.out;
+package es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.importlogs;
 
 import io.krakens.grok.api.Grok;
 import java.util.List;

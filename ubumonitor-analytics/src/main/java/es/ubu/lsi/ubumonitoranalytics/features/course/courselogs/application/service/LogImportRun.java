@@ -7,7 +7,7 @@ import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.im
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.importlogs.LogImportStats;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.importlogs.ProcessLogLine;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.importlogs.ProcessLogsResult;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.concurrent.AsyncOperations;
+import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.concurrent.AsyncExecutionPort;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -31,7 +31,7 @@ class LogImportRun implements CsvRecordHandler {
   /** Rows handed to one parsing task. */
   private static final int PARSE_CHUNK_SIZE = 2000;
 
-  private final AsyncOperations asyncOperations;
+  private final AsyncExecutionPort asyncOperations;
   private final LogParserService logParserService;
   private final LogPersistencePort logPersistencePort;
   private final CourseLogsInfoPort courseLogsInfoPort;

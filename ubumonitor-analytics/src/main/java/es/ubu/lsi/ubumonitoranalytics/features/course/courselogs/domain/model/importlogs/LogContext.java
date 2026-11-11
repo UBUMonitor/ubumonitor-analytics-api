@@ -1,6 +1,5 @@
 package es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.importlogs;
 
-import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.port.out.MoodleLogCatalog;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Map;

@@ -14,7 +14,9 @@ import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.infrastructure.
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.infrastructure.in.rest.mapper.GetCourseLogsMapper;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.infrastructure.in.rest.mapper.GetCourseLogsStatisticsMapper;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.infrastructure.in.rest.mapper.ImportLogsMapper;
+import java.io.InputStream;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,9 +43,12 @@ public class CourseLogsApiDelegateImpl implements CourseLogsApiDelegate {
   }
 
   @Override
+  @SneakyThrows
   public ResponseEntity<CourseLogsResponseDto> importCourseLogs(Long courseId, MultipartFile file) {
 
-    ProcessLogsResult processLogsResult = importCourseLogsUseCase.process(courseId, file);
+    InputStream inputStream = file.getInputStream();
+    ProcessLogsResult processLogsResult =
+        importCourseLogsUseCase.process(courseId, inputStream, file.getOriginalFilename());
 
     return ResponseEntity.ok(importLogsMapper.toDto(processLogsResult));
   }

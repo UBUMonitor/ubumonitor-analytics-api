@@ -7,9 +7,9 @@ import es.ubu.lsi.moodle.model.core.enrol.getenrolledusers.response.GetEnrolledU
 import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.application.port.out.FetchCourseEnrollmentsPort;
 import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.CourseEnrollments;
 import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.User;
+import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.concurrent.AsyncExecutionPort;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.moodle.MoodleDownloaderPort;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.UserPicture;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.concurrent.AsyncOperations;
 import es.ubu.lsi.ubumonitoranalytics.util.HashUtil;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -31,7 +31,7 @@ public class MoodleCourseEnrollmentsAdapter implements FetchCourseEnrollmentsPor
   private final Client client;
   private final EnrolledUsersMapper enrolledUsersMapper;
   private final MoodleDownloaderPort moodleDownloaderPort;
-  private final AsyncOperations asyncOperations;
+  private final AsyncExecutionPort asyncOperations;
 
   @Override
   public CourseEnrollments fetchCourseEnrollments(Long courseId, String token) {
