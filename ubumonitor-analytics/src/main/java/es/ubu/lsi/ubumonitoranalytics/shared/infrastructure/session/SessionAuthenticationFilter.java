@@ -34,23 +34,26 @@ public class SessionAuthenticationFilter extends OncePerRequestFilter {
       @NonNull HttpServletResponse response,
       @NonNull FilterChain chain)
       throws IOException, ServletException {
-    String token = extractBearerToken(request);
-    SessionData session = null;
+    try {
+      String token = extractBearerToken(request);
+      SessionData session = null;
 
-    if (token != null) {
-      session = sessionStore.getSession(token);
-      if (session != null) {
-        UsernamePasswordAuthenticationToken authentication =
-            UsernamePasswordAuthenticationToken.authenticated(
-                session.getUsername(), null, List.of());
-        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+      if (token != null) {
+        session = sessionStore.getSession(token);
+        if (session != null) {
+          UsernamePasswordAuthenticationToken authentication =
+              UsernamePasswordAuthenticationToken.authenticated(
+                  session.getUsername(), null, List.of());
+          authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+          SecurityContextHolder.getContext().setAuthentication(authentication);
+          currentSessionContext.setSessionData(session);
+        }
       }
-    }
 
-    SessionData requestSession = session;
-    currentSessionContext.runInRequestScope(
-        requestSession, () -> chain.doFilter(request, response));
+      chain.doFilter(request, response);
+    } finally {
+      currentSessionContext.clear();
+    }
   }
 
   private String extractBearerToken(HttpServletRequest request) {

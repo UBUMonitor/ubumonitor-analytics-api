@@ -46,12 +46,18 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import org.springframework.web.client.RestClient;
 
 class AuthServiceTest {
+
+  @AfterEach
+  void clearSessionContext() {
+    new CurrentSessionContext().clear();
+  }
 
   @Test
   void loginByCredentialsCreatesFreshSessionAfterValidatingAndSynchronizingUser() {
@@ -842,7 +848,16 @@ class AuthServiceTest {
         command -> {
           SessionData capturedSessionData = currentSessionContext.getSessionData();
           executor.execute(
-              () -> currentSessionContext.runWithSessionData(capturedSessionData, command));
+              () -> {
+                try {
+                  if (capturedSessionData != null) {
+                    currentSessionContext.setSessionData(capturedSessionData);
+                  }
+                  command.run();
+                } finally {
+                  currentSessionContext.clear();
+                }
+              });
         };
     AuthInput authInput =
         new AuthInput(

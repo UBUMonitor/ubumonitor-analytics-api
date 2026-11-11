@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -26,7 +27,7 @@ class SessionAuthenticationFilterTest {
   @Test
   void authenticatesBearerTokenFoundInSessionStore() throws Exception {
     SessionData session = SessionData.builder().username("teacher").build();
-    when(sessionStore.getSession("opaque-session-token")).thenReturn(session);
+    when(sessionStore.getSession(anyString())).thenReturn(session);
     MockHttpServletRequest request = new MockHttpServletRequest();
     request.addHeader("Authorization", "Bearer opaque-session-token");
 
@@ -60,20 +61,27 @@ class SessionAuthenticationFilterTest {
   }
 
   @Test
-  void propagatesRuntimeExceptionAndEndsSessionScope() {
+  void propagatesRuntimeExceptionAndClearsSessionContext() {
     RuntimeException expected = new IllegalStateException("request failed");
+    SessionData session = SessionData.builder().username("teacher").build();
+    when(sessionStore.getSession(anyString())).thenReturn(session);
+    MockHttpServletRequest request = new MockHttpServletRequest();
+    request.addHeader("Authorization", "Bearer opaque-session-token");
 
     RuntimeException actual =
         assertThrows(
             RuntimeException.class,
             () ->
-                currentSessionContext.runInRequestScope(
-                    null,
-                    () -> {
+                filter.doFilter(
+                    request,
+                    new MockHttpServletResponse(),
+                    (requestInChain, responseInChain) -> {
+                      assertSame(session, currentSessionContext.getSessionData());
                       throw expected;
                     }));
 
     assertSame(expected, actual);
     assertNull(currentSessionContext.getSessionData());
+    SecurityContextHolder.clearContext();
   }
 }
