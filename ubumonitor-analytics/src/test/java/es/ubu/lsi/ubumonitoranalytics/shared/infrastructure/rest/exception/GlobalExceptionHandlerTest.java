@@ -10,6 +10,8 @@ import es.ubu.lsi.ubumonitoranalytics.shared.application.exception.ErrorResponse
 import es.ubu.lsi.ubumonitoranalytics.shared.application.exception.OfflineSessionNotAllowedException;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.exception.UnauthorizedException;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.InvalidDatabaseEncryptionKeyException;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.concurrent.CompletionException;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -65,6 +67,17 @@ class GlobalExceptionHandlerTest {
 
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     assertEquals("BAD_REQUEST", response.getBody().getCode());
+  }
+
+  @Test
+  void mapsUploadedFileReadFailureToInternalServerError() {
+    var response =
+        exceptionHandler.internalServerError(
+            new UncheckedIOException(
+                "Could not read uploaded course logs file.", new IOException()));
+
+    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    assertEquals("INTERNAL_SERVER_ERROR", response.getBody().getCode());
   }
 
   @Test

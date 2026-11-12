@@ -11,9 +11,9 @@ import es.ubu.lsi.ubumonitoranalytics.features.sites.application.dto.SiteInfo;
 import es.ubu.lsi.ubumonitoranalytics.features.sites.application.port.out.SiteInfoApiPort;
 import es.ubu.lsi.ubumonitoranalytics.features.sites.application.port.out.SiteInfoPersistencePort;
 import es.ubu.lsi.ubumonitoranalytics.features.sites.domain.model.Site;
-import es.ubu.lsi.ubumonitoranalytics.features.users.info.appication.port.in.SearchUserByUserNameUseCase;
-import es.ubu.lsi.ubumonitoranalytics.features.users.info.appication.port.in.SyncUserInfoUseCase;
-import es.ubu.lsi.ubumonitoranalytics.features.users.info.appication.port.out.GetUserInfoPersistenceAdapterPort;
+import es.ubu.lsi.ubumonitoranalytics.features.users.info.application.port.in.SearchUserByUserNameUseCase;
+import es.ubu.lsi.ubumonitoranalytics.features.users.info.application.port.in.SyncUserInfoUseCase;
+import es.ubu.lsi.ubumonitoranalytics.features.users.info.application.port.out.GetUserInfoPersistenceAdapterPort;
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.domain.model.UserInfo;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.exception.UnauthorizedException;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.concurrent.AsyncExecutionPort;
@@ -22,6 +22,7 @@ import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -64,20 +65,12 @@ public class AuthService implements AuthUseCase {
     SessionData sessionData = sessionPort.activateAuthenticationContext(authInput, restClient);
     initializeTenantDatabase(sessionData);
     siteInfoPersistencePort.save(siteInfo);
-    SessionToken sessionToken = null;
-    try {
-      UserInfo userInfo =
-          syncUserInfoUseCase.syncActualUser(
-              searchUserByUserNameUseCase.searchUserByUserName(userName));
-      validateSiteUser(siteInfo);
-      sessionToken = sessionPort.generateNewSession(authInput, userInfo, restClient);
-      return attachSiteUserInfo(sessionToken, siteInfo, userInfo);
-    } catch (RuntimeException exception) {
-      if (sessionToken != null) {
-        sessionPort.invalidateSession(sessionToken);
-      }
-      throw exception;
-    }
+    UserInfo userInfo =
+        syncUserInfoUseCase.syncActualUser(
+            searchUserByUserNameUseCase.searchUserByUserName(userName));
+    validateSiteUser(siteInfo);
+    return createSession(
+        authInput, userInfo, restClient, token -> attachSiteUserInfo(token, siteInfo, userInfo));
   }
 
   /**
@@ -113,7 +106,6 @@ public class AuthService implements AuthUseCase {
     authInput.setMoodleToken(moodleToken);
     SessionData sessionData = sessionPort.activateAuthenticationContext(authInput, restClient);
     initializeTenantDatabase(sessionData);
-    SessionToken sessionToken = null;
     CompletableFuture<UserInfo> searchedUserFuture = null;
     try {
       CompletableFuture<SiteInfo> siteInfoFuture =
@@ -133,14 +125,11 @@ public class AuthService implements AuthUseCase {
 
       UserInfo searchedUser = joinCompletedFuture(searchedUserFuture);
       UserInfo userInfo = syncUserInfoUseCase.syncActualUser(searchedUser);
-      sessionToken = sessionPort.generateNewSession(authInput, userInfo, restClient);
-      return attachSiteUserInfo(sessionToken, siteInfo, userInfo);
+      return createSession(
+          authInput, userInfo, restClient, token -> attachSiteUserInfo(token, siteInfo, userInfo));
     } catch (RuntimeException exception) {
       if (searchedUserFuture != null) {
         searchedUserFuture.cancel(true);
-      }
-      if (sessionToken != null) {
-        sessionPort.invalidateSession(sessionToken);
       }
       throw exception;
     }
@@ -157,14 +146,21 @@ public class AuthService implements AuthUseCase {
 
     SessionData sessionData = sessionPort.activateAuthenticationContext(authInput, null);
     initializeTenantDatabase(sessionData);
-    SessionToken sessionToken = null;
+    UserInfo userInfo = getUserInfoPersistenceAdapterPort.getActualUser(authInput.getUsername());
+    if (userInfo == null) {
+      throw new UnauthorizedException("Invalid username");
+    }
+    return createSession(authInput, userInfo, null, token -> attachUserInfo(token, userInfo));
+  }
+
+  private SessionToken createSession(
+      AuthInput authInput,
+      UserInfo userInfo,
+      RestClient restClient,
+      Function<SessionToken, SessionToken> attachUserInfo) {
+    SessionToken sessionToken = sessionPort.generateNewSession(authInput, userInfo, restClient);
     try {
-      UserInfo userInfo = getUserInfoPersistenceAdapterPort.getActualUser(authInput.getUsername());
-      if (userInfo == null) {
-        throw new UnauthorizedException("Invalid username");
-      }
-      sessionToken = sessionPort.generateNewSession(authInput, userInfo, null);
-      return attachUserInfo(sessionToken, userInfo);
+      return attachUserInfo.apply(sessionToken);
     } catch (RuntimeException exception) {
       if (sessionToken != null) {
         sessionPort.invalidateSession(sessionToken);

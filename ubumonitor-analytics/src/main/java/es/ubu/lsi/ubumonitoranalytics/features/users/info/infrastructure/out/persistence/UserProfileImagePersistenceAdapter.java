@@ -2,7 +2,7 @@ package es.ubu.lsi.ubumonitoranalytics.features.users.info.infrastructure.out.pe
 
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.UsersImages.USERS_IMAGES;
 
-import es.ubu.lsi.ubumonitoranalytics.features.users.info.appication.port.out.UserProfileImagePersistencePort;
+import es.ubu.lsi.ubumonitoranalytics.features.users.info.application.port.out.UserProfileImagePersistencePort;
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.domain.model.image.UserImage;
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.infrastructure.out.persistence.mapper.UserImageMapper;
 import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.UsersImagesRecord;

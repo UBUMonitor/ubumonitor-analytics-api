@@ -3,7 +3,7 @@ package es.ubu.lsi.ubumonitoranalytics.features.users.info.infrastructure.out.pe
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Users.USERS;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.UsersImages.USERS_IMAGES;
 
-import es.ubu.lsi.ubumonitoranalytics.features.users.info.appication.port.out.EnrollmentUserImagesPersistencePort;
+import es.ubu.lsi.ubumonitoranalytics.features.users.info.application.port.out.EnrollmentUserImagesPersistencePort;
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.domain.model.document.EnrollmentImagesDocumentCommand;
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.domain.model.image.EnrollmentUserImage;
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.infrastructure.out.persistence.mapper.EnrollmentUserImagesMapper;

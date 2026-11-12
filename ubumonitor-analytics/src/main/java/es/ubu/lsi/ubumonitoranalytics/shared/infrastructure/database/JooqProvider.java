@@ -6,7 +6,6 @@ import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.DatabaseCreationEx
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.DatabaseMigrationValidationException;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.moodle.config.MoodleConfig;
-import es.ubu.lsi.ubumonitoranalytics.util.DatabaseUtil;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.sql.DataSource;

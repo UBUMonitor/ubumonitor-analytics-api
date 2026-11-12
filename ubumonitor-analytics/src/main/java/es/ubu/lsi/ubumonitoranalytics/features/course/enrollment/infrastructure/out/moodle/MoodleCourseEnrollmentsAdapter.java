@@ -10,7 +10,7 @@ import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.Us
 import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.concurrent.AsyncExecutionPort;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.moodle.MoodleDownloaderPort;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.UserPicture;
-import es.ubu.lsi.ubumonitoranalytics.util.HashUtil;
+import es.ubu.lsi.ubumonitoranalytics.shared.domain.util.HashUtil;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;

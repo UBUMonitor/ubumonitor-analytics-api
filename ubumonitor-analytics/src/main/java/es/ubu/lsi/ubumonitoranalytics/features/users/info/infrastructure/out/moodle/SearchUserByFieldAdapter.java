@@ -3,7 +3,7 @@ package es.ubu.lsi.ubumonitoranalytics.features.users.info.infrastructure.out.mo
 import es.ubu.lsi.moodle.api.Client;
 import es.ubu.lsi.moodle.model.core.user.getusersbyfield.request.GetUsersByFieldRequestApi;
 import es.ubu.lsi.moodle.model.core.user.getusersbyfield.response.GetUsersByFieldResponseApi;
-import es.ubu.lsi.ubumonitoranalytics.features.users.info.appication.port.out.SearchUsersByFieldPort;
+import es.ubu.lsi.ubumonitoranalytics.features.users.info.application.port.out.SearchUsersByFieldPort;
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.domain.model.SearchField;
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.domain.model.UserInfo;
 import java.util.List;

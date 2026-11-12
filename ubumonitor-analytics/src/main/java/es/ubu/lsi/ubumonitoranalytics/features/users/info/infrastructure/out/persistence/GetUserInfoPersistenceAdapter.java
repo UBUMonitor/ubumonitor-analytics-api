@@ -2,7 +2,7 @@ package es.ubu.lsi.ubumonitoranalytics.features.users.info.infrastructure.out.pe
 
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.ActualUser.ACTUAL_USER;
 
-import es.ubu.lsi.ubumonitoranalytics.features.users.info.appication.port.out.GetUserInfoPersistenceAdapterPort;
+import es.ubu.lsi.ubumonitoranalytics.features.users.info.application.port.out.GetUserInfoPersistenceAdapterPort;
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.domain.model.UserInfo;
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.infrastructure.out.persistence.mapper.UserInfoPersistenceMapper;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;

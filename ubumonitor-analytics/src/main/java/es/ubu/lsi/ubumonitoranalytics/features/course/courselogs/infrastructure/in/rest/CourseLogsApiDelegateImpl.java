@@ -15,9 +15,10 @@ import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.infrastructure.
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.infrastructure.in.rest.mapper.GetCourseLogsStatisticsMapper;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.infrastructure.in.rest.mapper.ImportLogsMapper;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security.RequiresOnlineSession;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,11 +46,12 @@ public class CourseLogsApiDelegateImpl implements CourseLogsApiDelegate {
   }
 
   @Override
-  @SneakyThrows
   public ResponseEntity<CourseLogsResponseDto> importCourseLogs(Long courseId, MultipartFile file) {
     ProcessLogsResult processLogsResult;
     try (InputStream inputStream = file.getInputStream()) {
       processLogsResult = importCourseLogsUseCase.process(courseId, inputStream);
+    } catch (IOException exception) {
+      throw new UncheckedIOException("Could not read uploaded course logs file.", exception);
     }
 
     return ResponseEntity.ok(importLogsMapper.toDto(processLogsResult));
