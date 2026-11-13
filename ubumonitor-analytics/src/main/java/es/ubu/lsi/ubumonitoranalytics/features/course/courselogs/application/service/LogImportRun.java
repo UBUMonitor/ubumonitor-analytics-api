@@ -19,8 +19,8 @@ import org.apache.commons.csv.CSVRecord;
 
 /**
  * State of one import. Rows are grouped in chunks that are parsed concurrently, while reading and
- * every database write stay on the calling thread (which owns the transaction). Chunks are queued
- * for saving in the order they were received. Not thread-safe: feed it from a single thread.
+ * every database write stay on the calling thread. Chunks are queued for saving in the order they
+ * were received. Not thread-safe: feed it from a single thread.
  */
 @Slf4j
 @RequiredArgsConstructor

@@ -23,7 +23,6 @@ public class GradesService implements GradesUseCase {
   private final GradesApiPort gradesApiPort;
 
   @Override
-  @Transactional
   public List<GradeItem> sync(Long courseId) {
     Long userId = currentSessionContext.getSessionData().getUserId();
     CourseGrade courseGrade = gradesApiPort.fetchCourseGradeItems(courseId, userId);
@@ -32,11 +31,13 @@ public class GradesService implements GradesUseCase {
   }
 
   @Override
+  @Transactional(readOnly = true)
   public List<GradeItem> getGradeItems(Long courseId) {
     return gradesFetchPersistencePort.fetchCourseGradeItemsPersistence(courseId);
   }
 
   @Override
+  @Transactional(readOnly = true)
   public List<UserGrade> getUserGrades(
       Long courseId, List<Long> gradeItemsIds, List<Long> userIds) {
     return gradesFetchPersistencePort.fetchCourseUserGradesPersistence(

@@ -289,7 +289,6 @@
                         <configuration>
                             <inputSpec>${project.basedir}/src/main/resources/static/openapi/openapi.yaml</inputSpec>
                             <generatorName>spring</generatorName>
-
                             <library>spring-boot</library>
 
                             <apiPackage>es.ubu.lsi.ubumonitoranalytics.api.generated.api</apiPackage>
@@ -312,14 +311,12 @@
                             <configOptions>
                                 <useSpringBoot4>true</useSpringBoot4>
                                 <useJackson3>true</useJackson3>
-                                <library>spring-boot</library>
                                 <reactive>false</reactive>
                                 <delegatePattern>true</delegatePattern>
                                 <useJakartaEe>true</useJakartaEe>
                                 <useResponseEntity>true</useResponseEntity>
                                 <useBeanValidation>true</useBeanValidation>
                                 <useTags>true</useTags>
-                                <jackson>true</jackson>
                                 <openApiNullable>false</openApiNullable>
                                 <interfaceOnly>false</interfaceOnly>
                                 <skipDefaultInterface>false</skipDefaultInterface>
@@ -345,28 +342,13 @@
                         </goals>
                         <configuration>
                             <sources>
-                                <source>${project.build.directory}/generated-sources/openapi/src/main/java</source>
-                                <source>${project.build.directory}/generated-sources/moodle-adapter/src/main/java
-                                </source>
+                                <source>${project.build.directory}/generated-sources/moodle-adapter/src/main/java</source>
                                 <source>${project.build.directory}/generated-sources/annotations</source>
                                 <source>${project.build.directory}/generated-sources/jooq</source>
 
                             </sources>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>add-test-source</id>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>add-test-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>${project.build.directory}/generated-sources/openapi/src/test/java</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-
                 </executions>
             </plugin>
             <plugin>

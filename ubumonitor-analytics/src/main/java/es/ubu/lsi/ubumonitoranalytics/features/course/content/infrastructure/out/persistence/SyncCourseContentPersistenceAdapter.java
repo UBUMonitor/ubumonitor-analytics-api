@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 /** Stores synchronized course sections and modules in tenant persistence. */
 @Component
@@ -25,6 +26,7 @@ public class SyncCourseContentPersistenceAdapter implements CourseContentPersist
   private final Jooq jooq;
   private final CourseContentPersistenceMapper mapper;
 
+  @Transactional
   @Override
   public void save(CourseContent content) {
 

@@ -92,14 +92,14 @@ public class JooqProvider implements TenantDatabasePort {
 
       String tenantId = TenantContext.buildTenantId(session);
 
-      log.info("Creating datasource for tenant {}", tenantId);
+      log.info("Creating tenant datasource");
 
       migrateIfNeeded(tenantId, ds);
 
       return ds;
 
     } catch (FlywayValidateException e) {
-      log.error("Flyway validation failed for tenant {}", jdbcUrl, e);
+      log.error("Flyway validation failed for tenant database");
       throw new DatabaseMigrationValidationException(jdbcUrl, e);
     } catch (Exception e) {
       ds.close();
@@ -114,7 +114,7 @@ public class JooqProvider implements TenantDatabasePort {
       return;
     }
 
-    log.info("Running Flyway migration for tenant {}", tenantId);
+    log.info("Running tenant Flyway migration");
     Flyway.configure()
         .dataSource(ds)
         .locations("classpath:db/migration")
@@ -124,7 +124,7 @@ public class JooqProvider implements TenantDatabasePort {
         .migrate();
 
     migratedTenants.add(tenantId);
-    log.info("Migration completed for tenant {}", tenantId);
+    log.info("Tenant Flyway migration completed");
   }
 
   /** Closes and removes the data source associated with a tenant session. */
@@ -144,7 +144,7 @@ public class JooqProvider implements TenantDatabasePort {
     dataSourceCache.remove(tenantId);
     migratedTenants.remove(tenantId);
 
-    log.info("Closed tenant {}", tenantId);
+    log.info("Closed tenant datasource");
   }
 
   /** Closes all cached tenant data sources and clears the provider state. */

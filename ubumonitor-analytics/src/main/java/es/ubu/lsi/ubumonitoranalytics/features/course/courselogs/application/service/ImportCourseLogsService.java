@@ -21,7 +21,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
 
 /** Imports course logs from uploaded CSV files or synchronizes them from Moodle. */
@@ -49,7 +48,6 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
    * @return import statistics and refreshed course log information
    */
   @Override
-  @Transactional
   public ProcessLogsResult process(Long courseId, InputStream inputStream) {
     LogContext logContext = logPersistencePort.getLogContext(courseId);
 
@@ -72,7 +70,6 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
    * @return synchronization statistics and refreshed course log information
    */
   @Override
-  @Transactional
   public ProcessLogsResult sync(Long courseId) {
     RestClient restClient = currentMoodleRestClientPort.requireOnlineRestClient();
 

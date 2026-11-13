@@ -9,6 +9,7 @@ import es.ubu.lsi.ubumonitoranalytics.features.course.activitycompletion.domain.
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /** Fetches course content from Moodle and stores it for the current tenant. */
 @Service
@@ -31,11 +32,13 @@ public class CourseActivityCompletionService implements CourseActivityCompletion
   }
 
   @Override
+  @Transactional(readOnly = true)
   public ActivityCompletionResult getActivityCompletion(Long courseId) {
     return getCourseActivityCompletionPersistencePort.getCourseActivitiesCompletions(courseId);
   }
 
   @Override
+  @Transactional(readOnly = true)
   public ActivityCompletionResult getActivityCompletion(
       Long courseId, List<Long> moduleIds, List<Long> userIds) {
     return getCourseActivityCompletionPersistencePort.getCourseActivitiesCompletions(

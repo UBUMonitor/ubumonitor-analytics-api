@@ -21,7 +21,7 @@ CourseGradesValuesResponse:
               description: The grade value for the user in the specified grade item
             percentage:
               type: number
-              min: 0
-              max: 100
+              minimum: 0
+              maximum: 100
               format: double
               description: The percentage grade for the user in the specified grade item

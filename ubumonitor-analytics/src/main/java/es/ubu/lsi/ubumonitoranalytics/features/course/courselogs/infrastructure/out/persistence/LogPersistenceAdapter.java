@@ -29,6 +29,7 @@ import org.jooq.impl.DSL;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 /** Stores course log records and provides their lookup metadata. */
 @Component
@@ -48,6 +49,7 @@ public class LogPersistenceAdapter implements LogPersistencePort {
   private volatile Map<String, Byte> cachedOrigins;
 
   @Override
+  @Transactional
   public void createIfNotExists(Long courseId) {
     DSLContext dsl = jooq.dsl();
 
@@ -59,6 +61,7 @@ public class LogPersistenceAdapter implements LogPersistencePort {
   }
 
   @Override
+  @Transactional
   public void saveBatch(List<ProcessLogLine> logs) {
 
     DSLContext dsl = jooq.dsl();

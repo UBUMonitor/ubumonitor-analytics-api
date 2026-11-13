@@ -9,6 +9,7 @@ import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.EntityNotFoundExce
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 /** Reads and writes site information in tenant persistence. */
 @Component
@@ -19,6 +20,7 @@ public class SiteInfoPersistenceAdapter implements SiteInfoPersistencePort {
   private final SitePersistenceAdapterMapper mapper;
 
   @Override
+  @Transactional
   public void save(SiteInfo siteInfo) {
 
     SitesRecord sitesRecord = mapper.toRecord(siteInfo);

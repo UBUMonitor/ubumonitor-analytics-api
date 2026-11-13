@@ -1,11 +1,12 @@
 CourseGradesValuesRequest:
   type: object
-
+  required:
+    - gradeItemIds
+    - userIds
   properties:
 
     gradeItemIds:
       type: array
-      required: true
       minItems: 1
       items:
         type: integer
@@ -13,7 +14,6 @@ CourseGradesValuesRequest:
       description: List of grade item identifiers to include in the grade value lookup.
     userIds:
       type: array
-      required: true
       minItems: 1
       items:
         type: integer

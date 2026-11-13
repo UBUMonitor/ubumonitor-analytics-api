@@ -19,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MimeType;
+import org.springframework.web.client.RestClientResponseException;
 
 /** Fetches course enrollment data and profile images from Moodle. */
 @Slf4j
@@ -76,7 +77,17 @@ public class MoodleCourseEnrollmentsAdapter implements FetchCourseEnrollmentsPor
         picture.setHexHash(HashUtil.imageHash(body));
       }
     } catch (RuntimeException e) {
-      log.warn("Could not download profile image from {}", picture.getUrl(), e);
+      log.warn(
+          "Could not download profile image (type={}, httpStatus={})",
+          e.getClass().getSimpleName(),
+          httpStatus(e));
     }
+  }
+
+  private static String httpStatus(RuntimeException exception) {
+    if (exception instanceof RestClientResponseException responseException) {
+      return String.valueOf(responseException.getStatusCode().value());
+    }
+    return "unavailable";
   }
 }

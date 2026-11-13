@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.jooq.Record1;
 import org.jooq.Select;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 @Component
@@ -26,6 +27,7 @@ public class GradesSavePersistenceAdapter implements GradesSavePersistencePort {
   private final GradesSavePersistenceMapper mapper;
 
   @Override
+  @Transactional
   public void saveCourseGradeItemsPersistence(CourseGrade courseGrade) {
     Long courseId = courseGrade.getCourseId();
     Long now = Instant.now().getEpochSecond();
