@@ -12,7 +12,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
-import es.ubu.lsi.ubumonitoranalytics.shared.application.image.ImageUtil;
+import es.ubu.lsi.ubumonitoranalytics.shared.application.image.UserPlaceholderImage;
 import java.io.IOException;
 import java.net.URI;
 import org.junit.jupiter.api.Test;
@@ -122,6 +122,6 @@ class MoodleDownloaderAdapterTest {
 
   private static void assertFallback(byte[] body) {
     assertNotNull(body);
-    assertArrayEquals(ImageUtil.getPlaceholder(), body);
+    assertArrayEquals(UserPlaceholderImage.getPlaceholder(), body);
   }
 }

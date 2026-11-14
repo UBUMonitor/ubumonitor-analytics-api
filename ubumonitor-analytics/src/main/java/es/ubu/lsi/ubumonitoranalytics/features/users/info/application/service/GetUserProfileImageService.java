@@ -3,7 +3,7 @@ package es.ubu.lsi.ubumonitoranalytics.features.users.info.application.service;
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.application.port.in.GetUserProfileImageUseCase;
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.application.port.out.UserProfileImagePersistencePort;
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.domain.model.image.UserImage;
-import es.ubu.lsi.ubumonitoranalytics.shared.application.image.ImageUtil;
+import es.ubu.lsi.ubumonitoranalytics.shared.application.image.UserPlaceholderImage;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.SessionStorePort;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
 import java.net.URI;
@@ -55,13 +55,13 @@ public class GetUserProfileImageService implements GetUserProfileImageUseCase {
   }
 
   private static UserImage getPlaceHolder(String normalized) {
-    String etag = ImageUtil.getPlaceholderEtag();
+    String etag = UserPlaceholderImage.getPlaceholderEtag();
     boolean modified = !etag.equals(normalized);
 
     return UserImage.builder()
         .hexHash(etag)
         .contentType("image/png")
-        .image(modified ? ImageUtil.getPlaceholder() : null)
+        .image(modified ? UserPlaceholderImage.getPlaceholder() : null)
         .isModified(modified)
         .build();
   }
