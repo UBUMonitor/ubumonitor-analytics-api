@@ -1,28 +1,22 @@
 package es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.moodle;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withServerError;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
-
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
-import es.ubu.lsi.ubumonitoranalytics.shared.application.image.ImageUtil;
-import java.io.IOException;
-import java.net.URI;
+import es.ubu.lsi.ubumonitoranalytics.shared.application.image.UserPlaceholderImage;
 import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
-import org.springframework.http.client.ClientHttpRequest;
-import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClient;
+
+import java.net.URI;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withServerError;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 class MoodleDownloaderAdapterTest {
 
@@ -88,14 +82,9 @@ class MoodleDownloaderAdapterTest {
   void returnsPlaceholderForTimeout() {
     RestClient.Builder builder =
         RestClient.builder()
-            .requestFactory(
-                new ClientHttpRequestFactory() {
-                  @Override
-                  public ClientHttpRequest createRequest(
-                      URI uri, org.springframework.http.HttpMethod method) throws IOException {
-                    throw new ResourceAccessException("Read timed out");
-                  }
-                });
+            .requestFactory((_, _) -> {
+              throw new ResourceAccessException("Read timed out");
+            });
     MoodleDownloaderAdapter adapter = new MoodleDownloaderAdapter(builder);
 
     var response = adapter.downloadUserImage(IMAGE_URI, "sentinel");
@@ -122,6 +111,6 @@ class MoodleDownloaderAdapterTest {
 
   private static void assertFallback(byte[] body) {
     assertNotNull(body);
-    assertArrayEquals(ImageUtil.getPlaceholder(), body);
+    assertArrayEquals(UserPlaceholderImage.getPlaceholder(), body);
   }
 }
