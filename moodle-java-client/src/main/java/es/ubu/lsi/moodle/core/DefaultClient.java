@@ -9,6 +9,8 @@ import es.ubu.lsi.moodle.api.core.course.CoreCourseApi;
 import es.ubu.lsi.moodle.api.core.course.CoreCourseApiImpl;
 import es.ubu.lsi.moodle.api.core.enrol.CoreEnrolApi;
 import es.ubu.lsi.moodle.api.core.enrol.CoreEnrolApiImpl;
+import es.ubu.lsi.moodle.api.core.group.CoreGroupApi;
+import es.ubu.lsi.moodle.api.core.group.CoreGroupApiImpl;
 import es.ubu.lsi.moodle.api.core.user.CoreUserApi;
 import es.ubu.lsi.moodle.api.core.user.CoreUserApiImpl;
 import es.ubu.lsi.moodle.api.core.webservice.CoreWebserviceApi;
@@ -44,6 +46,7 @@ public class DefaultClient implements Client {
   private final CoreCompletionApi coreCompletion;
   private final CoreCourseApi coreCourse;
   private final CoreEnrolApi coreEnrol;
+  private final CoreGroupApi coreGroup;
   private final CoreUserApi coreUser;
   private final CoreWebserviceApi coreWebservice;
 
@@ -61,6 +64,7 @@ public class DefaultClient implements Client {
     this.coreUser = new CoreUserApiImpl(this);
     this.coreCourse = new CoreCourseApiImpl(this);
     this.coreEnrol = new CoreEnrolApiImpl(this);
+    this.coreGroup = new CoreGroupApiImpl(this);
     this.coreCompletion = new CoreCompletionApiImpl(this);
     this.coreWebservice = new CoreWebserviceApiImpl(this);
     this.gradeReportUser = new GradeReportUserApiImpl(this);
@@ -85,6 +89,12 @@ public class DefaultClient implements Client {
   @Override
   public CoreEnrolApi coreEnrol() {
     return coreEnrol;
+  }
+
+  /** Returns the typed Moodle group API. */
+  @Override
+  public CoreGroupApi coreGroup() {
+    return coreGroup;
   }
 
   /** Returns the typed Moodle calendar API. */

@@ -4,6 +4,7 @@ import es.ubu.lsi.moodle.api.core.calendar.CoreCalendarApi;
 import es.ubu.lsi.moodle.api.core.completion.CoreCompletionApi;
 import es.ubu.lsi.moodle.api.core.course.CoreCourseApi;
 import es.ubu.lsi.moodle.api.core.enrol.CoreEnrolApi;
+import es.ubu.lsi.moodle.api.core.group.CoreGroupApi;
 import es.ubu.lsi.moodle.api.core.user.CoreUserApi;
 import es.ubu.lsi.moodle.api.core.webservice.CoreWebserviceApi;
 import es.ubu.lsi.moodle.api.gradereport.GradeReportUserApi;
@@ -38,6 +39,11 @@ public interface Client {
    * @return the Moodle enrollment API
    */
   CoreEnrolApi coreEnrol();
+
+  /**
+   * @return the Moodle group API
+   */
+  CoreGroupApi coreGroup();
 
   /**
    * @return the Moodle activity completion API
