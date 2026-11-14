@@ -7,6 +7,7 @@ import es.ubu.lsi.moodle.api.core.enrol.CoreEnrolApi;
 import es.ubu.lsi.moodle.api.core.user.CoreUserApi;
 import es.ubu.lsi.moodle.api.core.webservice.CoreWebserviceApi;
 import es.ubu.lsi.moodle.api.gradereport.GradeReportUserApi;
+import es.ubu.lsi.moodle.api.mod.assign.ModAssignApi;
 import es.ubu.lsi.moodle.api.mod.forum.ModForumApi;
 import es.ubu.lsi.moodle.api.tool.mobile.ToolMobileApi;
 import es.ubu.lsi.moodle.model.ajax.AjaxRequest;
@@ -57,6 +58,11 @@ public interface Client {
    * @return the Moodle forum API
    */
   ModForumApi modForum();
+
+  /**
+   * @return the Moodle assignment API
+   */
+  ModAssignApi modAssign();
 
   /**
    * @return the Moodle mobile API

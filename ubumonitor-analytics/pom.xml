@@ -14,7 +14,7 @@
     </parent>
 
     <artifactId>ubumonitoranalytics</artifactId>
-    <name>ubumonitor-analytics</name>
+    <name>UBUMonitor Analytics</name>
 
 
     <properties>

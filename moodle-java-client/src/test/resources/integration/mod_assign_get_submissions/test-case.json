@@ -1,0 +1,160 @@
+{
+  "request": {
+    "path": "modAssign.getSubmissions",
+    "method": "CLIENT",
+    "body": {
+      "args": {
+        "assignmentids": [
+          17
+        ],
+        "status": "submitted",
+        "since": 100,
+        "before": 200
+      }
+    }
+  },
+  "expectedResponse": {
+    "body": {
+      "assignments": [
+        {
+          "assignmentid": 17,
+          "submissions": [
+            {
+              "id": 51,
+              "userid": 9,
+              "attemptnumber": 0,
+              "timecreated": 110,
+              "timemodified": 120,
+              "timestarted": 105,
+              "status": "submitted",
+              "groupid": 0,
+              "assignment": 17,
+              "latest": 1,
+              "plugins": [
+                {
+                  "type": "onlinetext",
+                  "name": "Online text",
+                  "fileareas": [
+                    {
+                      "area": "submission",
+                      "files": []
+                    }
+                  ],
+                  "editorfields": [
+                    {
+                      "name": "onlinetext",
+                      "description": "Online text",
+                      "text": "<p>Completed work</p>",
+                      "format": 1
+                    }
+                  ]
+                }
+              ],
+              "gradingstatus": "graded"
+            }
+          ]
+        }
+      ],
+      "warnings": [
+        {
+          "item": "assignment",
+          "itemid": 17,
+          "warningcode": "examplewarning",
+          "message": "Example warning"
+        }
+      ]
+    },
+    "status": 200
+  },
+  "auth": {
+    "request": {
+      "path": "/login/token.php",
+      "method": "POST",
+      "body": {
+        "password": "wiremock-password",
+        "baseurl": "${MOODLE_HOST}",
+        "service": "moodle_mobile_app",
+        "username": "teacher"
+      }
+    },
+    "expectedResponse": {
+      "body": {
+        "token": "wiremock-token"
+      },
+      "status": 200
+    }
+  },
+  "moodleMocks": [
+    {
+      "request": {
+        "path": "/login/token.php",
+        "method": "POST",
+        "body": "password=wiremock-password&baseurl=${MOODLE_HOST}&service=moodle_mobile_app&username=teacher"
+      },
+      "response": {
+        "body": {
+          "token": "wiremock-token"
+        }
+      }
+    },
+    {
+      "request": {
+        "path": "/webservice/rest/server.php",
+        "method": "POST",
+        "body": "wsfunction=mod_assign_get_submissions&assignmentids%5B0%5D=17&status=submitted&since=100&before=200&moodlewsrestformat=json&wstoken=wiremock-token"
+      },
+      "response": {
+        "body": {
+          "assignments": [
+            {
+              "assignmentid": 17,
+              "submissions": [
+                {
+                  "id": 51,
+                  "userid": 9,
+                  "attemptnumber": 0,
+                  "timecreated": 110,
+                  "timemodified": 120,
+                  "timestarted": 105,
+                  "status": "submitted",
+                  "groupid": 0,
+                  "assignment": 17,
+                  "latest": 1,
+                  "plugins": [
+                    {
+                      "type": "onlinetext",
+                      "name": "Online text",
+                      "fileareas": [
+                        {
+                          "area": "submission",
+                          "files": []
+                        }
+                      ],
+                      "editorfields": [
+                        {
+                          "name": "onlinetext",
+                          "description": "Online text",
+                          "text": "<p>Completed work</p>",
+                          "format": 1
+                        }
+                      ]
+                    }
+                  ],
+                  "gradingstatus": "graded"
+                }
+              ]
+            }
+          ],
+          "warnings": [
+            {
+              "item": "assignment",
+              "itemid": 17,
+              "warningcode": "examplewarning",
+              "message": "Example warning"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

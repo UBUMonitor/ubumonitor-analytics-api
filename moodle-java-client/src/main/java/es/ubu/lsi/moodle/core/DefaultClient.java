@@ -15,6 +15,8 @@ import es.ubu.lsi.moodle.api.core.webservice.CoreWebserviceApi;
 import es.ubu.lsi.moodle.api.core.webservice.CoreWebserviceApiImpl;
 import es.ubu.lsi.moodle.api.gradereport.GradeReportUserApi;
 import es.ubu.lsi.moodle.api.gradereport.GradeReportUserApiImpl;
+import es.ubu.lsi.moodle.api.mod.assign.ModAssignApi;
+import es.ubu.lsi.moodle.api.mod.assign.ModAssignApiImpl;
 import es.ubu.lsi.moodle.api.mod.forum.ModForumApi;
 import es.ubu.lsi.moodle.api.mod.forum.ModForumApiImpl;
 import es.ubu.lsi.moodle.api.tool.mobile.ToolMobileApi;
@@ -46,6 +48,7 @@ public class DefaultClient implements Client {
   private final CoreWebserviceApi coreWebservice;
 
   private final GradeReportUserApi gradeReportUser;
+  private final ModAssignApi modAssign;
   private final ModForumApi modForum;
   private final ToolMobileApi toolMobile;
 
@@ -61,6 +64,7 @@ public class DefaultClient implements Client {
     this.coreCompletion = new CoreCompletionApiImpl(this);
     this.coreWebservice = new CoreWebserviceApiImpl(this);
     this.gradeReportUser = new GradeReportUserApiImpl(this);
+    this.modAssign = new ModAssignApiImpl(this);
     this.modForum = new ModForumApiImpl(this);
     this.toolMobile = new ToolMobileApiImpl(this);
   }
@@ -105,6 +109,12 @@ public class DefaultClient implements Client {
   @Override
   public GradeReportUserApi gradeReportUser() {
     return gradeReportUser;
+  }
+
+  /** Returns the typed Moodle assignment API. */
+  @Override
+  public ModAssignApi modAssign() {
+    return modAssign;
   }
 
   /** Returns the typed Moodle forum API. */

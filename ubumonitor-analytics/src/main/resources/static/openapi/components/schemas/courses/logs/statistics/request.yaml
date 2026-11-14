@@ -128,15 +128,15 @@ CourseLogsStatisticsRequest:
                 nullable: true
               componentId:
                 type: integer
-                format: int32
+                format: int64
                 nullable: true
               eventId:
                 type: integer
-                format: int32
+                format: int64
                 nullable: true
               originId:
                 type: integer
-                format: int32
+                format: int64
                 nullable: true
               sectionId:
                 type: integer

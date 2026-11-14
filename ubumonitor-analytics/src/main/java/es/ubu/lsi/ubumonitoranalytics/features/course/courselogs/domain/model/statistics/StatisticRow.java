@@ -16,11 +16,11 @@ public class StatisticRow {
   private String userFullName;
   private Long moduleId;
   private String moduleName;
-  private Short componentId;
+  private Long componentId;
   private String componentName;
-  private Short eventId;
+  private Long eventId;
   private String eventName;
-  private Byte originId;
+  private Long originId;
   private String originName;
   private String ipAddress;
   private Long courseId;

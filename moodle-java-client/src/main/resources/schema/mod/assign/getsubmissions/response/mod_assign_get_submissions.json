@@ -1,0 +1,258 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "GetSubmissionsResponse",
+  "type": "object",
+  "properties": {
+    "assignments": {
+      "description": "Assignment submissions",
+      "type": "array",
+      "items": {
+        "title": "AssignmentSubmissions",
+        "type": "object",
+        "properties": {
+          "assignmentid": {
+            "description": "Assignment ID",
+            "type": "integer"
+          },
+          "submissions": {
+            "description": "Submissions",
+            "type": "array",
+            "items": {
+              "title": "Submission",
+              "type": "object",
+              "properties": {
+                "id": {
+                  "description": "Submission ID",
+                  "type": "integer"
+                },
+                "userid": {
+                  "description": "Student ID",
+                  "type": "integer"
+                },
+                "attemptnumber": {
+                  "description": "Attempt number",
+                  "type": "integer"
+                },
+                "timecreated": {
+                  "description": "Submission creation time",
+                  "type": "integer"
+                },
+                "timemodified": {
+                  "description": "Submission last modified time",
+                  "type": "integer"
+                },
+                "timestarted": {
+                  "description": "Submission start time",
+                  "type": "integer"
+                },
+                "status": {
+                  "description": "Submission status",
+                  "type": "string"
+                },
+                "groupid": {
+                  "description": "Group ID",
+                  "type": "integer"
+                },
+                "assignment": {
+                  "description": "Assignment ID",
+                  "type": "integer"
+                },
+                "latest": {
+                  "description": "Whether this is the latest attempt",
+                  "type": "integer"
+                },
+                "plugins": {
+                  "description": "Submission plugins",
+                  "type": "array",
+                  "items": {
+                    "title": "SubmissionPlugin",
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "description": "Submission plugin type",
+                        "type": "string"
+                      },
+                      "name": {
+                        "description": "Submission plugin name",
+                        "type": "string"
+                      },
+                      "fileareas": {
+                        "description": "File areas",
+                        "type": "array",
+                        "items": {
+                          "title": "FileArea",
+                          "type": "object",
+                          "properties": {
+                            "area": {
+                              "description": "File area",
+                              "type": "string"
+                            },
+                            "files": {
+                              "description": "Files",
+                              "type": "array",
+                              "items": {
+                                "title": "File",
+                                "type": "object",
+                                "properties": {
+                                  "filename": {
+                                    "description": "File name",
+                                    "type": "string"
+                                  },
+                                  "filepath": {
+                                    "description": "File path",
+                                    "type": "string"
+                                  },
+                                  "filesize": {
+                                    "description": "File size",
+                                    "type": "integer"
+                                  },
+                                  "fileurl": {
+                                    "description": "Downloadable file URL",
+                                    "type": "string"
+                                  },
+                                  "timemodified": {
+                                    "description": "Time modified",
+                                    "type": "integer"
+                                  },
+                                  "mimetype": {
+                                    "description": "File MIME type",
+                                    "type": "string"
+                                  },
+                                  "isexternalfile": {
+                                    "description": "Whether this is an external file",
+                                    "type": "integer"
+                                  },
+                                  "repositorytype": {
+                                    "description": "Repository type for external files",
+                                    "type": "string"
+                                  },
+                                  "icon": {
+                                    "description": "Relative path to the relevant file type icon",
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "required": [
+                            "area"
+                          ]
+                        }
+                      },
+                      "editorfields": {
+                        "description": "Editor fields",
+                        "type": "array",
+                        "items": {
+                          "title": "EditorField",
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "description": "Field name",
+                              "type": "string"
+                            },
+                            "description": {
+                              "description": "Field description",
+                              "type": "string"
+                            },
+                            "text": {
+                              "description": "Field value",
+                              "type": "string"
+                            },
+                            "format": {
+                              "description": "Text format",
+                              "type": "integer",
+                              "javaEnums": [
+                                {
+                                  "name": "MOODLE"
+                                },
+                                {
+                                  "name": "HTML"
+                                },
+                                {
+                                  "name": "PLAIN"
+                                },
+                                {
+                                  "name": "MARKDOWN"
+                                }
+                              ],
+                              "enum": [
+                                0,
+                                1,
+                                2,
+                                4
+                              ]
+                            }
+                          },
+                          "required": [
+                            "name",
+                            "description",
+                            "text",
+                            "format"
+                          ]
+                        }
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "name"
+                    ]
+                  }
+                },
+                "gradingstatus": {
+                  "description": "Grading status",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "userid",
+                "attemptnumber",
+                "timecreated",
+                "timemodified",
+                "status",
+                "groupid"
+              ]
+            }
+          }
+        },
+        "required": [
+          "assignmentid",
+          "submissions"
+        ]
+      }
+    },
+    "warnings": {
+      "description": "List of warnings",
+      "type": "array",
+      "items": {
+        "title": "Warning",
+        "type": "object",
+        "properties": {
+          "item": {
+            "description": "Item",
+            "type": "string"
+          },
+          "itemid": {
+            "description": "Item ID",
+            "type": "integer"
+          },
+          "warningcode": {
+            "description": "Warning code",
+            "type": "string"
+          },
+          "message": {
+            "description": "Untranslated English message",
+            "type": "string"
+          }
+        },
+        "required": [
+          "warningcode",
+          "message"
+        ]
+      }
+    }
+  },
+  "required": [
+    "assignments"
+  ]
+}
