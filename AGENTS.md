@@ -43,6 +43,9 @@ Hexagonal, by feature: `infrastructure/in` (REST delegate) → `application/port
 - Adapters implement output ports; a delegate never touches jOOQ or the Moodle client.
 - `domain` has no Spring, generated OpenAPI DTOs, Moodle models or jOOQ types; convert in the adapter's mapper.
 - Use `shared` only for contracts shared across features.
+- Request session context is thread-bound: `SessionAuthenticationFilter` sets it for a valid session and always clears it after the request; `VirtualThreadConfig` propagates it to async tasks and clears it on completion. Login services set authentication `SessionData` while login work runs, but session creation does not replace it with the generated token/user data. Do not assume the completed session is available from the context after session generation.
+- Some services pass `SessionData` explicitly instead of using request context: public site-info fetches receive host-only session data because no authenticated session exists, and profile-image persistence receives session data looked up from the session store. Preserve these explicit port parameters; do not open a nested context for these operations.
+- Annotate every endpoint that reaches Moodle with a session using `@RequiresOnlineSession`. `RestClientHttpTransport` is a defense-in-depth guard, but code that uses `SessionData.getRestClient()` directly bypasses it; endpoints reaching such code must always be annotated.
 - Reference slice (`GET /api/public/sites/info`): `openapi/paths/sites/public-info.yaml` → `features/sites/` (`SitesApiDelegateImpl`, `GetPublicSiteInfoUseCase`, `PublicSiteInfoService`, `PublicSiteInfoApiPort`, `PublicSiteInfoApiAdapter` + `SiteInfoApiAdapterMapper`) → `integration/public/sites/info/happy_path/test-case.json`.
 
 ## Recipes
@@ -67,12 +70,14 @@ Hexagonal, by feature: `infrastructure/in` (REST delegate) → `application/port
 ### Add or update an integration fixture
 1. `integration/<group>/<endpoint>/<case>/test-case.json` with `request` and `expectedResponse`, or an `endpoints` list of `{request, expectedResponse}` for multi-request flows; add `moodleMocks` when Moodle is called, `authFixture` (e.g. `classpath:/integration/shared/teacher-sso-auth.json`) or `auth` for authenticated endpoints, and `databaseSetup` (SQL list) for initial state.
 2. Run the one-fixture command. The runner makes an isolated DB per case under `target/test-moodle-dbs/`.
+3. Extend an existing fixture when it already covers the flow instead of adding a separate fixture for a closely related assertion. Moodle mocks should contain the complete response payload for the endpoint, not only the fields used by the assertion.
 
 ## Conventions
 
 - Service reads: `@Transactional(readOnly = true)`; writes: `@Transactional` (see `features/course/content`, `features/course/enrollment`).
 - Reuse existing application exceptions; keep the `GlobalExceptionHandler` contract: 400 `BAD_REQUEST`, 401 `UNAUTHORIZED`, 404 `NOT_FOUND`, 409 `CONFLICT`, 500 `UNKNOWN_ERROR`; validation 400 `VALIDATION_ERROR`; unknown route 404 `RESOURCE_NOT_FOUND`.
 - Declare validation in OpenAPI (`useBeanValidation`); never patch generated DTOs.
+- In OpenAPI response schemas, do not mark fields `nullable: true`: the API configuration omits null-valued fields, so fields are optional when absent, not nullable. Only list a field under `required` when it is always sent.
 - Never log tokens, passwords, keys or sensitive headers; keep Logbook masking of `Authorization`, `X-Moodle-Token`, `Cookie`, `password`, `token`.
 - Guard clauses and early returns for `null`.
 - Prefer explicit `for` loops to lambdas/`forEach`; named static methods or method references over inline lambdas; streams only when clearer. Unique-key maps: `Collectors.toMap` (named merger on collisions), not `groupingBy`.

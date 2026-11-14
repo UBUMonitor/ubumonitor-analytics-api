@@ -31,11 +31,10 @@ public class VirtualThreadConfig {
 
       virtualThreadExecutor.execute(
           () -> {
-            if (captured != null) {
-              sessionContext.setSessionData(captured);
-            }
-
             try {
+              if (captured != null) {
+                sessionContext.setSessionData(captured);
+              }
               command.run();
             } finally {
               sessionContext.clear();

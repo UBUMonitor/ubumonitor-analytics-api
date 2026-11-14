@@ -11,17 +11,18 @@ import es.ubu.lsi.ubumonitoranalytics.features.sites.application.dto.SiteInfo;
 import es.ubu.lsi.ubumonitoranalytics.features.sites.application.port.out.SiteInfoApiPort;
 import es.ubu.lsi.ubumonitoranalytics.features.sites.application.port.out.SiteInfoPersistencePort;
 import es.ubu.lsi.ubumonitoranalytics.features.sites.domain.model.Site;
-import es.ubu.lsi.ubumonitoranalytics.features.users.info.appication.port.in.SearchUserByUserNameUseCase;
-import es.ubu.lsi.ubumonitoranalytics.features.users.info.appication.port.in.SyncUserInfoUseCase;
-import es.ubu.lsi.ubumonitoranalytics.features.users.info.appication.port.out.GetUserInfoPersistenceAdapterPort;
+import es.ubu.lsi.ubumonitoranalytics.features.users.info.application.port.in.SearchUserByUserNameUseCase;
+import es.ubu.lsi.ubumonitoranalytics.features.users.info.application.port.in.SyncUserInfoUseCase;
+import es.ubu.lsi.ubumonitoranalytics.features.users.info.application.port.out.GetUserInfoPersistenceAdapterPort;
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.domain.model.UserInfo;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.exception.UnauthorizedException;
+import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.concurrent.AsyncExecutionPort;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.database.TenantDatabasePort;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.concurrent.AsyncOperations;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -39,7 +40,7 @@ public class AuthService implements AuthUseCase {
   private final SessionPort sessionPort;
   private final MoodleApiPort moodleApiPort;
   private final TenantDatabasePort tenantDatabasePort;
-  private final AsyncOperations asyncOperations;
+  private final AsyncExecutionPort asyncExecution;
 
   /**
    * Authenticates an SSO launch request and associates a web client with the session.
@@ -50,36 +51,26 @@ public class AuthService implements AuthUseCase {
    */
   @Override
   public SessionToken loginBySSO(AuthInput authInput) {
-    SessionToken sessionToken = null;
-    try {
-      sessionPort.setAuthenticationContext(authInput, null);
-      SiteInfo siteInfo = siteInfoApiPort.fetchSiteInfo();
-      if (siteInfo == null || siteInfo.getSite() == null) {
-        throw new UnauthorizedException("Invalid token.");
-      }
-      String userName = siteInfo.getSite().getUserName();
-      if (userName == null || userName.isBlank()) {
-        throw new UnauthorizedException("Invalid token.");
-      }
-      authInput.setUsername(userName);
-      sessionPort.setAuthenticationContext(authInput, null);
-      initializeTenantDatabase(authInput);
-      siteInfoPersistencePort.save(siteInfo);
-
-      RestClient restClient = moodleApiPort.getRestClientFromCookies(authInput);
-      sessionPort.setAuthenticationContext(authInput, restClient);
-      UserInfo userInfo =
-          syncUserInfoUseCase.syncActualUser(
-              searchUserByUserNameUseCase.searchUserByUserName(userName));
-      validateSiteUser(siteInfo);
-      sessionToken = sessionPort.generateNewSession(authInput, userInfo, restClient);
-      return attachSiteUserInfo(sessionToken, siteInfo, userInfo);
-    } catch (RuntimeException exception) {
-      if (sessionToken != null) {
-        sessionPort.invalidateSession(sessionToken);
-      }
-      throw exception;
+    sessionPort.activateAuthenticationContext(authInput, null);
+    SiteInfo siteInfo = siteInfoApiPort.fetchSiteInfo();
+    if (siteInfo == null || siteInfo.getSite() == null) {
+      throw new UnauthorizedException("Invalid token.");
     }
+    String userName = siteInfo.getSite().getUserName();
+    if (userName == null || userName.isBlank()) {
+      throw new UnauthorizedException("Invalid token.");
+    }
+    authInput.setUsername(userName);
+    RestClient restClient = moodleApiPort.getRestClientFromCookies(authInput);
+    SessionData sessionData = sessionPort.activateAuthenticationContext(authInput, restClient);
+    initializeTenantDatabase(sessionData);
+    siteInfoPersistencePort.save(siteInfo);
+    UserInfo userInfo =
+        syncUserInfoUseCase.syncActualUser(
+            searchUserByUserNameUseCase.searchUserByUserName(userName));
+    validateSiteUser(siteInfo);
+    return createSession(
+        authInput, userInfo, restClient, token -> attachSiteUserInfo(token, siteInfo, userInfo));
   }
 
   /**
@@ -93,9 +84,9 @@ public class AuthService implements AuthUseCase {
   public SessionToken loginByCredentials(AuthInput authInput) {
 
     CompletableFuture<String> moodleTokenFuture =
-        asyncOperations.supplyAsync(() -> fetchMoodleToken(authInput));
+        asyncExecution.supplyAsync(() -> fetchMoodleToken(authInput));
     CompletableFuture<RestClient> restClientFuture =
-        asyncOperations.supplyAsync(() -> fetchRestClient(authInput));
+        asyncExecution.supplyAsync(() -> fetchRestClient(authInput));
 
     String moodleToken;
     try {
@@ -113,15 +104,14 @@ public class AuthService implements AuthUseCase {
     RestClient restClient = restClientFuture.join();
 
     authInput.setMoodleToken(moodleToken);
-    initializeTenantDatabase(authInput);
-    sessionPort.setAuthenticationContext(authInput, restClient);
-    SessionToken sessionToken = null;
+    SessionData sessionData = sessionPort.activateAuthenticationContext(authInput, restClient);
+    initializeTenantDatabase(sessionData);
     CompletableFuture<UserInfo> searchedUserFuture = null;
     try {
       CompletableFuture<SiteInfo> siteInfoFuture =
-          asyncOperations.supplyAsync(siteInfoApiPort::fetchSiteInfo);
+          asyncExecution.supplyAsync(siteInfoApiPort::fetchSiteInfo);
       searchedUserFuture =
-          asyncOperations.supplyAsync(
+          asyncExecution.supplyAsync(
               () -> searchUserByUserNameUseCase.searchUserByUserName(authInput.getUsername()));
       SiteInfo siteInfo = joinCompletedFuture(siteInfoFuture);
       if (siteInfo == null || siteInfo.getSite() == null) {
@@ -135,14 +125,11 @@ public class AuthService implements AuthUseCase {
 
       UserInfo searchedUser = joinCompletedFuture(searchedUserFuture);
       UserInfo userInfo = syncUserInfoUseCase.syncActualUser(searchedUser);
-      sessionToken = sessionPort.generateNewSession(authInput, userInfo, restClient);
-      return attachSiteUserInfo(sessionToken, siteInfo, userInfo);
+      return createSession(
+          authInput, userInfo, restClient, token -> attachSiteUserInfo(token, siteInfo, userInfo));
     } catch (RuntimeException exception) {
       if (searchedUserFuture != null) {
         searchedUserFuture.cancel(true);
-      }
-      if (sessionToken != null) {
-        sessionPort.invalidateSession(sessionToken);
       }
       throw exception;
     }
@@ -157,16 +144,23 @@ public class AuthService implements AuthUseCase {
   @Override
   public SessionToken loginOffline(AuthInput authInput) {
 
-    initializeTenantDatabase(authInput);
-    sessionPort.setAuthenticationContext(authInput, null);
-    SessionToken sessionToken = null;
+    SessionData sessionData = sessionPort.activateAuthenticationContext(authInput, null);
+    initializeTenantDatabase(sessionData);
+    UserInfo userInfo = getUserInfoPersistenceAdapterPort.getActualUser(authInput.getUsername());
+    if (userInfo == null) {
+      throw new UnauthorizedException("Invalid username");
+    }
+    return createSession(authInput, userInfo, null, token -> attachUserInfo(token, userInfo));
+  }
+
+  private SessionToken createSession(
+      AuthInput authInput,
+      UserInfo userInfo,
+      RestClient restClient,
+      Function<SessionToken, SessionToken> attachUserInfo) {
+    SessionToken sessionToken = sessionPort.generateNewSession(authInput, userInfo, restClient);
     try {
-      UserInfo userInfo = getUserInfoPersistenceAdapterPort.getActualUser(authInput.getUsername());
-      if (userInfo == null) {
-        throw new UnauthorizedException("Invalid username");
-      }
-      sessionToken = sessionPort.generateNewSession(authInput, userInfo, null);
-      return attachUserInfo(sessionToken, userInfo);
+      return attachUserInfo.apply(sessionToken);
     } catch (RuntimeException exception) {
       if (sessionToken != null) {
         sessionPort.invalidateSession(sessionToken);
@@ -175,13 +169,7 @@ public class AuthService implements AuthUseCase {
     }
   }
 
-  private void initializeTenantDatabase(AuthInput authInput) {
-    SessionData sessionData =
-        SessionData.builder()
-            .host(authInput.getHost())
-            .username(authInput.getUsername())
-            .dbPassword(authInput.getDbPassword())
-            .build();
+  private void initializeTenantDatabase(SessionData sessionData) {
     tenantDatabasePort.initializeTenant(sessionData);
   }
 

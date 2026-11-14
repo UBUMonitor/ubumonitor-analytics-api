@@ -42,7 +42,8 @@ class LogRowParser {
         ignored++;
       }
     } catch (Exception e) {
-      log.warn("Error processing CSV row: {}", csvRecord, e);
+      long rowNumber = csvRecord == null ? -1 : csvRecord.getRecordNumber();
+      log.warn("Error processing CSV row {} (type={})", rowNumber, e.getClass().getSimpleName());
       failed++;
     }
   }

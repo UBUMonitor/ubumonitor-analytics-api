@@ -9,13 +9,13 @@ import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsEvents.LOGS_EVENTS;
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.LogsOrigins.LOGS_ORIGINS;
 
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.port.out.LogPersistencePort;
-import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.port.out.MoodleLogCatalog;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.importlogs.LogContext;
+import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.importlogs.MoodleLogCatalog;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.importlogs.ProcessLogLine;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.rules.MoodleLogRule;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.infrastructure.config.MoodleRulesConfig;
+import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.CurrentSessionPort;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -29,6 +29,7 @@ import org.jooq.impl.DSL;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 /** Stores course log records and provides their lookup metadata. */
 @Component
@@ -37,17 +38,18 @@ public class LogPersistenceAdapter implements LogPersistencePort {
 
   private final Jooq jooq;
   private final MoodleRulesConfig moodleRulesConfig;
-  private final CurrentSessionContext currentSessionContext;
+  private final CurrentSessionPort currentSessionContext;
 
   /**
-   * Rules and origins are identical for every tenant and do not change while the application
-   * runs, so they are loaded once. Both are shared and read-only.
+   * Rules and origins are identical for every tenant and do not change while the application runs,
+   * so they are loaded once. Both are shared and read-only.
    */
   private volatile MoodleLogCatalog cachedCatalog;
 
   private volatile Map<String, Byte> cachedOrigins;
 
   @Override
+  @Transactional
   public void createIfNotExists(Long courseId) {
     DSLContext dsl = jooq.dsl();
 
@@ -59,6 +61,7 @@ public class LogPersistenceAdapter implements LogPersistencePort {
   }
 
   @Override
+  @Transactional
   public void saveBatch(List<ProcessLogLine> logs) {
 
     DSLContext dsl = jooq.dsl();

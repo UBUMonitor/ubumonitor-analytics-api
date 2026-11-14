@@ -1,0 +1,45 @@
+package es.ubu.lsi.ubumonitoranalytics.features.course.activitycompletion.infrastructure.in.rest;
+
+import es.ubu.lsi.ubumonitoranalytics.api.generated.api.CourseActivityCompletionApiDelegate;
+import es.ubu.lsi.ubumonitoranalytics.api.generated.model.CourseActivityCompletionResponseDto;
+import es.ubu.lsi.ubumonitoranalytics.features.course.activitycompletion.application.port.in.CourseActivityCompletionUseCase;
+import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security.RequiresOnlineSession;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+
+/** Implements the generated REST operations for course content. */
+@Component
+@RequiredArgsConstructor
+public class CourseActivityCompletionApiDelegateImpl
+    implements CourseActivityCompletionApiDelegate {
+
+  private final CourseActivityCompletionApiDelegateMapper courseActivityCompletionApiDelegateMapper;
+  private final CourseActivityCompletionUseCase courseActivityCompletionUseCase;
+
+  @Override
+  @RequiresOnlineSession
+  public ResponseEntity<CourseActivityCompletionResponseDto> syncCourseActivityCompletions(
+      Long courseId) {
+    return ResponseEntity.ok(
+        courseActivityCompletionApiDelegateMapper.toResponseDto(
+            courseActivityCompletionUseCase.syncActivityCompletion(courseId)));
+  }
+
+  @Override
+  public ResponseEntity<CourseActivityCompletionResponseDto> getCourseActivityCompletions(
+      Long courseId) {
+    return ResponseEntity.ok(
+        courseActivityCompletionApiDelegateMapper.toResponseDto(
+            courseActivityCompletionUseCase.getActivityCompletion(courseId)));
+  }
+
+  @Override
+  public ResponseEntity<CourseActivityCompletionResponseDto> getCourseActivityCompletionValues(
+      Long courseId, List<Long> moduleIds, List<Long> userIds) {
+    return ResponseEntity.ok(
+        courseActivityCompletionApiDelegateMapper.toResponseDto(
+            courseActivityCompletionUseCase.getActivityCompletion(courseId, moduleIds, userIds)));
+  }
+}

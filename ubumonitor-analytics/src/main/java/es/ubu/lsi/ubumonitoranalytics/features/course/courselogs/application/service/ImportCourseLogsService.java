@@ -7,18 +7,8 @@ import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.por
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.port.out.MoodlePort;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.importlogs.LogContext;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.importlogs.ProcessLogsResult;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.concurrent.AsyncOperations;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVRecord;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestClient;
-import org.springframework.web.multipart.MultipartFile;
-
+import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.concurrent.AsyncExecutionPort;
+import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.CurrentMoodleRestClientPort;
 import java.io.InputStream;
 import java.time.Duration;
 import java.time.Instant;
@@ -26,6 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
 
 /** Imports course logs from uploaded CSV files or synchronizes them from Moodle. */
 @Service
@@ -43,19 +39,16 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
   private final LogPersistencePort logPersistencePort;
   private final CourseLogsInfoPort courseLogsInfoPort;
   private final MoodlePort moodlePort;
-  private final CurrentSessionContext currentSessionContext;
-  private final AsyncOperations asyncOperations;
+  private final CurrentMoodleRestClientPort currentMoodleRestClientPort;
+  private final AsyncExecutionPort asyncExecution;
 
   /**
    * @param courseId Moodle course identifier
-   * @param file uploaded log CSV
+   * @param inputStream uploaded log CSV content
    * @return import statistics and refreshed course log information
    */
   @Override
-  @Transactional
-  @SneakyThrows
-  public ProcessLogsResult process(Long courseId, MultipartFile file) {
-    InputStream inputStream = file.getInputStream();
+  public ProcessLogsResult process(Long courseId, InputStream inputStream) {
     LogContext logContext = logPersistencePort.getLogContext(courseId);
 
     logPersistencePort.createIfNotExists(courseId);
@@ -77,9 +70,8 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
    * @return synchronization statistics and refreshed course log information
    */
   @Override
-  @Transactional
   public ProcessLogsResult sync(Long courseId) {
-    RestClient restClient = currentSessionContext.getSessionData().getRestClient();
+    RestClient restClient = currentMoodleRestClientPort.requireOnlineRestClient();
 
     LogContext logContext = logPersistencePort.getLogContext(courseId);
     logPersistencePort.createIfNotExists(courseId);
@@ -111,8 +103,8 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
     for (long since = lastLogTime.getEpochSecond();
         since <= now;
         since += INCREMENTAL_STEP_SECONDS) {
-      downloads.add(asyncOperations.supplyAsync(
-              new DayLogsDownload(moodlePort, courseId, since, restClient)));
+      downloads.add(
+          asyncExecution.supplyAsync(new DayLogsDownload(moodlePort, courseId, since, restClient)));
     }
     return downloads;
   }
@@ -131,7 +123,7 @@ public class ImportCourseLogsService implements ImportCourseLogsUseCase {
 
   private LogImportRun newRun(Long courseId, LogContext logContext) {
     return new LogImportRun(
-        asyncOperations,
+        asyncExecution,
         logParserService,
         logPersistencePort,
         courseLogsInfoPort,

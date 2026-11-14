@@ -84,6 +84,20 @@ public interface HttpTransport {
       throws Exception;
 
   /**
+   * Posts JSON to an explicit Moodle site and maps an AJAX response array.
+   *
+   * @param baseUrl Moodle site base URI
+   * @param context relative endpoint path
+   * @param body AJAX request body
+   * @param dataType response data class
+   * @param <T> response data type
+   * @return mapped AJAX responses
+   * @throws Exception if the request or response mapping fails
+   */
+  <T> List<AjaxResponse<T>> postJsonAjaxArray(
+      URI baseUrl, String context, Object body, Class<T> dataType) throws Exception;
+
+  /**
    * @return configured Moodle web-service token
    */
   String getToken();

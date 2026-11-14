@@ -28,6 +28,7 @@
         <spring.boot.version>4.1.1</spring.boot.version>
         <start-class>es.ubu.lsi.ubumonitoranalytics.Application</start-class>
         <flyway.version>12.6.1</flyway.version>
+        <archunit.version>1.5.1</archunit.version>
     </properties>
 
     <repositories>
@@ -63,6 +64,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aspectj</artifactId>
+            <version>${spring.boot.version}</version>
         </dependency>
 
 
@@ -172,6 +178,12 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>com.tngtech.archunit</groupId>
+            <artifactId>archunit-junit5</artifactId>
+            <version>${archunit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>net.javacrumbs.json-unit</groupId>
             <artifactId>json-unit-assertj</artifactId>
             <version>5.1.0</version>
@@ -277,7 +289,6 @@
                         <configuration>
                             <inputSpec>${project.basedir}/src/main/resources/static/openapi/openapi.yaml</inputSpec>
                             <generatorName>spring</generatorName>
-
                             <library>spring-boot</library>
 
                             <apiPackage>es.ubu.lsi.ubumonitoranalytics.api.generated.api</apiPackage>
@@ -300,14 +311,12 @@
                             <configOptions>
                                 <useSpringBoot4>true</useSpringBoot4>
                                 <useJackson3>true</useJackson3>
-                                <library>spring-boot</library>
                                 <reactive>false</reactive>
                                 <delegatePattern>true</delegatePattern>
                                 <useJakartaEe>true</useJakartaEe>
                                 <useResponseEntity>true</useResponseEntity>
                                 <useBeanValidation>true</useBeanValidation>
                                 <useTags>true</useTags>
-                                <jackson>true</jackson>
                                 <openApiNullable>false</openApiNullable>
                                 <interfaceOnly>false</interfaceOnly>
                                 <skipDefaultInterface>false</skipDefaultInterface>
@@ -333,28 +342,13 @@
                         </goals>
                         <configuration>
                             <sources>
-                                <source>${project.build.directory}/generated-sources/openapi/src/main/java</source>
-                                <source>${project.build.directory}/generated-sources/moodle-adapter/src/main/java
-                                </source>
+                                <source>${project.build.directory}/generated-sources/moodle-adapter/src/main/java</source>
                                 <source>${project.build.directory}/generated-sources/annotations</source>
                                 <source>${project.build.directory}/generated-sources/jooq</source>
 
                             </sources>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>add-test-source</id>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>add-test-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>${project.build.directory}/generated-sources/openapi/src/test/java</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-
                 </executions>
             </plugin>
             <plugin>

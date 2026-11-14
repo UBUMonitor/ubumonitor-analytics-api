@@ -15,7 +15,6 @@ import java.util.*;
 import lombok.RequiredArgsConstructor;
 import org.jooq.*;
 import org.jooq.Record;
-import org.jooq.impl.DSL;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Component;
 

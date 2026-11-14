@@ -22,13 +22,14 @@ public class SessionAdapter implements SessionPort {
   private static final int TOKEN_BYTES = 32;
 
   private final SessionStorePort sessionStore;
-  private final CurrentSessionContext currentSessionContext;
   private final SessionAdapterMapper sessionAdapterMapper;
+  private final CurrentSessionContext currentSessionContext;
 
   @Override
-  public void setAuthenticationContext(AuthInput authInput, RestClient restClient) {
+  public SessionData activateAuthenticationContext(AuthInput authInput, RestClient restClient) {
     SessionData sessionData = sessionAdapterMapper.toSessionData(authInput, null, null, restClient);
     currentSessionContext.setSessionData(sessionData);
+    return sessionData;
   }
 
   @Override
@@ -56,8 +57,6 @@ public class SessionAdapter implements SessionPort {
         sessionAdapterMapper.toSessionData(authInput, token, userInfo, restClient);
 
     sessionStore.saveSession(token, sessionData);
-
-    currentSessionContext.setSessionData(sessionData);
 
     return sessionData;
   }

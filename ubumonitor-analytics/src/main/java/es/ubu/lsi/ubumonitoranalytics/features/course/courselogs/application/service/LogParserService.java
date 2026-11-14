@@ -1,6 +1,6 @@
 package es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.service;
 
-import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.port.out.MoodleLogCatalog;
+import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.importlogs.MoodleLogCatalog;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.importlogs.ProcessLogLine;
 import io.krakens.grok.api.Grok;
 import io.krakens.grok.api.Match;

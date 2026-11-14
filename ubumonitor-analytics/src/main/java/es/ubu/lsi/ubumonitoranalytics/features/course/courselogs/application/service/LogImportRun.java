@@ -7,21 +7,20 @@ import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.im
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.importlogs.LogImportStats;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.importlogs.ProcessLogLine;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.importlogs.ProcessLogsResult;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.concurrent.AsyncOperations;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.csv.CSVRecord;
-
+import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.concurrent.AsyncExecutionPort;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.csv.CSVRecord;
 
 /**
  * State of one import. Rows are grouped in chunks that are parsed concurrently, while reading and
- * every database write stay on the calling thread (which owns the transaction). Chunks are queued
- * for saving in the order they were received. Not thread-safe: feed it from a single thread.
+ * every database write stay on the calling thread. Chunks are queued for saving in the order they
+ * were received. Not thread-safe: feed it from a single thread.
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -32,7 +31,7 @@ class LogImportRun implements CsvRecordHandler {
   /** Rows handed to one parsing task. */
   private static final int PARSE_CHUNK_SIZE = 2000;
 
-  private final AsyncOperations asyncOperations;
+  private final AsyncExecutionPort asyncExecution;
   private final LogParserService logParserService;
   private final LogPersistencePort logPersistencePort;
   private final CourseLogsInfoPort courseLogsInfoPort;
@@ -64,16 +63,14 @@ class LogImportRun implements CsvRecordHandler {
     }
     flush(true);
     return new ProcessLogsResult(
-        new LogImportStats(saved, ignored, failed),
-        courseLogsInfoPort.getCourseLogsInfo(courseId));
+        new LogImportStats(saved, ignored, failed), courseLogsInfoPort.getCourseLogsInfo(courseId));
   }
 
   private void startParsingChunk() {
     if (chunk.isEmpty()) {
       return;
     }
-    parsing.add(
-        asyncOperations.supplyAsync(new LogChunkParse(logParserService, logContext, chunk)));
+    parsing.add(asyncExecution.supplyAsync(new LogChunkParse(logParserService, logContext, chunk)));
     chunk = new ArrayList<>(PARSE_CHUNK_SIZE);
   }
 

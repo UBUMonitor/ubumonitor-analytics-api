@@ -6,7 +6,6 @@ import es.ubu.lsi.ubumonitoranalytics.features.course.content.application.port.o
 import es.ubu.lsi.ubumonitoranalytics.features.course.content.domain.model.CourseContent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /** Fetches course content from Moodle and stores it for the current tenant. */
 @Service
@@ -20,7 +19,6 @@ public class SyncCourseContentService implements SyncCourseContentUseCase {
    * @param courseId Moodle course identifier
    * @return fetched course sections and modules
    */
-  @Transactional
   @Override
   public CourseContent syncCourseContent(Long courseId) {
     CourseContent content = fetchCourseContentPort.fetchCourseContent(courseId);
