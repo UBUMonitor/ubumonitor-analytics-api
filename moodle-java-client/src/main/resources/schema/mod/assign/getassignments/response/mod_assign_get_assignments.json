@@ -1,0 +1,582 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Response schema for mod_assign_get_assignments. Returns the courses and assignments for the users capability.",
+  "title": "GetAssignmentsResponse",
+  "type": "object",
+  "properties": {
+    "courses": {
+      "description": "list of courses",
+      "type": "array",
+      "items": {
+        "title": "Course",
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "course id",
+            "type": "integer",
+            "format": "int64"
+          },
+          "fullname": {
+            "description": "course full name",
+            "type": "string"
+          },
+          "shortname": {
+            "description": "course short name",
+            "type": "string"
+          },
+          "timemodified": {
+            "description": "last time modified",
+            "type": "integer",
+            "format": "int64"
+          },
+          "assignments": {
+            "description": "assignment info",
+            "type": "array",
+            "items": {
+              "title": "Assignment",
+              "type": "object",
+              "properties": {
+                "id": {
+                  "description": "assignment id",
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "cmid": {
+                  "description": "course module id",
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "course": {
+                  "description": "course id",
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "name": {
+                  "description": "Assignment name",
+                  "type": "string"
+                },
+                "nosubmissions": {
+                  "description": "no submissions",
+                  "type": "integer"
+                },
+                "submissiondrafts": {
+                  "description": "submissions drafts",
+                  "type": "integer"
+                },
+                "sendnotifications": {
+                  "description": "send notifications",
+                  "type": "integer"
+                },
+                "sendlatenotifications": {
+                  "description": "send notifications",
+                  "type": "integer"
+                },
+                "sendstudentnotifications": {
+                  "description": "send student notifications (default)",
+                  "type": "integer"
+                },
+                "duedate": {
+                  "description": "assignment due date",
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "allowsubmissionsfromdate": {
+                  "description": "allow submissions from date",
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "grade": {
+                  "description": "grade type",
+                  "type": "integer"
+                },
+                "gradepenalty": {
+                  "description": "if enabled, penalty will be applied to late submissions",
+                  "type": "integer"
+                },
+                "timemodified": {
+                  "description": "last time assignment was modified",
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "completionsubmit": {
+                  "description": "if enabled, set activity as complete following submission",
+                  "type": "integer"
+                },
+                "cutoffdate": {
+                  "description": "date after which submission is not accepted without an extension",
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "gradingduedate": {
+                  "description": "the expected date for marking the submissions",
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "teamsubmission": {
+                  "description": "if enabled, students submit as a team",
+                  "type": "integer"
+                },
+                "requireallteammemberssubmit": {
+                  "description": "if enabled, all team members must submit",
+                  "type": "integer"
+                },
+                "teamsubmissiongroupingid": {
+                  "description": "the grouping id for the team submission groups",
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "blindmarking": {
+                  "description": "if enabled, hide identities until reveal identities actioned",
+                  "type": "integer"
+                },
+                "hidegrader": {
+                  "description": "If enabled, hide grader to student",
+                  "type": "integer"
+                },
+                "revealidentities": {
+                  "description": "show identities for a blind marking assignment",
+                  "type": "integer"
+                },
+                "attemptreopenmethod": {
+                  "description": "method used to control opening new attempts",
+                  "type": "string"
+                },
+                "maxattempts": {
+                  "description": "maximum number of attempts allowed",
+                  "type": "integer"
+                },
+                "markingworkflow": {
+                  "description": "enable marking workflow",
+                  "type": "integer"
+                },
+                "markingallocation": {
+                  "description": "enable marking allocation",
+                  "type": "integer"
+                },
+                "markercount": {
+                  "description": "number of markers",
+                  "type": "integer"
+                },
+                "multimarkmethod": {
+                  "description": "method to use when combining marks to a final grade",
+                  "type": "string"
+                },
+                "multimarkrounding": {
+                  "description": "rounding direction to use when handling decimal marks",
+                  "type": "integer"
+                },
+                "markinganonymous": {
+                  "description": "enable marking anonymous",
+                  "type": "integer"
+                },
+                "requiresubmissionstatement": {
+                  "description": "student must accept submission statement",
+                  "type": "integer"
+                },
+                "preventsubmissionnotingroup": {
+                  "nullable": true,
+                  "description": "Prevent submission not in group",
+                  "type": "integer"
+                },
+                "submissionstatement": {
+                  "nullable": true,
+                  "description": "Submission statement formatted.",
+                  "type": "string"
+                },
+                "submissionstatementformat": {
+                  "nullable": true,
+                  "description": "submissionstatement format (1 = HTML, 0 = MOODLE, 2 = PLAIN, or 4 = MARKDOWN)",
+                  "type": "integer",
+                  "javaEnums": [
+                    {
+                      "name": "MOODLE"
+                    },
+                    {
+                      "name": "HTML"
+                    },
+                    {
+                      "name": "PLAIN"
+                    },
+                    {
+                      "name": "MARKDOWN"
+                    }
+                  ],
+                  "enum": [
+                    0,
+                    1,
+                    2,
+                    4
+                  ]
+                },
+                "configs": {
+                  "description": "Configuration settings",
+                  "type": "array",
+                  "items": {
+                    "title": "AssignmentConfig",
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "nullable": true,
+                        "description": "assign_plugin_config id",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "assignment": {
+                        "nullable": true,
+                        "description": "assignment id",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "plugin": {
+                        "description": "plugin",
+                        "type": "string"
+                      },
+                      "subtype": {
+                        "description": "subtype",
+                        "type": "string"
+                      },
+                      "name": {
+                        "description": "name",
+                        "type": "string"
+                      },
+                      "value": {
+                        "description": "value",
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "plugin",
+                      "subtype",
+                      "name",
+                      "value"
+                    ]
+                  }
+                },
+                "intro": {
+                  "nullable": true,
+                  "description": "assignment intro, not allways returned because it deppends on the activity configuration",
+                  "type": "string"
+                },
+                "introformat": {
+                  "nullable": true,
+                  "description": "intro format (1 = HTML, 0 = MOODLE, 2 = PLAIN, or 4 = MARKDOWN)",
+                  "type": "integer",
+                  "javaEnums": [
+                    {
+                      "name": "MOODLE"
+                    },
+                    {
+                      "name": "HTML"
+                    },
+                    {
+                      "name": "PLAIN"
+                    },
+                    {
+                      "name": "MARKDOWN"
+                    }
+                  ],
+                  "enum": [
+                    0,
+                    1,
+                    2,
+                    4
+                  ]
+                },
+                "introfiles": {
+                  "nullable": true,
+                  "description": "Files in the introduction text",
+                  "type": "array",
+                  "items": {
+                    "title": "AssignmentIntroFile",
+                    "type": "object",
+                    "properties": {
+                      "filename": {
+                        "nullable": true,
+                        "description": "File name.",
+                        "type": "string"
+                      },
+                      "filepath": {
+                        "nullable": true,
+                        "description": "File path.",
+                        "type": "string"
+                      },
+                      "filesize": {
+                        "nullable": true,
+                        "description": "File size.",
+                        "type": "integer"
+                      },
+                      "fileurl": {
+                        "nullable": true,
+                        "description": "Downloadable file url.",
+                        "type": "string"
+                      },
+                      "timemodified": {
+                        "nullable": true,
+                        "description": "Time modified.",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "mimetype": {
+                        "nullable": true,
+                        "description": "File mime type.",
+                        "type": "string"
+                      },
+                      "isexternalfile": {
+                        "nullable": true,
+                        "description": "Whether is an external file.",
+                        "type": "integer"
+                      },
+                      "repositorytype": {
+                        "nullable": true,
+                        "description": "The repository type for external files.",
+                        "type": "string"
+                      },
+                      "icon": {
+                        "nullable": true,
+                        "description": "The relative path to the relevant file type icon based on the file's mime type.",
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "introattachments": {
+                  "nullable": true,
+                  "description": "intro attachments files",
+                  "type": "array",
+                  "items": {
+                    "title": "AssignmentIntroAttachmentFile",
+                    "type": "object",
+                    "properties": {
+                      "filename": {
+                        "nullable": true,
+                        "description": "File name.",
+                        "type": "string"
+                      },
+                      "filepath": {
+                        "nullable": true,
+                        "description": "File path.",
+                        "type": "string"
+                      },
+                      "filesize": {
+                        "nullable": true,
+                        "description": "File size.",
+                        "type": "integer"
+                      },
+                      "fileurl": {
+                        "nullable": true,
+                        "description": "Downloadable file url.",
+                        "type": "string"
+                      },
+                      "timemodified": {
+                        "nullable": true,
+                        "description": "Time modified.",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "mimetype": {
+                        "nullable": true,
+                        "description": "File mime type.",
+                        "type": "string"
+                      },
+                      "isexternalfile": {
+                        "nullable": true,
+                        "description": "Whether is an external file.",
+                        "type": "integer"
+                      },
+                      "repositorytype": {
+                        "nullable": true,
+                        "description": "The repository type for external files.",
+                        "type": "string"
+                      },
+                      "icon": {
+                        "nullable": true,
+                        "description": "The relative path to the relevant file type icon based on the file's mime type.",
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "activity": {
+                  "nullable": true,
+                  "description": "Description of activity",
+                  "type": "string"
+                },
+                "activityformat": {
+                  "nullable": true,
+                  "description": "activity format (1 = HTML, 0 = MOODLE, 2 = PLAIN, or 4 = MARKDOWN)",
+                  "type": "integer",
+                  "javaEnums": [
+                    {
+                      "name": "MOODLE"
+                    },
+                    {
+                      "name": "HTML"
+                    },
+                    {
+                      "name": "PLAIN"
+                    },
+                    {
+                      "name": "MARKDOWN"
+                    }
+                  ],
+                  "enum": [
+                    0,
+                    1,
+                    2,
+                    4
+                  ]
+                },
+                "activityattachments": {
+                  "nullable": true,
+                  "description": "Files from activity field",
+                  "type": "array",
+                  "items": {
+                    "title": "AssignmentActivityAttachmentFile",
+                    "type": "object",
+                    "properties": {
+                      "filename": {
+                        "nullable": true,
+                        "description": "File name.",
+                        "type": "string"
+                      },
+                      "filepath": {
+                        "nullable": true,
+                        "description": "File path.",
+                        "type": "string"
+                      },
+                      "filesize": {
+                        "nullable": true,
+                        "description": "File size.",
+                        "type": "integer"
+                      },
+                      "fileurl": {
+                        "nullable": true,
+                        "description": "Downloadable file url.",
+                        "type": "string"
+                      },
+                      "timemodified": {
+                        "nullable": true,
+                        "description": "Time modified.",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "mimetype": {
+                        "nullable": true,
+                        "description": "File mime type.",
+                        "type": "string"
+                      },
+                      "isexternalfile": {
+                        "nullable": true,
+                        "description": "Whether is an external file.",
+                        "type": "integer"
+                      },
+                      "repositorytype": {
+                        "nullable": true,
+                        "description": "The repository type for external files.",
+                        "type": "string"
+                      },
+                      "icon": {
+                        "nullable": true,
+                        "description": "The relative path to the relevant file type icon based on the file's mime type.",
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "timelimit": {
+                  "nullable": true,
+                  "description": "Time limit to complete assigment",
+                  "type": "integer"
+                },
+                "submissionattachments": {
+                  "nullable": true,
+                  "description": "Flag to only show files during submission",
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "id",
+                "cmid",
+                "course",
+                "name",
+                "nosubmissions",
+                "submissiondrafts",
+                "sendnotifications",
+                "sendlatenotifications",
+                "sendstudentnotifications",
+                "duedate",
+                "allowsubmissionsfromdate",
+                "grade",
+                "gradepenalty",
+                "timemodified",
+                "completionsubmit",
+                "cutoffdate",
+                "gradingduedate",
+                "teamsubmission",
+                "requireallteammemberssubmit",
+                "teamsubmissiongroupingid",
+                "blindmarking",
+                "hidegrader",
+                "revealidentities",
+                "attemptreopenmethod",
+                "maxattempts",
+                "markingworkflow",
+                "markingallocation",
+                "markercount",
+                "multimarkmethod",
+                "multimarkrounding",
+                "markinganonymous",
+                "requiresubmissionstatement",
+                "configs"
+              ]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "fullname",
+          "shortname",
+          "timemodified",
+          "assignments"
+        ]
+      }
+    },
+    "warnings": {
+      "nullable": true,
+      "description": "list of warnings",
+      "type": "array",
+      "items": {
+        "title": "Warning",
+        "type": "object",
+        "properties": {
+          "item": {
+            "nullable": true,
+            "description": "item can be 'course' (errorcode 1 or 2) or 'module' (errorcode 1)",
+            "type": "string"
+          },
+          "itemid": {
+            "nullable": true,
+            "description": "When item is a course then itemid is a course id. When item is a module then itemid is a module id",
+            "type": "integer",
+            "format": "int64"
+          },
+          "warningcode": {
+            "description": "errorcode can be 1 (no access rights) or 2 (not enrolled or no permissions)",
+            "type": "string"
+          },
+          "message": {
+            "description": "untranslated english message to explain the warning",
+            "type": "string"
+          }
+        },
+        "required": [
+          "warningcode",
+          "message"
+        ]
+      }
+    }
+  },
+  "required": [
+    "courses"
+  ]
+}
