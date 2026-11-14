@@ -41,6 +41,7 @@ public interface FetchCourseContentAdapaterMapper {
   @Mapping(target = "url", source = "url")
   @Mapping(target = "description", source = "moduleApi.description", qualifiedByName = "parseHtml")
   @Mapping(target = "visible", source = "visible")
+  @Mapping(target = "instance", source = "instance")
   CourseModule toDomain(ModuleApi moduleApi);
 
   @Named("summarytext")

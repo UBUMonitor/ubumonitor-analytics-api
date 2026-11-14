@@ -25,25 +25,1642 @@
       "request": {
         "method": "POST",
         "path": "/webservice/rest/server.php",
-        "body": "courseid=2&wsfunction=core_course_get_contents&moodlewsrestformat=json&wstoken=wiremock-moodle-token"
+        "body": "courseid=69&wsfunction=core_course_get_contents&moodlewsrestformat=json&wstoken=wiremock-moodle-token"
       },
       "response": {
-        "body": []
+        "body": [
+          {
+            "id": 553,
+            "name": "... and breathe!",
+            "visible": 1,
+            "summary": "<p dir=\"ltr\" style=\"text-align: left;\">Create your course and give your learners a mindful, stress-free experience with Moodle LMS 4.<br></p><p dir=\"ltr\" style=\"text-align: left;\"><img src=\"https://school.moodledemo.net/webservice/pluginfile.php/1587/course/section/553/mindfulcoursecreation2v2.png\" alt=\"\" width=\"655\" height=\"181\" role=\"presentation\" class=\"img-fluid atto_image_button_text-bottom\"><br></p>",
+            "summaryformat": 1,
+            "section": 0,
+            "hiddenbynumsections": 0,
+            "uservisible": true,
+            "component": null,
+            "itemid": null,
+            "modules": [
+              {
+                "id": 967,
+                "url": "https://school.moodledemo.net/mod/forum/view.php?id=967",
+                "name": "Course noticeboard",
+                "instance": 103,
+                "lang": "",
+                "contextid": 1592,
+                "visible": 1,
+                "uservisible": true,
+                "visibleoncoursepage": 1,
+                "modicon": "https://school.moodledemo.net/theme/image.php/boost/forum/1794610905/monologo?filtericon=1",
+                "modname": "forum",
+                "purpose": "collaboration",
+                "branded": false,
+                "modplural": "Forums",
+                "availability": null,
+                "indent": 0,
+                "onclick": "",
+                "afterlink": null,
+                "activitybadge": [],
+                "customdata": "{\"customcompletionrules\":{\"completiondiscussions\":\"0\",\"completionreplies\":\"0\",\"completionposts\":\"0\"},\"trackingtype\":\"2\"}",
+                "noviewlink": false,
+                "candisplay": true,
+                "completion": 2,
+                "completiondata": {
+                  "state": 1,
+                  "timecompleted": 1682491801,
+                  "overrideby": null,
+                  "valueused": false,
+                  "hascompletion": true,
+                  "isautomatic": true,
+                  "istrackeduser": false,
+                  "uservisible": true,
+                  "details": [
+                    {
+                      "rulename": "completionview",
+                      "rulevalue": {
+                        "status": 1,
+                        "description": "View"
+                      }
+                    }
+                  ],
+                  "isoverallcomplete": true
+                },
+                "downloadcontent": 1,
+                "dates": [],
+                "groupmode": 0
+              },
+              {
+                "id": 966,
+                "url": "https://school.moodledemo.net/mod/book/view.php?id=966",
+                "name": "About this course",
+                "instance": 12,
+                "lang": "",
+                "contextid": 1591,
+                "description": "<div class=\"no-overflow\"><p dir=\"ltr\" style=\"text-align: left;\">Learning outcomes and completion information.</p></div>",
+                "visible": 1,
+                "uservisible": true,
+                "visibleoncoursepage": 1,
+                "modicon": "https://school.moodledemo.net/theme/image.php/boost/book/1794610905/monologo?filtericon=1",
+                "modname": "book",
+                "purpose": "content",
+                "branded": false,
+                "modplural": "Books",
+                "availability": null,
+                "indent": 0,
+                "onclick": "",
+                "afterlink": null,
+                "customdata": "\"\"",
+                "noviewlink": false,
+                "candisplay": true,
+                "completion": 2,
+                "completiondata": {
+                  "state": 0,
+                  "timecompleted": 0,
+                  "overrideby": null,
+                  "valueused": false,
+                  "hascompletion": true,
+                  "isautomatic": true,
+                  "istrackeduser": false,
+                  "uservisible": true,
+                  "details": [
+                    {
+                      "rulename": "completionview",
+                      "rulevalue": {
+                        "status": 0,
+                        "description": "View"
+                      }
+                    }
+                  ],
+                  "isoverallcomplete": false
+                },
+                "downloadcontent": 1,
+                "dates": [],
+                "groupmode": 0,
+                "contents": [
+                  {
+                    "type": "content",
+                    "filename": "structure",
+                    "filepath": "/",
+                    "filesize": 0,
+                    "fileurl": null,
+                    "content": "[{\"title\":\"Learning outcomes\",\"href\":\"67\\/index.html\",\"level\":0,\"hidden\":\"0\",\"subitems\":[]},{\"title\":\"Completion information\",\"href\":\"68\\/index.html\",\"level\":0,\"hidden\":\"0\",\"subitems\":[]}]",
+                    "timecreated": 1639568251,
+                    "timemodified": 1649844777,
+                    "sortorder": 0,
+                    "userid": null,
+                    "author": null,
+                    "license": null
+                  },
+                  {
+                    "type": "file",
+                    "filename": "index.html",
+                    "filepath": "/67/",
+                    "filesize": 0,
+                    "fileurl": "https://school.moodledemo.net/webservice/pluginfile.php/1591/mod_book/chapter/67/index.html",
+                    "content": "Learning outcomes",
+                    "timecreated": 0,
+                    "timemodified": 1639743464,
+                    "sortorder": 0,
+                    "userid": null,
+                    "author": null,
+                    "license": null,
+                    "tags": []
+                  },
+                  {
+                    "type": "file",
+                    "filename": "index.html",
+                    "filepath": "/68/",
+                    "filesize": 0,
+                    "fileurl": "https://school.moodledemo.net/webservice/pluginfile.php/1591/mod_book/chapter/68/index.html",
+                    "content": "Completion information",
+                    "timecreated": 0,
+                    "timemodified": 1639743545,
+                    "sortorder": 0,
+                    "userid": null,
+                    "author": null,
+                    "license": null,
+                    "tags": []
+                  }
+                ],
+                "contentsinfo": {
+                  "filescount": 3,
+                  "filessize": 0,
+                  "lastmodified": 1649844777,
+                  "mimetypes": [],
+                  "repositorytype": ""
+                }
+              },
+              {
+                "id": 968,
+                "url": "https://school.moodledemo.net/mod/choice/view.php?id=968",
+                "name": "Prior experience check",
+                "instance": 21,
+                "lang": "",
+                "contextid": 1593,
+                "visible": 1,
+                "uservisible": true,
+                "visibleoncoursepage": 1,
+                "modicon": "https://school.moodledemo.net/theme/image.php/boost/choice/1794610905/monologo?filtericon=1",
+                "modname": "choice",
+                "purpose": "communication",
+                "branded": false,
+                "modplural": "Choices",
+                "availability": null,
+                "indent": 0,
+                "onclick": "",
+                "afterlink": null,
+                "customdata": "{\"customcompletionrules\":{\"completionsubmit\":\"1\"},\"timeclose\":\"1723127820\"}",
+                "noviewlink": false,
+                "candisplay": true,
+                "completion": 2,
+                "completiondata": {
+                  "state": 0,
+                  "timecompleted": 0,
+                  "overrideby": null,
+                  "valueused": false,
+                  "hascompletion": true,
+                  "isautomatic": true,
+                  "istrackeduser": false,
+                  "uservisible": true,
+                  "details": [
+                    {
+                      "rulename": "completionsubmit",
+                      "rulevalue": {
+                        "status": 0,
+                        "description": "Make a choice"
+                      }
+                    }
+                  ],
+                  "isoverallcomplete": false
+                },
+                "downloadcontent": 1,
+                "dates": [
+                  {
+                    "label": "Closed:",
+                    "timestamp": 1723127820,
+                    "dataid": "timeclose"
+                  }
+                ],
+                "groupmode": 0
+              },
+              {
+                "id": 969,
+                "url": "https://school.moodledemo.net/mod/h5pactivity/view.php?id=969",
+                "name": "How mindful an educator are you?",
+                "instance": 13,
+                "lang": "",
+                "contextid": 1594,
+                "visible": 1,
+                "uservisible": true,
+                "visibleoncoursepage": 1,
+                "modicon": "https://school.moodledemo.net/theme/image.php/boost/h5pactivity/1794610905/monologo?filtericon=1",
+                "modname": "h5pactivity",
+                "purpose": "interactivecontent",
+                "branded": true,
+                "modplural": "H5P",
+                "availability": null,
+                "indent": 0,
+                "onclick": "",
+                "afterlink": null,
+                "customdata": "\"\"",
+                "noviewlink": false,
+                "candisplay": true,
+                "completion": 0,
+                "downloadcontent": 1,
+                "dates": [],
+                "groupmode": 0
+              },
+              {
+                "id": 1185,
+                "url": "https://school.moodledemo.net/mod/lti/view.php?id=1185",
+                "name": "Search slideshare for presentations",
+                "instance": 4,
+                "lang": "",
+                "contextid": 1863,
+                "visible": 1,
+                "uservisible": true,
+                "visibleoncoursepage": 1,
+                "modicon": "https://www.edu-apps.org/tools/slideshare/icon.png",
+                "modname": "lti",
+                "purpose": "other",
+                "branded": false,
+                "modplural": "External tools",
+                "availability": null,
+                "indent": 0,
+                "onclick": "",
+                "afterlink": null,
+                "customdata": "\"\"",
+                "noviewlink": false,
+                "candisplay": true,
+                "completion": 0,
+                "downloadcontent": 1,
+                "dates": [],
+                "groupmode": 0
+              },
+              {
+                "id": 1629,
+                "url": "https://school.moodledemo.net/mod/qbank/view.php?id=1629",
+                "name": "MCC  shared question bank",
+                "instance": 16,
+                "lang": "",
+                "contextid": 2359,
+                "description": "<div class=\"no-overflow\">This question bank was created automatically when the site was upgraded.</div>",
+                "visible": 0,
+                "uservisible": true,
+                "visibleoncoursepage": 1,
+                "modicon": "https://school.moodledemo.net/theme/image.php/boost/qbank/1794610905/monologo?filtericon=1",
+                "modname": "qbank",
+                "purpose": "content",
+                "branded": false,
+                "modplural": "Question banks",
+                "availability": null,
+                "indent": 0,
+                "onclick": "",
+                "afterlink": null,
+                "customdata": "\"\"",
+                "noviewlink": false,
+                "candisplay": false,
+                "completion": 0,
+                "downloadcontent": 1,
+                "dates": [],
+                "groupmode": 0
+              }
+            ]
+          },
+          {
+            "id": 554,
+            "name": "Why this course?",
+            "visible": 1,
+            "summary": "",
+            "summaryformat": 1,
+            "section": 1,
+            "hiddenbynumsections": 0,
+            "uservisible": true,
+            "component": null,
+            "itemid": null,
+            "modules": [
+              {
+                "id": 970,
+                "url": "https://school.moodledemo.net/mod/glossary/view.php?id=970",
+                "name": "Help build our understanding",
+                "instance": 93,
+                "lang": "",
+                "contextid": 1595,
+                "visible": 1,
+                "uservisible": true,
+                "visibleoncoursepage": 1,
+                "modicon": "https://school.moodledemo.net/theme/image.php/boost/glossary/1794610905/monologo?filtericon=1",
+                "modname": "glossary",
+                "purpose": "collaboration",
+                "branded": false,
+                "modplural": "Glossaries",
+                "availability": null,
+                "indent": 0,
+                "onclick": "",
+                "afterlink": null,
+                "customdata": "{\"customcompletionrules\":{\"completionentries\":\"0\"}}",
+                "noviewlink": false,
+                "candisplay": true,
+                "completion": 2,
+                "completiondata": {
+                  "state": 1,
+                  "timecompleted": 1649180021,
+                  "overrideby": null,
+                  "valueused": false,
+                  "hascompletion": true,
+                  "isautomatic": true,
+                  "istrackeduser": false,
+                  "uservisible": true,
+                  "details": [
+                    {
+                      "rulename": "completionview",
+                      "rulevalue": {
+                        "status": 1,
+                        "description": "View"
+                      }
+                    }
+                  ],
+                  "isoverallcomplete": true
+                },
+                "downloadcontent": 1,
+                "dates": [],
+                "groupmode": 0
+              },
+              {
+                "id": 971,
+                "url": "https://school.moodledemo.net/mod/forum/view.php?id=971",
+                "name": "Let's talk about stress!",
+                "instance": 104,
+                "lang": "",
+                "contextid": 1596,
+                "visible": 1,
+                "uservisible": true,
+                "visibleoncoursepage": 1,
+                "modicon": "https://school.moodledemo.net/theme/image.php/boost/forum/1794610905/monologo?filtericon=1",
+                "modname": "forum",
+                "purpose": "collaboration",
+                "branded": false,
+                "modplural": "Forums",
+                "availability": null,
+                "indent": 0,
+                "onclick": "",
+                "afterlink": null,
+                "activitybadge": [],
+                "customdata": "{\"customcompletionrules\":{\"completiondiscussions\":\"0\",\"completionreplies\":\"0\",\"completionposts\":\"1\"},\"trackingtype\":\"2\"}",
+                "noviewlink": false,
+                "candisplay": true,
+                "completion": 2,
+                "completiondata": {
+                  "state": 1,
+                  "timecompleted": 1649318713,
+                  "overrideby": null,
+                  "valueused": false,
+                  "hascompletion": true,
+                  "isautomatic": true,
+                  "istrackeduser": false,
+                  "uservisible": true,
+                  "details": [
+                    {
+                      "rulename": "completionposts",
+                      "rulevalue": {
+                        "status": 1,
+                        "description": "Make forum posts: 1"
+                      }
+                    }
+                  ],
+                  "isoverallcomplete": true
+                },
+                "downloadcontent": 1,
+                "dates": [],
+                "groupmode": 0
+              },
+              {
+                "id": 972,
+                "url": "https://school.moodledemo.net/mod/url/view.php?id=972",
+                "name": "The Freiburg Mindfulness inventory",
+                "instance": 78,
+                "lang": "",
+                "contextid": 1597,
+                "visible": 1,
+                "uservisible": true,
+                "visibleoncoursepage": 1,
+                "modicon": "https://school.moodledemo.net/theme/image.php/boost/url/1794610905/monologo?filtericon=1",
+                "modname": "url",
+                "purpose": "content",
+                "branded": false,
+                "modplural": "URLs",
+                "availability": null,
+                "indent": 0,
+                "onclick": "",
+                "afterlink": null,
+                "customdata": "{\"display\":4,\"filtericon\":true}",
+                "noviewlink": false,
+                "candisplay": true,
+                "completion": 2,
+                "completiondata": {
+                  "state": 1,
+                  "timecompleted": 1696840352,
+                  "overrideby": null,
+                  "valueused": false,
+                  "hascompletion": true,
+                  "isautomatic": true,
+                  "istrackeduser": false,
+                  "uservisible": true,
+                  "details": [
+                    {
+                      "rulename": "completionview",
+                      "rulevalue": {
+                        "status": 1,
+                        "description": "View"
+                      }
+                    }
+                  ],
+                  "isoverallcomplete": true
+                },
+                "downloadcontent": 1,
+                "dates": [],
+                "groupmode": 0,
+                "contents": [
+                  {
+                    "type": "url",
+                    "filename": "The Freiburg Mindfulness inventory",
+                    "filepath": null,
+                    "filesize": 0,
+                    "fileurl": "https://www.sciencedirect.com/science/article/abs/pii/S0191886906000262",
+                    "timecreated": null,
+                    "timemodified": 1646491101,
+                    "sortorder": null,
+                    "userid": null,
+                    "author": null,
+                    "license": null
+                  }
+                ],
+                "contentsinfo": {
+                  "filescount": 1,
+                  "filessize": 0,
+                  "lastmodified": 1646491101,
+                  "mimetypes": [],
+                  "repositorytype": ""
+                }
+              },
+              {
+                "id": 973,
+                "url": "https://school.moodledemo.net/mod/book/view.php?id=973",
+                "name": "The need for mindfulness",
+                "instance": 13,
+                "lang": "",
+                "contextid": 1598,
+                "visible": 1,
+                "uservisible": true,
+                "visibleoncoursepage": 1,
+                "modicon": "https://school.moodledemo.net/theme/image.php/boost/book/1794610905/monologo?filtericon=1",
+                "modname": "book",
+                "purpose": "content",
+                "branded": false,
+                "modplural": "Books",
+                "availability": null,
+                "indent": 0,
+                "onclick": "",
+                "afterlink": null,
+                "customdata": "\"\"",
+                "noviewlink": false,
+                "candisplay": true,
+                "completion": 1,
+                "completiondata": {
+                  "state": 0,
+                  "timecompleted": 0,
+                  "overrideby": null,
+                  "valueused": false,
+                  "hascompletion": true,
+                  "isautomatic": false,
+                  "istrackeduser": false,
+                  "uservisible": true,
+                  "details": [],
+                  "isoverallcomplete": false
+                },
+                "downloadcontent": 1,
+                "dates": [],
+                "groupmode": 0,
+                "contents": [
+                  {
+                    "type": "content",
+                    "filename": "structure",
+                    "filepath": "/",
+                    "filesize": 0,
+                    "fileurl": null,
+                    "content": "[{\"title\":\"The power of mindfulness\",\"href\":\"69\\/index.html\",\"level\":0,\"hidden\":\"0\",\"subitems\":[]},{\"title\":\"Don't judge\",\"href\":\"70\\/index.html\",\"level\":0,\"hidden\":\"0\",\"subitems\":[]}]",
+                    "timecreated": 1639496989,
+                    "timemodified": 1639569138,
+                    "sortorder": 0,
+                    "userid": null,
+                    "author": null,
+                    "license": null
+                  },
+                  {
+                    "type": "file",
+                    "filename": "index.html",
+                    "filepath": "/69/",
+                    "filesize": 0,
+                    "fileurl": "https://school.moodledemo.net/webservice/pluginfile.php/1598/mod_book/chapter/69/index.html",
+                    "content": "The power of mindfulness",
+                    "timecreated": 0,
+                    "timemodified": 1639565942,
+                    "sortorder": 0,
+                    "userid": null,
+                    "author": null,
+                    "license": null,
+                    "tags": []
+                  },
+                  {
+                    "type": "file",
+                    "filename": "PowerOfMindfulness.pdf",
+                    "filepath": "/69/",
+                    "filesize": 67434,
+                    "fileurl": "https://school.moodledemo.net/webservice/pluginfile.php/1598/mod_book/chapter/69/PowerOfMindfulness.pdf",
+                    "timecreated": 1649179814,
+                    "timemodified": 1649179814,
+                    "sortorder": 0,
+                    "mimetype": "application/pdf",
+                    "isexternalfile": false,
+                    "userid": 3,
+                    "author": "Mr C Wilson",
+                    "license": "cc"
+                  },
+                  {
+                    "type": "file",
+                    "filename": "index.html",
+                    "filepath": "/70/",
+                    "filesize": 0,
+                    "fileurl": "https://school.moodledemo.net/webservice/pluginfile.php/1598/mod_book/chapter/70/index.html",
+                    "content": "Don't judge",
+                    "timecreated": 0,
+                    "timemodified": 1639565919,
+                    "sortorder": 0,
+                    "userid": null,
+                    "author": null,
+                    "license": null,
+                    "tags": []
+                  }
+                ],
+                "contentsinfo": {
+                  "filescount": 4,
+                  "filessize": 67434,
+                  "lastmodified": 1649179814,
+                  "mimetypes": [
+                    "application/pdf"
+                  ],
+                  "repositorytype": ""
+                }
+              },
+              {
+                "id": 983,
+                "url": "https://school.moodledemo.net/mod/bigbluebuttonbn/view.php?id=983",
+                "name": "Join us for our weekly live sessions on BBB",
+                "instance": 1,
+                "lang": "",
+                "contextid": 1648,
+                "visible": 1,
+                "uservisible": true,
+                "visibleoncoursepage": 1,
+                "modicon": "https://school.moodledemo.net/theme/image.php/boost/bigbluebuttonbn/1794610905/monologo?filtericon=1",
+                "modname": "bigbluebuttonbn",
+                "purpose": "communication",
+                "branded": true,
+                "modplural": "BigBlueButton",
+                "availability": null,
+                "indent": 0,
+                "onclick": "",
+                "afterlink": null,
+                "customdata": "{\"customcompletionrules\":{\"completionattendance\":\"0\",\"completionengagementchats\":\"0\",\"completionengagementtalks\":\"0\",\"completionengagementraisehand\":\"0\",\"completionengagementpollvotes\":\"0\",\"completionengagementemojis\":\"0\"}}",
+                "noviewlink": false,
+                "candisplay": true,
+                "completion": 2,
+                "completiondata": {
+                  "state": 0,
+                  "timecompleted": 0,
+                  "overrideby": null,
+                  "valueused": false,
+                  "hascompletion": true,
+                  "isautomatic": true,
+                  "istrackeduser": false,
+                  "uservisible": true,
+                  "details": [
+                    {
+                      "rulename": "completionview",
+                      "rulevalue": {
+                        "status": 1,
+                        "description": "View"
+                      }
+                    }
+                  ],
+                  "isoverallcomplete": false
+                },
+                "downloadcontent": 1,
+                "dates": [],
+                "groupmode": 0
+              }
+            ]
+          },
+          {
+            "id": 555,
+            "name": "Mindful teaching",
+            "visible": 1,
+            "summary": "",
+            "summaryformat": 1,
+            "section": 2,
+            "hiddenbynumsections": 0,
+            "uservisible": true,
+            "component": null,
+            "itemid": null,
+            "modules": [
+              {
+                "id": 974,
+                "url": "https://school.moodledemo.net/mod/page/view.php?id=974",
+                "name": "What we as teachers can do",
+                "instance": 93,
+                "lang": "",
+                "contextid": 1599,
+                "description": "<div class=\"no-overflow\"><p dir=\"ltr\" style=\"text-align: left;\">Learn tips for your own well being and how to make your learners feel at ease in class.</p></div>",
+                "visible": 1,
+                "uservisible": true,
+                "visibleoncoursepage": 1,
+                "modicon": "https://school.moodledemo.net/theme/image.php/boost/page/1794610905/monologo?filtericon=1",
+                "modname": "page",
+                "purpose": "content",
+                "branded": false,
+                "modplural": "Pages",
+                "availability": null,
+                "indent": 0,
+                "onclick": "",
+                "afterlink": null,
+                "customdata": "\"\"",
+                "noviewlink": false,
+                "candisplay": true,
+                "completion": 1,
+                "completiondata": {
+                  "state": 0,
+                  "timecompleted": 0,
+                  "overrideby": null,
+                  "valueused": false,
+                  "hascompletion": true,
+                  "isautomatic": false,
+                  "istrackeduser": false,
+                  "uservisible": true,
+                  "details": [],
+                  "isoverallcomplete": false
+                },
+                "downloadcontent": 1,
+                "dates": [],
+                "groupmode": 0,
+                "contents": [
+                  {
+                    "type": "file",
+                    "filename": "mindfulcoursecreation.jpg",
+                    "filepath": "/",
+                    "filesize": 42776,
+                    "fileurl": "https://school.moodledemo.net/webservice/pluginfile.php/1599/mod_page/content/6/mindfulcoursecreation.jpg?forcedownload=1",
+                    "timecreated": 1649179814,
+                    "timemodified": 1649179814,
+                    "sortorder": 0,
+                    "mimetype": "image/jpeg",
+                    "isexternalfile": false,
+                    "userid": 3,
+                    "author": "Mr C Wilson",
+                    "license": "cc"
+                  },
+                  {
+                    "type": "file",
+                    "filename": "mindfulteacher.png",
+                    "filepath": "/",
+                    "filesize": 3481,
+                    "fileurl": "https://school.moodledemo.net/webservice/pluginfile.php/1599/mod_page/content/6/mindfulteacher.png?forcedownload=1",
+                    "timecreated": 1649179814,
+                    "timemodified": 1649179814,
+                    "sortorder": 0,
+                    "mimetype": "image/png",
+                    "isexternalfile": false,
+                    "userid": 3,
+                    "author": "Mr C Wilson",
+                    "license": "cc"
+                  },
+                  {
+                    "type": "file",
+                    "filename": "teacherpodium.png",
+                    "filepath": "/",
+                    "filesize": 3324,
+                    "fileurl": "https://school.moodledemo.net/webservice/pluginfile.php/1599/mod_page/content/6/teacherpodium.png?forcedownload=1",
+                    "timecreated": 1649179814,
+                    "timemodified": 1649179814,
+                    "sortorder": 0,
+                    "mimetype": "image/png",
+                    "isexternalfile": false,
+                    "userid": 3,
+                    "author": "Mr C Wilson",
+                    "license": "cc"
+                  },
+                  {
+                    "type": "file",
+                    "filename": "index.html",
+                    "filepath": "/",
+                    "filesize": 0,
+                    "fileurl": "https://school.moodledemo.net/webservice/pluginfile.php/1599/mod_page/content/index.html?forcedownload=1",
+                    "timecreated": null,
+                    "timemodified": 1639745532,
+                    "sortorder": 1,
+                    "userid": null,
+                    "author": null,
+                    "license": null
+                  }
+                ],
+                "contentsinfo": {
+                  "filescount": 4,
+                  "filessize": 49581,
+                  "lastmodified": 1649179814,
+                  "mimetypes": [
+                    "image/jpeg",
+                    "image/png"
+                  ],
+                  "repositorytype": ""
+                }
+              },
+              {
+                "id": 975,
+                "url": "https://school.moodledemo.net/mod/url/view.php?id=975",
+                "name": "(Research paper) Mindfulness in Online and Blended Education",
+                "instance": 79,
+                "lang": "",
+                "contextid": 1600,
+                "visible": 1,
+                "uservisible": true,
+                "visibleoncoursepage": 1,
+                "modicon": "https://school.moodledemo.net/theme/image.php/boost/url/1794610905/monologo?filtericon=1",
+                "modname": "url",
+                "purpose": "content",
+                "branded": false,
+                "modplural": "URLs",
+                "availability": null,
+                "indent": 0,
+                "onclick": "",
+                "afterlink": null,
+                "customdata": "{\"display\":4,\"filtericon\":true}",
+                "noviewlink": false,
+                "candisplay": true,
+                "completion": 2,
+                "completiondata": {
+                  "state": 1,
+                  "timecompleted": 1649318723,
+                  "overrideby": null,
+                  "valueused": false,
+                  "hascompletion": true,
+                  "isautomatic": true,
+                  "istrackeduser": false,
+                  "uservisible": true,
+                  "details": [
+                    {
+                      "rulename": "completionview",
+                      "rulevalue": {
+                        "status": 1,
+                        "description": "View"
+                      }
+                    }
+                  ],
+                  "isoverallcomplete": true
+                },
+                "downloadcontent": 1,
+                "dates": [],
+                "groupmode": 0,
+                "contents": [
+                  {
+                    "type": "url",
+                    "filename": "(Research paper) Mindfulness in Online and Blended Education",
+                    "filepath": null,
+                    "filesize": 0,
+                    "fileurl": "https://www.academia.edu/36464744/Mindfulness_in_Online_and_Blended_Education",
+                    "timecreated": null,
+                    "timemodified": 1646491114,
+                    "sortorder": null,
+                    "userid": null,
+                    "author": null,
+                    "license": null
+                  }
+                ],
+                "contentsinfo": {
+                  "filescount": 1,
+                  "filessize": 0,
+                  "lastmodified": 1646491114,
+                  "mimetypes": [],
+                  "repositorytype": ""
+                }
+              },
+              {
+                "id": 976,
+                "url": "https://school.moodledemo.net/mod/data/view.php?id=976",
+                "name": "Your personal action plan",
+                "instance": 28,
+                "lang": "",
+                "contextid": 1601,
+                "description": "<div class=\"no-overflow\"><p dir=\"ltr\" style=\"text-align: left;\">As you work through the course, keep a note here of your areas for improvement or any gaps in your understanding. This activity is only visible to you, the course participant, and to your teacher, so be honest!</p></div>",
+                "visible": 1,
+                "uservisible": true,
+                "visibleoncoursepage": 1,
+                "modicon": "https://school.moodledemo.net/theme/image.php/boost/data/1794610905/monologo?filtericon=1",
+                "modname": "data",
+                "purpose": "collaboration",
+                "branded": false,
+                "modplural": "Databases",
+                "availability": null,
+                "indent": 0,
+                "onclick": "",
+                "afterlink": null,
+                "customdata": "{\"customcompletionrules\":{\"completionentries\":\"1\"},\"timeavailableto\":\"1723041480\"}",
+                "noviewlink": false,
+                "candisplay": true,
+                "completion": 2,
+                "completiondata": {
+                  "state": 0,
+                  "timecompleted": 0,
+                  "overrideby": null,
+                  "valueused": false,
+                  "hascompletion": true,
+                  "isautomatic": true,
+                  "istrackeduser": false,
+                  "uservisible": true,
+                  "details": [
+                    {
+                      "rulename": "completionentries",
+                      "rulevalue": {
+                        "status": 0,
+                        "description": "Make entries: 1"
+                      }
+                    }
+                  ],
+                  "isoverallcomplete": false
+                },
+                "downloadcontent": 1,
+                "dates": [
+                  {
+                    "label": "Closed:",
+                    "timestamp": 1723041480,
+                    "dataid": "timeavailableto"
+                  }
+                ],
+                "groupmode": 0
+              },
+              {
+                "id": 977,
+                "url": "https://school.moodledemo.net/mod/page/view.php?id=977",
+                "name": "Supporting our learners",
+                "instance": 94,
+                "lang": "",
+                "contextid": 1602,
+                "description": "<div class=\"no-overflow\">Essential reading for creating a mindful learning experience.</div>",
+                "visible": 1,
+                "uservisible": true,
+                "visibleoncoursepage": 1,
+                "modicon": "https://school.moodledemo.net/theme/image.php/boost/page/1794610905/monologo?filtericon=1",
+                "modname": "page",
+                "purpose": "content",
+                "branded": false,
+                "modplural": "Pages",
+                "availability": null,
+                "indent": 0,
+                "onclick": "",
+                "afterlink": null,
+                "customdata": "\"\"",
+                "noviewlink": false,
+                "candisplay": true,
+                "completion": 1,
+                "completiondata": {
+                  "state": 0,
+                  "timecompleted": 0,
+                  "overrideby": null,
+                  "valueused": false,
+                  "hascompletion": true,
+                  "isautomatic": false,
+                  "istrackeduser": false,
+                  "uservisible": true,
+                  "details": [],
+                  "isoverallcomplete": false
+                },
+                "downloadcontent": 1,
+                "dates": [],
+                "groupmode": 0,
+                "contents": [
+                  {
+                    "type": "file",
+                    "filename": "index.html",
+                    "filepath": "/",
+                    "filesize": 0,
+                    "fileurl": "https://school.moodledemo.net/webservice/pluginfile.php/1602/mod_page/content/index.html?forcedownload=1",
+                    "timecreated": null,
+                    "timemodified": 1639569229,
+                    "sortorder": 1,
+                    "userid": null,
+                    "author": null,
+                    "license": null
+                  }
+                ],
+                "contentsinfo": {
+                  "filescount": 1,
+                  "filessize": 0,
+                  "lastmodified": 1639569229,
+                  "mimetypes": [],
+                  "repositorytype": ""
+                }
+              }
+            ]
+          },
+          {
+            "id": 556,
+            "name": "Course check and feedback",
+            "visible": 1,
+            "summary": "",
+            "summaryformat": 1,
+            "section": 3,
+            "hiddenbynumsections": 0,
+            "uservisible": true,
+            "component": null,
+            "itemid": null,
+            "modules": [
+              {
+                "id": 978,
+                "url": "https://school.moodledemo.net/mod/quiz/view.php?id=978",
+                "name": "Check your understanding",
+                "instance": 96,
+                "lang": "",
+                "contextid": 1603,
+                "visible": 1,
+                "uservisible": true,
+                "visibleoncoursepage": 1,
+                "modicon": "https://school.moodledemo.net/theme/image.php/boost/quiz/1794610905/monologo?filtericon=1",
+                "modname": "quiz",
+                "purpose": "assessment",
+                "branded": false,
+                "modplural": "Quizzes",
+                "availability": null,
+                "indent": 0,
+                "onclick": "",
+                "afterlink": null,
+                "customdata": "{\"customcompletionrules\":{\"completionpassorattemptsexhausted\":[],\"completionminattempts\":\"0\"}}",
+                "noviewlink": false,
+                "candisplay": true,
+                "completion": 2,
+                "completiondata": {
+                  "state": 0,
+                  "timecompleted": 0,
+                  "overrideby": null,
+                  "valueused": false,
+                  "hascompletion": true,
+                  "isautomatic": true,
+                  "istrackeduser": false,
+                  "uservisible": true,
+                  "details": [
+                    {
+                      "rulename": "completionusegrade",
+                      "rulevalue": {
+                        "status": 0,
+                        "description": "Receive a grade"
+                      }
+                    }
+                  ],
+                  "isoverallcomplete": false
+                },
+                "downloadcontent": 1,
+                "dates": [],
+                "groupmode": 0
+              },
+              {
+                "id": 979,
+                "url": "https://school.moodledemo.net/mod/feedback/view.php?id=979",
+                "name": "Tell us how we did",
+                "instance": 18,
+                "lang": "",
+                "contextid": 1604,
+                "visible": 1,
+                "uservisible": true,
+                "visibleoncoursepage": 1,
+                "modicon": "https://school.moodledemo.net/theme/image.php/boost/feedback/1794610905/monologo?filtericon=1",
+                "modname": "feedback",
+                "purpose": "communication",
+                "branded": false,
+                "modplural": "Feedback",
+                "availability": null,
+                "indent": 0,
+                "onclick": "",
+                "afterlink": null,
+                "customdata": "{\"anonymous\":\"1\"}",
+                "noviewlink": false,
+                "candisplay": true,
+                "completion": 0,
+                "downloadcontent": 1,
+                "dates": [],
+                "groupmode": 0
+              },
+              {
+                "id": 980,
+                "url": "https://school.moodledemo.net/mod/assign/view.php?id=980",
+                "name": "Timed Task",
+                "instance": 134,
+                "lang": "",
+                "contextid": 1605,
+                "description": "<div class=\"no-overflow\"><p dir=\"ltr\" style=\"text-align: left;\">A timed reflection task.</p>\r\n<p> </p></div>",
+                "visible": 1,
+                "uservisible": true,
+                "visibleoncoursepage": 1,
+                "modicon": "https://school.moodledemo.net/theme/image.php/boost/assign/1794610905/monologo?filtericon=1",
+                "modname": "assign",
+                "purpose": "assessment",
+                "branded": false,
+                "modplural": "Assignments",
+                "availability": null,
+                "indent": 0,
+                "onclick": "",
+                "afterlink": null,
+                "customdata": "{\"customcompletionrules\":{\"completionsubmit\":\"1\"},\"allowsubmissionsfromdate\":\"1681084800\"}",
+                "noviewlink": false,
+                "candisplay": true,
+                "completion": 2,
+                "completiondata": {
+                  "state": 0,
+                  "timecompleted": 0,
+                  "overrideby": null,
+                  "valueused": false,
+                  "hascompletion": true,
+                  "isautomatic": true,
+                  "istrackeduser": false,
+                  "uservisible": true,
+                  "details": [
+                    {
+                      "rulename": "completionsubmit",
+                      "rulevalue": {
+                        "status": 0,
+                        "description": "Make a submission"
+                      }
+                    }
+                  ],
+                  "isoverallcomplete": false
+                },
+                "downloadcontent": 1,
+                "dates": [
+                  {
+                    "label": "Opened:",
+                    "timestamp": 1681084800,
+                    "dataid": "allowsubmissionsfromdate"
+                  }
+                ],
+                "groupmode": 0
+              }
+            ]
+          },
+          {
+            "id": 557,
+            "name": "Learn more",
+            "visible": 1,
+            "summary": "",
+            "summaryformat": 1,
+            "section": 4,
+            "hiddenbynumsections": 0,
+            "uservisible": true,
+            "component": null,
+            "itemid": null,
+            "modules": [
+              {
+                "id": 981,
+                "url": "https://school.moodledemo.net/mod/url/view.php?id=981",
+                "name": "Moodle Academy: Insight into Mindfulness course",
+                "instance": 80,
+                "lang": "",
+                "contextid": 1606,
+                "visible": 1,
+                "uservisible": true,
+                "visibleoncoursepage": 1,
+                "modicon": "https://school.moodledemo.net/theme/image.php/boost/url/1794610905/monologo?filtericon=1",
+                "modname": "url",
+                "purpose": "content",
+                "branded": false,
+                "modplural": "URLs",
+                "availability": null,
+                "indent": 0,
+                "onclick": "",
+                "afterlink": null,
+                "customdata": "{\"display\":4,\"filtericon\":true}",
+                "noviewlink": false,
+                "candisplay": true,
+                "completion": 0,
+                "downloadcontent": 1,
+                "dates": [],
+                "groupmode": 0,
+                "contents": [
+                  {
+                    "type": "url",
+                    "filename": "Moodle Academy Insight into Mindfulness course",
+                    "filepath": null,
+                    "filesize": 0,
+                    "fileurl": "https://moodle.academy/course/view.php?id=17",
+                    "timecreated": null,
+                    "timemodified": 1639568929,
+                    "sortorder": null,
+                    "userid": null,
+                    "author": null,
+                    "license": null
+                  }
+                ],
+                "contentsinfo": {
+                  "filescount": 1,
+                  "filessize": 0,
+                  "lastmodified": 1639568929,
+                  "mimetypes": [],
+                  "repositorytype": ""
+                }
+              },
+              {
+                "id": 982,
+                "name": "Images courtesy of Pixabay and UnSplash.",
+                "instance": 148,
+                "lang": "",
+                "contextid": 1607,
+                "description": "<div class=\"no-overflow\"><hr><hr><p dir=\"ltr\" style=\"text-align: left;\">Images courtesy of&nbsp;<a href=\"https://pixabay.com/\" target=\"_blank\" rel=\"noreferrer noopener\">Pixabay</a>&nbsp;and&nbsp;<a href=\"https://unsplash.com/\" target=\"_blank\" rel=\"noreferrer noopener\">UnSplash</a>.<br></p></div>",
+                "visible": 1,
+                "uservisible": true,
+                "visibleoncoursepage": 1,
+                "modicon": "https://school.moodledemo.net/theme/image.php/boost/label/1794610905/monologo?filtericon=1",
+                "modname": "label",
+                "purpose": "content",
+                "branded": false,
+                "modplural": "Text and media areas",
+                "availability": null,
+                "indent": 0,
+                "onclick": "",
+                "afterlink": null,
+                "customdata": "\"\"",
+                "noviewlink": true,
+                "candisplay": true,
+                "completion": 0,
+                "downloadcontent": 1,
+                "dates": [],
+                "groupmode": 0
+              }
+            ]
+          }
+        ]
       }
     }
   ],
-  "request": {
-    "method": "POST",
-    "path": "/api/courses/2/content/sync",
-    "headers": {
-      "Authorization": "******"
+  "endpoints": [
+    {
+      "request": {
+        "method": "POST",
+        "path": "/api/courses/69/content/sync",
+        "headers": {
+          "Authorization": "******"
+        }
+      },
+      "expectedResponse": {
+        "status": 200,
+        "body": {
+          "sections": [
+            {
+              "id": 553,
+              "name": "... and breathe!",
+              "visible": true,
+              "summary": "Create your course and give your learners a mindful, stress-free experience with Moodle LMS 4.",
+              "position": 0,
+              "modules": [
+                {
+                  "id": 967,
+                  "name": "Course noticeboard",
+                  "modName": "forum",
+                  "url": "https://school.moodledemo.net/mod/forum/view.php?id=967",
+                  "visible": true,
+                  "instance": 103
+                },
+                {
+                  "id": 966,
+                  "name": "About this course",
+                  "modName": "book",
+                  "url": "https://school.moodledemo.net/mod/book/view.php?id=966",
+                  "description": "Learning outcomes and completion information.",
+                  "visible": true,
+                  "instance": 12
+                },
+                {
+                  "id": 968,
+                  "name": "Prior experience check",
+                  "modName": "choice",
+                  "url": "https://school.moodledemo.net/mod/choice/view.php?id=968",
+                  "visible": true,
+                  "instance": 21
+                },
+                {
+                  "id": 969,
+                  "name": "How mindful an educator are you?",
+                  "modName": "h5pactivity",
+                  "url": "https://school.moodledemo.net/mod/h5pactivity/view.php?id=969",
+                  "visible": true,
+                  "instance": 13
+                },
+                {
+                  "id": 1185,
+                  "name": "Search slideshare for presentations",
+                  "modName": "lti",
+                  "url": "https://school.moodledemo.net/mod/lti/view.php?id=1185",
+                  "visible": true,
+                  "instance": 4
+                },
+                {
+                  "id": 1629,
+                  "name": "MCC  shared question bank",
+                  "modName": "qbank",
+                  "url": "https://school.moodledemo.net/mod/qbank/view.php?id=1629",
+                  "description": "This question bank was created automatically when the site was upgraded.",
+                  "visible": false,
+                  "instance": 16
+                }
+              ]
+            },
+            {
+              "id": 554,
+              "name": "Why this course?",
+              "visible": true,
+              "summary": "",
+              "position": 1,
+              "modules": [
+                {
+                  "id": 970,
+                  "name": "Help build our understanding",
+                  "modName": "glossary",
+                  "url": "https://school.moodledemo.net/mod/glossary/view.php?id=970",
+                  "visible": true,
+                  "instance": 93
+                },
+                {
+                  "id": 971,
+                  "name": "Let's talk about stress!",
+                  "modName": "forum",
+                  "url": "https://school.moodledemo.net/mod/forum/view.php?id=971",
+                  "visible": true,
+                  "instance": 104
+                },
+                {
+                  "id": 972,
+                  "name": "The Freiburg Mindfulness inventory",
+                  "modName": "url",
+                  "url": "https://school.moodledemo.net/mod/url/view.php?id=972",
+                  "visible": true,
+                  "instance": 78
+                },
+                {
+                  "id": 973,
+                  "name": "The need for mindfulness",
+                  "modName": "book",
+                  "url": "https://school.moodledemo.net/mod/book/view.php?id=973",
+                  "visible": true,
+                  "instance": 13
+                },
+                {
+                  "id": 983,
+                  "name": "Join us for our weekly live sessions on BBB",
+                  "modName": "bigbluebuttonbn",
+                  "url": "https://school.moodledemo.net/mod/bigbluebuttonbn/view.php?id=983",
+                  "visible": true,
+                  "instance": 1
+                }
+              ]
+            },
+            {
+              "id": 555,
+              "name": "Mindful teaching",
+              "visible": true,
+              "summary": "",
+              "position": 2,
+              "modules": [
+                {
+                  "id": 974,
+                  "name": "What we as teachers can do",
+                  "modName": "page",
+                  "url": "https://school.moodledemo.net/mod/page/view.php?id=974",
+                  "description": "Learn tips for your own well being and how to make your learners feel at ease in class.",
+                  "visible": true,
+                  "instance": 93
+                },
+                {
+                  "id": 975,
+                  "name": "(Research paper) Mindfulness in Online and Blended Education",
+                  "modName": "url",
+                  "url": "https://school.moodledemo.net/mod/url/view.php?id=975",
+                  "visible": true,
+                  "instance": 79
+                },
+                {
+                  "id": 976,
+                  "name": "Your personal action plan",
+                  "modName": "data",
+                  "url": "https://school.moodledemo.net/mod/data/view.php?id=976",
+                  "description": "As you work through the course, keep a note here of your areas for improvement or any gaps in your understanding. This activity is only visible to you, the course participant, and to your teacher, so be honest!",
+                  "visible": true,
+                  "instance": 28
+                },
+                {
+                  "id": 977,
+                  "name": "Supporting our learners",
+                  "modName": "page",
+                  "url": "https://school.moodledemo.net/mod/page/view.php?id=977",
+                  "description": "Essential reading for creating a mindful learning experience.",
+                  "visible": true,
+                  "instance": 94
+                }
+              ]
+            },
+            {
+              "id": 556,
+              "name": "Course check and feedback",
+              "visible": true,
+              "summary": "",
+              "position": 3,
+              "modules": [
+                {
+                  "id": 978,
+                  "name": "Check your understanding",
+                  "modName": "quiz",
+                  "url": "https://school.moodledemo.net/mod/quiz/view.php?id=978",
+                  "visible": true,
+                  "instance": 96
+                },
+                {
+                  "id": 979,
+                  "name": "Tell us how we did",
+                  "modName": "feedback",
+                  "url": "https://school.moodledemo.net/mod/feedback/view.php?id=979",
+                  "visible": true,
+                  "instance": 18
+                },
+                {
+                  "id": 980,
+                  "name": "Timed Task",
+                  "modName": "assign",
+                  "url": "https://school.moodledemo.net/mod/assign/view.php?id=980",
+                  "description": "A timed reflection task.",
+                  "visible": true,
+                  "instance": 134
+                }
+              ]
+            },
+            {
+              "id": 557,
+              "name": "Learn more",
+              "visible": true,
+              "summary": "",
+              "position": 4,
+              "modules": [
+                {
+                  "id": 981,
+                  "name": "Moodle Academy: Insight into Mindfulness course",
+                  "modName": "url",
+                  "url": "https://school.moodledemo.net/mod/url/view.php?id=981",
+                  "visible": true,
+                  "instance": 80
+                },
+                {
+                  "id": 982,
+                  "name": "Images courtesy of Pixabay and UnSplash.",
+                  "modName": "label",
+                  "description": "Images courtesy of Pixabay and UnSplash.",
+                  "visible": true,
+                  "instance": 148
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "path": "/api/courses/69/content/info",
+        "headers": {
+          "Authorization": "******"
+        }
+      },
+      "expectedResponse": {
+        "status": 200,
+        "body": {
+          "sections": [
+            {
+              "id": 553,
+              "name": "... and breathe!",
+              "visible": true,
+              "summary": "Create your course and give your learners a mindful, stress-free experience with Moodle LMS 4.",
+              "position": 0,
+              "modules": [
+                {
+                  "id": 967,
+                  "name": "Course noticeboard",
+                  "modName": "forum",
+                  "url": "https://school.moodledemo.net/mod/forum/view.php?id=967",
+                  "visible": true,
+                  "instance": 103
+                },
+                {
+                  "id": 966,
+                  "name": "About this course",
+                  "modName": "book",
+                  "url": "https://school.moodledemo.net/mod/book/view.php?id=966",
+                  "description": "Learning outcomes and completion information.",
+                  "visible": true,
+                  "instance": 12
+                },
+                {
+                  "id": 968,
+                  "name": "Prior experience check",
+                  "modName": "choice",
+                  "url": "https://school.moodledemo.net/mod/choice/view.php?id=968",
+                  "visible": true,
+                  "instance": 21
+                },
+                {
+                  "id": 969,
+                  "name": "How mindful an educator are you?",
+                  "modName": "h5pactivity",
+                  "url": "https://school.moodledemo.net/mod/h5pactivity/view.php?id=969",
+                  "visible": true,
+                  "instance": 13
+                },
+                {
+                  "id": 1185,
+                  "name": "Search slideshare for presentations",
+                  "modName": "lti",
+                  "url": "https://school.moodledemo.net/mod/lti/view.php?id=1185",
+                  "visible": true,
+                  "instance": 4
+                },
+                {
+                  "id": 1629,
+                  "name": "MCC  shared question bank",
+                  "modName": "qbank",
+                  "url": "https://school.moodledemo.net/mod/qbank/view.php?id=1629",
+                  "description": "This question bank was created automatically when the site was upgraded.",
+                  "visible": false,
+                  "instance": 16
+                }
+              ]
+            },
+            {
+              "id": 554,
+              "name": "Why this course?",
+              "visible": true,
+              "summary": "",
+              "position": 1,
+              "modules": [
+                {
+                  "id": 970,
+                  "name": "Help build our understanding",
+                  "modName": "glossary",
+                  "url": "https://school.moodledemo.net/mod/glossary/view.php?id=970",
+                  "visible": true,
+                  "instance": 93
+                },
+                {
+                  "id": 971,
+                  "name": "Let's talk about stress!",
+                  "modName": "forum",
+                  "url": "https://school.moodledemo.net/mod/forum/view.php?id=971",
+                  "visible": true,
+                  "instance": 104
+                },
+                {
+                  "id": 972,
+                  "name": "The Freiburg Mindfulness inventory",
+                  "modName": "url",
+                  "url": "https://school.moodledemo.net/mod/url/view.php?id=972",
+                  "visible": true,
+                  "instance": 78
+                },
+                {
+                  "id": 973,
+                  "name": "The need for mindfulness",
+                  "modName": "book",
+                  "url": "https://school.moodledemo.net/mod/book/view.php?id=973",
+                  "visible": true,
+                  "instance": 13
+                },
+                {
+                  "id": 983,
+                  "name": "Join us for our weekly live sessions on BBB",
+                  "modName": "bigbluebuttonbn",
+                  "url": "https://school.moodledemo.net/mod/bigbluebuttonbn/view.php?id=983",
+                  "visible": true,
+                  "instance": 1
+                }
+              ]
+            },
+            {
+              "id": 555,
+              "name": "Mindful teaching",
+              "visible": true,
+              "summary": "",
+              "position": 2,
+              "modules": [
+                {
+                  "id": 974,
+                  "name": "What we as teachers can do",
+                  "modName": "page",
+                  "url": "https://school.moodledemo.net/mod/page/view.php?id=974",
+                  "description": "Learn tips for your own well being and how to make your learners feel at ease in class.",
+                  "visible": true,
+                  "instance": 93
+                },
+                {
+                  "id": 975,
+                  "name": "(Research paper) Mindfulness in Online and Blended Education",
+                  "modName": "url",
+                  "url": "https://school.moodledemo.net/mod/url/view.php?id=975",
+                  "visible": true,
+                  "instance": 79
+                },
+                {
+                  "id": 976,
+                  "name": "Your personal action plan",
+                  "modName": "data",
+                  "url": "https://school.moodledemo.net/mod/data/view.php?id=976",
+                  "description": "As you work through the course, keep a note here of your areas for improvement or any gaps in your understanding. This activity is only visible to you, the course participant, and to your teacher, so be honest!",
+                  "visible": true,
+                  "instance": 28
+                },
+                {
+                  "id": 977,
+                  "name": "Supporting our learners",
+                  "modName": "page",
+                  "url": "https://school.moodledemo.net/mod/page/view.php?id=977",
+                  "description": "Essential reading for creating a mindful learning experience.",
+                  "visible": true,
+                  "instance": 94
+                }
+              ]
+            },
+            {
+              "id": 556,
+              "name": "Course check and feedback",
+              "visible": true,
+              "summary": "",
+              "position": 3,
+              "modules": [
+                {
+                  "id": 978,
+                  "name": "Check your understanding",
+                  "modName": "quiz",
+                  "url": "https://school.moodledemo.net/mod/quiz/view.php?id=978",
+                  "visible": true,
+                  "instance": 96
+                },
+                {
+                  "id": 979,
+                  "name": "Tell us how we did",
+                  "modName": "feedback",
+                  "url": "https://school.moodledemo.net/mod/feedback/view.php?id=979",
+                  "visible": true,
+                  "instance": 18
+                },
+                {
+                  "id": 980,
+                  "name": "Timed Task",
+                  "modName": "assign",
+                  "url": "https://school.moodledemo.net/mod/assign/view.php?id=980",
+                  "description": "A timed reflection task.",
+                  "visible": true,
+                  "instance": 134
+                }
+              ]
+            },
+            {
+              "id": 557,
+              "name": "Learn more",
+              "visible": true,
+              "summary": "",
+              "position": 4,
+              "modules": [
+                {
+                  "id": 981,
+                  "name": "Moodle Academy: Insight into Mindfulness course",
+                  "modName": "url",
+                  "url": "https://school.moodledemo.net/mod/url/view.php?id=981",
+                  "visible": true,
+                  "instance": 80
+                },
+                {
+                  "id": 982,
+                  "name": "Images courtesy of Pixabay and UnSplash.",
+                  "modName": "label",
+                  "description": "Images courtesy of Pixabay and UnSplash.",
+                  "visible": true,
+                  "instance": 148
+                }
+              ]
+            }
+          ]
+        }
+      }
     }
-  },
-  "expectedResponse": {
-    "status": 200,
-    "body": {
-      "sections": []
-    }
-  },
+  ],
   "authFixture": "classpath:/integration/shared/teacher-sso-auth.json"
 }

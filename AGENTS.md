@@ -70,12 +70,14 @@ Hexagonal, by feature: `infrastructure/in` (REST delegate) → `application/port
 ### Add or update an integration fixture
 1. `integration/<group>/<endpoint>/<case>/test-case.json` with `request` and `expectedResponse`, or an `endpoints` list of `{request, expectedResponse}` for multi-request flows; add `moodleMocks` when Moodle is called, `authFixture` (e.g. `classpath:/integration/shared/teacher-sso-auth.json`) or `auth` for authenticated endpoints, and `databaseSetup` (SQL list) for initial state.
 2. Run the one-fixture command. The runner makes an isolated DB per case under `target/test-moodle-dbs/`.
+3. Extend an existing fixture when it already covers the flow instead of adding a separate fixture for a closely related assertion. Moodle mocks should contain the complete response payload for the endpoint, not only the fields used by the assertion.
 
 ## Conventions
 
 - Service reads: `@Transactional(readOnly = true)`; writes: `@Transactional` (see `features/course/content`, `features/course/enrollment`).
 - Reuse existing application exceptions; keep the `GlobalExceptionHandler` contract: 400 `BAD_REQUEST`, 401 `UNAUTHORIZED`, 404 `NOT_FOUND`, 409 `CONFLICT`, 500 `UNKNOWN_ERROR`; validation 400 `VALIDATION_ERROR`; unknown route 404 `RESOURCE_NOT_FOUND`.
 - Declare validation in OpenAPI (`useBeanValidation`); never patch generated DTOs.
+- In OpenAPI response schemas, do not mark fields `nullable: true`: the API configuration omits null-valued fields, so fields are optional when absent, not nullable. Only list a field under `required` when it is always sent.
 - Never log tokens, passwords, keys or sensitive headers; keep Logbook masking of `Authorization`, `X-Moodle-Token`, `Cookie`, `password`, `token`.
 - Guard clauses and early returns for `null`.
 - Prefer explicit `for` loops to lambdas/`forEach`; named static methods or method references over inline lambdas; streams only when clearer. Unique-key maps: `Collectors.toMap` (named merger on collisions), not `groupingBy`.

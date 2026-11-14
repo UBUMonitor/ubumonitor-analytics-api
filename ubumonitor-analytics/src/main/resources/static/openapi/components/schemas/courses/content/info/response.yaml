@@ -84,3 +84,8 @@ CourseContentModule:
     visible:
       type: boolean
       description: Is module visible
+
+    instance:
+      type: integer
+      format: int64
+      description: Moodle activity instance ID
