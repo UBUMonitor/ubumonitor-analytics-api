@@ -280,6 +280,52 @@ CREATE TABLE users_activities
     updated_at      BIGINT           DEFAULT 0 NOT NULL,
     PRIMARY KEY (module_id, user_id)
 );
+
+CREATE TABLE assignment_submissions
+(
+    submission_id  BIGINT  NOT NULL,
+    assignment_id  BIGINT  NOT NULL,
+    course_id      BIGINT  NOT NULL,
+    user_id        BIGINT  NOT NULL,
+    attempt_number INTEGER NOT NULL,
+    time_created   BIGINT,
+    time_modified  BIGINT,
+    time_started   BIGINT,
+    status         TEXT    NOT NULL,
+    latest         BOOLEAN,
+    grading_status TEXT,
+    active         BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at     BIGINT  NOT NULL DEFAULT 0,
+    updated_at     BIGINT  NOT NULL DEFAULT 0,
+
+    PRIMARY KEY (submission_id, user_id)
+);
+
+CREATE TABLE course_assignments
+(
+    id                            BIGINT  PRIMARY KEY,
+    course_id                     BIGINT  NOT NULL,
+    module_id                     BIGINT  NOT NULL,
+    name                          TEXT    NOT NULL,
+    intro                         TEXT,
+    time_modified                 BIGINT,
+    due_date                      BIGINT,
+    submissions_from_date         BIGINT,
+    cutoff_date                   BIGINT,
+    grading_due_date              BIGINT,
+    active                        BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at                    BIGINT  NOT NULL DEFAULT 0,
+    updated_at                    BIGINT  NOT NULL DEFAULT 0
+);
+
+CREATE INDEX idx_course_assignments_course_id
+    ON course_assignments (course_id);
+
+CREATE INDEX idx_assignment_submissions_course_id
+    ON assignment_submissions (course_id);
+CREATE INDEX idx_assignment_submissions_assignment_user
+    ON assignment_submissions (assignment_id, user_id);
+
 -- 5. SITES
 -- =========================
 

@@ -29,6 +29,8 @@ tags:
     description: Content (sections and modules) of a course.
   - name: CourseGrades
     description: Grade items and grade values of a course.
+  - name: CourseAssignments
+    description: Assignments of a course.
   - name: CourseLogs
     description: Activity logs of a course.
   - name: CourseActivityCompletion
@@ -51,6 +53,8 @@ components:
       $ref: './components/parameters/courseId.yaml'
     userId:
       $ref: './components/parameters/userId.yaml'
+    userIds:
+      $ref: './components/parameters/userIds.yaml'
   responses:
     bad_request_400:
       $ref: './components/responses/bad_request_400.yaml'
@@ -111,6 +115,13 @@ paths:
     $ref: './paths/courses/grades/info.yaml'
   /courses/{courseId}/grades/values:
     $ref: './paths/courses/grades/values.yaml'
+
+  /courses/{courseId}/assignments/submissions/sync:
+    $ref: './paths/courses/assignments/submissions/sync.yaml'
+  /courses/{courseId}/assignments/submissions/info:
+    $ref: './paths/courses/assignments/submissions/info.yaml'
+  /courses/{courseId}/assignments/submissions/values:
+    $ref: './paths/courses/assignments/submissions/values.yaml'
 
   /courses/{courseId}/logs/sync:
     $ref: './paths/courses/logs/sync.yaml'

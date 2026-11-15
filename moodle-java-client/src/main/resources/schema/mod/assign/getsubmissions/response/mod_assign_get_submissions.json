@@ -120,7 +120,7 @@
                                   },
                                   "isexternalfile": {
                                     "description": "Whether this is an external file",
-                                    "type": "integer"
+                                    "type": "boolean"
                                   },
                                   "repositorytype": {
                                     "description": "Repository type for external files",

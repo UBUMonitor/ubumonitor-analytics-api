@@ -1,0 +1,11 @@
+name: userIds
+in: query
+description: Moodle user IDs to include in the results.
+required: true
+explode: true
+schema:
+  type: array
+  minItems: 0
+  items:
+    type: integer
+    format: int64

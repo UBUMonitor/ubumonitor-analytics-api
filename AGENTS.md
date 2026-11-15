@@ -70,14 +70,20 @@ Hexagonal, by feature: `infrastructure/in` (REST delegate) → `application/port
 ### Add or update an integration fixture
 1. `integration/<group>/<endpoint>/<case>/test-case.json` with `request` and `expectedResponse`, or an `endpoints` list of `{request, expectedResponse}` for multi-request flows; add `moodleMocks` when Moodle is called, `authFixture` (e.g. `classpath:/integration/shared/teacher-sso-auth.json`) or `auth` for authenticated endpoints, and `databaseSetup` (SQL list) for initial state.
 2. Run the one-fixture command. The runner makes an isolated DB per case under `target/test-moodle-dbs/`.
-3. Extend an existing fixture when it already covers the flow instead of adding a separate fixture for a closely related assertion. Moodle mocks should contain the complete response payload for the endpoint, not only the fields used by the assertion.
+3. Extend an existing fixture when it already covers the flow instead of adding a separate fixture for a closely related assertion. Moodle mocks must always contain the complete response payload, including every field returned by Moodle, not only fields currently mapped or asserted.
+4. For Moodle fixture examples, use `scripts/capture_moodle_api.py` with the repository `.env` to capture complete responses from any Moodle web-service function. Use the capture to construct WireMock fixtures; do not call a real Moodle from integration tests or commit `.env` or raw captures. Preserve every response field; use fixture-safe text and URLs instead of copying user-submitted content or file links. Never include credentials, tokens, or other secrets.
 
 ## Conventions
 
 - Service reads: `@Transactional(readOnly = true)`; writes: `@Transactional` (see `features/course/content`, `features/course/enrollment`).
+- Full synchronization replaces the active snapshot for its scope: deactivate existing active rows before merging the fetched rows, including when the fetch is empty, so removed remote records do not remain visible. Keep the deactivation and merge atomic in one transaction.
+- Use `id` as the column name for single-column primary keys; name foreign-key/reference columns `<entity>_id`. For composite primary keys, name each column after its referenced entity.
 - Reuse existing application exceptions; keep the `GlobalExceptionHandler` contract: 400 `BAD_REQUEST`, 401 `UNAUTHORIZED`, 404 `NOT_FOUND`, 409 `CONFLICT`, 500 `UNKNOWN_ERROR`; validation 400 `VALIDATION_ERROR`; unknown route 404 `RESOURCE_NOT_FOUND`.
 - Declare validation in OpenAPI (`useBeanValidation`); never patch generated DTOs.
 - In OpenAPI response schemas, do not mark fields `nullable: true`: the API configuration omits null-valued fields, so fields are optional when absent, not nullable. Only list a field under `required` when it is always sent.
+- Use MapStruct (`@Mapper(config = GlobalMapperConfig.class)`) for mappings between REST DTOs, Moodle models, persistence records, and domain models. Avoid hand-written field-by-field mapping when MapStruct can express the mapping; keep custom transformation logic in qualified/default mapper methods. Reuse conversions from `MapperUtils` via `GlobalMapperConfig`; add generic conversions there instead of duplicating them in feature mappers.
+- Do not use Java `record`; use regular classes with the project-standard Lombok annotations or explicit constructors/accessors.
+- Avoid nested classes unless they are essential to the design; prefer top-level classes.
 - Never log tokens, passwords, keys or sensitive headers; keep Logbook masking of `Authorization`, `X-Moodle-Token`, `Cookie`, `password`, `token`.
 - Guard clauses and early returns for `null`.
 - Prefer explicit `for` loops to lambdas/`forEach`; named static methods or method references over inline lambdas; streams only when clearer. Unique-key maps: `Collectors.toMap` (named merger on collisions), not `groupingBy`.

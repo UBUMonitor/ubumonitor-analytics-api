@@ -5,11 +5,11 @@
     "body": {
       "args": {
         "assignmentids": [
-          17
+          145
         ],
         "status": "submitted",
-        "since": 100,
-        "before": 200
+        "since": 1690000000,
+        "before": 1780000000
       }
     }
   },
@@ -17,52 +17,252 @@
     "body": {
       "assignments": [
         {
-          "assignmentid": 17,
+          "assignmentid": 145,
           "submissions": [
             {
-              "id": 51,
-              "userid": 9,
+              "id": 145,
+              "userid": 45,
               "attemptnumber": 0,
-              "timecreated": 110,
-              "timemodified": 120,
-              "timestarted": 105,
+              "timecreated": 1699884571,
+              "timemodified": 1699884646,
               "status": "submitted",
               "groupid": 0,
-              "assignment": 17,
-              "latest": 1,
               "plugins": [
                 {
-                  "type": "onlinetext",
-                  "name": "Online text",
+                  "type": "file",
+                  "name": "File submissions",
                   "fileareas": [
                     {
-                      "area": "submission",
-                      "files": []
+                      "area": "submission_files",
+                      "files": [
+                        {
+                          "filename": "fixture-file.pdf",
+                          "filepath": "/",
+                          "filesize": 13292,
+                          "fileurl": "https://example.invalid/fixture/file",
+                          "timemodified": 1699884646,
+                          "mimetype": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                          "isexternalfile": false,
+                          "icon": "f/document"
+                        }
+                      ]
                     }
                   ],
-                  "editorfields": [
-                    {
-                      "name": "onlinetext",
-                      "description": "Online text",
-                      "text": "<p>Completed work</p>",
-                      "format": 1
-                    }
-                  ]
+                  "editorfields": []
+                },
+                {
+                  "type": "comments",
+                  "name": "Submission comments",
+                  "editorfields": [],
+                  "fileareas": []
                 }
               ],
-              "gradingstatus": "graded"
+              "gradingstatus": "notmarked"
+            },
+            {
+              "id": 144,
+              "userid": 46,
+              "attemptnumber": 0,
+              "timecreated": 1699884523,
+              "timemodified": 1699884536,
+              "status": "submitted",
+              "groupid": 0,
+              "plugins": [
+                {
+                  "type": "file",
+                  "name": "File submissions",
+                  "fileareas": [
+                    {
+                      "area": "submission_files",
+                      "files": [
+                        {
+                          "filename": "fixture-file.pdf",
+                          "filepath": "/",
+                          "filesize": 13646,
+                          "fileurl": "https://example.invalid/fixture/file",
+                          "timemodified": 1699884536,
+                          "mimetype": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                          "isexternalfile": false,
+                          "icon": "f/document"
+                        }
+                      ]
+                    }
+                  ],
+                  "editorfields": []
+                },
+                {
+                  "type": "comments",
+                  "name": "Submission comments",
+                  "editorfields": [],
+                  "fileareas": []
+                }
+              ],
+              "gradingstatus": "notmarked"
+            },
+            {
+              "id": 142,
+              "userid": 47,
+              "attemptnumber": 0,
+              "timecreated": 1699884081,
+              "timemodified": 1699884107,
+              "status": "submitted",
+              "groupid": 0,
+              "plugins": [
+                {
+                  "type": "file",
+                  "name": "File submissions",
+                  "fileareas": [
+                    {
+                      "area": "submission_files",
+                      "files": [
+                        {
+                          "filename": "fixture-file.pdf",
+                          "filepath": "/",
+                          "filesize": 13318,
+                          "fileurl": "https://example.invalid/fixture/file",
+                          "timemodified": 1699884107,
+                          "mimetype": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                          "isexternalfile": false,
+                          "icon": "f/document"
+                        }
+                      ]
+                    }
+                  ],
+                  "editorfields": []
+                },
+                {
+                  "type": "comments",
+                  "name": "Submission comments",
+                  "editorfields": [],
+                  "fileareas": []
+                }
+              ],
+              "gradingstatus": "notmarked"
+            },
+            {
+              "id": 140,
+              "userid": 48,
+              "attemptnumber": 0,
+              "timecreated": 1699883792,
+              "timemodified": 1699883879,
+              "status": "submitted",
+              "groupid": 0,
+              "plugins": [
+                {
+                  "type": "file",
+                  "name": "File submissions",
+                  "fileareas": [
+                    {
+                      "area": "submission_files",
+                      "files": [
+                        {
+                          "filename": "fixture-file.pdf",
+                          "filepath": "/",
+                          "filesize": 16202,
+                          "fileurl": "https://example.invalid/fixture/file",
+                          "timemodified": 1699883879,
+                          "mimetype": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                          "isexternalfile": false,
+                          "icon": "f/document"
+                        }
+                      ]
+                    }
+                  ],
+                  "editorfields": []
+                },
+                {
+                  "type": "comments",
+                  "name": "Submission comments",
+                  "editorfields": [],
+                  "fileareas": []
+                }
+              ],
+              "gradingstatus": "notmarked"
+            },
+            {
+              "id": 141,
+              "userid": 49,
+              "attemptnumber": 0,
+              "timecreated": 1699883953,
+              "timemodified": 1699883977,
+              "status": "submitted",
+              "groupid": 0,
+              "plugins": [
+                {
+                  "type": "file",
+                  "name": "File submissions",
+                  "fileareas": [
+                    {
+                      "area": "submission_files",
+                      "files": [
+                        {
+                          "filename": "fixture-file.pdf",
+                          "filepath": "/",
+                          "filesize": 14038,
+                          "fileurl": "https://example.invalid/fixture/file",
+                          "timemodified": 1699883977,
+                          "mimetype": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                          "isexternalfile": false,
+                          "icon": "f/document"
+                        }
+                      ]
+                    }
+                  ],
+                  "editorfields": []
+                },
+                {
+                  "type": "comments",
+                  "name": "Submission comments",
+                  "editorfields": [],
+                  "fileareas": []
+                }
+              ],
+              "gradingstatus": "notmarked"
+            },
+            {
+              "id": 143,
+              "userid": 56,
+              "attemptnumber": 0,
+              "timecreated": 1699884409,
+              "timemodified": 1699884423,
+              "status": "submitted",
+              "groupid": 0,
+              "plugins": [
+                {
+                  "type": "file",
+                  "name": "File submissions",
+                  "fileareas": [
+                    {
+                      "area": "submission_files",
+                      "files": [
+                        {
+                          "filename": "fixture-file.pdf",
+                          "filepath": "/",
+                          "filesize": 15258,
+                          "fileurl": "https://example.invalid/fixture/file",
+                          "timemodified": 1699884423,
+                          "mimetype": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                          "isexternalfile": false,
+                          "icon": "f/document"
+                        }
+                      ]
+                    }
+                  ],
+                  "editorfields": []
+                },
+                {
+                  "type": "comments",
+                  "name": "Submission comments",
+                  "editorfields": [],
+                  "fileareas": []
+                }
+              ],
+              "gradingstatus": "notmarked"
             }
           ]
         }
       ],
-      "warnings": [
-        {
-          "item": "assignment",
-          "itemid": 17,
-          "warningcode": "examplewarning",
-          "message": "Example warning"
-        }
-      ]
+      "warnings": []
     },
     "status": 200
   },
@@ -101,58 +301,246 @@
       "request": {
         "path": "/webservice/rest/server.php",
         "method": "POST",
-        "body": "wsfunction=mod_assign_get_submissions&assignmentids%5B0%5D=17&status=submitted&since=100&before=200&moodlewsrestformat=json&wstoken=wiremock-token"
+        "body": "wsfunction=mod_assign_get_submissions&assignmentids%5B0%5D=145&status=submitted&since=1690000000&before=1780000000&moodlewsrestformat=json&wstoken=wiremock-token"
       },
       "response": {
         "body": {
           "assignments": [
             {
-              "assignmentid": 17,
+              "assignmentid": 145,
               "submissions": [
                 {
-                  "id": 51,
-                  "userid": 9,
+                  "id": 145,
+                  "userid": 45,
                   "attemptnumber": 0,
-                  "timecreated": 110,
-                  "timemodified": 120,
-                  "timestarted": 105,
+                  "timecreated": 1699884571,
+                  "timemodified": 1699884646,
+                  "timestarted": null,
                   "status": "submitted",
                   "groupid": 0,
-                  "assignment": 17,
-                  "latest": 1,
                   "plugins": [
                     {
-                      "type": "onlinetext",
-                      "name": "Online text",
+                      "type": "file",
+                      "name": "File submissions",
                       "fileareas": [
                         {
-                          "area": "submission",
-                          "files": []
-                        }
-                      ],
-                      "editorfields": [
-                        {
-                          "name": "onlinetext",
-                          "description": "Online text",
-                          "text": "<p>Completed work</p>",
-                          "format": 1
+                          "area": "submission_files",
+                          "files": [
+                            {
+                              "filename": "fixture-file.pdf",
+                              "filepath": "/",
+                              "filesize": 13292,
+                              "fileurl": "https://example.invalid/fixture/file",
+                              "timemodified": 1699884646,
+                              "mimetype": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                              "isexternalfile": false,
+                              "icon": "f/document"
+                            }
+                          ]
                         }
                       ]
+                    },
+                    {
+                      "type": "comments",
+                      "name": "Submission comments"
                     }
                   ],
-                  "gradingstatus": "graded"
+                  "gradingstatus": "notmarked"
+                },
+                {
+                  "id": 144,
+                  "userid": 46,
+                  "attemptnumber": 0,
+                  "timecreated": 1699884523,
+                  "timemodified": 1699884536,
+                  "timestarted": null,
+                  "status": "submitted",
+                  "groupid": 0,
+                  "plugins": [
+                    {
+                      "type": "file",
+                      "name": "File submissions",
+                      "fileareas": [
+                        {
+                          "area": "submission_files",
+                          "files": [
+                            {
+                              "filename": "fixture-file.pdf",
+                              "filepath": "/",
+                              "filesize": 13646,
+                              "fileurl": "https://example.invalid/fixture/file",
+                              "timemodified": 1699884536,
+                              "mimetype": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                              "isexternalfile": false,
+                              "icon": "f/document"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "comments",
+                      "name": "Submission comments"
+                    }
+                  ],
+                  "gradingstatus": "notmarked"
+                },
+                {
+                  "id": 142,
+                  "userid": 47,
+                  "attemptnumber": 0,
+                  "timecreated": 1699884081,
+                  "timemodified": 1699884107,
+                  "timestarted": null,
+                  "status": "submitted",
+                  "groupid": 0,
+                  "plugins": [
+                    {
+                      "type": "file",
+                      "name": "File submissions",
+                      "fileareas": [
+                        {
+                          "area": "submission_files",
+                          "files": [
+                            {
+                              "filename": "fixture-file.pdf",
+                              "filepath": "/",
+                              "filesize": 13318,
+                              "fileurl": "https://example.invalid/fixture/file",
+                              "timemodified": 1699884107,
+                              "mimetype": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                              "isexternalfile": false,
+                              "icon": "f/document"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "comments",
+                      "name": "Submission comments"
+                    }
+                  ],
+                  "gradingstatus": "notmarked"
+                },
+                {
+                  "id": 140,
+                  "userid": 48,
+                  "attemptnumber": 0,
+                  "timecreated": 1699883792,
+                  "timemodified": 1699883879,
+                  "timestarted": null,
+                  "status": "submitted",
+                  "groupid": 0,
+                  "plugins": [
+                    {
+                      "type": "file",
+                      "name": "File submissions",
+                      "fileareas": [
+                        {
+                          "area": "submission_files",
+                          "files": [
+                            {
+                              "filename": "fixture-file.pdf",
+                              "filepath": "/",
+                              "filesize": 16202,
+                              "fileurl": "https://example.invalid/fixture/file",
+                              "timemodified": 1699883879,
+                              "mimetype": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                              "isexternalfile": false,
+                              "icon": "f/document"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "comments",
+                      "name": "Submission comments"
+                    }
+                  ],
+                  "gradingstatus": "notmarked"
+                },
+                {
+                  "id": 141,
+                  "userid": 49,
+                  "attemptnumber": 0,
+                  "timecreated": 1699883953,
+                  "timemodified": 1699883977,
+                  "timestarted": null,
+                  "status": "submitted",
+                  "groupid": 0,
+                  "plugins": [
+                    {
+                      "type": "file",
+                      "name": "File submissions",
+                      "fileareas": [
+                        {
+                          "area": "submission_files",
+                          "files": [
+                            {
+                              "filename": "fixture-file.pdf",
+                              "filepath": "/",
+                              "filesize": 14038,
+                              "fileurl": "https://example.invalid/fixture/file",
+                              "timemodified": 1699883977,
+                              "mimetype": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                              "isexternalfile": false,
+                              "icon": "f/document"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "comments",
+                      "name": "Submission comments"
+                    }
+                  ],
+                  "gradingstatus": "notmarked"
+                },
+                {
+                  "id": 143,
+                  "userid": 56,
+                  "attemptnumber": 0,
+                  "timecreated": 1699884409,
+                  "timemodified": 1699884423,
+                  "timestarted": null,
+                  "status": "submitted",
+                  "groupid": 0,
+                  "plugins": [
+                    {
+                      "type": "file",
+                      "name": "File submissions",
+                      "fileareas": [
+                        {
+                          "area": "submission_files",
+                          "files": [
+                            {
+                              "filename": "fixture-file.pdf",
+                              "filepath": "/",
+                              "filesize": 15258,
+                              "fileurl": "https://example.invalid/fixture/file",
+                              "timemodified": 1699884423,
+                              "mimetype": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                              "isexternalfile": false,
+                              "icon": "f/document"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "comments",
+                      "name": "Submission comments"
+                    }
+                  ],
+                  "gradingstatus": "notmarked"
                 }
               ]
             }
           ],
-          "warnings": [
-            {
-              "item": "assignment",
-              "itemid": 17,
-              "warningcode": "examplewarning",
-              "message": "Example warning"
-            }
-          ]
+          "warnings": []
         }
       }
     }

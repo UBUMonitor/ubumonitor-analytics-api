@@ -18,17 +18,7 @@ get:
         items:
           type: integer
           format: int64
-    - name: userIds
-      in: query
-      description: Course user ids.
-      required: true
-      explode: false
-      schema:
-        type: array
-        minItems: 0
-        items:
-          type: integer
-          format: int64
+    - $ref: '../../../components/parameters/userIds.yaml'
   responses:
     '200':
       description: Get course activity completion information

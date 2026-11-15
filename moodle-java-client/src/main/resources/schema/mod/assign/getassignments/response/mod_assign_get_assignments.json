@@ -324,7 +324,7 @@
                       "isexternalfile": {
                         "nullable": true,
                         "description": "Whether is an external file.",
-                        "type": "integer"
+                        "type": "boolean"
                       },
                       "repositorytype": {
                         "nullable": true,
@@ -381,7 +381,7 @@
                       "isexternalfile": {
                         "nullable": true,
                         "description": "Whether is an external file.",
-                        "type": "integer"
+                        "type": "boolean"
                       },
                       "repositorytype": {
                         "nullable": true,
@@ -468,7 +468,7 @@
                       "isexternalfile": {
                         "nullable": true,
                         "description": "Whether is an external file.",
-                        "type": "integer"
+                        "type": "boolean"
                       },
                       "repositorytype": {
                         "nullable": true,
