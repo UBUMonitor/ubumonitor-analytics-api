@@ -1,58 +1,63 @@
+---
 CourseGradeItemsResponse:
-  type: object
+  title: "CourseGradeItemsResponse"
+  type: "object"
   required:
-    - gradeItems
+  - "gradeItems"
   properties:
     gradeItems:
-      type: array
+      type: "array"
       items:
-        type: object
-        title: Grade Item
+        type: "object"
+        title: "Grade Item"
         required:
-          - id
-          - itemType
-          - position
+        - "id"
+        - "itemType"
+        - "position"
         properties:
           id:
-            type: integer
-            format: int64
-            description: Unique identifier for the grade item
+            type: "integer"
+            format: "int64"
+            description: "Unique identifier for the grade item"
           itemType:
-            type: string
-            description: Type of the grade item in Moodle
+            type: "string"
+            description: "Type of the grade item in Moodle"
             enum:
-              - COURSE
-              - CATEGORY
-              - MOD
-              - MANUAL
-              - BLOCKS
+            - "COURSE"
+            - "CATEGORY"
+            - "MOD"
+            - "MANUAL"
+            - "BLOCKS"
           parentId:
-            type: integer
-            format: int64
-            description: Unique identifier for the parent grade item, if applicable
+            type: "integer"
+            format: "int64"
+            description: "Unique identifier for the parent grade item, if applicable"
           categoryId:
-            type: integer
-            format: int64
-            description: Moodle category identifier containing this grade item, if applicable
+            type: "integer"
+            format: "int64"
+            description: "Moodle category identifier containing this grade item, if\
+              \ applicable"
           parentCategoryId:
-            type: integer
-            format: int64
-            description: Moodle parent category identifier for this category grade item, if applicable
+            type: "integer"
+            format: "int64"
+            description: "Moodle parent category identifier for this category grade\
+              \ item, if applicable"
           moduleId:
-            type: integer
-            format: int64
-            description: Moodle course module identifier for the grade item, if applicable
+            type: "integer"
+            format: "int64"
+            description: "Moodle course module identifier for the grade item, if applicable"
           position:
-            type: integer
-            description: 0-based position of the grade item in Moodle's gradeitems array
+            type: "integer"
+            description: "0-based position of the grade item in Moodle's gradeitems\
+              \ array"
           name:
-            type: string
-            description: Name of the grade item
+            type: "string"
+            description: "Name of the grade item"
           gradeMin:
-            type: number
-            format: double
-            description: Minimum grade value for the grade item
+            type: "number"
+            format: "double"
+            description: "Minimum grade value for the grade item"
           gradeMax:
-            type: number
-            format: double
-            description: Maximum grade value for the grade item
+            type: "number"
+            format: "double"
+            description: "Maximum grade value for the grade item"

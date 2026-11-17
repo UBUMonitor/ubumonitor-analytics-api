@@ -1,49 +1,57 @@
+---
 EnrollmentsResponse:
-  type: object
+  title: "EnrollmentsResponse"
+  type: "object"
   required:
-    - courses
+  - "courses"
   properties:
     courses:
-      type: array
-      description: List of courses the user is enrolled in, with updated enrollment information.
+      type: "array"
+      description: "List of courses the user is enrolled in, with updated enrollment\
+        \ information."
       items:
-        title: Course Information
-        type: object
+        title: "Course Information"
+        type: "object"
         required:
-          - id
-          - fullName
-          - showGrades
-          - enableCompletion
-          - startDate
-          - endDate
-          - timeModified
+        - "id"
+        - "fullName"
+        - "showGrades"
+        - "enableCompletion"
+        - "startDate"
+        - "endDate"
+        - "timeModified"
         properties:
           id:
-            type: integer
-            format: int64
-            description: The unique identifier of the course.
+            type: "integer"
+            format: "int64"
+            description: "The unique identifier of the course."
           fullName:
-            type: string
-            description: The name of the course.
+            type: "string"
+            description: "The name of the course."
           showGrades:
-            type: boolean
-            description: Indicates whether the user can view grades for the course.
+            type: "boolean"
+            description: "Indicates whether the user can view grades for the course."
           enableCompletion:
-            type: boolean
-            description: Indicates whether course completion tracking is enabled for the user.
+            type: "boolean"
+            description: "Indicates whether course completion tracking is enabled\
+              \ for the user."
           startDate:
-            type: integer
-            format: int64
-            description: The Unix timestamp in seconds when the user's enrollment in the course starts.
+            type: "integer"
+            format: "int64"
+            description: "The Unix timestamp in seconds when the user's enrollment\
+              \ in the course starts."
           endDate:
-            type: integer
-            format: int64
-            description: The Unix timestamp in seconds when the user's enrollment in the course ends.
+            type: "integer"
+            format: "int64"
+            description: "The Unix timestamp in seconds when the user's enrollment\
+              \ in the course ends."
           timeModified:
-            type: integer
-            format: int64
-            description: The Unix timestamp in seconds when the enrollment information was last modified.
+            type: "integer"
+            format: "int64"
+            description: "The Unix timestamp in seconds when the enrollment information\
+              \ was last modified."
           lastSync:
-            type: integer
-            format: int64
-            description: The Unix timestamp in seconds when the enrollment information was last synchronized.
+            type: "integer"
+            format: "int64"
+            description: "The Unix timestamp in seconds when the enrollment information\
+              \ was last synchronized."

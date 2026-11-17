@@ -1,37 +1,37 @@
+---
 SiteInfoResponse:
-  type: object
+  title: "SiteInfoResponse"
+  type: "object"
   required:
-    - site
+  - "site"
   properties:
     site:
-      $ref: '#/SiteInfo'
-
-
+      $ref: "#/SiteInfo"
 SiteInfo:
-  title: Site Information
-  type: object
-  description: Basic information about the Moodle site.
+  title: "Site Information"
+  type: "object"
+  description: "Basic information about the Moodle site."
   required:
-    - name
-    - siteVersion
-    - siteUrl
+  - "name"
+  - "siteVersion"
+  - "siteUrl"
   properties:
     id:
-      type: string
-      description: Site id
+      type: "string"
+      description: "Site id"
     name:
-      type: string
-      description: The name of the Moodle site.
+      type: "string"
+      description: "The name of the Moodle site."
     number:
-      type: string
-      description: The version of the Moodle site.
+      type: "string"
+      description: "The version of the Moodle site."
     release:
-      type: string
-      description: Moodle release number
+      type: "string"
+      description: "Moodle release number"
     version:
-      type: string
-      description: Moodle version number
+      type: "string"
+      description: "Moodle version number"
     url:
-      type: string
-      format: uri
-      description: The URL of the Moodle site.
+      type: "string"
+      format: "uri"
+      description: "The URL of the Moodle site."

@@ -1,28 +1,30 @@
+---
 get:
   tags:
-    - CourseAssignments
-  summary: Get filtered course assignment submissions
-  operationId: getCourseAssignmentSubmissionValues
-  description: Retrieves persisted assignment submissions for the specified course, filtered by assignment and user IDs.
+  - "CourseAssignments"
+  summary: "Get filtered course assignment submissions"
+  operationId: "getCourseAssignmentSubmissionValues"
+  description: "Retrieves persisted assignment submissions for the specified course,\
+    \ filtered by assignment and user IDs."
   parameters:
-    - $ref: '../../../../components/parameters/courseId.yaml'
-    - name: assignmentIds
-      in: query
-      description: Assignment IDs to include. An empty list returns no submissions.
-      required: true
-      explode: true
-      schema:
-        type: array
-        items:
-          type: integer
-          format: int64
-    - $ref: '../../../../components/parameters/userIds.yaml'
+  - $ref: "../../../../components/parameters/courseId.yaml"
+  - name: "assignmentIds"
+    in: "query"
+    description: "Assignment IDs to include. An empty list returns no submissions."
+    required: true
+    explode: true
+    schema:
+      type: "array"
+      items:
+        type: "integer"
+        format: "int64"
+  - $ref: "../../../../components/parameters/userIds.yaml"
   responses:
-    '200':
-      description: Filtered assignment submissions for the course.
+    "200":
+      description: "Filtered assignment submissions for the course."
       content:
         application/json:
           schema:
-            $ref: '../../../../components/schemas/courses/assignments/submissions/response.yaml#/CourseAssignmentSubmissionsResponse'
-    '401':
-      $ref: '../../../../components/responses/unauthorized_401.yaml'
+            $ref: "../../../../components/schemas/courses/assignments/submissions/response.yaml#/CourseAssignmentSubmissionsResponse"
+    "401":
+      $ref: "../../../../components/responses/unauthorized_401.yaml"

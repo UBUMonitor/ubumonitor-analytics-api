@@ -1,33 +1,30 @@
+---
 get:
   tags:
-    - CourseGrades
-  operationId: getCourseGradeValues
-  summary: Get course grade values
-  description: Get course grade values
-
+  - "CourseGrades"
+  operationId: "getCourseGradeValues"
+  summary: "Get course grade values"
+  description: "Get course grade values"
   parameters:
-    - $ref: '../../../components/parameters/courseId.yaml'
-
-    - name: gradeItemsIds
-      in: query
-      description: List of grade item identifiers to include in the grade value lookup.
-      required: true
-      explode: false
-      schema:
-        type: array
-        minItems: 0
-        items:
-          type: integer
-          format: int64
-
-    - $ref: '../../../components/parameters/userIds.yaml'
+  - $ref: "../../../components/parameters/courseId.yaml"
+  - name: "gradeItemsIds"
+    in: "query"
+    description: "List of grade item identifiers to include in the grade value lookup."
+    required: true
+    explode: false
+    schema:
+      type: "array"
+      minItems: 0
+      items:
+        type: "integer"
+        format: "int64"
+  - $ref: "../../../components/parameters/userIds.yaml"
   responses:
     "200":
-      description: Grades retrieved successfully
+      description: "Grades retrieved successfully"
       content:
         application/json:
           schema:
-            $ref: '../../../components/schemas/courses/grades/values/response.yaml#/CourseGradesValuesResponse'
-
-    '401':
-      $ref: '../../../components/responses/unauthorized_401.yaml'
+            $ref: "../../../components/schemas/courses/grades/values/response.yaml#/CourseGradesValuesResponse"
+    "401":
+      $ref: "../../../components/responses/unauthorized_401.yaml"

@@ -1,12 +1,13 @@
+---
 get:
-  security: [ ]
+  security: []
   tags:
-    - Health
-  summary: Check service health
-  operationId: checkServiceHealth
-  description: Checks the health status of the service.
+  - "Health"
+  summary: "Check service health"
+  operationId: "checkServiceHealth"
+  description: "Checks the health status of the service."
   responses:
-    '204':
-      description: The service is healthy and operational.
-    '503':
-      description: The backend is not yet ready.
+    "204":
+      description: "The service is healthy and operational."
+    "503":
+      description: "The backend is not yet ready."

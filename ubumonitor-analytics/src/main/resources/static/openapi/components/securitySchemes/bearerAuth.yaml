@@ -1,3 +1,4 @@
-type: http
-scheme: bearer
-bearerFormat: Opaque session token
+---
+type: "http"
+scheme: "bearer"
+bearerFormat: "Opaque session token"

@@ -1,147 +1,139 @@
+---
 CourseLogsStatisticsRequest:
-  type: object
+  title: "CourseLogsStatisticsRequest"
+  type: "object"
   properties:
-
     fields:
-      title: CourseLogsInfoRequestFields
-      type: array
-      description: Columns to include in the response and use as grouping dimensions.
+      title: "CourseLogsInfoRequestFields"
+      type: "array"
+      description: "Columns to include in the response and use as grouping dimensions."
       items:
-        type: string
+        type: "string"
         enum:
-          - USER_ID
-          - MODULE_ID
-          - COMPONENT_ID
-          - EVENT_ID
-          - ORIGIN_ID
-          - IP_ADDRESS
-          - USER_FULL_NAME
-          - MODULE_NAME
-          - COMPONENT_NAME
-          - EVENT_NAME
-          - ORIGIN_NAME
-          - SECTION_ID
-          - SECTION_NAME
+        - "USER_ID"
+        - "MODULE_ID"
+        - "COMPONENT_ID"
+        - "EVENT_ID"
+        - "ORIGIN_ID"
+        - "IP_ADDRESS"
+        - "USER_FULL_NAME"
+        - "MODULE_NAME"
+        - "COMPONENT_NAME"
+        - "EVENT_NAME"
+        - "ORIGIN_NAME"
+        - "SECTION_ID"
+        - "SECTION_NAME"
     timeRange:
-      type: object
+      title: "CourseLogsStatisticsTimeRange"
+      type: "object"
       properties:
         from:
-          type: integer
-          format: int64
-          description: Inclusive start time as a Unix timestamp in seconds.
+          type: "integer"
+          format: "int64"
+          description: "Inclusive start time as a Unix timestamp in seconds."
           example: 1777593600
         to:
-          type: integer
-          format: int64
-          description: Inclusive end time as a Unix timestamp in seconds.
+          type: "integer"
+          format: "int64"
+          description: "Inclusive end time as a Unix timestamp in seconds."
           example: 1780185599
-
     interval:
-      type: string
-      description: >
-        Optional time aggregation interval for grouping logs by time buckets.
-        If not provided, no time-based grouping is applied.
+      type: "string"
+      description: "Optional time aggregation interval for grouping logs by time buckets.\
+        \ If not provided, no time-based grouping is applied.\n"
       enum:
-        - HOURLY
-        - DAILY
-        - WEEKLY
-        - MONTHLY
-        - DAY_OF_WEEK
-      example: DAILY
+      - "HOURLY"
+      - "DAILY"
+      - "WEEKLY"
+      - "MONTHLY"
+      - "DAY_OF_WEEK"
+      example: "DAILY"
     timeZone:
-      type: string
-      description: >
-        IANA time zone used to compute time buckets when `interval` is set
-        (e.g. Europe/Madrid). Ignored if `interval` is not provided.
-      default: UTC
-      example: Europe/Madrid
+      type: "string"
+      description: "IANA time zone used to compute time buckets when `interval` is\
+        \ set (e.g. Europe/Madrid). Ignored if `interval` is not provided.\n"
+      default: "UTC"
+      example: "Europe/Madrid"
     filters:
-      type: object
+      title: "CourseLogsStatisticsFilters"
+      type: "object"
       properties:
-
         userIds:
-          type: array
+          type: "array"
           items:
-            type: integer
-            format: int64
+            type: "integer"
+            format: "int64"
           nullable: true
-
         moduleIds:
-          type: array
+          type: "array"
           items:
-            type: integer
-            format: int64
+            type: "integer"
+            format: "int64"
           nullable: true
-
         componentIds:
-          type: array
+          type: "array"
           items:
-            type: integer
-            format: int64
+            type: "integer"
+            format: "int64"
           nullable: true
-
         eventIds:
-          type: array
+          type: "array"
           items:
-            type: integer
-            format: int64
+            type: "integer"
+            format: "int64"
           nullable: true
-
         originIds:
-          type: array
+          type: "array"
           items:
-            type: integer
-            format: int64
+            type: "integer"
+            format: "int64"
           nullable: true
-
         ipAddresses:
-          type: array
+          type: "array"
           items:
-            type: string
+            type: "string"
           nullable: true
-
         sectionIds:
-          type: array
+          type: "array"
           items:
-            type: integer
-            format: int64
+            type: "integer"
+            format: "int64"
           nullable: true
-
         compositeFilters:
-          type: array
-          description: >
-            OR alternatives of compound filters. Populated dimensions within each
-            entry are combined with AND; each entry must populate at least two dimensions.
-            The compound expression is ANDed with the ordinary filters above.
+          type: "array"
+          description: "OR alternatives of compound filters. Populated dimensions\
+            \ within each entry are combined with AND; each entry must populate at\
+            \ least two dimensions. The compound expression is ANDed with the ordinary\
+            \ filters above.\n"
           items:
-            title: CourseLogsStatisticsRequestCompositeFilter
-            type: object
+            title: "CourseLogsStatisticsRequestCompositeFilter"
+            type: "object"
             minProperties: 2
             properties:
               userId:
-                type: integer
-                format: int64
+                type: "integer"
+                format: "int64"
                 nullable: true
               moduleId:
-                type: integer
-                format: int64
+                type: "integer"
+                format: "int64"
                 nullable: true
               componentId:
-                type: integer
-                format: int64
+                type: "integer"
+                format: "int64"
                 nullable: true
               eventId:
-                type: integer
-                format: int64
+                type: "integer"
+                format: "int64"
                 nullable: true
               originId:
-                type: integer
-                format: int64
+                type: "integer"
+                format: "int64"
                 nullable: true
               sectionId:
-                type: integer
-                format: int64
+                type: "integer"
+                format: "int64"
                 nullable: true
               ipAddress:
-                type: string
+                type: "string"
                 nullable: true

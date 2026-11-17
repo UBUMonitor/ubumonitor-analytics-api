@@ -1,19 +1,21 @@
+---
 post:
   tags:
-    - CourseAssignments
-  summary: Synchronize course assignments and submissions
-  operationId: syncCourseAssignmentSubmissions
-  description: Synchronizes assignment tasks and submissions for the specified course. The response includes tasks only.
+  - "CourseAssignments"
+  summary: "Synchronize course assignments and submissions"
+  operationId: "syncCourseAssignmentSubmissions"
+  description: "Synchronizes assignment tasks and submissions for the specified course.\
+    \ The response includes tasks only."
   parameters:
-    - $ref: '../../../../components/parameters/courseId.yaml'
+  - $ref: "../../../../components/parameters/courseId.yaml"
   responses:
-    '200':
-      description: Synchronized assignment tasks.
+    "200":
+      description: "Synchronized assignment tasks."
       content:
         application/json:
           schema:
-            $ref: '../../../../components/schemas/courses/assignments/submissions/response.yaml#/CourseAssignmentsResponse'
-    '401':
-      $ref: '../../../../components/responses/unauthorized_401.yaml'
-    '403':
-      $ref: '../../../../components/responses/forbidden_403.yaml'
+            $ref: "../../../../components/schemas/courses/assignments/submissions/response.yaml#/CourseAssignmentsResponse"
+    "401":
+      $ref: "../../../../components/responses/unauthorized_401.yaml"
+    "403":
+      $ref: "../../../../components/responses/forbidden_403.yaml"

@@ -1,30 +1,30 @@
+---
 get:
   tags:
-    - CourseActivityCompletion
-  summary: Get course activity completion information with filter
-  operationId: getCourseActivityCompletionValues
-  description: Retrieves the activity completion information for a course.
+  - "CourseActivityCompletion"
+  summary: "Get course activity completion information with filter"
+  operationId: "getCourseActivityCompletionValues"
+  description: "Retrieves the activity completion information for a course."
   parameters:
-    - $ref: '../../../components/parameters/courseId.yaml'
-
-    - name: moduleIds
-      in: query
-      description: Course modules ids.
-      required: true
-      explode: false
-      schema:
-        type: array
-        minItems: 0
-        items:
-          type: integer
-          format: int64
-    - $ref: '../../../components/parameters/userIds.yaml'
+  - $ref: "../../../components/parameters/courseId.yaml"
+  - name: "moduleIds"
+    in: "query"
+    description: "Course modules ids."
+    required: true
+    explode: false
+    schema:
+      type: "array"
+      minItems: 0
+      items:
+        type: "integer"
+        format: "int64"
+  - $ref: "../../../components/parameters/userIds.yaml"
   responses:
-    '200':
-      description: Get course activity completion information
+    "200":
+      description: "Get course activity completion information"
       content:
         application/json:
           schema:
-            $ref: '../../../components/schemas/courses/activitycompletion/info/response.yaml#/CourseActivityCompletionResponse'
-    '401':
-      $ref: '../../../components/responses/unauthorized_401.yaml'
+            $ref: "../../../components/schemas/courses/activitycompletion/info/response.yaml#/CourseActivityCompletionResponse"
+    "401":
+      $ref: "../../../components/responses/unauthorized_401.yaml"

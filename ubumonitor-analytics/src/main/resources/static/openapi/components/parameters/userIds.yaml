@@ -1,11 +1,12 @@
-name: userIds
-in: query
-description: Moodle user IDs to include in the results.
+---
+name: "userIds"
+in: "query"
+description: "Moodle user IDs to include in the results."
 required: true
 explode: true
 schema:
-  type: array
+  type: "array"
   minItems: 0
   items:
-    type: integer
-    format: int64
+    type: "integer"
+    format: "int64"

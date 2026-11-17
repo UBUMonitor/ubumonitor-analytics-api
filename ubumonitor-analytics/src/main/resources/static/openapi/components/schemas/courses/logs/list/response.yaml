@@ -1,134 +1,129 @@
+---
 CourseLogsListResponse:
-  type: object
+  title: "CourseLogsListResponse"
+  type: "object"
   required:
-    - page
-    - content
+  - "page"
+  - "content"
   properties:
     page:
-      title: PaginationInfo
-      type: object
+      title: "PaginationInfo"
+      type: "object"
       required:
-        - page
-        - size
-        - totalElements
-        - totalPages
+      - "page"
+      - "size"
+      - "totalElements"
+      - "totalPages"
       properties:
         page:
-          type: integer
+          type: "integer"
           example: 0
-          description: Zero-based index of the current page
-
+          description: "Zero-based index of the current page"
         size:
-          type: integer
+          type: "integer"
           example: 20
-          description: Number of items per page
-
+          description: "Number of items per page"
         totalElements:
-          type: integer
+          type: "integer"
           example: 1200
-          description: Total number of elements matching the filters
-
+          description: "Total number of elements matching the filters"
         totalPages:
-          type: integer
+          type: "integer"
           example: 60
-          description: Total number of pages
-
+          description: "Total number of pages"
         first:
-          type: boolean
+          type: "boolean"
           example: true
-          description: Whether this is the first page
-
+          description: "Whether this is the first page"
         last:
-          type: boolean
+          type: "boolean"
           example: false
-          description: Whether this is the last page
-
+          description: "Whether this is the last page"
         empty:
-          type: boolean
+          type: "boolean"
           example: false
-          description: Whether the page has no content
+          description: "Whether the page has no content"
     content:
-      type: array
-      description: List of log rows (dynamic fields based on columns)
+      type: "array"
+      description: "List of log rows (dynamic fields based on columns)"
       items:
-        title: LogEntry
-        type: object
+        title: "LogEntry"
+        type: "object"
         required:
-          - id
-          - timeCreated
-          - courseId
-          - userId
-          - userFullName
-          - moduleId
-          - moduleName
-          - component
-          - componentId
-          - eventName
-          - eventId
-          - originName
-          - originCode
-          - originId
-          - ip
+        - "id"
+        - "timeCreated"
+        - "courseId"
+        - "userId"
+        - "userFullName"
+        - "moduleId"
+        - "moduleName"
+        - "component"
+        - "componentId"
+        - "eventName"
+        - "eventId"
+        - "originName"
+        - "originCode"
+        - "originId"
+        - "ip"
         properties:
           id:
-            type: integer
-            format: int64
-            description: Log entry ID
+            type: "integer"
+            format: "int64"
+            description: "Log entry ID"
           timeCreated:
-            type: integer
-            format: int64
+            type: "integer"
+            format: "int64"
             example: 1779444930
-            description: Log creation time as a Unix timestamp in seconds.
+            description: "Log creation time as a Unix timestamp in seconds."
           courseId:
-            type: integer
-            format: int64
-            description: ID of the course associated with the log
+            type: "integer"
+            format: "int64"
+            description: "ID of the course associated with the log"
           userId:
-            type: integer
-            format: int64
-            description: ID of the user associated with the log
+            type: "integer"
+            format: "int64"
+            description: "ID of the user associated with the log"
           userFullName:
-            type: string
-            description: Full name of the user associated with the log
+            type: "string"
+            description: "Full name of the user associated with the log"
           moduleId:
-            type: integer
-            format: int64
-            description: ID of the module associated with the log
+            type: "integer"
+            format: "int64"
+            description: "ID of the module associated with the log"
           moduleName:
-            type: string
-            description: Name of the module associated with the log
+            type: "string"
+            description: "Name of the module associated with the log"
           sectionId:
-            type: integer
-            format: int64
-            description: ID of the section associated with the log
+            type: "integer"
+            format: "int64"
+            description: "ID of the section associated with the log"
           sectionName:
-            type: string
-            description: Name of the section associated with the log
+            type: "string"
+            description: "Name of the section associated with the log"
           component:
-            type: string
-            description: Component associated with the log
+            type: "string"
+            description: "Component associated with the log"
           componentId:
-            type: integer
-            format: int64
-            description: ID of the component associated with the log
-
+            type: "integer"
+            format: "int64"
+            description: "ID of the component associated with the log"
           eventName:
-            type: string
-            description: Name of the event associated with the log
+            type: "string"
+            description: "Name of the event associated with the log"
           eventId:
-            type: integer
-            format: int64
-            description: ID of the event associated with the log
+            type: "integer"
+            format: "int64"
+            description: "ID of the event associated with the log"
           originName:
-            type: string
-            description: Name of the origin associated with the log
+            type: "string"
+            description: "Name of the origin associated with the log"
           originCode:
-            type: string
-            description: Code of the origin associated with the log
+            type: "string"
+            description: "Code of the origin associated with the log"
           originId:
-            type: integer
-            format: int64
-            description: ID of the origin associated with the log
+            type: "integer"
+            format: "int64"
+            description: "ID of the origin associated with the log"
           ip:
-            type: string
-            description: IP address associated with the log
+            type: "string"
+            description: "IP address associated with the log"

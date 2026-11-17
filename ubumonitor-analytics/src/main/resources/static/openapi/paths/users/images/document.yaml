@@ -1,46 +1,47 @@
+---
 get:
   tags:
-    - Users
-  summary: Get users Word document with enrollment images
-  operationId: generateUserEnrollmentImagesDocument
-  description: Retrieves the enrollment images for users
+  - "Users"
+  summary: "Get users Word document with enrollment images"
+  operationId: "generateUserEnrollmentImagesDocument"
+  description: "Retrieves the enrollment images for users"
   parameters:
-    - $ref: '../../../components/parameters/userIds.yaml'
-    - name: defaultImageUri
-      in: query
-      description: The path to the default image file to use.
-      required: false
-      schema:
-        type: string
-        format: uri
-    - name: useDefaultPhoto
-      in: query
-      description: Whether to use the default photo.
-      required: false
-      schema:
-        type: boolean
-    - name: headerText
-      in: query
-      description: The text to include in the header of the document.
-      required: false
-      schema:
-        type: string
-        default: "UBUMonitor Analytics"
-    - name: fileName
-      in: query
-      description: The name of the file to be generated.
-      required: false
-      schema:
-        type: string
-        default: "enrollment_images.docx"
-
+  - $ref: "../../../components/parameters/userIds.yaml"
+  - name: "defaultImageUri"
+    in: "query"
+    description: "The path to the default image file to use."
+    required: false
+    schema:
+      type: "string"
+      format: "uri"
+  - name: "useDefaultPhoto"
+    in: "query"
+    description: "Whether to use the default photo."
+    required: false
+    schema:
+      type: "boolean"
+  - name: "headerText"
+    in: "query"
+    description: "The text to include in the header of the document."
+    required: false
+    schema:
+      type: "string"
+      default: "UBUMonitor Analytics"
+  - name: "fileName"
+    in: "query"
+    description: "The name of the file to be generated."
+    required: false
+    schema:
+      type: "string"
+      default: "enrollment_images.docx"
   responses:
-    '200':
-      description: Word document containing the enrollment images for users enrolled in the specified course.
+    "200":
+      description: "Word document containing the enrollment images for users enrolled\
+        \ in the specified course."
       content:
         application/vnd.openxmlformats-officedocument.wordprocessingml.document:
           schema:
-            type: string
-            format: binary
-    '401':
-      $ref: '../../../components/responses/unauthorized_401.yaml'
+            type: "string"
+            format: "binary"
+    "401":
+      $ref: "../../../components/responses/unauthorized_401.yaml"
