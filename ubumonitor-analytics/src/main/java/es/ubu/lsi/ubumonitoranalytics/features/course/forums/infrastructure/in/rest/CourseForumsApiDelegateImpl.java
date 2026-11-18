@@ -4,6 +4,7 @@ import es.ubu.lsi.ubumonitoranalytics.api.generated.api.CourseForumsApiDelegate;
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.CourseForumsResponseDto;
 import es.ubu.lsi.ubumonitoranalytics.features.course.forums.application.port.in.GetCourseForumsUseCase;
 import es.ubu.lsi.ubumonitoranalytics.features.course.forums.application.port.in.SyncCourseForumsUseCase;
+import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security.RequiresOnlineSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -17,12 +18,13 @@ public class CourseForumsApiDelegateImpl implements CourseForumsApiDelegate {
   private final CourseForumsApiDelegateMapper mapper;
 
   @Override
+  @RequiresOnlineSession
   public ResponseEntity<CourseForumsResponseDto> syncCourseForums(Long courseId) {
     return ResponseEntity.ok(mapper.toDto(syncCourseForumsUseCase.syncCourseForums(courseId)));
   }
 
   @Override
-  public ResponseEntity<CourseForumsResponseDto> getCourseForumsInfo(Long courseId) {
+  public ResponseEntity<CourseForumsResponseDto> getCourseForums(Long courseId) {
     return ResponseEntity.ok(mapper.toDto(getCourseForumsUseCase.getCourseForums(courseId)));
   }
 }

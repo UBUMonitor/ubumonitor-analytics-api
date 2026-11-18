@@ -1,7 +1,8 @@
-name: userId
-in: path
+---
+name: "userId"
+in: "path"
 required: true
-description: Moodle user identifier
+description: "Moodle user identifier"
 schema:
-  type: integer
-  format: int64
+  type: "integer"
+  format: "int64"

@@ -1,17 +1,18 @@
+---
 get:
   tags:
-    - CourseContent
-  summary: Get course content
-  operationId: GetCourseUsersContentInfo
-  description: Retrieves the sections and modules stored for a course.
+  - "CourseContent"
+  summary: "Get course content"
+  operationId: "getCourseContent"
+  description: "Retrieves the sections and modules stored for a course."
   parameters:
-    - $ref: '../../../components/parameters/courseId.yaml'
+  - $ref: "../../../components/parameters/courseId.yaml"
   responses:
-    '200':
-      description: Get course sections and modules
+    "200":
+      description: "Get course sections and modules"
       content:
         application/json:
           schema:
-            $ref: '../../../components/schemas/courses/content/info/response.yaml#/CourseContentResponse'
-    '401':
-      $ref: '../../../components/responses/unauthorized_401.yaml'
+            $ref: "../../../components/schemas/courses/content/info/response.yaml#/CourseContentResponse"
+    "401":
+      $ref: "../../../components/responses/unauthorized_401.yaml"

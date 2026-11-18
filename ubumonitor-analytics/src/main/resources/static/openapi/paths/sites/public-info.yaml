@@ -1,22 +1,23 @@
+---
 get:
-  security: [ ]
+  security: []
   tags:
-    - Sites
-  summary: Get public site information
-  operationId: getPublicSiteInfo
-  description: Retrieves public information from the Moodle site without authentication.
+  - "Sites"
+  summary: "Get public site information"
+  operationId: "getPublicSiteInfo"
+  description: "Retrieves public information from the Moodle site without authentication."
   parameters:
-    - name: host
-      in: query
-      description: Moodle site URL.
-      required: true
-      schema:
-        type: string
-        format: uri
+  - name: "host"
+    in: "query"
+    description: "Moodle site URL."
+    required: true
+    schema:
+      type: "string"
+      format: "uri"
   responses:
-    '200':
-      description: Site information
+    "200":
+      description: "Site information"
       content:
         application/json:
           schema:
-            $ref: '../../components/schemas/sites/public-info/response.yaml#/PublicSiteInfoResponse'
+            $ref: "../../components/schemas/sites/public-info/response.yaml#/PublicSiteInfoResponse"

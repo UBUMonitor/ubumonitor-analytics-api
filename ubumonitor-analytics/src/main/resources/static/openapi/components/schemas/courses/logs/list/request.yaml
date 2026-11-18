@@ -1,153 +1,195 @@
+---
 CourseLogsListRequest:
-  type: object
+  title: "CourseLogsListRequest"
+  type: "object"
   properties:
-
     timeRange:
-      title: CourseLogsInfoRequestTimeRange
-      type: object
+      title: "CourseLogsInfoRequestTimeRange"
+      type: "object"
       properties:
         from:
-          type: integer
-          format: int64
+          type: "integer"
+          format: "int64"
           nullable: true
           default: null
-          description: Inclusive start time as a Unix timestamp in seconds.
+          description: "Inclusive start time as a Unix timestamp in seconds."
           example: 1777593600
         to:
-          type: integer
-          format: int64
+          type: "integer"
+          format: "int64"
           nullable: true
           default: null
-          description: Inclusive end time as a Unix timestamp in seconds.
+          description: "Inclusive end time as a Unix timestamp in seconds."
           example: 1780185599
-
     filters:
-      title: CourseLogsInfoRequestFilters
-      type: object
+      title: "CourseLogsInfoRequestFilters"
+      type: "object"
       properties:
-
         userIds:
-          type: array
+          type: "array"
           nullable: true
           default: null
           items:
-            type: integer
-            format: int64
-          example: [123, 456, 789]
-
+            type: "integer"
+            format: "int64"
+          example:
+          - 123
+          - 456
+          - 789
         moduleIds:
-          type: array
+          type: "array"
           nullable: true
           default: null
           items:
-            type: integer
-            format: int64
-          example: [10, 20]
-
+            type: "integer"
+            format: "int64"
+          example:
+          - 10
+          - 20
         componentIds:
-          type: array
+          type: "array"
           nullable: true
           default: null
           items:
-            type: integer
-            format: int64
-          example: [5, 6]
-
+            type: "integer"
+            format: "int64"
+          example:
+          - 5
+          - 6
         sectionIds:
-          type: array
+          type: "array"
           nullable: true
           default: null
           items:
-            type: integer
-            format: int64
-          example: [2, 4]
-
+            type: "integer"
+            format: "int64"
+          example:
+          - 2
+          - 4
         eventIds:
-          type: array
+          type: "array"
           nullable: true
           default: null
           items:
-            type: integer
-            format: int64
-          example: [1, 2]
-
+            type: "integer"
+            format: "int64"
+          example:
+          - 1
+          - 2
         originIds:
-          type: array
+          type: "array"
           nullable: true
           default: null
           items:
-            type: integer
-            format: int64
-          example: [3]
-
+            type: "integer"
+            format: "int64"
+          example:
+          - 3
         ipAddresses:
-          type: array
+          type: "array"
           nullable: true
           default: null
           items:
-            type: string
-          example: ["192.168.1.1", "10.0.0.1"]
-
+            type: "string"
+          example:
+          - "192.168.1.1"
+          - "10.0.0.1"
+        compositeFilters:
+          type: "array"
+          description: "OR alternatives of compound filters. Populated dimensions\
+            \ within each entry are combined with AND; each entry must populate at\
+            \ least two dimensions. The compound expression is ANDed with the ordinary\
+            \ filters above.\n"
+          items:
+            title: "CourseLogsListRequestCompositeFilter"
+            type: "object"
+            minProperties: 2
+            properties:
+              userId:
+                type: "integer"
+                format: "int64"
+                nullable: true
+              moduleId:
+                type: "integer"
+                format: "int64"
+                nullable: true
+              componentId:
+                type: "integer"
+                format: "int32"
+                nullable: true
+              eventId:
+                type: "integer"
+                format: "int32"
+                nullable: true
+              originId:
+                type: "integer"
+                format: "int32"
+                nullable: true
+              sectionId:
+                type: "integer"
+                format: "int64"
+                nullable: true
+              ipAddress:
+                type: "string"
+                nullable: true
     fields:
-      title: CourseLogsInfoRequestFields
-      type: array
-      description: Columns to include in response
+      title: "CourseLogsInfoRequestFields"
+      type: "array"
+      description: "Columns to include in response"
       items:
-        type: string
+        type: "string"
         enum:
-          - ID
-          - TIMESTAMP
-          - COURSE_ID
-          - USER_ID
-          - MODULE_ID
-          - COMPONENT_ID
-          - EVENT_ID
-          - ORIGIN_ID
-          - IP_ADDRESS
-          - USER_FULL_NAME
-          - MODULE_NAME
-          - COMPONENT_NAME
-          - EVENT_NAME
-          - ORIGIN_NAME
-          - ORIGIN_CODE
-          - SECTION_ID
-          - SECTION_NAME
+        - "ID"
+        - "TIMESTAMP"
+        - "COURSE_ID"
+        - "USER_ID"
+        - "MODULE_ID"
+        - "COMPONENT_ID"
+        - "EVENT_ID"
+        - "ORIGIN_ID"
+        - "IP_ADDRESS"
+        - "USER_FULL_NAME"
+        - "MODULE_NAME"
+        - "COMPONENT_NAME"
+        - "EVENT_NAME"
+        - "ORIGIN_NAME"
+        - "ORIGIN_CODE"
+        - "SECTION_ID"
+        - "SECTION_NAME"
       example:
-        - TIMESTAMP
-        - USER_FULL_NAME
-        - EVENT_NAME
-        - IP_ADDRESS
-
+      - "TIMESTAMP"
+      - "USER_FULL_NAME"
+      - "EVENT_NAME"
+      - "IP_ADDRESS"
     pagination:
-      title: CourseLogsInfoRequestPagination
-      type: object
-      description: When omitted, all matching logs are returned without pagination.
+      title: "CourseLogsInfoRequestPagination"
+      type: "object"
+      description: "When omitted, all matching logs are returned without pagination."
       properties:
         page:
-          type: integer
+          type: "integer"
           example: 0
           default: 0
-
         size:
-          type: integer
+          type: "integer"
           example: 20
           default: 20
-
     sort:
-      type: array
+      type: "array"
       items:
-        title: CourseLogsInfoRequestSortItem
-        type: object
+        title: "CourseLogsInfoRequestSortItem"
+        type: "object"
         properties:
           field:
-            type: string
-            example: TIMESTAMP
+            type: "string"
+            example: "TIMESTAMP"
           direction:
-            type: string
-            enum: [ASC, DESC]
-            example: DESC
-
+            type: "string"
+            enum:
+            - "ASC"
+            - "DESC"
+            example: "DESC"
     includeTotal:
-      type: boolean
+      type: "boolean"
       default: false
       example: false

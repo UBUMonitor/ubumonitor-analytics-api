@@ -1,0 +1,19 @@
+---
+get:
+  tags:
+  - "CourseAssignments"
+  summary: "Get course assignments"
+  operationId: "getCourseAssignmentSubmissions"
+  description: "Retrieves persisted assignment tasks for the specified course. Submissions\
+    \ are not included."
+  parameters:
+  - $ref: "../../../../components/parameters/courseId.yaml"
+  responses:
+    "200":
+      description: "Assignment tasks for the course."
+      content:
+        application/json:
+          schema:
+            $ref: "../../../../components/schemas/courses/assignments/submissions/response.yaml#/CourseAssignmentsResponse"
+    "401":
+      $ref: "../../../../components/responses/unauthorized_401.yaml"

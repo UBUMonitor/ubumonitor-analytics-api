@@ -1,17 +1,18 @@
+---
 get:
   tags:
-    - CourseActivityCompletion
-  summary: Get course activity completion information
-  operationId: GetCourseActivityCompletionInfo
-  description: Retrieves the activity completion information for a course.
+  - "CourseActivityCompletion"
+  summary: "Get course activity completion information"
+  operationId: "getCourseActivityCompletions"
+  description: "Retrieves the activity completion information for a course."
   parameters:
-    - $ref: '../../../components/parameters/courseId.yaml'
+  - $ref: "../../../components/parameters/courseId.yaml"
   responses:
-    '200':
-      description: Get course activity completion information
+    "200":
+      description: "Get course activity completion information"
       content:
         application/json:
           schema:
-            $ref: '../../../components/schemas/courses/activitycompletion/info/response.yaml#/CourseActivityCompletionResponse'
-    '401':
-      $ref: '../../../components/responses/unauthorized_401.yaml'
+            $ref: "../../../components/schemas/courses/activitycompletion/info/response.yaml#/CourseActivityCompletionResponse"
+    "401":
+      $ref: "../../../components/responses/unauthorized_401.yaml"

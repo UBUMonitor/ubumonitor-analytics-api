@@ -4,6 +4,7 @@ import es.ubu.lsi.ubumonitoranalytics.api.generated.api.CourseGradesApiDelegate;
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.CourseGradeItemsResponseDto;
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.CourseGradesValuesResponseDto;
 import es.ubu.lsi.ubumonitoranalytics.features.course.grades.application.port.in.GradesUseCase;
+import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security.RequiresOnlineSession;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,20 +19,21 @@ public class CourseGradesApiDelegateImpl implements CourseGradesApiDelegate {
   private final GradesUseCase gradesUseCase;
 
   @Override
-  public ResponseEntity<CourseGradeItemsResponseDto> getCourseGradesInfo(Long courseId) {
+  public ResponseEntity<CourseGradeItemsResponseDto> getCourseGrades(Long courseId) {
     return ResponseEntity.ok(
         courseGradesMapper.toCourseGradeItemsResponseDto(
             gradesUseCase.getGradeItems(courseId), courseId));
   }
 
   @Override
+  @RequiresOnlineSession
   public ResponseEntity<CourseGradeItemsResponseDto> syncCourseGrades(Long courseId) {
     return ResponseEntity.ok(
         courseGradesMapper.toCourseGradeItemsResponseDto(gradesUseCase.sync(courseId), courseId));
   }
 
   @Override
-  public ResponseEntity<CourseGradesValuesResponseDto> getCourseGradesValues(
+  public ResponseEntity<CourseGradesValuesResponseDto> getCourseGradeValues(
       Long courseId, List<Long> gradeItemsIds, List<Long> userIds) {
     return ResponseEntity.ok(
         courseGradesMapper.toCourseGradesValuesResponseDto(

@@ -1,29 +1,25 @@
+---
 post:
   tags:
-    - CourseLogs
-  operationId: GetCourseLogsList
-  summary: Get course logs with filters
-  description: |
-    Retrieves logs for a specific course with optional filtering by date range
-    and selectable log columns.
-
+  - "CourseLogs"
+  operationId: "searchCourseLogs"
+  summary: "Get course logs with filters"
+  description: "Retrieves logs for a specific course with optional filtering by date\
+    \ range\nand selectable log columns.\n"
   parameters:
-    - $ref: '../../../components/parameters/courseId.yaml'
-
-
+  - $ref: "../../../components/parameters/courseId.yaml"
   requestBody:
     required: true
     content:
       application/json:
         schema:
-          $ref: '../../../components/schemas/courses/logs/list/request.yaml#/CourseLogsListRequest'
+          $ref: "../../../components/schemas/courses/logs/list/request.yaml#/CourseLogsListRequest"
   responses:
     "200":
-      description: Logs retrieved successfully
+      description: "Logs retrieved successfully"
       content:
         application/json:
           schema:
-            $ref: '../../../components/schemas/courses/logs/list/response.yaml#/CourseLogsListResponse'
-
-    '401':
-      $ref: '../../../components/responses/unauthorized_401.yaml'
+            $ref: "../../../components/schemas/courses/logs/list/response.yaml#/CourseLogsListResponse"
+    "401":
+      $ref: "../../../components/responses/unauthorized_401.yaml"

@@ -3,11 +3,13 @@ package es.ubu.lsi.ubumonitoranalytics.features.course.grades.infrastructure.in.
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.CourseGradeItemsResponseDto;
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.CourseGradesValuesResponseDto;
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.CourseGradesValuesResponseRowDto;
+import es.ubu.lsi.ubumonitoranalytics.api.generated.model.GradeItemDto;
 import es.ubu.lsi.ubumonitoranalytics.features.course.grades.domain.model.CourseGrade;
 import es.ubu.lsi.ubumonitoranalytics.features.course.grades.domain.model.GradeItem;
 import es.ubu.lsi.ubumonitoranalytics.features.course.grades.domain.model.UserGrade;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.GlobalMapperConfig;
 import java.util.List;
+import java.util.Locale;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -20,6 +22,13 @@ public interface CourseGradesMapper {
   @Mapping(target = "gradeItems", source = "gradeItems")
   CourseGradeItemsResponseDto toCourseGradeItemsResponseDto(
       List<GradeItem> gradeItems, Long courseId);
+
+  default GradeItemDto.ItemTypeEnum toItemTypeEnum(String itemType) {
+    if (itemType == null) {
+      return null;
+    }
+    return GradeItemDto.ItemTypeEnum.valueOf(itemType.toUpperCase(Locale.ROOT));
+  }
 
   @Mapping(target = "grades", source = "userGrades")
   CourseGradesValuesResponseDto toCourseGradesValuesResponseDto(

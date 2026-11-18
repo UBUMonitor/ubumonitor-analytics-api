@@ -2,12 +2,17 @@ package es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.rest.exception;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import es.ubu.lsi.moodle.exception.MoodleApiException;
 import es.ubu.lsi.moodle.exception.MoodleUnauthorizedException;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.exception.MoodleLogExportException;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.exception.BadRequestException;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.exception.ErrorResponseFactory;
+import es.ubu.lsi.ubumonitoranalytics.shared.application.exception.OfflineSessionNotAllowedException;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.exception.UnauthorizedException;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.InvalidDatabaseEncryptionKeyException;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.util.concurrent.CompletionException;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -28,11 +33,51 @@ class GlobalExceptionHandlerTest {
   }
 
   @Test
+  void mapsOfflineSessionExceptionToForbiddenResponse() {
+    var response =
+        exceptionHandler.offlineSessionNotAllowed(new OfflineSessionNotAllowedException());
+
+    assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+    assertEquals("FORBIDDEN", response.getBody().getCode());
+  }
+
+  @Test
+  void mapsMoodleApiExceptionWrappingOfflineSessionExceptionToForbidden() {
+    var response =
+        exceptionHandler.internalServerError(
+            new MoodleApiException(new OfflineSessionNotAllowedException()));
+
+    assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+    assertEquals("FORBIDDEN", response.getBody().getCode());
+  }
+
+  @Test
+  void mapsCompletionExceptionWrappingOfflineSessionExceptionToForbidden() {
+    var response =
+        exceptionHandler.internalServerError(
+            new CompletionException(new OfflineSessionNotAllowedException()));
+
+    assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+    assertEquals("FORBIDDEN", response.getBody().getCode());
+  }
+
+  @Test
   void mapsBadRequestExceptionToBadRequestResponse() {
     var response = exceptionHandler.badRequest(new BadRequestException("Invalid request"));
 
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     assertEquals("BAD_REQUEST", response.getBody().getCode());
+  }
+
+  @Test
+  void mapsUploadedFileReadFailureToInternalServerError() {
+    var response =
+        exceptionHandler.internalServerError(
+            new UncheckedIOException(
+                "Could not read uploaded course logs file.", new IOException()));
+
+    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    assertEquals("INTERNAL_SERVER_ERROR", response.getBody().getCode());
   }
 
   @Test

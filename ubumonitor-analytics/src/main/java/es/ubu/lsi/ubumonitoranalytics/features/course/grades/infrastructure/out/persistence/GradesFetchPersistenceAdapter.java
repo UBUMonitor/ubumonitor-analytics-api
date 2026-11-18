@@ -23,7 +23,7 @@ public class GradesFetchPersistenceAdapter implements GradesFetchPersistencePort
     return jooq.dsl()
         .selectFrom(GRADES)
         .where(GRADES.COURSE_ID.eq(courseId).and(GRADES.ACTIVE.isTrue()))
-        .orderBy(GRADES.ID)
+        .orderBy(GRADES.POSITION.asc().nullsFirst())
         .fetch()
         .map(mapper::toGradeItem);
   }
@@ -32,7 +32,7 @@ public class GradesFetchPersistenceAdapter implements GradesFetchPersistencePort
   public List<UserGrade> fetchCourseUserGradesPersistence(
       Long courseId, List<Long> gradeItemsIds, List<Long> userIds) {
     return jooq.dsl()
-        .select(USERS_GRADES)
+        .select(USERS_GRADES.fields())
         .from(USERS_GRADES)
         .join(GRADES)
         .on(GRADES.ID.eq(USERS_GRADES.GRADE_ID))

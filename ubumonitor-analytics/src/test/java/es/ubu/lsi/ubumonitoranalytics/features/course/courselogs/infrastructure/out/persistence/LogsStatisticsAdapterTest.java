@@ -9,6 +9,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Stream;
 import org.jooq.DSLContext;
 import org.jooq.Record;
@@ -110,6 +111,23 @@ class LogsStatisticsAdapterTest {
     assertFalse(sql.contains("?"));
     assertTrue(sql.contains("CAST("));
     assertTrue(sql.contains(" / 900) * 900"));
+  }
+
+  @Test
+  void idsAreProjectedAs64BitIntegers() {
+    DSLContext dsl = DSL.using(SQLDialect.SQLITE);
+    var componentId = LogsStatisticsAdapter.asLongId(DSL.inline((short) 327), "componentId");
+    var originId = LogsStatisticsAdapter.asLongId(DSL.inline((byte) 2), "originId");
+    Record record = dsl.newRecord(componentId, originId);
+    record.set(componentId, 327L);
+    record.set(originId, 2L);
+
+    assertEquals(Long.class, componentId.getType());
+    assertEquals(Long.class, originId.getType());
+    assertEquals(327L, record.get("componentId", Long.class));
+    assertEquals(2L, record.get("originId", Long.class));
+    String sql = dsl.renderInlined(DSL.select(componentId, originId));
+    assertTrue(sql.toLowerCase(Locale.ROOT).contains("cast("));
   }
 
   @Test

@@ -1,0 +1,88 @@
+{
+  "request": {
+    "path": "coreGroup.getGroupMembers",
+    "method": "CLIENT",
+    "body": {
+      "args": {
+        "groupids": [
+          31,
+          32
+        ]
+      }
+    }
+  },
+  "expectedResponse": {
+    "body": [
+      {
+        "groupid": 31,
+        "userids": [
+          13,
+          14
+        ]
+      },
+      {
+        "groupid": 32,
+        "userids": [
+          15
+        ]
+      }
+    ],
+    "status": 200
+  },
+  "auth": {
+    "request": {
+      "path": "/login/token.php",
+      "method": "POST",
+      "body": {
+        "password": "wiremock-password",
+        "baseurl": "${MOODLE_HOST}",
+        "service": "moodle_mobile_app",
+        "username": "teacher"
+      }
+    },
+    "expectedResponse": {
+      "body": {
+        "token": "wiremock-token"
+      },
+      "status": 200
+    }
+  },
+  "moodleMocks": [
+    {
+      "request": {
+        "path": "/login/token.php",
+        "method": "POST",
+        "body": "password=wiremock-password&baseurl=${MOODLE_HOST}&service=moodle_mobile_app&username=teacher"
+      },
+      "response": {
+        "body": {
+          "token": "wiremock-token"
+        }
+      }
+    },
+    {
+      "request": {
+        "path": "/webservice/rest/server.php",
+        "method": "POST",
+        "body": "wsfunction=core_group_get_group_members&groupids%5B0%5D=31&groupids%5B1%5D=32&moodlewsrestformat=json&wstoken=wiremock-token"
+      },
+      "response": {
+        "body": [
+          {
+            "groupid": 31,
+            "userids": [
+              13,
+              14
+            ]
+          },
+          {
+            "groupid": 32,
+            "userids": [
+              15
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

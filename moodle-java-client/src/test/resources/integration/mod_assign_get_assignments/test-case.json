@@ -1,0 +1,442 @@
+{
+  "request": {
+    "path": "modAssign.getAssignments",
+    "method": "CLIENT",
+    "body": {
+      "args": {
+        "courseids": [
+          72
+        ],
+        "capabilities": [
+          "mod/assign:view"
+        ],
+        "includenotenrolledcourses": 1
+      }
+    }
+  },
+  "expectedResponse": {
+    "body": {
+      "courses": [
+        {
+          "id": 72,
+          "fullname": "Fixture-safe course",
+          "shortname": "Fixture-safe course",
+          "timemodified": 1741926808,
+          "assignments": [
+            {
+              "id": 145,
+              "course": 72,
+              "name": "Summative assignment",
+              "intro": "Fixture-safe Moodle text.",
+              "introformat": 1,
+              "introfiles": [],
+              "cmid": 1181,
+              "nosubmissions": 0,
+              "submissiondrafts": 0,
+              "sendnotifications": 0,
+              "sendlatenotifications": 0,
+              "sendstudentnotifications": 1,
+              "duedate": 1730242800,
+              "allowsubmissionsfromdate": 1696719600,
+              "grade": 100,
+              "gradepenalty": 0,
+              "timemodified": 1776966668,
+              "completionsubmit": 0,
+              "cutoffdate": 1730367600,
+              "gradingduedate": 1730415600,
+              "teamsubmission": 0,
+              "requireallteammemberssubmit": 0,
+              "teamsubmissiongroupingid": 0,
+              "blindmarking": 0,
+              "hidegrader": 0,
+              "revealidentities": 0,
+              "attemptreopenmethod": "untilpass",
+              "maxattempts": 1,
+              "markingworkflow": 1,
+              "markingallocation": 1,
+              "markercount": 2,
+              "multimarkmethod": "average",
+              "multimarkrounding": 0,
+              "markinganonymous": 0,
+              "requiresubmissionstatement": 0,
+              "preventsubmissionnotingroup": 0,
+              "configs": [
+                {
+                  "plugin": "file",
+                  "subtype": "assignsubmission",
+                  "name": "enabled",
+                  "value": "1"
+                },
+                {
+                  "plugin": "file",
+                  "subtype": "assignsubmission",
+                  "name": "maxfilesubmissions",
+                  "value": "20"
+                },
+                {
+                  "plugin": "file",
+                  "subtype": "assignsubmission",
+                  "name": "maxsubmissionsizebytes",
+                  "value": "1048576"
+                },
+                {
+                  "plugin": "file",
+                  "subtype": "assignsubmission",
+                  "name": "filetypeslist",
+                  "value": ""
+                },
+                {
+                  "plugin": "comments",
+                  "subtype": "assignsubmission",
+                  "name": "enabled",
+                  "value": "1"
+                },
+                {
+                  "plugin": "comments",
+                  "subtype": "assignfeedback",
+                  "name": "enabled",
+                  "value": "1"
+                },
+                {
+                  "plugin": "comments",
+                  "subtype": "assignfeedback",
+                  "name": "commentinline",
+                  "value": "0"
+                }
+              ],
+              "introattachments": [],
+              "timelimit": 0,
+              "submissionattachments": 0,
+              "activityattachments": []
+            },
+            {
+              "id": 146,
+              "course": 72,
+              "name": "Memory poem",
+              "intro": "Fixture-safe Moodle text.",
+              "introformat": 1,
+              "introfiles": [],
+              "cmid": 1187,
+              "nosubmissions": 0,
+              "submissiondrafts": 1,
+              "sendnotifications": 0,
+              "sendlatenotifications": 0,
+              "sendstudentnotifications": 1,
+              "duedate": 1732057200,
+              "allowsubmissionsfromdate": 1699830000,
+              "grade": 100,
+              "gradepenalty": 0,
+              "timemodified": 1776965395,
+              "completionsubmit": 0,
+              "cutoffdate": 0,
+              "gradingduedate": 1732662000,
+              "teamsubmission": 0,
+              "requireallteammemberssubmit": 0,
+              "teamsubmissiongroupingid": 0,
+              "blindmarking": 0,
+              "hidegrader": 0,
+              "revealidentities": 0,
+              "attemptreopenmethod": "untilpass",
+              "maxattempts": 1,
+              "markingworkflow": 1,
+              "markingallocation": 1,
+              "markercount": 1,
+              "markinganonymous": 0,
+              "requiresubmissionstatement": 1,
+              "preventsubmissionnotingroup": 0,
+              "submissionstatement": "Fixture-safe Moodle text.",
+              "submissionstatementformat": 1,
+              "configs": [
+                {
+                  "plugin": "onlinetext",
+                  "subtype": "assignsubmission",
+                  "name": "enabled",
+                  "value": "1"
+                },
+                {
+                  "plugin": "onlinetext",
+                  "subtype": "assignsubmission",
+                  "name": "wordlimit",
+                  "value": "0"
+                },
+                {
+                  "plugin": "onlinetext",
+                  "subtype": "assignsubmission",
+                  "name": "wordlimitenabled",
+                  "value": "0"
+                },
+                {
+                  "plugin": "comments",
+                  "subtype": "assignsubmission",
+                  "name": "enabled",
+                  "value": "1"
+                },
+                {
+                  "plugin": "comments",
+                  "subtype": "assignfeedback",
+                  "name": "enabled",
+                  "value": "1"
+                },
+                {
+                  "plugin": "comments",
+                  "subtype": "assignfeedback",
+                  "name": "commentinline",
+                  "value": "1"
+                }
+              ],
+              "introattachments": [],
+              "activity": "Fixture-safe Moodle text.",
+              "activityformat": 1,
+              "activityattachments": [],
+              "timelimit": 0,
+              "submissionattachments": 0
+            }
+          ]
+        }
+      ],
+      "warnings": []
+    },
+    "status": 200
+  },
+  "auth": {
+    "request": {
+      "path": "/login/token.php",
+      "method": "POST",
+      "body": {
+        "password": "wiremock-password",
+        "baseurl": "${MOODLE_HOST}",
+        "service": "moodle_mobile_app",
+        "username": "teacher"
+      }
+    },
+    "expectedResponse": {
+      "body": {
+        "token": "wiremock-token"
+      },
+      "status": 200
+    }
+  },
+  "moodleMocks": [
+    {
+      "request": {
+        "path": "/login/token.php",
+        "method": "POST",
+        "body": "password=wiremock-password&baseurl=${MOODLE_HOST}&service=moodle_mobile_app&username=teacher"
+      },
+      "response": {
+        "body": {
+          "token": "wiremock-token"
+        }
+      }
+    },
+    {
+      "request": {
+        "path": "/webservice/rest/server.php",
+        "method": "POST",
+        "body": "wsfunction=mod_assign_get_assignments&courseids%5B0%5D=72&capabilities%5B0%5D=mod%2Fassign%3Aview&includenotenrolledcourses=1&moodlewsrestformat=json&wstoken=wiremock-token"
+      },
+      "response": {
+        "body": {
+          "courses": [
+            {
+              "id": 72,
+              "fullname": "Fixture-safe course",
+              "shortname": "Fixture-safe course",
+              "timemodified": 1741926808,
+              "assignments": [
+                {
+                  "id": 145,
+                  "coursemodule": 1181,
+                  "course": 72,
+                  "name": "Summative assignment",
+                  "intro": "Fixture-safe Moodle text.",
+                  "introformat": 1,
+                  "introfiles": [],
+                  "section": 4,
+                  "visible": true,
+                  "groupmode": 0,
+                  "groupingid": 0,
+                  "lang": "",
+                  "enableaitools": null,
+                  "enabledaiactions": null,
+                  "cmid": 1181,
+                  "nosubmissions": 0,
+                  "submissiondrafts": 0,
+                  "sendnotifications": 0,
+                  "sendlatenotifications": 0,
+                  "sendstudentnotifications": 1,
+                  "duedate": 1730242800,
+                  "allowsubmissionsfromdate": 1696719600,
+                  "grade": 100,
+                  "gradepenalty": 0,
+                  "timemodified": 1776966668,
+                  "completionsubmit": 0,
+                  "cutoffdate": 1730367600,
+                  "gradingduedate": 1730415600,
+                  "teamsubmission": 0,
+                  "requireallteammemberssubmit": 0,
+                  "teamsubmissiongroupingid": 0,
+                  "blindmarking": 0,
+                  "hidegrader": 0,
+                  "revealidentities": 0,
+                  "attemptreopenmethod": "untilpass",
+                  "maxattempts": 1,
+                  "markingworkflow": 1,
+                  "markingallocation": 1,
+                  "markercount": 2,
+                  "optionalmarkercount": 0,
+                  "multimarkmethod": "average",
+                  "multimarkrounding": 0,
+                  "markinganonymous": 0,
+                  "requiresubmissionstatement": 0,
+                  "preventsubmissionnotingroup": 0,
+                  "configs": [
+                    {
+                      "plugin": "file",
+                      "subtype": "assignsubmission",
+                      "name": "enabled",
+                      "value": "1"
+                    },
+                    {
+                      "plugin": "file",
+                      "subtype": "assignsubmission",
+                      "name": "maxfilesubmissions",
+                      "value": "20"
+                    },
+                    {
+                      "plugin": "file",
+                      "subtype": "assignsubmission",
+                      "name": "maxsubmissionsizebytes",
+                      "value": "1048576"
+                    },
+                    {
+                      "plugin": "file",
+                      "subtype": "assignsubmission",
+                      "name": "filetypeslist",
+                      "value": ""
+                    },
+                    {
+                      "plugin": "comments",
+                      "subtype": "assignsubmission",
+                      "name": "enabled",
+                      "value": "1"
+                    },
+                    {
+                      "plugin": "comments",
+                      "subtype": "assignfeedback",
+                      "name": "enabled",
+                      "value": "1"
+                    },
+                    {
+                      "plugin": "comments",
+                      "subtype": "assignfeedback",
+                      "name": "commentinline",
+                      "value": "0"
+                    }
+                  ],
+                  "introattachments": [],
+                  "timelimit": 0,
+                  "submissionattachments": 0
+                },
+                {
+                  "id": 146,
+                  "coursemodule": 1187,
+                  "course": 72,
+                  "name": "Memory poem",
+                  "intro": "Fixture-safe Moodle text.",
+                  "introformat": 1,
+                  "introfiles": [],
+                  "section": 2,
+                  "visible": true,
+                  "groupmode": 0,
+                  "groupingid": 0,
+                  "lang": "",
+                  "enableaitools": null,
+                  "enabledaiactions": null,
+                  "cmid": 1187,
+                  "nosubmissions": 0,
+                  "submissiondrafts": 1,
+                  "sendnotifications": 0,
+                  "sendlatenotifications": 0,
+                  "sendstudentnotifications": 1,
+                  "duedate": 1732057200,
+                  "allowsubmissionsfromdate": 1699830000,
+                  "grade": 100,
+                  "gradepenalty": 0,
+                  "timemodified": 1776965395,
+                  "completionsubmit": 0,
+                  "cutoffdate": 0,
+                  "gradingduedate": 1732662000,
+                  "teamsubmission": 0,
+                  "requireallteammemberssubmit": 0,
+                  "teamsubmissiongroupingid": 0,
+                  "blindmarking": 0,
+                  "hidegrader": 0,
+                  "revealidentities": 0,
+                  "attemptreopenmethod": "untilpass",
+                  "maxattempts": 1,
+                  "markingworkflow": 1,
+                  "markingallocation": 1,
+                  "markercount": 1,
+                  "optionalmarkercount": 0,
+                  "multimarkmethod": null,
+                  "multimarkrounding": null,
+                  "markinganonymous": 0,
+                  "requiresubmissionstatement": 1,
+                  "preventsubmissionnotingroup": 0,
+                  "submissionstatement": "Fixture-safe Moodle text.",
+                  "submissionstatementformat": 1,
+                  "configs": [
+                    {
+                      "plugin": "onlinetext",
+                      "subtype": "assignsubmission",
+                      "name": "enabled",
+                      "value": "1"
+                    },
+                    {
+                      "plugin": "onlinetext",
+                      "subtype": "assignsubmission",
+                      "name": "wordlimit",
+                      "value": "0"
+                    },
+                    {
+                      "plugin": "onlinetext",
+                      "subtype": "assignsubmission",
+                      "name": "wordlimitenabled",
+                      "value": "0"
+                    },
+                    {
+                      "plugin": "comments",
+                      "subtype": "assignsubmission",
+                      "name": "enabled",
+                      "value": "1"
+                    },
+                    {
+                      "plugin": "comments",
+                      "subtype": "assignfeedback",
+                      "name": "enabled",
+                      "value": "1"
+                    },
+                    {
+                      "plugin": "comments",
+                      "subtype": "assignfeedback",
+                      "name": "commentinline",
+                      "value": "1"
+                    }
+                  ],
+                  "introattachments": [],
+                  "activity": "Fixture-safe Moodle text.",
+                  "activityformat": 1,
+                  "activityattachments": [],
+                  "timelimit": 0,
+                  "submissionattachments": 0
+                }
+              ]
+            }
+          ],
+          "warnings": []
+        }
+      }
+    }
+  ]
+}

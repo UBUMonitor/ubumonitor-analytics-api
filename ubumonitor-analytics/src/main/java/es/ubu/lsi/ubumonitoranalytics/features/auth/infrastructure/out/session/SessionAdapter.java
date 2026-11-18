@@ -7,13 +7,11 @@ import es.ubu.lsi.ubumonitoranalytics.features.users.info.domain.model.UserInfo;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.SessionStorePort;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
+import java.security.SecureRandom;
+import java.util.Base64;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
-
-import java.net.URI;
-import java.security.SecureRandom;
-import java.util.Base64;
 
 /** Implements session creation and invalidation using the shared session store. */
 @Component
@@ -24,51 +22,26 @@ public class SessionAdapter implements SessionPort {
   private static final int TOKEN_BYTES = 32;
 
   private final SessionStorePort sessionStore;
-  private final CurrentSessionContext currentSessionContext;
   private final SessionAdapterMapper sessionAdapterMapper;
+  private final CurrentSessionContext currentSessionContext;
 
   @Override
-  public SessionToken generateSession(
-      AuthInput authInput, UserInfo userInfo, RestClient restClient) {
-
-    String username = authInput.getUsername();
-    String moodleToken = authInput.getMoodleToken();
-    URI hostUri = authInput.getHost();
-
-    if (sessionStore.hasSession(hostUri, username)) {
-
-      SessionData existingSession = sessionStore.getSession(hostUri, username);
-      existingSession.setMoodleToken(moodleToken);
-
-      currentSessionContext.setSessionData(existingSession);
-
-      return toSessionToken(existingSession.getToken());
-    }
-
-    SessionData newSession = createSession(authInput, userInfo, restClient);
-
-    return toSessionToken(newSession.getToken());
-  }
-
-  @Override
-  public SessionToken updateSession(
-      AuthInput authInput, SessionToken sessionToken, UserInfo userInfo, RestClient restClient) {
-
-    invalidateSession(sessionToken);
-
-    SessionData newSession = createSession(authInput, userInfo, restClient);
-
-    return toSessionToken(newSession.getToken());
-  }
-
-  @Override
-  public void updateSessionData(
-      AuthInput authInput, SessionToken sessionToken, UserInfo userInfo, RestClient restClient) {
-    SessionData sessionData =
-        sessionAdapterMapper.toSessionData(
-            authInput, sessionToken.getToken(), userInfo, restClient);
-    sessionStore.saveSession(sessionToken.getToken(), sessionData);
+  public SessionData activateAuthenticationContext(AuthInput authInput, RestClient restClient) {
+    SessionData sessionData = sessionAdapterMapper.toSessionData(authInput, null, null, restClient);
     currentSessionContext.setSessionData(sessionData);
+    return sessionData;
+  }
+
+  @Override
+  public synchronized SessionToken generateNewSession(
+      AuthInput authInput, UserInfo userInfo, RestClient restClient) {
+    SessionData existingSession =
+        sessionStore.getSession(authInput.getHost(), authInput.getUsername());
+    SessionData newSession = createSession(authInput, userInfo, restClient);
+    if (existingSession != null && existingSession.getToken() != null) {
+      sessionStore.invalidateSession(existingSession.getToken());
+    }
+    return toSessionToken(newSession.getToken());
   }
 
   @Override
@@ -84,8 +57,6 @@ public class SessionAdapter implements SessionPort {
         sessionAdapterMapper.toSessionData(authInput, token, userInfo, restClient);
 
     sessionStore.saveSession(token, sessionData);
-
-    currentSessionContext.setSessionData(sessionData);
 
     return sessionData;
   }

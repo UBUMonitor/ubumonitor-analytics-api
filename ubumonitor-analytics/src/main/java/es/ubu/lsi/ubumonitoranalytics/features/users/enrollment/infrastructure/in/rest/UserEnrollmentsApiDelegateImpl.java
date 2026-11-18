@@ -4,6 +4,7 @@ import es.ubu.lsi.ubumonitoranalytics.api.generated.api.UserEnrollmentsApiDelega
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.EnrollmentsResponseDto;
 import es.ubu.lsi.ubumonitoranalytics.features.users.enrollment.application.port.in.GetUserCoursesUseCase;
 import es.ubu.lsi.ubumonitoranalytics.features.users.enrollment.application.port.in.SyncUserCoursesUseCase;
+import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security.RequiresOnlineSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -18,13 +19,14 @@ public class UserEnrollmentsApiDelegateImpl implements UserEnrollmentsApiDelegat
   private final UserCoursesEnrollmentsMapper userCoursesEnrollmentsMapper;
 
   @Override
-  public ResponseEntity<EnrollmentsResponseDto> syncUserEnrollments() {
+  @RequiresOnlineSession
+  public ResponseEntity<EnrollmentsResponseDto> syncCurrentUserEnrollments() {
     return ResponseEntity.ok(
         userCoursesEnrollmentsMapper.toDto(syncUserCoursesUseCase.syncActualUserEnrollments()));
   }
 
   @Override
-  public ResponseEntity<EnrollmentsResponseDto> getActualUserEnrollments() {
+  public ResponseEntity<EnrollmentsResponseDto> getCurrentUserEnrollments() {
     return ResponseEntity.ok(
         userCoursesEnrollmentsMapper.toDto(getUserCoursesUseCase.getActualUserEnrollments()));
   }

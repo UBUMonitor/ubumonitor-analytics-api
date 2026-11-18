@@ -1,15 +1,20 @@
+---
 post:
   tags:
-    - UserEnrollments
-  summary: Synchronize the current user's enrollments
-  operationId: SyncUserEnrollments
-  description: Retrieves the current user's latest course enrollments from Moodle and updates the local tenant database.
+  - "UserEnrollments"
+  summary: "Synchronize the current user's enrollments"
+  operationId: "syncCurrentUserEnrollments"
+  description: "Retrieves the current user's latest course enrollments from Moodle\
+    \ and updates the local tenant database."
   responses:
-    '200':
-      description: Successful synchronization of enrollments. The response includes the updated enrollment information for the user's courses.
+    "200":
+      description: "Successful synchronization of enrollments. The response includes\
+        \ the updated enrollment information for the user's courses."
       content:
         application/json:
           schema:
-            $ref: '../../components/schemas/enrollments/info/response.yaml#/EnrollmentsResponse'
-    '401':
-      $ref: '../../components/responses/unauthorized_401.yaml'
+            $ref: "../../components/schemas/enrollments/info/response.yaml#/EnrollmentsResponse"
+    "401":
+      $ref: "../../components/responses/unauthorized_401.yaml"
+    "403":
+      $ref: "../../components/responses/forbidden_403.yaml"

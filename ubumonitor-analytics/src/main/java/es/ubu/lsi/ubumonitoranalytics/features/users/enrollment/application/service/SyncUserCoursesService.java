@@ -5,18 +5,17 @@ import es.ubu.lsi.ubumonitoranalytics.features.users.enrollment.application.port
 import es.ubu.lsi.ubumonitoranalytics.features.users.enrollment.application.port.out.PersistenceFetchPort;
 import es.ubu.lsi.ubumonitoranalytics.features.users.enrollment.application.port.out.SyncEnrollmentPersistencePort;
 import es.ubu.lsi.ubumonitoranalytics.features.users.enrollment.domain.model.UserEnrolledCourses;
+import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.CurrentSessionPort;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.EntityNotFoundException;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /** Fetches the current user's Moodle enrollments and synchronizes tenant persistence. */
 @Service
 @RequiredArgsConstructor
 public class SyncUserCoursesService implements SyncUserCoursesUseCase {
-  private final CurrentSessionContext currentSessionContext;
+  private final CurrentSessionPort currentSessionContext;
   private final EnrollmentCoursesApiFetchPort enrollmentCoursesApiFetchPort;
   private final SyncEnrollmentPersistencePort enrollmentPort;
   private final PersistenceFetchPort persistenceFetchPort;
@@ -26,7 +25,6 @@ public class SyncUserCoursesService implements SyncUserCoursesUseCase {
    * @throws EntityNotFoundException when the current user is absent from local persistence
    */
   @Override
-  @Transactional
   public UserEnrolledCourses syncActualUserEnrollments() {
     SessionData sessionData = currentSessionContext.getSessionData();
     Long userId = sessionData.getUserId();

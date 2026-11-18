@@ -5303,23 +5303,34 @@
         "body": {
           "gradeItems": [
             {
+              "id": 489,
+              "itemType": "COURSE",
+              "categoryId": 106,
+              "position": 0,
+              "gradeMin": 0.0,
+              "gradeMax": 110.0
+            },
+            {
               "id": 490,
+              "itemType": "MOD",
               "parentId": 489,
+              "parentCategoryId": 106,
+              "moduleId": 978,
+              "position": 1,
               "gradeMin": 0.0,
               "gradeMax": 10.0,
               "name": "Check your understanding"
             },
             {
               "id": 491,
+              "itemType": "MOD",
               "parentId": 489,
+              "parentCategoryId": 106,
+              "moduleId": 980,
+              "position": 2,
               "gradeMin": 0.0,
               "gradeMax": 100.0,
               "name": "Timed Task"
-            },
-            {
-              "id": 489,
-              "gradeMin": 0.0,
-              "gradeMax": 110.0
             }
           ]
         }
@@ -5339,19 +5350,30 @@
           "gradeItems": [
             {
               "id": 489,
+              "itemType": "COURSE",
+              "categoryId": 106,
+              "position": 0,
               "gradeMin": 0.0,
               "gradeMax": 110.0
             },
             {
               "id": 490,
+              "itemType": "MOD",
               "parentId": 489,
+              "parentCategoryId": 106,
+              "moduleId": 978,
+              "position": 1,
               "gradeMin": 0.0,
               "gradeMax": 10.0,
               "name": "Check your understanding"
             },
             {
               "id": 491,
+              "itemType": "MOD",
               "parentId": 489,
+              "parentCategoryId": 106,
+              "moduleId": 980,
+              "position": 2,
               "gradeMin": 0.0,
               "gradeMax": 100.0,
               "name": "Timed Task"
@@ -5373,58 +5395,89 @@
         "body": {
           "gradeItems": [
             {
+              "id": 520,
+              "itemType": "COURSE",
+              "categoryId": 112,
+              "position": 0,
+              "gradeMin": 0.0,
+              "gradeMax": 340.0
+            },
+            {
               "id": 521,
+              "itemType": "MOD",
               "parentId": 520,
+              "parentCategoryId": 112,
+              "moduleId": 1173,
+              "position": 1,
               "gradeMin": 0.0,
               "gradeMax": 10.0,
               "name": "Module 1 formative check"
             },
             {
               "id": 522,
+              "itemType": "MOD",
               "parentId": 520,
+              "parentCategoryId": 112,
+              "moduleId": 1177,
+              "position": 2,
               "gradeMin": 0.0,
               "gradeMax": 10.0,
               "name": "Module 2 formative check"
             },
             {
               "id": 524,
+              "itemType": "MOD",
               "parentId": 520,
+              "parentCategoryId": 112,
+              "moduleId": 1180,
+              "position": 3,
               "gradeMin": 0.0,
               "gradeMax": 10.0,
               "name": "Module 3 formative check"
             },
             {
               "id": 526,
+              "itemType": "MOD",
               "parentId": 520,
+              "parentCategoryId": 112,
+              "moduleId": 1182,
+              "position": 4,
               "gradeMin": 0.0,
               "gradeMax": 10.0,
               "name": "Final test: Effective Memory Techniques"
             },
             {
               "id": 525,
+              "itemType": "MOD",
               "parentId": 520,
+              "parentCategoryId": 112,
+              "moduleId": 1181,
+              "position": 5,
               "gradeMin": 0.0,
               "gradeMax": 100.0,
               "name": "Summative assignment"
             },
             {
               "id": 523,
+              "itemType": "MOD",
               "parentId": 520,
+              "parentCategoryId": 112,
+              "moduleId": 1179,
+              "position": 6,
               "gradeMin": 0.0,
               "gradeMax": 100.0,
               "name": "Relaxation drag and drop"
             },
             {
               "id": 527,
+              "itemType": "MOD",
               "parentId": 520,
+              "parentCategoryId": 112,
+              "moduleId": 1187,
+              "position": 7,
               "gradeMin": 0.0,
               "gradeMax": 100.0,
               "name": "Memory poem"
-            },
-            {
-              "id": 520,
-              "gradeMin": 0.0,
-              "gradeMax": 340.0
             }
           ]
         }
@@ -5444,54 +5497,85 @@
           "gradeItems": [
             {
               "id": 520,
+              "itemType": "COURSE",
+              "categoryId": 112,
+              "position": 0,
               "gradeMin": 0.0,
               "gradeMax": 340.0
             },
             {
               "id": 521,
+              "itemType": "MOD",
               "parentId": 520,
+              "parentCategoryId": 112,
+              "moduleId": 1173,
+              "position": 1,
               "gradeMin": 0.0,
               "gradeMax": 10.0,
               "name": "Module 1 formative check"
             },
             {
               "id": 522,
+              "itemType": "MOD",
               "parentId": 520,
+              "parentCategoryId": 112,
+              "moduleId": 1177,
+              "position": 2,
               "gradeMin": 0.0,
               "gradeMax": 10.0,
               "name": "Module 2 formative check"
             },
             {
-              "id": 523,
-              "parentId": 520,
-              "gradeMin": 0.0,
-              "gradeMax": 100.0,
-              "name": "Relaxation drag and drop"
-            },
-            {
               "id": 524,
+              "itemType": "MOD",
               "parentId": 520,
+              "parentCategoryId": 112,
+              "moduleId": 1180,
+              "position": 3,
               "gradeMin": 0.0,
               "gradeMax": 10.0,
               "name": "Module 3 formative check"
             },
             {
-              "id": 525,
-              "parentId": 520,
-              "gradeMin": 0.0,
-              "gradeMax": 100.0,
-              "name": "Summative assignment"
-            },
-            {
               "id": 526,
+              "itemType": "MOD",
               "parentId": 520,
+              "parentCategoryId": 112,
+              "moduleId": 1182,
+              "position": 4,
               "gradeMin": 0.0,
               "gradeMax": 10.0,
               "name": "Final test: Effective Memory Techniques"
             },
             {
-              "id": 527,
+              "id": 525,
+              "itemType": "MOD",
               "parentId": 520,
+              "parentCategoryId": 112,
+              "moduleId": 1181,
+              "position": 5,
+              "gradeMin": 0.0,
+              "gradeMax": 100.0,
+              "name": "Summative assignment"
+            },
+            {
+              "id": 523,
+              "itemType": "MOD",
+              "parentId": 520,
+              "parentCategoryId": 112,
+              "moduleId": 1179,
+              "position": 6,
+              "gradeMin": 0.0,
+              "gradeMax": 100.0,
+              "name": "Relaxation drag and drop"
+            },
+            {
+              "id": 527,
+              "itemType": "MOD",
+              "parentId": 520,
+              "parentCategoryId": 112,
+              "moduleId": 1187,
+              "position": 7,
               "gradeMin": 0.0,
               "gradeMax": 100.0,
               "name": "Memory poem"

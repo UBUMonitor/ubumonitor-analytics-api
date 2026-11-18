@@ -14,10 +14,10 @@ import org.mapstruct.Mapping;
 public interface ColumnInfoMapper {
 
   @Mapping(target = "stats", ignore = true)
-  @Mapping(target = "column", source = "processLogsResult")
-  CourseLogsResponseDto toDto(CourseLogsInfoResult processLogsResult);
+  @Mapping(target = "column", source = "courseLogsInfoResult")
+  CourseLogsResponseDto toDto(CourseLogsInfoResult courseLogsInfoResult);
 
-  LogColumnDto toLogColumnDto(CourseLogsInfoResult processLogsResult);
+  LogColumnDto toLogColumnDto(CourseLogsInfoResult courseLogsInfoResult);
 
   @Mapping(target = "component", source = "courseComponent")
   @Mapping(target = "event", source = "courseEvent")

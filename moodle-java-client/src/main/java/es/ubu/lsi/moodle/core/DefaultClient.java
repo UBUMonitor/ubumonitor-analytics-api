@@ -9,12 +9,16 @@ import es.ubu.lsi.moodle.api.core.course.CoreCourseApi;
 import es.ubu.lsi.moodle.api.core.course.CoreCourseApiImpl;
 import es.ubu.lsi.moodle.api.core.enrol.CoreEnrolApi;
 import es.ubu.lsi.moodle.api.core.enrol.CoreEnrolApiImpl;
+import es.ubu.lsi.moodle.api.core.group.CoreGroupApi;
+import es.ubu.lsi.moodle.api.core.group.CoreGroupApiImpl;
 import es.ubu.lsi.moodle.api.core.user.CoreUserApi;
 import es.ubu.lsi.moodle.api.core.user.CoreUserApiImpl;
 import es.ubu.lsi.moodle.api.core.webservice.CoreWebserviceApi;
 import es.ubu.lsi.moodle.api.core.webservice.CoreWebserviceApiImpl;
 import es.ubu.lsi.moodle.api.gradereport.GradeReportUserApi;
 import es.ubu.lsi.moodle.api.gradereport.GradeReportUserApiImpl;
+import es.ubu.lsi.moodle.api.mod.assign.ModAssignApi;
+import es.ubu.lsi.moodle.api.mod.assign.ModAssignApiImpl;
 import es.ubu.lsi.moodle.api.mod.forum.ModForumApi;
 import es.ubu.lsi.moodle.api.mod.forum.ModForumApiImpl;
 import es.ubu.lsi.moodle.api.tool.mobile.ToolMobileApi;
@@ -26,6 +30,7 @@ import es.ubu.lsi.moodle.model.ajax.AjaxResponse;
 import es.ubu.lsi.moodle.model.login.token.request.LoginTokenRequestApi;
 import es.ubu.lsi.moodle.model.login.token.response.LoginTokenResponseApi;
 import es.ubu.lsi.moodle.utils.PhpQueryParamBuilder;
+import java.net.URI;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,10 +46,12 @@ public class DefaultClient implements Client {
   private final CoreCompletionApi coreCompletion;
   private final CoreCourseApi coreCourse;
   private final CoreEnrolApi coreEnrol;
+  private final CoreGroupApi coreGroup;
   private final CoreUserApi coreUser;
   private final CoreWebserviceApi coreWebservice;
 
   private final GradeReportUserApi gradeReportUser;
+  private final ModAssignApi modAssign;
   private final ModForumApi modForum;
   private final ToolMobileApi toolMobile;
 
@@ -57,9 +64,11 @@ public class DefaultClient implements Client {
     this.coreUser = new CoreUserApiImpl(this);
     this.coreCourse = new CoreCourseApiImpl(this);
     this.coreEnrol = new CoreEnrolApiImpl(this);
+    this.coreGroup = new CoreGroupApiImpl(this);
     this.coreCompletion = new CoreCompletionApiImpl(this);
     this.coreWebservice = new CoreWebserviceApiImpl(this);
     this.gradeReportUser = new GradeReportUserApiImpl(this);
+    this.modAssign = new ModAssignApiImpl(this);
     this.modForum = new ModForumApiImpl(this);
     this.toolMobile = new ToolMobileApiImpl(this);
   }
@@ -80,6 +89,12 @@ public class DefaultClient implements Client {
   @Override
   public CoreEnrolApi coreEnrol() {
     return coreEnrol;
+  }
+
+  /** Returns the typed Moodle group API. */
+  @Override
+  public CoreGroupApi coreGroup() {
+    return coreGroup;
   }
 
   /** Returns the typed Moodle calendar API. */
@@ -104,6 +119,12 @@ public class DefaultClient implements Client {
   @Override
   public GradeReportUserApi gradeReportUser() {
     return gradeReportUser;
+  }
+
+  /** Returns the typed Moodle assignment API. */
+  @Override
+  public ModAssignApi modAssign() {
+    return modAssign;
   }
 
   /** Returns the typed Moodle forum API. */
@@ -165,12 +186,27 @@ public class DefaultClient implements Client {
   @Override
   public <T> AjaxResponse<T> executeAjax(
       String context, List<? extends AjaxRequest<?>> requests, Class<T> responseType) {
-    List<AjaxResponse<T>> responses;
     try {
-      responses = transport.postJsonAjaxArray(context, requests, responseType);
+      return requireSingleAjaxResponse(
+          transport.postJsonAjaxArray(context, requests, responseType));
     } catch (Exception e) {
       throw new MoodleApiException(e);
     }
+  }
+
+  /** Executes AJAX requests against an explicit Moodle site. */
+  @Override
+  public <T> AjaxResponse<T> executeAjax(
+      URI baseUrl, String context, List<? extends AjaxRequest<?>> requests, Class<T> responseType) {
+    try {
+      return requireSingleAjaxResponse(
+          transport.postJsonAjaxArray(baseUrl, context, requests, responseType));
+    } catch (Exception e) {
+      throw new MoodleApiException(e);
+    }
+  }
+
+  private <T> AjaxResponse<T> requireSingleAjaxResponse(List<AjaxResponse<T>> responses) {
     if (responses.size() != 1) {
       throw new MoodleApiException("Expected one Ajax response but received " + responses.size());
     }

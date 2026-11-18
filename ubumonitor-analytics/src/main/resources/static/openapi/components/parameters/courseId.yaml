@@ -1,7 +1,8 @@
-name: courseId
-in: path
+---
+name: "courseId"
+in: "path"
 required: true
-description: Course identifier
+description: "Course identifier"
 schema:
-  type: integer
-  format: int64
+  type: "integer"
+  format: "int64"

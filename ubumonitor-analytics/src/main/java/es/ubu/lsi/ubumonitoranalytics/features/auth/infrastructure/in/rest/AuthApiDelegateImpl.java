@@ -22,21 +22,23 @@ public class AuthApiDelegateImpl implements AuthApiDelegate {
   private final LogoutUseCase logoutUseCase;
 
   @Override
-  public ResponseEntity<AuthResponseDto> authLogin(AuthLoginRequestDto loginAuthRequestDto) {
+  public ResponseEntity<AuthResponseDto> loginWithCredentials(
+      AuthLoginRequestDto loginAuthRequestDto) {
     AuthInput authInput = authMapper.toDomain(loginAuthRequestDto);
     SessionToken sessionToken = authUseCase.loginByCredentials(authInput);
     return ResponseEntity.ok(authMapper.toAuthResponse(sessionToken));
   }
 
   @Override
-  public ResponseEntity<AuthResponseDto> authOffline(AuthOfflineRequestDto authOfflineRequestDto) {
+  public ResponseEntity<AuthResponseDto> createOfflineSession(
+      AuthOfflineRequestDto authOfflineRequestDto) {
     AuthInput authInput = authMapper.toDomain(authOfflineRequestDto);
     SessionToken sessionToken = authUseCase.loginOffline(authInput);
     return ResponseEntity.ok(authMapper.toAuthResponse(sessionToken));
   }
 
   @Override
-  public ResponseEntity<AuthResponseDto> authSSO(AuthSSORequestDto authSSORequestDto) {
+  public ResponseEntity<AuthResponseDto> loginWithSso(AuthSSORequestDto authSSORequestDto) {
     AuthInput authInput = authMapper.toDomain(authSSORequestDto);
     if (authInput.getMoodleToken() == null) {
       throw new UnauthorizedException(
@@ -48,7 +50,7 @@ public class AuthApiDelegateImpl implements AuthApiDelegate {
   }
 
   @Override
-  public ResponseEntity<Void> authLogout() {
+  public ResponseEntity<Void> logoutSession() {
     logoutUseCase.logout();
     return ResponseEntity.noContent().build();
   }

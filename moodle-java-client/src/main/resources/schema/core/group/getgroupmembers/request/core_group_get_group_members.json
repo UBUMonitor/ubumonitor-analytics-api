@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "extends": {
+    "$ref": "../../../../common/moodle_webservice_request.json"
+  },
+  "description": "Returns group members.",
+  "title": "GetGroupMembersRequest",
+  "type": "object",
+  "properties": {
+    "args": {
+      "type": "object",
+      "title": "GetGroupMembersArgs",
+      "properties": {
+        "groupids": {
+          "description": "Group IDs.",
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "required": [
+        "groupids"
+      ]
+    },
+    "wsfunction": {
+      "default": "core_group_get_group_members",
+      "type": "string"
+    }
+  }
+}

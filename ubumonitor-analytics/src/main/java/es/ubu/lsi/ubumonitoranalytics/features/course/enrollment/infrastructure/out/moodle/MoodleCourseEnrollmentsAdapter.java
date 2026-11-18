@@ -7,10 +7,10 @@ import es.ubu.lsi.moodle.model.core.enrol.getenrolledusers.response.GetEnrolledU
 import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.application.port.out.FetchCourseEnrollmentsPort;
 import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.CourseEnrollments;
 import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.User;
+import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.concurrent.AsyncExecutionPort;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.moodle.MoodleDownloaderPort;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.UserPicture;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.concurrent.AsyncOperations;
-import es.ubu.lsi.ubumonitoranalytics.util.HashUtil;
+import es.ubu.lsi.ubumonitoranalytics.shared.domain.util.HashUtil;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MimeType;
+import org.springframework.web.client.RestClientResponseException;
 
 /** Fetches course enrollment data and profile images from Moodle. */
 @Slf4j
@@ -31,7 +32,7 @@ public class MoodleCourseEnrollmentsAdapter implements FetchCourseEnrollmentsPor
   private final Client client;
   private final EnrolledUsersMapper enrolledUsersMapper;
   private final MoodleDownloaderPort moodleDownloaderPort;
-  private final AsyncOperations asyncOperations;
+  private final AsyncExecutionPort asyncExecution;
 
   @Override
   public CourseEnrollments fetchCourseEnrollments(Long courseId, String token) {
@@ -53,7 +54,7 @@ public class MoodleCourseEnrollmentsAdapter implements FetchCourseEnrollmentsPor
         users.stream()
             .map(User::getUserPicture)
             .filter(picture -> picture != null && picture.getUrl() != null)
-            .map(picture -> asyncOperations.runAsync(() -> downloadProfileImage(picture, token)))
+            .map(picture -> asyncExecution.runAsync(() -> downloadProfileImage(picture, token)))
             .toArray(CompletableFuture<?>[]::new);
 
     CompletableFuture.allOf(downloads).join();
@@ -76,7 +77,17 @@ public class MoodleCourseEnrollmentsAdapter implements FetchCourseEnrollmentsPor
         picture.setHexHash(HashUtil.imageHash(body));
       }
     } catch (RuntimeException e) {
-      log.warn("Could not download profile image from {}", picture.getUrl(), e);
+      log.warn(
+          "Could not download profile image (type={}, httpStatus={})",
+          e.getClass().getSimpleName(),
+          httpStatus(e));
     }
+  }
+
+  private static String httpStatus(RuntimeException exception) {
+    if (exception instanceof RestClientResponseException responseException) {
+      return String.valueOf(responseException.getStatusCode().value());
+    }
+    return "unavailable";
   }
 }

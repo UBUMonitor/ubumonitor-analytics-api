@@ -1,29 +1,30 @@
+---
 post:
   tags:
-    - CourseLogs
-  operationId: ImportCourseLogs
-  summary: Import Moodle logs CSV
+  - "CourseLogs"
+  operationId: "importCourseLogs"
+  summary: "Import Moodle logs CSV"
   parameters:
-    - $ref: '../../../components/parameters/courseId.yaml'
+  - $ref: "../../../components/parameters/courseId.yaml"
   requestBody:
     required: true
     content:
       multipart/form-data:
         schema:
-          type: object
+          title: "ImportCourseLogsRequest"
+          type: "object"
           required:
-            - logFile
+          - "logFile"
           properties:
             logFile:
-              type: string
-              format: binary
+              type: "string"
+              format: "binary"
   responses:
-    '200':
-      description: Import completed
+    "200":
+      description: "Import completed"
       content:
         application/json:
           schema:
-            $ref: '../../../components/schemas/courses/logs/info/response.yaml#/CourseLogsResponse'
-
-    '401':
-      $ref: '../../../components/responses/unauthorized_401.yaml'
+            $ref: "../../../components/schemas/courses/logs/info/response.yaml#/CourseLogsResponse"
+    "401":
+      $ref: "../../../components/responses/unauthorized_401.yaml"

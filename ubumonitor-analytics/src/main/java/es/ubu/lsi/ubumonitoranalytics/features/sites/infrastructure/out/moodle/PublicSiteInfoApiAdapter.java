@@ -8,6 +8,7 @@ import es.ubu.lsi.moodle.model.tool.mobile.getpublicconfig.request.GetPublicConf
 import es.ubu.lsi.moodle.model.tool.mobile.getpublicconfig.response.GetPublicConfigResponseApi;
 import es.ubu.lsi.ubumonitoranalytics.features.sites.application.dto.PublicSiteInfo;
 import es.ubu.lsi.ubumonitoranalytics.features.sites.application.port.out.PublicSiteInfoApiPort;
+import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -20,11 +21,12 @@ public class PublicSiteInfoApiAdapter implements PublicSiteInfoApiPort {
   private final PublicSiteInfoApiMapper publicSiteInfoApiMapper;
 
   @Override
-  public PublicSiteInfo fetchPublicSiteInfo() {
+  public PublicSiteInfo fetchPublicSiteInfo(SessionData sessionData) {
     GetPublicConfigRequestApi request = new GetPublicConfigRequestApi();
     request.setArgs(new GetPublicConfigArgsApi());
     AjaxResponse<GetPublicConfigResponseApi> response =
         client.executeAjax(
+            sessionData.getHost(),
             new AjaxRequest<>(request.getWsfunction(), request.getArgs()),
             GetPublicConfigResponseApi.class);
 

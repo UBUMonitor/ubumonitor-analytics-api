@@ -1,6 +1,6 @@
 package es.ubu.lsi.ubumonitoranalytics.features.users.info.infrastructure.out.document;
 
-import es.ubu.lsi.ubumonitoranalytics.features.users.info.appication.port.out.EnrollmentUserImagesDocumentPort;
+import es.ubu.lsi.ubumonitoranalytics.features.users.info.application.port.out.EnrollmentUserImagesDocumentPort;
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.domain.model.document.EnrollmentImagesDocumentCommand;
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.domain.model.image.EnrollmentUserImage;
 import java.io.ByteArrayInputStream;

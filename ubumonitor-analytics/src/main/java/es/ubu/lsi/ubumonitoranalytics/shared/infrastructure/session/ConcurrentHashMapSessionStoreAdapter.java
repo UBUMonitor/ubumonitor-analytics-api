@@ -3,6 +3,7 @@ package es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.SessionStorePort;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
 import java.net.URI;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -55,10 +56,14 @@ public class ConcurrentHashMapSessionStoreAdapter implements SessionStorePort {
    */
   @Override
   public boolean hasSession(URI host, String username) {
+    if (host == null || username == null) {
+      return false;
+    }
     return sessionCache.values().stream()
         .anyMatch(
             sessionData ->
-                sessionData.getHost().equals(host) && sessionData.getUsername().equals(username));
+                Objects.equals(sessionData.getHost(), host)
+                    && username.equals(sessionData.getUsername()));
   }
 
   /**
@@ -70,10 +75,14 @@ public class ConcurrentHashMapSessionStoreAdapter implements SessionStorePort {
    */
   @Override
   public SessionData getSession(URI host, String username) {
+    if (host == null || username == null) {
+      return null;
+    }
     return sessionCache.values().stream()
         .filter(
             sessionData ->
-                sessionData.getHost().equals(host) && sessionData.getUsername().equals(username))
+                Objects.equals(sessionData.getHost(), host)
+                    && username.equals(sessionData.getUsername()))
         .findAny()
         .orElse(null);
   }

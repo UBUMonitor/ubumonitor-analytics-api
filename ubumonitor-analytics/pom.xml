@@ -9,12 +9,12 @@
     <parent>
         <groupId>es.ubu.lsi</groupId>
         <artifactId>ubumonitor-parent</artifactId>
-        <version>0.0.10</version>
+        <version>0.0.11-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>ubumonitoranalytics</artifactId>
-    <name>ubumonitor-analytics</name>
+    <name>UBUMonitor Analytics</name>
 
 
     <properties>
@@ -28,6 +28,7 @@
         <spring.boot.version>4.1.1</spring.boot.version>
         <start-class>es.ubu.lsi.ubumonitoranalytics.Application</start-class>
         <flyway.version>12.6.1</flyway.version>
+        <archunit.version>1.5.1</archunit.version>
     </properties>
 
     <repositories>
@@ -63,6 +64,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aspectj</artifactId>
+            <version>${spring.boot.version}</version>
         </dependency>
 
 
@@ -172,6 +178,12 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>com.tngtech.archunit</groupId>
+            <artifactId>archunit-junit5</artifactId>
+            <version>${archunit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>net.javacrumbs.json-unit</groupId>
             <artifactId>json-unit-assertj</artifactId>
             <version>5.1.0</version>
@@ -181,7 +193,7 @@
         <dependency>
             <groupId>es.ubu.lsi</groupId>
             <artifactId>moodle-java-client</artifactId>
-            <version>0.0.10</version>
+            <version>0.0.11-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -256,15 +268,67 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <argLine>--enable-native-access=ALL-UNNAMED</argLine>
+                    <parallel>classes</parallel>
+                    <threadCount>4</threadCount>
+                    <useUnlimitedThreads>false</useUnlimitedThreads>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.3.1</version>
+                <executions>
+                    <execution>
+                        <id>copy-openapi-to-doc</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.basedir}/../doc</outputDirectory>
+                            <overwrite>true</overwrite>
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.directory}/openapi-bundled</directory>
+                                    <includes>
+                                        <include>openapi.json</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version>7.25.0</version>
+                <version>7.27.0</version>
 
                 <executions>
+                    <execution>
+                        <id>bundle-openapi</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/static/openapi/openapi.yaml</inputSpec>
+                            <generatorName>openapi</generatorName>
+                            <output>${project.build.directory}/openapi-bundled</output>
+                            <skipValidateSpec>false</skipValidateSpec>
+                            <generateApis>false</generateApis>
+                            <generateModels>false</generateModels>
+                            <generateApiDocumentation>false</generateApiDocumentation>
+                            <generateModelDocumentation>false</generateModelDocumentation>
+                            <generateApiTests>false</generateApiTests>
+                            <generateModelTests>false</generateModelTests>
+                            <configOptions>
+                                <outputFile>openapi.json</outputFile>
+                            </configOptions>
+                        </configuration>
+                    </execution>
                     <execution>
                         <id>generate-moodle-api</id>
                         <goals>
@@ -274,7 +338,6 @@
                         <configuration>
                             <inputSpec>${project.basedir}/src/main/resources/static/openapi/openapi.yaml</inputSpec>
                             <generatorName>spring</generatorName>
-
                             <library>spring-boot</library>
 
                             <apiPackage>es.ubu.lsi.ubumonitoranalytics.api.generated.api</apiPackage>
@@ -297,14 +360,12 @@
                             <configOptions>
                                 <useSpringBoot4>true</useSpringBoot4>
                                 <useJackson3>true</useJackson3>
-                                <library>spring-boot</library>
                                 <reactive>false</reactive>
                                 <delegatePattern>true</delegatePattern>
                                 <useJakartaEe>true</useJakartaEe>
                                 <useResponseEntity>true</useResponseEntity>
                                 <useBeanValidation>true</useBeanValidation>
                                 <useTags>true</useTags>
-                                <jackson>true</jackson>
                                 <openApiNullable>false</openApiNullable>
                                 <interfaceOnly>false</interfaceOnly>
                                 <skipDefaultInterface>false</skipDefaultInterface>
@@ -330,7 +391,6 @@
                         </goals>
                         <configuration>
                             <sources>
-                                <source>${project.build.directory}/generated-sources/openapi/src/main/java</source>
                                 <source>${project.build.directory}/generated-sources/moodle-adapter/src/main/java
                                 </source>
                                 <source>${project.build.directory}/generated-sources/annotations</source>
@@ -339,19 +399,6 @@
                             </sources>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>add-test-source</id>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>add-test-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>${project.build.directory}/generated-sources/openapi/src/test/java</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-
                 </executions>
             </plugin>
             <plugin>

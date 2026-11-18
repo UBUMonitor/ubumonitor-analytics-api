@@ -1,21 +1,23 @@
+---
 post:
   tags:
-    - CourseActivityCompletion
-  summary: Synchronize course activity completion information
-  operationId: SyncCourseActivityCompletion
-  description: Retrieves the latest activity completion information for the specified course from Moodle and stores it in the local tenant database.
+  - "CourseActivityCompletion"
+  summary: "Synchronize course activity completion information"
+  operationId: "syncCourseActivityCompletions"
+  description: "Retrieves the latest activity completion information for the specified\
+    \ course from Moodle and stores it in the local tenant database."
   parameters:
-    - $ref: '../../../components/parameters/courseId.yaml'
-
-
+  - $ref: "../../../components/parameters/courseId.yaml"
   responses:
-    '200':
-      description: Successful synchronization of activity completion information. The response includes the updated activity completion information for the user's courses.
+    "200":
+      description: "Successful synchronization of activity completion information.\
+        \ The response includes the updated activity completion information for the\
+        \ user's courses."
       content:
         application/json:
           schema:
-            $ref: '../../../components/schemas/courses/activitycompletion/info/response.yaml#/CourseActivityCompletionResponse'
-    '401':
-      $ref: '../../../components/responses/unauthorized_401.yaml'
-
-
+            $ref: "../../../components/schemas/courses/activitycompletion/info/response.yaml#/CourseActivityCompletionResponse"
+    "401":
+      $ref: "../../../components/responses/unauthorized_401.yaml"
+    "403":
+      $ref: "../../../components/responses/forbidden_403.yaml"

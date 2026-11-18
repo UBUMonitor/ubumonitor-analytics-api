@@ -1,101 +1,105 @@
+---
 CourseLogsResponse:
   required:
-    - column
+  - "column"
   properties:
     stats:
-      type: object
+      title: "CourseLogsImportStats"
+      type: "object"
       required:
-        - saved
-        - ignored
-        - failed
+      - "saved"
+      - "ignored"
+      - "failed"
       properties:
         saved:
-          type: integer
-          description: Number of logs imported
+          type: "integer"
+          description: "Number of logs imported"
         ignored:
-          type: integer
-          description: Number of logs ignored (e.g. duplicates or don't have a mapper for component, event or origin)
+          type: "integer"
+          description: "Number of logs ignored (e.g. duplicates or don't have a mapper\
+            \ for component, event or origin)"
         failed:
-          type: integer
-          description: Number of logs that failed to import due to errors
+          type: "integer"
+          description: "Number of logs that failed to import due to errors"
     column:
       $ref: "#/LogColumn"
-
 LogColumn:
-  type: object
-  description: Unique value columns
+  title: "LogColumn"
+  type: "object"
+  description: "Unique value columns"
   required:
-    - components
-    - events
-    - componentsEvents
-    - origins
+  - "components"
+  - "events"
+  - "componentsEvents"
+  - "origins"
   properties:
     components:
-      type: array
+      type: "array"
       items:
-        $ref: '#/LogComponent'
+        $ref: "#/LogComponent"
     events:
-      type: array
+      type: "array"
       items:
-        $ref: '#/LogEvent'
+        $ref: "#/LogEvent"
     componentsEvents:
-      type: array
+      type: "array"
       items:
-        type: object
+        title: "LogColumnComponentsEventsInner"
+        type: "object"
         required:
-          - component
-          - event
+        - "component"
+        - "event"
         properties:
           component:
-            $ref: '#/LogComponent'
+            $ref: "#/LogComponent"
           event:
-            $ref: '#/LogEvent'
+            $ref: "#/LogEvent"
     origins:
-      type: array
+      type: "array"
       items:
-        $ref: '#/Origin'
-
+        $ref: "#/Origin"
 LogEvent:
-  type: object
+  title: "LogEvent"
+  type: "object"
   required:
-    - id
-    - code
-    - name
+  - "id"
+  - "code"
+  - "name"
   properties:
     id:
-      type: integer
-      format: int64
+      type: "integer"
+      format: "int64"
     code:
-      type: string
+      type: "string"
     name:
-      type: string
-
+      type: "string"
 LogComponent:
-  type: object
+  title: "LogComponent"
+  type: "object"
   required:
-    - id
-    - code
-    - name
+  - "id"
+  - "code"
+  - "name"
   properties:
     id:
-      type: integer
-      format: int64
+      type: "integer"
+      format: "int64"
     code:
-      type: string
+      type: "string"
     name:
-      type: string
-
+      type: "string"
 Origin:
-  type: object
+  title: "Origin"
+  type: "object"
   required:
-    - id
-    - code
-    - name
+  - "id"
+  - "code"
+  - "name"
   properties:
     id:
-      type: integer
-      format: int64
+      type: "integer"
+      format: "int64"
     code:
-      type: string
+      type: "string"
     name:
-      type: string
+      type: "string"

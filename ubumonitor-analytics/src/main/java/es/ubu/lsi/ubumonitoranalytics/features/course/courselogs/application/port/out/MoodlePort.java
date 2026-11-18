@@ -1,7 +1,5 @@
 package es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.port.out;
 
-import java.util.function.Consumer;
-import org.apache.commons.csv.CSVRecord;
 import org.springframework.web.client.RestClient;
 
 /** Downloads course log CSV records from Moodle. */
@@ -10,9 +8,9 @@ public interface MoodlePort {
   /**
    * @param courseId Moodle course identifier
    * @param restClient authenticated Moodle web client
-   * @param consumer receives each parsed CSV record
+   * @param handler receives each parsed CSV record
    */
-  void downloadAllLogs(Long courseId, RestClient restClient, Consumer<CSVRecord> consumer);
+  void downloadAllLogs(Long courseId, RestClient restClient, CsvRecordHandler handler);
 
   /**
    * Downloads records created since the supplied timestamp.
@@ -20,8 +18,8 @@ public interface MoodlePort {
    * @param courseId Moodle course identifier
    * @param since inclusive lower-bound timestamp in epoch seconds
    * @param restClient authenticated Moodle web client
-   * @param consumer receives each parsed CSV record
+   * @param handler receives each parsed CSV record
    */
   void downloadPartialLogs(
-      Long courseId, long since, RestClient restClient, Consumer<CSVRecord> consumer);
+      Long courseId, long since, RestClient restClient, CsvRecordHandler handler);
 }

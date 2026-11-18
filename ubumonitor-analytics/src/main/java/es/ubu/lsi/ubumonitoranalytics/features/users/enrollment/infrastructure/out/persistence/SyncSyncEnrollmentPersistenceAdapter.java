@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 /** Stores the current user's course enrollment data in tenant persistence. */
 @Component
@@ -27,6 +28,7 @@ public class SyncSyncEnrollmentPersistenceAdapter implements SyncEnrollmentPersi
   private final SyncEnrollmentPersistenceAdapterMapper mapper;
 
   @Override
+  @Transactional
   public void sync(UserEnrolledCourses userEnrolledCourses) {
     Long now = Instant.now().getEpochSecond();
     upsertUser(userEnrolledCourses.getUserId());

@@ -1,27 +1,35 @@
+---
 CourseGradesValuesResponse:
-    type: object
-    properties:
-      grades:
-        type: array
-        items:
-          title: CourseGradesValuesResponseRow
-          type: object
-          properties:
-            id:
-              type: integer
-              format: int64
-              description: Unique identifier for the grade item
-            userId:
-              type: integer
-              format: int64
-              description: Unique identifier for the user
-            grade:
-              type: number
-              format: double
-              description: The grade value for the user in the specified grade item
-            percentage:
-              type: number
-              min: 0
-              max: 100
-              format: double
-              description: The percentage grade for the user in the specified grade item
+  title: "CourseGradesValuesResponse"
+  type: "object"
+  properties:
+    required:
+    - "grades"
+    grades:
+      type: "array"
+      items:
+        title: "CourseGradesValuesResponseRow"
+        type: "object"
+        required:
+        - "id"
+        - "userId"
+        properties:
+          id:
+            type: "integer"
+            format: "int64"
+            description: "Unique identifier for the grade item"
+          userId:
+            type: "integer"
+            format: "int64"
+            description: "Unique identifier for the user"
+          grade:
+            type: "number"
+            format: "double"
+            description: "The grade value for the user in the specified grade item"
+          percentage:
+            type: "number"
+            minimum: 0
+            maximum: 100
+            format: "double"
+            description: "The percentage grade for the user in the specified grade\
+              \ item"

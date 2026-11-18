@@ -1,0 +1,75 @@
+{
+  "databaseSetup": [
+    "INSERT OR REPLACE INTO USERS (ID, FULL_NAME, FIRST_NAME, LAST_NAME, EMAIL) VALUES (13, 'Jeffrey Sanders', 'Jeffrey', 'Sanders', 'jeffrey@example.com')",
+    "INSERT OR REPLACE INTO COURSES (ID, FULL_NAME, SHORT_NAME) VALUES (2, 'Algebra', 'ALG2')",
+    "INSERT INTO LOGS (LOGGED_AT, USER_ID, COURSE_ID, COMPONENT_ID, EVENT_ID, MODULE_ID, ORIGIN_ID, IP_ADDRESS) VALUES (unixepoch('2026-01-01 12:00:00'), 13, 2, 3, 390, NULL, 1, '192.0.2.13')",
+    "INSERT INTO LOGS (LOGGED_AT, USER_ID, COURSE_ID, COMPONENT_ID, EVENT_ID, MODULE_ID, ORIGIN_ID, IP_ADDRESS) VALUES (unixepoch('2026-01-01 12:00:01'), 13, 2, 4, 390, NULL, 1, '192.0.2.13')"
+  ],
+  "request": {
+    "method": "POST",
+    "path": "/api/courses/2/logs/info",
+    "headers": {
+      "Authorization": "******"
+    }
+  },
+  "expectedResponse": {
+    "status": 200,
+    "body": {
+      "column": {
+        "components": [
+          {
+            "id": 3,
+            "code": "assignsubmission_file",
+            "name": "File submissions"
+          },
+          {
+            "id": 4,
+            "code": "assignsubmission_onlinetext",
+            "name": "Online text submissions"
+          }
+        ],
+        "events": [
+          {
+            "id": 390,
+            "code": "eventsubmissioncreated",
+            "name": "Submission created."
+          }
+        ],
+        "componentsEvents": [
+          {
+            "component": {
+              "id": 3,
+              "code": "assignsubmission_file",
+              "name": "File submissions"
+            },
+            "event": {
+              "id": 390,
+              "code": "eventsubmissioncreated",
+              "name": "Submission created."
+            }
+          },
+          {
+            "component": {
+              "id": 4,
+              "code": "assignsubmission_onlinetext",
+              "name": "Online text submissions"
+            },
+            "event": {
+              "id": 390,
+              "code": "eventsubmissioncreated",
+              "name": "Submission created."
+            }
+          }
+        ],
+        "origins": [
+          {
+            "id": 1,
+            "code": "web",
+            "name": "Web"
+          }
+        ]
+      }
+    }
+  },
+  "authFixture": "classpath:/integration/shared/teacher-sso-auth.json"
+}

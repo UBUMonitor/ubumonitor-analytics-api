@@ -1,0 +1,58 @@
+{
+  "databaseSetup": [
+    "INSERT OR REPLACE INTO USERS (ID, FULL_NAME, FIRST_NAME, LAST_NAME, EMAIL) VALUES (13, 'Jeffrey Sanders', 'Jeffrey', 'Sanders', 'jeffrey@example.com')",
+    "INSERT OR REPLACE INTO USERS (ID, FULL_NAME, FIRST_NAME, LAST_NAME, EMAIL) VALUES (14, 'Alex Smith', 'Alex', 'Smith', 'alex@example.com')",
+    "INSERT OR REPLACE INTO COURSES (ID, FULL_NAME, SHORT_NAME) VALUES (2, 'Algebra', 'ALG2')",
+    "INSERT INTO LOGS (LOGGED_AT, USER_ID, COURSE_ID, COMPONENT_ID, EVENT_ID, ORIGIN_ID, IP_ADDRESS) VALUES (1767268800, 13, 2, 29, 55, 1, '192.0.2.13')",
+    "INSERT INTO LOGS (LOGGED_AT, USER_ID, COURSE_ID, COMPONENT_ID, EVENT_ID, ORIGIN_ID, IP_ADDRESS) VALUES (1767268801, 14, 2, 29, 55, 1, '192.0.2.14')",
+    "INSERT INTO LOGS (LOGGED_AT, USER_ID, COURSE_ID, COMPONENT_ID, EVENT_ID, ORIGIN_ID, IP_ADDRESS) VALUES (1767268802, 13, 2, 29, 55, 1, '192.0.2.14')",
+    "INSERT INTO LOGS (LOGGED_AT, USER_ID, COURSE_ID, COMPONENT_ID, EVENT_ID, ORIGIN_ID, IP_ADDRESS) VALUES (1767268803, 13, 2, 29, 56, 1, '192.0.2.13')"
+  ],
+  "request": {
+    "method": "POST",
+    "path": "/api/courses/2/logs/statistics",
+    "headers": {
+      "Authorization": "******"
+    },
+    "body": {
+      "fields": [
+        "USER_ID"
+      ],
+      "filters": {
+        "eventIds": [
+          55
+        ],
+        "compositeFilters": [
+          {
+            "userId": 13,
+            "ipAddress": "192.0.2.13"
+          },
+          {
+            "userId": 14,
+            "componentId": 29
+          }
+        ]
+      }
+    }
+  },
+  "expectedResponse": {
+    "status": 200,
+    "body": {
+      "rows": [
+        {
+          "user": {
+            "id": 13
+          },
+          "value": 1
+        },
+        {
+          "user": {
+            "id": 14
+          },
+          "value": 1
+        }
+      ]
+    }
+  },
+  "authFixture": "classpath:/integration/shared/teacher-sso-auth.json"
+}

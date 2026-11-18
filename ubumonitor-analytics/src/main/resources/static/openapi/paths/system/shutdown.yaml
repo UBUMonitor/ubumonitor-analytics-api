@@ -1,12 +1,13 @@
+---
 post:
-  security: [ ]
+  security: []
   tags:
-    - System
-  summary: Shutdown the server
-  operationId: shutdown
-  description: Shuts down the server gracefully.
+  - "System"
+  summary: "Shutdown the server"
+  operationId: "shutdownServer"
+  description: "Shuts down the server gracefully."
   responses:
-    '202':
-      description: The server is shutting down.
-    '503':
-      description: The backend is not yet ready.
+    "202":
+      description: "The server is shutting down."
+    "503":
+      description: "The backend is not yet ready."

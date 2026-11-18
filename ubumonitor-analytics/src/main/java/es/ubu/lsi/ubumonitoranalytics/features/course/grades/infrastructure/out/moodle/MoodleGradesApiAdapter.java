@@ -8,6 +8,7 @@ import es.ubu.lsi.moodle.model.gradereport.user.getgradestable.response.GetGrade
 import es.ubu.lsi.ubumonitoranalytics.features.course.grades.application.port.out.GradesApiPort;
 import es.ubu.lsi.ubumonitoranalytics.features.course.grades.domain.model.CourseGrade;
 import es.ubu.lsi.ubumonitoranalytics.features.course.grades.domain.model.GradeItem;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.Strings;
@@ -33,7 +34,9 @@ public class MoodleGradesApiAdapter implements GradesApiPort {
     CourseGrade courseGrade =
         moodleGradesAdapterResponseMapper.toCourseGradeItems(courseId, getGradeItemsResponseApi);
 
+    courseGrade.setGradeItems(new ArrayList<>(courseGrade.getGradeItems()));
     fillCategoryParentIds(courseGrade, actualUserId);
+    moodleGradesAdapterResponseMapper.assignPositions(courseGrade.getGradeItems());
 
     return courseGrade;
   }
@@ -43,15 +46,15 @@ public class MoodleGradesApiAdapter implements GradesApiPort {
    * href="https://moodle.atlassian.net/browse/MDL-64304">...</a>
    */
   private void fillCategoryParentIds(CourseGrade courseGrade, Long userId) {
-    List<GradeItem> categoriesNoParent =
+    List<GradeItem> itemsNoParent =
         courseGrade.getGradeItems().stream()
             .filter(
                 gradeItem ->
-                    Strings.CS.equalsAny(gradeItem.getItemType(), "category", "course")
+                    !Strings.CS.equals(gradeItem.getItemType(), "course")
                         && gradeItem.getParentId() == null)
             .toList();
 
-    if (categoriesNoParent.size() <= 1) {
+    if (itemsNoParent.isEmpty()) {
       return;
     }
 
@@ -61,6 +64,6 @@ public class MoodleGradesApiAdapter implements GradesApiPort {
         client.gradeReportUser().getGradesTable(getGradesTableRequestApi);
 
     moodleGradesAdapterTableResponseMapper.fillParent(
-        getGradesTableResponseApi, categoriesNoParent);
+        getGradesTableResponseApi, itemsNoParent, courseGrade.getGradeItems());
   }
 }

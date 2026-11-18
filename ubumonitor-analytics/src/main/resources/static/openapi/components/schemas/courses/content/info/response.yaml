@@ -1,86 +1,78 @@
+---
 CourseContentResponse:
-  type: object
+  title: "CourseContentResponse"
+  type: "object"
   required:
-    - sections
+  - "sections"
   properties:
     sections:
-      type: array
+      type: "array"
       items:
         $ref: "#/CourseContentSection"
-
-
-
 CourseContentSection:
-  type: object
+  title: "CourseContentSection"
+  type: "object"
   properties:
     id:
-      type: integer
-      format: int64
-      description: Section ID
-
+      type: "integer"
+      format: "int64"
+      description: "Section ID"
     name:
-      type: string
-      description: Section name
-
+      type: "string"
+      description: "Section name"
     visible:
-      type: boolean
-      description: Is the section visible
-
+      type: "boolean"
+      description: "Is the section visible"
     summary:
-      type: string
-      description: Section description
-
+      type: "string"
+      description: "Section description"
     position:
-      type: integer
-      description: Section number inside the course
-
+      type: "integer"
+      description: "Section number inside the course"
     modules:
-      type: array
-      description: List of modules in the section
+      type: "array"
+      description: "List of modules in the section"
       items:
         $ref: "#/CourseContentModule"
-
   required:
-    - id
-    - name
-    - visible
-    - summary
-    - position
-    - modules
-
-
+  - "id"
+  - "name"
+  - "visible"
+  - "summary"
+  - "position"
+  - "modules"
 CourseContentModule:
-  type: object
+  title: "CourseContentModule"
+  type: "object"
   required:
-    - id
-    - name
-    - modName
-    - url
-    - description
-    - visible
+  - "id"
+  - "name"
+  - "modName"
+  - "url"
+  - "description"
+  - "visible"
   properties:
     id:
-      type: integer
-      format: int64
-      description: Module ID
-
+      type: "integer"
+      format: "int64"
+      description: "Module ID"
     name:
-      type: string
-      description: Module name
-
+      type: "string"
+      description: "Module name"
     modName:
-      type: string
-      description: Module technical name
-
+      type: "string"
+      description: "Module technical name"
     url:
-      type: string
-      format: uri
-      description: Module URL
-
+      type: "string"
+      format: "uri"
+      description: "Module URL"
     description:
-      type: string
-      description: Module description
-
+      type: "string"
+      description: "Module description"
     visible:
-      type: boolean
-      description: Is module visible
+      type: "boolean"
+      description: "Is module visible"
+    instance:
+      type: "integer"
+      format: "int64"
+      description: "Moodle activity instance ID"

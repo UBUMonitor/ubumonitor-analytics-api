@@ -1,45 +1,60 @@
+---
 springdoc:
-
   api-docs:
     enabled: true
-    path:  /v3/api-docs
-    version: OPENAPI_3_0
-
+    path: "/v3/api-docs"
+    version: "OPENAPI_3_0"
   swagger-ui:
-    path: /swagger-ui.html
-    url: /v3/api-docs
-    tags-sorter: method
-
-
+    path: "/swagger-ui.html"
+    url: "/v3/api-docs"
+    tags-sorter: "method"
 logging:
   level:
-    root: INFO
-    org.zalando.logbook: TRACE
-    org.jooq.tools.LoggerListener: DEBUG
-    org.jooq: DEBUG
+    root: "INFO"
+    org.zalando.logbook: "TRACE"
+    org.jooq.tools.LoggerListener: "DEBUG"
+    org.jooq: "DEBUG"
 logbook:
   format:
-    style: http
-
+    style: "http"
   filter:
     enabled: true
-
   obfuscate:
     headers:
-      - Authorization
-      - X-Moodle-Token
-      - Cookie
+    - "Authorization"
+    - "X-Moodle-Token"
+    - "Cookie"
+    - "password"
+    - "dbPassword"
+    - "token"
+    - "access_token"
+    - "accessToken"
+    - "credential"
+    - "moodleLaunchCredential"
+    - "wstoken"
     parameters:
-      - password
-      - token
-
+    - "password"
+    - "token"
+    - "dbPassword"
+    - "access_token"
+    - "accessToken"
+    - "credential"
+    - "moodleLaunchCredential"
+    - "wstoken"
     json-body-fields:
-      - password
-      - token
-      - access_token
+    - "password"
+    - "token"
+    - "access_token"
+    - "dbPassword"
+    - "accessToken"
+    - "credential"
+    - "moodleLaunchCredential"
+    - "wstoken"
+    - "cookies"
+    - "value"
   predicate:
     exclude:
-      - path: /actuator/**
-      - path: /v3/api-docs/**
-      - path: /swagger-ui/**
-      - path: /swagger-ui.html
+    - path: "/actuator/**"
+    - path: "/v3/api-docs/**"
+    - path: "/swagger-ui/**"
+    - path: "/swagger-ui.html"
