@@ -3,9 +3,9 @@ package es.ubu.lsi.ubumonitoranalytics.features.users.enrollment.application.ser
 import es.ubu.lsi.ubumonitoranalytics.features.users.enrollment.application.port.in.GetUserCoursesUseCase;
 import es.ubu.lsi.ubumonitoranalytics.features.users.enrollment.application.port.out.PersistenceFetchPort;
 import es.ubu.lsi.ubumonitoranalytics.features.users.enrollment.domain.model.UserEnrolledCourses;
+import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.CurrentSessionPort;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.EntityNotFoundException;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class GetUserCoursesService implements GetUserCoursesUseCase {
 
   private final PersistenceFetchPort persistenceFetchPort;
-  private final CurrentSessionContext currentSessionContext;
+  private final CurrentSessionPort currentSessionContext;
 
   /**
    * @return enrolled courses for the current user

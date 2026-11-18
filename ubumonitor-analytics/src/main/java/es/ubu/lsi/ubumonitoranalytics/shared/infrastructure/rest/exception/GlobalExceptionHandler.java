@@ -4,9 +4,11 @@ import es.ubu.lsi.moodle.exception.MoodleUnauthorizedException;
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.ErrorResponseDto;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.exception.MoodleLogExportException;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.exception.*;
+import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.ConflictException;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.DatabaseCreationException;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.DatabaseMigrationValidationException;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.InvalidDatabaseEncryptionKeyException;
+import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.NotFoundException;
 import java.util.StringJoiner;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.Ordered;
@@ -24,9 +26,8 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 /**
  * Maps application and framework exceptions to the API error response contract.
  *
- * <p>Contains only specific handlers. Wrapped exceptions (for example {@code CompletionException})
- * are resolved by Spring through their cause chain, so each handler must declare the concrete
- * exception type as its parameter.
+ * <p>Wrapped exceptions are inspected through their cause chains when their underlying application
+ * exception has a specific HTTP status.
  */
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice
@@ -39,6 +40,13 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(BadRequestException.class)
   public ResponseEntity<ErrorResponseDto> badRequest(BadRequestException ex) {
     return response(HttpStatus.BAD_REQUEST, "BAD_REQUEST", ex.getMessage(), ex);
+  }
+
+  /** Handles operations that require an online Moodle session. */
+  @ExceptionHandler(OfflineSessionNotAllowedException.class)
+  public ResponseEntity<ErrorResponseDto> offlineSessionNotAllowed(
+      OfflineSessionNotAllowedException ex) {
+    return response(HttpStatus.FORBIDDEN, "FORBIDDEN", ex.getMessage(), ex);
   }
 
   /** Handles requests that omit a required query parameter. */
@@ -130,7 +138,23 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ErrorResponseDto> internalServerError(Exception ex) {
+    OfflineSessionNotAllowedException offlineException = findOfflineSessionException(ex);
+    if (offlineException != null) {
+      return response(HttpStatus.FORBIDDEN, "FORBIDDEN", offlineException.getMessage(), ex);
+    }
     return response(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR", ex.getMessage(), ex);
+  }
+
+  private static OfflineSessionNotAllowedException findOfflineSessionException(
+      Throwable exception) {
+    Throwable current = exception;
+    while (current != null) {
+      if (current instanceof OfflineSessionNotAllowedException offlineException) {
+        return offlineException;
+      }
+      current = current.getCause();
+    }
+    return null;
   }
 
   private ResponseEntity<ErrorResponseDto> response(

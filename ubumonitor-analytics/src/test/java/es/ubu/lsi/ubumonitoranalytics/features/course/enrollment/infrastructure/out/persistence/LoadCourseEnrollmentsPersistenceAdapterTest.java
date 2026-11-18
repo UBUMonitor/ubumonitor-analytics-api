@@ -6,8 +6,8 @@ import static org.mockito.Mockito.when;
 
 import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.*;
 import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.infrastructure.out.persistence.mapper.EnrollmentReadMapper;
+import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.DatabaseUtil;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
-import es.ubu.lsi.ubumonitoranalytics.util.DatabaseUtil;
 import java.nio.file.Path;
 import java.sql.Connection;
 import java.util.List;

@@ -206,25 +206,30 @@ public class LogsStatisticsAdapter implements LogsStatisticsPort {
   private Field<?> outerSelectFieldFor(
       CourseLogsSelectColumn column, Table<Record> aggregatedLogs) {
     return switch (column) {
-      case USER_ID -> aggregatedLogs.field(LOGS.USER_ID);
+      case USER_ID -> asLongId(aggregatedLogs.field(LOGS.USER_ID), "userId");
       case USER_FULL_NAME -> USERS.FULL_NAME.as("userFullName");
 
-      case MODULE_ID -> aggregatedLogs.field(LOGS.MODULE_ID);
+      case MODULE_ID -> asLongId(aggregatedLogs.field(LOGS.MODULE_ID), "moduleId");
       case MODULE_NAME -> MODULES.NAME.as("moduleName");
 
-      case COMPONENT_ID -> aggregatedLogs.field(LOGS.COMPONENT_ID);
+      case COMPONENT_ID -> asLongId(aggregatedLogs.field(LOGS.COMPONENT_ID), "componentId");
       case COMPONENT_NAME -> LOGS_COMPONENTS.NAME.as("componentName");
 
-      case EVENT_ID -> aggregatedLogs.field(LOGS.EVENT_ID);
+      case EVENT_ID -> asLongId(aggregatedLogs.field(LOGS.EVENT_ID), "eventId");
       case EVENT_NAME -> LOGS_EVENTS.NAME.as("eventName");
 
-      case ORIGIN_ID -> aggregatedLogs.field(LOGS.ORIGIN_ID);
+      case ORIGIN_ID -> asLongId(aggregatedLogs.field(LOGS.ORIGIN_ID), "originId");
       case ORIGIN_NAME -> LOGS_ORIGINS.NAME.as("originName");
 
       case IP_ADDRESS -> aggregatedLogs.field(LOGS.IP_ADDRESS);
-      case SECTION_ID -> aggregatedLogs.field(MODULES.SECTION_ID);
+      case SECTION_ID -> asLongId(aggregatedLogs.field(MODULES.SECTION_ID), "sectionId");
       case SECTION_NAME -> SECTIONS.NAME.as("sectionName");
     };
+  }
+
+  /** Projects every requested identifier as a 64-bit integer, matching the REST API schema. */
+  static Field<Long> asLongId(Field<?> field, String alias) {
+    return Objects.requireNonNull(field).cast(Long.class).as(alias);
   }
 
   /** Joins the lookup tables only for the names that were requested. */
@@ -374,11 +379,11 @@ public class LogsStatisticsAdapter implements LogsStatisticsPort {
       String userFullName,
       Long moduleId,
       String moduleName,
-      Short componentId,
+      Long componentId,
       String componentName,
-      Short eventId,
+      Long eventId,
       String eventName,
-      Byte originId,
+      Long originId,
       String originName,
       String ipAddress,
       Long courseId,

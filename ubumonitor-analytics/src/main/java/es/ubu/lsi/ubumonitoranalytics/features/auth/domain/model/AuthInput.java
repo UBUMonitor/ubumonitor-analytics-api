@@ -1,5 +1,6 @@
 package es.ubu.lsi.ubumonitoranalytics.features.auth.domain.model;
 
+import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.LoginMode;
 import java.net.URI;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -16,4 +17,5 @@ public class AuthInput {
   private String dbPassword;
   private String moodleToken;
   private List<Cookie> cookies;
+  private LoginMode loginMode;
 }

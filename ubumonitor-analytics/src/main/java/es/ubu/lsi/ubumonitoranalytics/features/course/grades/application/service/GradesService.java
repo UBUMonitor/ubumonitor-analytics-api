@@ -7,7 +7,7 @@ import es.ubu.lsi.ubumonitoranalytics.features.course.grades.application.port.ou
 import es.ubu.lsi.ubumonitoranalytics.features.course.grades.domain.model.CourseGrade;
 import es.ubu.lsi.ubumonitoranalytics.features.course.grades.domain.model.GradeItem;
 import es.ubu.lsi.ubumonitoranalytics.features.course.grades.domain.model.UserGrade;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
+import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.CurrentSessionPort;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,11 +19,10 @@ public class GradesService implements GradesUseCase {
 
   private final GradesFetchPersistencePort gradesFetchPersistencePort;
   private final GradesSavePersistencePort gradesSavePersistencePort;
-  private final CurrentSessionContext currentSessionContext;
+  private final CurrentSessionPort currentSessionContext;
   private final GradesApiPort gradesApiPort;
 
   @Override
-  @Transactional
   public List<GradeItem> sync(Long courseId) {
     Long userId = currentSessionContext.getSessionData().getUserId();
     CourseGrade courseGrade = gradesApiPort.fetchCourseGradeItems(courseId, userId);
@@ -32,11 +31,13 @@ public class GradesService implements GradesUseCase {
   }
 
   @Override
+  @Transactional(readOnly = true)
   public List<GradeItem> getGradeItems(Long courseId) {
     return gradesFetchPersistencePort.fetchCourseGradeItemsPersistence(courseId);
   }
 
   @Override
+  @Transactional(readOnly = true)
   public List<UserGrade> getUserGrades(
       Long courseId, List<Long> gradeItemsIds, List<Long> userIds) {
     return gradesFetchPersistencePort.fetchCourseUserGradesPersistence(

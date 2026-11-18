@@ -1,6 +1,6 @@
 package es.ubu.lsi.ubumonitoranalytics.features.users.info.infrastructure.out.persistence;
 
-import es.ubu.lsi.ubumonitoranalytics.features.users.info.appication.port.out.SyncUserInfoPersistencePort;
+import es.ubu.lsi.ubumonitoranalytics.features.users.info.application.port.out.SyncUserInfoPersistencePort;
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.domain.model.UserInfo;
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.infrastructure.out.persistence.mapper.UserInfoPersistenceMapper;
 import es.ubu.lsi.ubumonitoranalytics.jooq.tables.records.ActualUserRecord;

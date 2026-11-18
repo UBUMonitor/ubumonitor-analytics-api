@@ -1,23 +1,24 @@
+---
 post:
-  tags: [ Auth ]
-  operationId: createOfflineSession
-  summary: Create an offline application session
-  description: |
-    Receives the Moodle site URL, username, and database encryption key. Returns an opaque Bearer session token for an offline session.
+  tags:
+  - "Auth"
+  operationId: "createOfflineSession"
+  summary: "Create an offline application session"
+  description: "Receives the Moodle site URL, username, and database encryption key.\
+    \ Returns an opaque Bearer session token for an offline session.\n"
   requestBody:
     required: true
     content:
       application/json:
         schema:
-          $ref: '../../components/schemas/auth/offline/request.yaml#/AuthOfflineRequest'
-
-  security: [ ]
+          $ref: "../../components/schemas/auth/offline/request.yaml#/AuthOfflineRequest"
+  security: []
   responses:
-    '200':
-      description: Session token retrieved successfully
+    "200":
+      description: "Session token retrieved successfully"
       content:
         application/json:
           schema:
             $ref: "../../components/schemas/auth/response.yaml#/AuthResponse"
-    '401':
-      $ref: '../../components/responses/unauthorized_401.yaml'
+    "401":
+      $ref: "../../components/responses/unauthorized_401.yaml"

@@ -14,6 +14,10 @@ import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.infrastructure.
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.infrastructure.in.rest.mapper.GetCourseLogsMapper;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.infrastructure.in.rest.mapper.GetCourseLogsStatisticsMapper;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.infrastructure.in.rest.mapper.ImportLogsMapper;
+import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.security.RequiresOnlineSession;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UncheckedIOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -33,6 +37,7 @@ public class CourseLogsApiDelegateImpl implements CourseLogsApiDelegate {
   private final ColumnInfoMapper columnInfoMapper;
 
   @Override
+  @RequiresOnlineSession
   public ResponseEntity<CourseLogsResponseDto> syncCourseLogs(Long courseId) {
 
     ProcessLogsResult processLogsResult = importCourseLogsUseCase.sync(courseId);
@@ -42,8 +47,12 @@ public class CourseLogsApiDelegateImpl implements CourseLogsApiDelegate {
 
   @Override
   public ResponseEntity<CourseLogsResponseDto> importCourseLogs(Long courseId, MultipartFile file) {
-
-    ProcessLogsResult processLogsResult = importCourseLogsUseCase.process(courseId, file);
+    ProcessLogsResult processLogsResult;
+    try (InputStream inputStream = file.getInputStream()) {
+      processLogsResult = importCourseLogsUseCase.process(courseId, inputStream);
+    } catch (IOException exception) {
+      throw new UncheckedIOException("Could not read uploaded course logs file.", exception);
+    }
 
     return ResponseEntity.ok(importLogsMapper.toDto(processLogsResult));
   }

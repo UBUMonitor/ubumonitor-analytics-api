@@ -1,0 +1,1180 @@
+{
+  "databaseSetup": [
+    "INSERT INTO ASSIGNMENT_SUBMISSIONS (SUBMISSION_ID, ASSIGNMENT_ID, COURSE_ID, USER_ID, ATTEMPT_NUMBER, STATUS, ACTIVE) VALUES (9999, 9998, 72, 9000, 0, 'submitted', TRUE)",
+    "INSERT INTO COURSE_ASSIGNMENTS (ID, COURSE_ID, MODULE_ID, NAME, ACTIVE) VALUES (9998, 72, 9997, 'Old task', TRUE)"
+  ],
+  "authFixture": "classpath:/integration/shared/teacher-sso-auth.json",
+  "moodleMocks": [
+    {
+      "request": {
+        "method": "POST",
+        "path": "/webservice/rest/server.php",
+        "body": "wsfunction=mod_assign_get_assignments&courseids%5B0%5D=72&moodlewsrestformat=json&wstoken=wiremock-moodle-token"
+      },
+      "response": {
+        "body": {
+          "courses": [
+            {
+              "id": 72,
+              "fullname": "Fixture-safe course",
+              "shortname": "Fixture-safe course",
+              "timemodified": 1741926808,
+              "assignments": [
+                {
+                  "id": 145,
+                  "coursemodule": 1181,
+                  "course": 72,
+                  "name": "Summative assignment",
+                  "intro": "Fixture-safe Moodle text.",
+                  "introformat": 1,
+                  "introfiles": [],
+                  "section": 4,
+                  "visible": true,
+                  "groupmode": 0,
+                  "groupingid": 0,
+                  "lang": "",
+                  "enableaitools": null,
+                  "enabledaiactions": null,
+                  "cmid": 1181,
+                  "nosubmissions": 0,
+                  "submissiondrafts": 0,
+                  "sendnotifications": 0,
+                  "sendlatenotifications": 0,
+                  "sendstudentnotifications": 1,
+                  "duedate": 1730242800,
+                  "allowsubmissionsfromdate": 1696719600,
+                  "grade": 100,
+                  "gradepenalty": 0,
+                  "timemodified": 1776966668,
+                  "completionsubmit": 0,
+                  "cutoffdate": 1730367600,
+                  "gradingduedate": 1730415600,
+                  "teamsubmission": 0,
+                  "requireallteammemberssubmit": 0,
+                  "teamsubmissiongroupingid": 0,
+                  "blindmarking": 0,
+                  "hidegrader": 0,
+                  "revealidentities": 0,
+                  "attemptreopenmethod": "untilpass",
+                  "maxattempts": 1,
+                  "markingworkflow": 1,
+                  "markingallocation": 1,
+                  "markercount": 2,
+                  "optionalmarkercount": 0,
+                  "multimarkmethod": "average",
+                  "multimarkrounding": 0,
+                  "markinganonymous": 0,
+                  "requiresubmissionstatement": 0,
+                  "preventsubmissionnotingroup": 0,
+                  "configs": [
+                    {
+                      "plugin": "file",
+                      "subtype": "assignsubmission",
+                      "name": "enabled",
+                      "value": "1"
+                    },
+                    {
+                      "plugin": "file",
+                      "subtype": "assignsubmission",
+                      "name": "maxfilesubmissions",
+                      "value": "20"
+                    },
+                    {
+                      "plugin": "file",
+                      "subtype": "assignsubmission",
+                      "name": "maxsubmissionsizebytes",
+                      "value": "1048576"
+                    },
+                    {
+                      "plugin": "file",
+                      "subtype": "assignsubmission",
+                      "name": "filetypeslist",
+                      "value": ""
+                    },
+                    {
+                      "plugin": "comments",
+                      "subtype": "assignsubmission",
+                      "name": "enabled",
+                      "value": "1"
+                    },
+                    {
+                      "plugin": "comments",
+                      "subtype": "assignfeedback",
+                      "name": "enabled",
+                      "value": "1"
+                    },
+                    {
+                      "plugin": "comments",
+                      "subtype": "assignfeedback",
+                      "name": "commentinline",
+                      "value": "0"
+                    }
+                  ],
+                  "introattachments": [],
+                  "timelimit": 0,
+                  "submissionattachments": 0
+                },
+                {
+                  "id": 146,
+                  "coursemodule": 1187,
+                  "course": 72,
+                  "name": "Memory poem",
+                  "intro": "Fixture-safe Moodle text.",
+                  "introformat": 1,
+                  "introfiles": [],
+                  "section": 2,
+                  "visible": true,
+                  "groupmode": 0,
+                  "groupingid": 0,
+                  "lang": "",
+                  "enableaitools": null,
+                  "enabledaiactions": null,
+                  "cmid": 1187,
+                  "nosubmissions": 0,
+                  "submissiondrafts": 1,
+                  "sendnotifications": 0,
+                  "sendlatenotifications": 0,
+                  "sendstudentnotifications": 1,
+                  "duedate": 1732057200,
+                  "allowsubmissionsfromdate": 1699830000,
+                  "grade": 100,
+                  "gradepenalty": 0,
+                  "timemodified": 1776965395,
+                  "completionsubmit": 0,
+                  "cutoffdate": 0,
+                  "gradingduedate": 1732662000,
+                  "teamsubmission": 0,
+                  "requireallteammemberssubmit": 0,
+                  "teamsubmissiongroupingid": 0,
+                  "blindmarking": 0,
+                  "hidegrader": 0,
+                  "revealidentities": 0,
+                  "attemptreopenmethod": "untilpass",
+                  "maxattempts": 1,
+                  "markingworkflow": 1,
+                  "markingallocation": 1,
+                  "markercount": 1,
+                  "optionalmarkercount": 0,
+                  "multimarkmethod": null,
+                  "multimarkrounding": null,
+                  "markinganonymous": 0,
+                  "requiresubmissionstatement": 1,
+                  "preventsubmissionnotingroup": 0,
+                  "submissionstatement": "Fixture-safe Moodle text.",
+                  "submissionstatementformat": 1,
+                  "configs": [
+                    {
+                      "plugin": "onlinetext",
+                      "subtype": "assignsubmission",
+                      "name": "enabled",
+                      "value": "1"
+                    },
+                    {
+                      "plugin": "onlinetext",
+                      "subtype": "assignsubmission",
+                      "name": "wordlimit",
+                      "value": "0"
+                    },
+                    {
+                      "plugin": "onlinetext",
+                      "subtype": "assignsubmission",
+                      "name": "wordlimitenabled",
+                      "value": "0"
+                    },
+                    {
+                      "plugin": "comments",
+                      "subtype": "assignsubmission",
+                      "name": "enabled",
+                      "value": "1"
+                    },
+                    {
+                      "plugin": "comments",
+                      "subtype": "assignfeedback",
+                      "name": "enabled",
+                      "value": "1"
+                    },
+                    {
+                      "plugin": "comments",
+                      "subtype": "assignfeedback",
+                      "name": "commentinline",
+                      "value": "1"
+                    }
+                  ],
+                  "introattachments": [],
+                  "activity": "Fixture-safe Moodle text.",
+                  "activityformat": 1,
+                  "activityattachments": [],
+                  "timelimit": 0,
+                  "submissionattachments": 0
+                }
+              ]
+            }
+          ],
+          "warnings": []
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "POST",
+        "path": "/webservice/rest/server.php",
+        "body": "wsfunction=mod_assign_get_submissions&assignmentids%5B0%5D=145&assignmentids%5B1%5D=146&moodlewsrestformat=json&wstoken=wiremock-moodle-token"
+      },
+      "response": {
+        "body": {
+          "assignments": [
+            {
+              "assignmentid": 145,
+              "submissions": [
+                {
+                  "id": 139,
+                  "userid": 13,
+                  "attemptnumber": 0,
+                  "timecreated": 1699883498,
+                  "timemodified": 1699883498,
+                  "timestarted": null,
+                  "status": "new",
+                  "groupid": 0,
+                  "plugins": [
+                    {
+                      "type": "file",
+                      "name": "File submissions",
+                      "fileareas": [
+                        {
+                          "area": "submission_files",
+                          "files": []
+                        }
+                      ]
+                    },
+                    {
+                      "type": "comments",
+                      "name": "Submission comments"
+                    }
+                  ],
+                  "gradingstatus": "notmarked"
+                },
+                {
+                  "id": 178,
+                  "userid": 44,
+                  "attemptnumber": 0,
+                  "timecreated": 1776966676,
+                  "timemodified": 1776966676,
+                  "timestarted": null,
+                  "status": "new",
+                  "groupid": 0,
+                  "plugins": [
+                    {
+                      "type": "file",
+                      "name": "File submissions",
+                      "fileareas": [
+                        {
+                          "area": "submission_files",
+                          "files": []
+                        }
+                      ]
+                    },
+                    {
+                      "type": "comments",
+                      "name": "Submission comments"
+                    }
+                  ],
+                  "gradingstatus": "notmarked"
+                },
+                {
+                  "id": 145,
+                  "userid": 45,
+                  "attemptnumber": 0,
+                  "timecreated": 1699884571,
+                  "timemodified": 1699884646,
+                  "timestarted": null,
+                  "status": "submitted",
+                  "groupid": 0,
+                  "plugins": [
+                    {
+                      "type": "file",
+                      "name": "File submissions",
+                      "fileareas": [
+                        {
+                          "area": "submission_files",
+                          "files": [
+                            {
+                              "filename": "fixture-file.pdf",
+                              "filepath": "/",
+                              "filesize": 13292,
+                              "fileurl": "https://example.invalid/fixture/file",
+                              "timemodified": 1699884646,
+                              "mimetype": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                              "isexternalfile": false,
+                              "icon": "f/document"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "comments",
+                      "name": "Submission comments"
+                    }
+                  ],
+                  "gradingstatus": "notmarked"
+                },
+                {
+                  "id": 144,
+                  "userid": 46,
+                  "attemptnumber": 0,
+                  "timecreated": 1699884523,
+                  "timemodified": 1699884536,
+                  "timestarted": null,
+                  "status": "submitted",
+                  "groupid": 0,
+                  "plugins": [
+                    {
+                      "type": "file",
+                      "name": "File submissions",
+                      "fileareas": [
+                        {
+                          "area": "submission_files",
+                          "files": [
+                            {
+                              "filename": "fixture-file.pdf",
+                              "filepath": "/",
+                              "filesize": 13646,
+                              "fileurl": "https://example.invalid/fixture/file",
+                              "timemodified": 1699884536,
+                              "mimetype": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                              "isexternalfile": false,
+                              "icon": "f/document"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "comments",
+                      "name": "Submission comments"
+                    }
+                  ],
+                  "gradingstatus": "notmarked"
+                },
+                {
+                  "id": 142,
+                  "userid": 47,
+                  "attemptnumber": 0,
+                  "timecreated": 1699884081,
+                  "timemodified": 1699884107,
+                  "timestarted": null,
+                  "status": "submitted",
+                  "groupid": 0,
+                  "plugins": [
+                    {
+                      "type": "file",
+                      "name": "File submissions",
+                      "fileareas": [
+                        {
+                          "area": "submission_files",
+                          "files": [
+                            {
+                              "filename": "fixture-file.pdf",
+                              "filepath": "/",
+                              "filesize": 13318,
+                              "fileurl": "https://example.invalid/fixture/file",
+                              "timemodified": 1699884107,
+                              "mimetype": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                              "isexternalfile": false,
+                              "icon": "f/document"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "comments",
+                      "name": "Submission comments"
+                    }
+                  ],
+                  "gradingstatus": "notmarked"
+                },
+                {
+                  "id": 140,
+                  "userid": 48,
+                  "attemptnumber": 0,
+                  "timecreated": 1699883792,
+                  "timemodified": 1699883879,
+                  "timestarted": null,
+                  "status": "submitted",
+                  "groupid": 0,
+                  "plugins": [
+                    {
+                      "type": "file",
+                      "name": "File submissions",
+                      "fileareas": [
+                        {
+                          "area": "submission_files",
+                          "files": [
+                            {
+                              "filename": "fixture-file.pdf",
+                              "filepath": "/",
+                              "filesize": 16202,
+                              "fileurl": "https://example.invalid/fixture/file",
+                              "timemodified": 1699883879,
+                              "mimetype": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                              "isexternalfile": false,
+                              "icon": "f/document"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "comments",
+                      "name": "Submission comments"
+                    }
+                  ],
+                  "gradingstatus": "notmarked"
+                },
+                {
+                  "id": 141,
+                  "userid": 49,
+                  "attemptnumber": 0,
+                  "timecreated": 1699883953,
+                  "timemodified": 1699883977,
+                  "timestarted": null,
+                  "status": "submitted",
+                  "groupid": 0,
+                  "plugins": [
+                    {
+                      "type": "file",
+                      "name": "File submissions",
+                      "fileareas": [
+                        {
+                          "area": "submission_files",
+                          "files": [
+                            {
+                              "filename": "fixture-file.pdf",
+                              "filepath": "/",
+                              "filesize": 14038,
+                              "fileurl": "https://example.invalid/fixture/file",
+                              "timemodified": 1699883977,
+                              "mimetype": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                              "isexternalfile": false,
+                              "icon": "f/document"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "comments",
+                      "name": "Submission comments"
+                    }
+                  ],
+                  "gradingstatus": "notmarked"
+                },
+                {
+                  "id": 179,
+                  "userid": 51,
+                  "attemptnumber": 0,
+                  "timecreated": 1776966676,
+                  "timemodified": 1776966676,
+                  "timestarted": null,
+                  "status": "new",
+                  "groupid": 0,
+                  "plugins": [
+                    {
+                      "type": "file",
+                      "name": "File submissions",
+                      "fileareas": [
+                        {
+                          "area": "submission_files",
+                          "files": []
+                        }
+                      ]
+                    },
+                    {
+                      "type": "comments",
+                      "name": "Submission comments"
+                    }
+                  ],
+                  "gradingstatus": "notmarked"
+                },
+                {
+                  "id": 143,
+                  "userid": 56,
+                  "attemptnumber": 0,
+                  "timecreated": 1699884409,
+                  "timemodified": 1699884423,
+                  "timestarted": null,
+                  "status": "submitted",
+                  "groupid": 0,
+                  "plugins": [
+                    {
+                      "type": "file",
+                      "name": "File submissions",
+                      "fileareas": [
+                        {
+                          "area": "submission_files",
+                          "files": [
+                            {
+                              "filename": "fixture-file.pdf",
+                              "filepath": "/",
+                              "filesize": 15258,
+                              "fileurl": "https://example.invalid/fixture/file",
+                              "timemodified": 1699884423,
+                              "mimetype": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                              "isexternalfile": false,
+                              "icon": "f/document"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "comments",
+                      "name": "Submission comments"
+                    }
+                  ],
+                  "gradingstatus": "notmarked"
+                }
+              ]
+            },
+            {
+              "assignmentid": 146,
+              "submissions": [
+                {
+                  "id": 146,
+                  "userid": 13,
+                  "attemptnumber": 0,
+                  "timecreated": 1699885975,
+                  "timemodified": 1699885975,
+                  "timestarted": null,
+                  "status": "new",
+                  "groupid": 0,
+                  "plugins": [
+                    {
+                      "type": "onlinetext",
+                      "name": "Online text",
+                      "fileareas": [
+                        {
+                          "area": "submissions_onlinetext",
+                          "files": []
+                        }
+                      ],
+                      "editorfields": [
+                        {
+                          "name": "onlinetext",
+                          "description": "Fixture-safe Moodle text.",
+                          "text": "Fixture-safe Moodle text.",
+                          "format": 0
+                        }
+                      ]
+                    },
+                    {
+                      "type": "comments",
+                      "name": "Submission comments"
+                    }
+                  ],
+                  "gradingstatus": "notmarked"
+                },
+                {
+                  "id": 150,
+                  "userid": 44,
+                  "attemptnumber": 0,
+                  "timecreated": 1699886424,
+                  "timemodified": 1699886456,
+                  "timestarted": null,
+                  "status": "submitted",
+                  "groupid": 0,
+                  "plugins": [
+                    {
+                      "type": "onlinetext",
+                      "name": "Online text",
+                      "fileareas": [
+                        {
+                          "area": "submissions_onlinetext",
+                          "files": []
+                        }
+                      ],
+                      "editorfields": [
+                        {
+                          "name": "onlinetext",
+                          "description": "Fixture-safe Moodle text.",
+                          "text": "Fixture-safe Moodle text.",
+                          "format": 1
+                        }
+                      ]
+                    },
+                    {
+                      "type": "comments",
+                      "name": "Submission comments"
+                    }
+                  ],
+                  "gradingstatus": "notmarked"
+                },
+                {
+                  "id": 175,
+                  "userid": 45,
+                  "attemptnumber": 0,
+                  "timecreated": 1776965398,
+                  "timemodified": 1776965398,
+                  "timestarted": null,
+                  "status": "new",
+                  "groupid": 0,
+                  "plugins": [
+                    {
+                      "type": "onlinetext",
+                      "name": "Online text",
+                      "fileareas": [
+                        {
+                          "area": "submissions_onlinetext",
+                          "files": []
+                        }
+                      ],
+                      "editorfields": [
+                        {
+                          "name": "onlinetext",
+                          "description": "Fixture-safe Moodle text.",
+                          "text": "Fixture-safe Moodle text.",
+                          "format": 0
+                        }
+                      ]
+                    },
+                    {
+                      "type": "comments",
+                      "name": "Submission comments"
+                    }
+                  ],
+                  "gradingstatus": "notmarked"
+                },
+                {
+                  "id": 176,
+                  "userid": 46,
+                  "attemptnumber": 0,
+                  "timecreated": 1776965398,
+                  "timemodified": 1776965398,
+                  "timestarted": null,
+                  "status": "new",
+                  "groupid": 0,
+                  "plugins": [
+                    {
+                      "type": "onlinetext",
+                      "name": "Online text",
+                      "fileareas": [
+                        {
+                          "area": "submissions_onlinetext",
+                          "files": []
+                        }
+                      ],
+                      "editorfields": [
+                        {
+                          "name": "onlinetext",
+                          "description": "Fixture-safe Moodle text.",
+                          "text": "Fixture-safe Moodle text.",
+                          "format": 0
+                        }
+                      ]
+                    },
+                    {
+                      "type": "comments",
+                      "name": "Submission comments"
+                    }
+                  ],
+                  "gradingstatus": "notmarked"
+                },
+                {
+                  "id": 148,
+                  "userid": 47,
+                  "attemptnumber": 0,
+                  "timecreated": 1699886303,
+                  "timemodified": 1699886323,
+                  "timestarted": null,
+                  "status": "submitted",
+                  "groupid": 0,
+                  "plugins": [
+                    {
+                      "type": "onlinetext",
+                      "name": "Online text",
+                      "fileareas": [
+                        {
+                          "area": "submissions_onlinetext",
+                          "files": []
+                        }
+                      ],
+                      "editorfields": [
+                        {
+                          "name": "onlinetext",
+                          "description": "Fixture-safe Moodle text.",
+                          "text": "Fixture-safe Moodle text.",
+                          "format": 1
+                        }
+                      ]
+                    },
+                    {
+                      "type": "comments",
+                      "name": "Submission comments"
+                    }
+                  ],
+                  "gradingstatus": "notmarked"
+                },
+                {
+                  "id": 149,
+                  "userid": 48,
+                  "attemptnumber": 0,
+                  "timecreated": 1699886345,
+                  "timemodified": 1699886359,
+                  "timestarted": null,
+                  "status": "draft",
+                  "groupid": 0,
+                  "plugins": [
+                    {
+                      "type": "onlinetext",
+                      "name": "Online text",
+                      "fileareas": [
+                        {
+                          "area": "submissions_onlinetext",
+                          "files": []
+                        }
+                      ],
+                      "editorfields": [
+                        {
+                          "name": "onlinetext",
+                          "description": "Fixture-safe Moodle text.",
+                          "text": "Fixture-safe Moodle text.",
+                          "format": 1
+                        }
+                      ]
+                    },
+                    {
+                      "type": "comments",
+                      "name": "Submission comments"
+                    }
+                  ],
+                  "gradingstatus": "notmarked"
+                },
+                {
+                  "id": 151,
+                  "userid": 49,
+                  "attemptnumber": 0,
+                  "timecreated": 1699886499,
+                  "timemodified": 1699886517,
+                  "timestarted": null,
+                  "status": "draft",
+                  "groupid": 0,
+                  "plugins": [
+                    {
+                      "type": "onlinetext",
+                      "name": "Online text",
+                      "fileareas": [
+                        {
+                          "area": "submissions_onlinetext",
+                          "files": []
+                        }
+                      ],
+                      "editorfields": [
+                        {
+                          "name": "onlinetext",
+                          "description": "Fixture-safe Moodle text.",
+                          "text": "Fixture-safe Moodle text.",
+                          "format": 1
+                        }
+                      ]
+                    },
+                    {
+                      "type": "comments",
+                      "name": "Submission comments"
+                    }
+                  ],
+                  "gradingstatus": "notmarked"
+                },
+                {
+                  "id": 177,
+                  "userid": 51,
+                  "attemptnumber": 0,
+                  "timecreated": 1776965398,
+                  "timemodified": 1776965398,
+                  "timestarted": null,
+                  "status": "new",
+                  "groupid": 0,
+                  "plugins": [
+                    {
+                      "type": "onlinetext",
+                      "name": "Online text",
+                      "fileareas": [
+                        {
+                          "area": "submissions_onlinetext",
+                          "files": []
+                        }
+                      ],
+                      "editorfields": [
+                        {
+                          "name": "onlinetext",
+                          "description": "Fixture-safe Moodle text.",
+                          "text": "Fixture-safe Moodle text.",
+                          "format": 0
+                        }
+                      ]
+                    },
+                    {
+                      "type": "comments",
+                      "name": "Submission comments"
+                    }
+                  ],
+                  "gradingstatus": "notmarked"
+                },
+                {
+                  "id": 147,
+                  "userid": 56,
+                  "attemptnumber": 0,
+                  "timecreated": 1699886262,
+                  "timemodified": 1699886275,
+                  "timestarted": null,
+                  "status": "submitted",
+                  "groupid": 0,
+                  "plugins": [
+                    {
+                      "type": "onlinetext",
+                      "name": "Online text",
+                      "fileareas": [
+                        {
+                          "area": "submissions_onlinetext",
+                          "files": []
+                        }
+                      ],
+                      "editorfields": [
+                        {
+                          "name": "onlinetext",
+                          "description": "Fixture-safe Moodle text.",
+                          "text": "Fixture-safe Moodle text.",
+                          "format": 1
+                        }
+                      ]
+                    },
+                    {
+                      "type": "comments",
+                      "name": "Submission comments"
+                    }
+                  ],
+                  "gradingstatus": "notmarked"
+                }
+              ]
+            }
+          ],
+          "warnings": []
+        }
+      }
+    }
+  ],
+  "endpoints": [
+    {
+      "request": {
+        "method": "POST",
+        "path": "/api/courses/72/assignments/submissions/sync",
+        "headers": {
+          "Authorization": "******"
+        }
+      },
+      "expectedResponse": {
+        "status": 200,
+        "body": {
+          "assignments": [
+            {
+              "courseId": 72,
+              "id": 145,
+              "moduleId": 1181,
+              "name": "Summative assignment",
+              "intro": "Fixture-safe Moodle text.",
+              "timeModified": 1776966668,
+              "dueDate": 1730242800,
+              "submissionsFromDate": 1696719600,
+              "cutoffDate": 1730367600,
+              "gradingDueDate": 1730415600
+            },
+            {
+              "courseId": 72,
+              "id": 146,
+              "moduleId": 1187,
+              "name": "Memory poem",
+              "intro": "Fixture-safe Moodle text.",
+              "timeModified": 1776965395,
+              "dueDate": 1732057200,
+              "submissionsFromDate": 1699830000,
+              "cutoffDate": 0,
+              "gradingDueDate": 1732662000
+            }
+          ]
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "path": "/api/courses/72/assignments/submissions/info",
+        "headers": {
+          "Authorization": "******"
+        }
+      },
+      "expectedResponse": {
+        "status": 200,
+        "body": {
+          "assignments": [
+            {
+              "courseId": 72,
+              "id": 145,
+              "moduleId": 1181,
+              "name": "Summative assignment",
+              "intro": "Fixture-safe Moodle text.",
+              "timeModified": 1776966668,
+              "dueDate": 1730242800,
+              "submissionsFromDate": 1696719600,
+              "cutoffDate": 1730367600,
+              "gradingDueDate": 1730415600
+            },
+            {
+              "courseId": 72,
+              "id": 146,
+              "moduleId": 1187,
+              "name": "Memory poem",
+              "intro": "Fixture-safe Moodle text.",
+              "timeModified": 1776965395,
+              "dueDate": 1732057200,
+              "submissionsFromDate": 1699830000,
+              "cutoffDate": 0,
+              "gradingDueDate": 1732662000
+            }
+          ]
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "path": "/api/courses/72/assignments/submissions/values?assignmentIds=145&assignmentIds=146&userIds=13&userIds=44&userIds=45&userIds=46&userIds=47&userIds=48&userIds=49&userIds=51&userIds=56",
+        "headers": {
+          "Authorization": "******"
+        }
+      },
+      "expectedResponse": {
+        "status": 200,
+        "body": {
+          "submissions": [
+            {
+              "assignmentId": 145,
+              "courseId": 72,
+              "userId": 13,
+              "submissionId": 139,
+              "attemptNumber": 0,
+              "timeCreated": 1699883498,
+              "timeModified": 1699883498,
+              "status": "new",
+              "gradingStatus": "notmarked",
+              "latest": false
+            },
+            {
+              "assignmentId": 145,
+              "courseId": 72,
+              "userId": 44,
+              "submissionId": 178,
+              "attemptNumber": 0,
+              "timeCreated": 1776966676,
+              "timeModified": 1776966676,
+              "status": "new",
+              "gradingStatus": "notmarked",
+              "latest": false
+            },
+            {
+              "assignmentId": 145,
+              "courseId": 72,
+              "userId": 45,
+              "submissionId": 145,
+              "attemptNumber": 0,
+              "timeCreated": 1699884571,
+              "timeModified": 1699884646,
+              "status": "submitted",
+              "gradingStatus": "notmarked",
+              "latest": false
+            },
+            {
+              "assignmentId": 145,
+              "courseId": 72,
+              "userId": 46,
+              "submissionId": 144,
+              "attemptNumber": 0,
+              "timeCreated": 1699884523,
+              "timeModified": 1699884536,
+              "status": "submitted",
+              "gradingStatus": "notmarked",
+              "latest": false
+            },
+            {
+              "assignmentId": 145,
+              "courseId": 72,
+              "userId": 47,
+              "submissionId": 142,
+              "attemptNumber": 0,
+              "timeCreated": 1699884081,
+              "timeModified": 1699884107,
+              "status": "submitted",
+              "gradingStatus": "notmarked",
+              "latest": false
+            },
+            {
+              "assignmentId": 145,
+              "courseId": 72,
+              "userId": 48,
+              "submissionId": 140,
+              "attemptNumber": 0,
+              "timeCreated": 1699883792,
+              "timeModified": 1699883879,
+              "status": "submitted",
+              "gradingStatus": "notmarked",
+              "latest": false
+            },
+            {
+              "assignmentId": 145,
+              "courseId": 72,
+              "userId": 49,
+              "submissionId": 141,
+              "attemptNumber": 0,
+              "timeCreated": 1699883953,
+              "timeModified": 1699883977,
+              "status": "submitted",
+              "gradingStatus": "notmarked",
+              "latest": false
+            },
+            {
+              "assignmentId": 145,
+              "courseId": 72,
+              "userId": 51,
+              "submissionId": 179,
+              "attemptNumber": 0,
+              "timeCreated": 1776966676,
+              "timeModified": 1776966676,
+              "status": "new",
+              "gradingStatus": "notmarked",
+              "latest": false
+            },
+            {
+              "assignmentId": 145,
+              "courseId": 72,
+              "userId": 56,
+              "submissionId": 143,
+              "attemptNumber": 0,
+              "timeCreated": 1699884409,
+              "timeModified": 1699884423,
+              "status": "submitted",
+              "gradingStatus": "notmarked",
+              "latest": false
+            },
+            {
+              "assignmentId": 146,
+              "courseId": 72,
+              "userId": 13,
+              "submissionId": 146,
+              "attemptNumber": 0,
+              "timeCreated": 1699885975,
+              "timeModified": 1699885975,
+              "status": "new",
+              "gradingStatus": "notmarked",
+              "latest": false
+            },
+            {
+              "assignmentId": 146,
+              "courseId": 72,
+              "userId": 44,
+              "submissionId": 150,
+              "attemptNumber": 0,
+              "timeCreated": 1699886424,
+              "timeModified": 1699886456,
+              "status": "submitted",
+              "gradingStatus": "notmarked",
+              "latest": false
+            },
+            {
+              "assignmentId": 146,
+              "courseId": 72,
+              "userId": 45,
+              "submissionId": 175,
+              "attemptNumber": 0,
+              "timeCreated": 1776965398,
+              "timeModified": 1776965398,
+              "status": "new",
+              "gradingStatus": "notmarked",
+              "latest": false
+            },
+            {
+              "assignmentId": 146,
+              "courseId": 72,
+              "userId": 46,
+              "submissionId": 176,
+              "attemptNumber": 0,
+              "timeCreated": 1776965398,
+              "timeModified": 1776965398,
+              "status": "new",
+              "gradingStatus": "notmarked",
+              "latest": false
+            },
+            {
+              "assignmentId": 146,
+              "courseId": 72,
+              "userId": 47,
+              "submissionId": 148,
+              "attemptNumber": 0,
+              "timeCreated": 1699886303,
+              "timeModified": 1699886323,
+              "status": "submitted",
+              "gradingStatus": "notmarked",
+              "latest": false
+            },
+            {
+              "assignmentId": 146,
+              "courseId": 72,
+              "userId": 48,
+              "submissionId": 149,
+              "attemptNumber": 0,
+              "timeCreated": 1699886345,
+              "timeModified": 1699886359,
+              "status": "draft",
+              "gradingStatus": "notmarked",
+              "latest": false
+            },
+            {
+              "assignmentId": 146,
+              "courseId": 72,
+              "userId": 49,
+              "submissionId": 151,
+              "attemptNumber": 0,
+              "timeCreated": 1699886499,
+              "timeModified": 1699886517,
+              "status": "draft",
+              "gradingStatus": "notmarked",
+              "latest": false
+            },
+            {
+              "assignmentId": 146,
+              "courseId": 72,
+              "userId": 51,
+              "submissionId": 177,
+              "attemptNumber": 0,
+              "timeCreated": 1776965398,
+              "timeModified": 1776965398,
+              "status": "new",
+              "gradingStatus": "notmarked",
+              "latest": false
+            },
+            {
+              "assignmentId": 146,
+              "courseId": 72,
+              "userId": 56,
+              "submissionId": 147,
+              "attemptNumber": 0,
+              "timeCreated": 1699886262,
+              "timeModified": 1699886275,
+              "status": "submitted",
+              "gradingStatus": "notmarked",
+              "latest": false
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,13 +1,14 @@
 package es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.moodle;
 
+import es.ubu.lsi.ubumonitoranalytics.shared.application.image.UserPlaceholderImage;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.moodle.MoodleDownloaderPort;
-import es.ubu.lsi.ubumonitoranalytics.util.ImageUtil;
 import java.net.URI;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 /** Downloads user images from Moodle through the configured HTTP client. */
@@ -44,10 +45,20 @@ public class MoodleDownloaderAdapter implements MoodleDownloaderPort {
           .retrieve()
           .toEntity(byte[].class);
     } catch (Exception e) {
-      log.error("Error downloading user image from Moodle: {}", uri, e);
+      log.error(
+          "Error downloading Moodle user image (type={}, httpStatus={})",
+          e.getClass().getSimpleName(),
+          httpStatus(e));
       return ResponseEntity.status(200)
           .contentType(MediaType.IMAGE_PNG)
-          .body(ImageUtil.getPlaceholder());
+          .body(UserPlaceholderImage.getPlaceholder());
     }
+  }
+
+  private static String httpStatus(Exception exception) {
+    if (exception instanceof RestClientResponseException responseException) {
+      return String.valueOf(responseException.getStatusCode().value());
+    }
+    return "unavailable";
   }
 }

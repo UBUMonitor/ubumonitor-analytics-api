@@ -17,7 +17,16 @@ public class LogbookConfig {
   public BodyFilter bodyFilter() {
     BodyFilter formFilter =
         BodyFilters.replaceFormUrlEncodedProperty(
-            Set.of("wstoken", "password", "token"), REPLACEMENT);
+            Set.of(
+                "wstoken",
+                "password",
+                "token",
+                "access_token",
+                "dbPassword",
+                "accessToken",
+                "credential",
+                "moodleLaunchCredential"),
+            REPLACEMENT);
     return BodyFilter.merge(BodyFilters.defaultValue(), formFilter);
   }
 }

@@ -33,46 +33,46 @@ public interface CourseEnrollmentsApiDelegateMapper {
   @Mapping(target = "lastCourseAccess", source = "enrollment", qualifiedByName = "lastCourseAccess")
   @Mapping(target = "groups", source = "enrollment", qualifiedByName = "groupReferences")
   @Mapping(target = "roles", source = "enrollment", qualifiedByName = "roleReferences")
-  UserEnrollmentInfoDto toUserEnrollmentInfoDto(
+  @Mapping(target = "courses", source = "enrollment", qualifiedByName = "courseReferences")
+  UserEnrollmentDto toUserEnrollmentInfoDto(
       Enrollment enrollment, @Context Long courseId, @Context SessionData sessionData);
 
-  @Mapping(target = "id", source = "course.id")
-  UserEnrollmentInfoCoursesInnerDto toUserEnrollmentInfoCoursesInnerDto(UserCourse userCourse);
+  CourseDto toCourseEnrollmentsResponseCoursesInnerDto(Course course);
 
-  CourseEnrollmentsResponseCoursesInnerDto toCourseEnrollmentsResponseCoursesInnerDto(
-      Course course);
+  GroupDto toCourseEnrollmentsResponseGroupsInnerDto(Group group);
 
-  CourseEnrollmentsResponseGroupsInnerDto toCourseEnrollmentsResponseGroupsInnerDto(Group group);
-
-  CourseEnrollmentsResponseRolesInnerDto toCourseEnrollmentsResponseRolesInnerDto(Role role);
+  RoleDto toCourseEnrollmentsResponseRolesInnerDto(Role role);
 
   @Named("catalogCourses")
-  default List<CourseEnrollmentsResponseCoursesInnerDto> catalogCourses(CourseEnrollments source) {
+  default List<CourseDto> catalogCourses(CourseEnrollments source) {
     return source.courses().stream().map(this::toCourseEnrollmentsResponseCoursesInnerDto).toList();
   }
 
   @Named("catalogGroups")
-  default List<CourseEnrollmentsResponseGroupsInnerDto> catalogGroups(CourseEnrollments source) {
+  default List<GroupDto> catalogGroups(CourseEnrollments source) {
     return source.groups().stream().map(this::toCourseEnrollmentsResponseGroupsInnerDto).toList();
   }
 
   @Named("catalogRoles")
-  default List<CourseEnrollmentsResponseRolesInnerDto> catalogRoles(CourseEnrollments source) {
+  default List<RoleDto> catalogRoles(CourseEnrollments source) {
     return source.roles().stream().map(this::toCourseEnrollmentsResponseRolesInnerDto).toList();
   }
 
-  @Named("groupReferences")
-  default List<UserEnrollmentInfoGroupsInnerDto> groupReferences(Enrollment enrollment) {
-    return enrollment.getGroups().stream()
-        .map(group -> new UserEnrollmentInfoGroupsInnerDto(group.getId()))
+  @Named("courseReferences")
+  default List<CourseRefDto> courseReferences(Enrollment enrollment) {
+    return enrollment.getCourses().stream()
+        .map(userCourse -> new CourseRefDto(userCourse.getCourse().getId()))
         .toList();
   }
 
+  @Named("groupReferences")
+  default List<GroupRefDto> groupReferences(Enrollment enrollment) {
+    return enrollment.getGroups().stream().map(group -> new GroupRefDto(group.getId())).toList();
+  }
+
   @Named("roleReferences")
-  default List<UserEnrollmentInfoRolesInnerDto> roleReferences(Enrollment enrollment) {
-    return enrollment.getRoles().stream()
-        .map(role -> new UserEnrollmentInfoRolesInnerDto(role.getId()))
-        .toList();
+  default List<RoleRefDto> roleReferences(Enrollment enrollment) {
+    return enrollment.getRoles().stream().map(role -> new RoleRefDto(role.getId())).toList();
   }
 
   @Named("lastCourseAccess")

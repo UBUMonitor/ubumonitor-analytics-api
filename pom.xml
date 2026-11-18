@@ -63,14 +63,29 @@
                         <includes>
                             <include>src/**/*.json</include>
                         </includes>
-                        <excludes>
-                            <exclude>**/target/**</exclude>
-                        </excludes>
                         <gson>
                             <sortByKeys>false</sortByKeys>
                             <indentSpaces>2</indentSpaces>
                         </gson>
                     </json>
+                    <yaml>
+                        <includes>
+                            <include>src/**/*.yaml</include>
+                            <include>src/**/*.yml</include>
+                        </includes>
+                        <jackson />
+                    </yaml>
+                    <formats>
+                        <format>
+                            <includes>
+                                <include>src/**/*.xml</include>
+                                <include>src/**/*.xsd</include>
+                            </includes>
+                            <eclipseWtp>
+                                <type>XML</type>
+                            </eclipseWtp>
+                        </format>
+                    </formats>
                 </configuration>
 
                 <executions>

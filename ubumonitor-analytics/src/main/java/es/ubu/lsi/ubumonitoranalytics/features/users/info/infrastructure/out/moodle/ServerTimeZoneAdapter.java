@@ -2,9 +2,10 @@ package es.ubu.lsi.ubumonitoranalytics.features.users.info.infrastructure.out.mo
 
 import static es.ubu.lsi.ubumonitoranalytics.jooq.tables.Sites.SITES;
 
-import es.ubu.lsi.ubumonitoranalytics.features.users.info.appication.port.out.ServerTimeZonePort;
+import es.ubu.lsi.ubumonitoranalytics.features.users.info.application.port.out.ServerTimeZonePort;
+import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.CurrentMoodleRestClientPort;
+import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.CurrentSessionPort;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.Jooq;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import lombok.RequiredArgsConstructor;
@@ -12,13 +13,13 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClient;
 
 @Component
 @RequiredArgsConstructor
 public class ServerTimeZoneAdapter implements ServerTimeZonePort {
 
-  private final CurrentSessionContext currentSessionContext;
+  private final CurrentSessionPort currentSessionContext;
+  private final CurrentMoodleRestClientPort currentMoodleRestClientPort;
   private final Jooq jooq;
 
   @Override
@@ -47,7 +48,7 @@ public class ServerTimeZoneAdapter implements ServerTimeZonePort {
   }
 
   private ZoneId getTimeZoneFromProfile() {
-    RestClient moodleSession = currentSessionContext.getSessionData().getRestClient();
+    var moodleSession = currentMoodleRestClientPort.requireOnlineRestClient();
     String html =
         moodleSession
             .get()

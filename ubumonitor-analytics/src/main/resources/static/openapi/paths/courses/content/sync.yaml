@@ -1,18 +1,22 @@
+---
 post:
   tags:
-    - CourseContent
-  summary: Synchronize course content
-  operationId: syncCourseContent
-  description: Retrieves the latest sections and modules for the specified course from Moodle and stores them in the local tenant database.
+  - "CourseContent"
+  summary: "Synchronize course content"
+  operationId: "syncCourseContent"
+  description: "Retrieves the latest sections and modules for the specified course\
+    \ from Moodle and stores them in the local tenant database."
   parameters:
-    - $ref: '../../../components/parameters/courseId.yaml'
+  - $ref: "../../../components/parameters/courseId.yaml"
   responses:
-    '200':
-      description: Successful synchronization of enrollments. The response includes the updated enrollment information for the user's courses.
+    "200":
+      description: "Successful synchronization of enrollments. The response includes\
+        \ the updated enrollment information for the user's courses."
       content:
         application/json:
           schema:
-            $ref: '../../../components/schemas/courses/content/info/response.yaml#/CourseContentResponse'
-    '401':
-      $ref: '../../../components/responses/unauthorized_401.yaml'
-
+            $ref: "../../../components/schemas/courses/content/info/response.yaml#/CourseContentResponse"
+    "401":
+      $ref: "../../../components/responses/unauthorized_401.yaml"
+    "403":
+      $ref: "../../../components/responses/forbidden_403.yaml"

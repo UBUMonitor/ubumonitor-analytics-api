@@ -4,7 +4,7 @@ import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.application.por
 import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.application.port.out.FetchCourseEnrollmentsPort;
 import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.application.port.out.SaveCourseEnrollmentsPort;
 import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.CourseEnrollments;
-import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.session.CurrentSessionContext;
+import es.ubu.lsi.ubumonitoranalytics.shared.application.port.out.session.CurrentSessionPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +21,7 @@ public class SyncCourseEnrollmentsService implements SyncCourseEnrollmentsUseCas
 
   private final FetchCourseEnrollmentsPort fetchCourseEnrollmentsPort;
   private final SaveCourseEnrollmentsPort saveCourseEnrollmentsPort;
-  private final CurrentSessionContext currentSessionContext;
+  private final CurrentSessionPort currentSessionContext;
 
   @Override
   public CourseEnrollments syncCourseEnrollments(Long courseId) {
