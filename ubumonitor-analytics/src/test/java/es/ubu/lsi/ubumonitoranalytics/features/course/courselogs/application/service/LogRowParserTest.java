@@ -4,6 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.application.csv.MoodleCsvReader;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.importlogs.LogContext;
 import es.ubu.lsi.ubumonitoranalytics.features.course.courselogs.domain.model.importlogs.MoodleLogCatalog;
@@ -17,11 +20,8 @@ import java.util.Map;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.system.CapturedOutput;
-import org.springframework.boot.test.system.OutputCaptureExtension;
+import org.slf4j.LoggerFactory;
 
-@ExtendWith(OutputCaptureExtension.class)
 class LogRowParserTest {
 
   private static final String CSV_HEADER =
@@ -69,18 +69,28 @@ class LogRowParserTest {
   }
 
   @Test
-  void failureLogContainsRowAndErrorTypeButNotCsvValues(CapturedOutput output) throws Exception {
+  void failureLogContainsRowAndErrorTypeButNotCsvValues() throws Exception {
     LogRowParser parser = newParser(null);
     CSVRecord record =
         records(CSV_HEADER + "not-a-date,Activity,Viewed,web,127.0.0.1,secret-sentinel\n")
             .getFirst();
 
-    parser.parse(record);
+    Logger logger = (Logger) LoggerFactory.getLogger(LogRowParser.class);
+    ListAppender<ILoggingEvent> appender = new ListAppender<>();
+    appender.start();
+    logger.addAppender(appender);
+    try {
+      parser.parse(record);
+    } finally {
+      logger.detachAppender(appender);
+      appender.stop();
+    }
 
     assertEquals(1, parser.getFailed());
-    assertTrue(output.getAll().contains("CSV row 1"));
-    assertTrue(output.getAll().contains("DateTimeParseException"));
-    assertFalse(output.getAll().contains("secret-sentinel"));
+    String message = appender.list.getFirst().getFormattedMessage();
+    assertTrue(message.contains("CSV row 1"));
+    assertTrue(message.contains("DateTimeParseException"));
+    assertFalse(message.contains("secret-sentinel"));
   }
 
   @Test

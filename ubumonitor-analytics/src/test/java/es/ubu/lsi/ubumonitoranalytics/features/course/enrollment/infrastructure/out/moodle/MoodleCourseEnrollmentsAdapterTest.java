@@ -7,6 +7,9 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import es.ubu.lsi.moodle.api.Client;
 import es.ubu.lsi.moodle.api.core.enrol.CoreEnrolApi;
 import es.ubu.lsi.ubumonitoranalytics.features.course.enrollment.domain.model.CourseEnrollments;
@@ -19,16 +22,13 @@ import java.net.URI;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.system.CapturedOutput;
-import org.springframework.boot.test.system.OutputCaptureExtension;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.client.ResourceAccessException;
 
-@ExtendWith(OutputCaptureExtension.class)
 class MoodleCourseEnrollmentsAdapterTest {
 
   @Test
-  void logsImageFailureWithoutThePictureUrlOrException(CapturedOutput output) {
+  void logsImageFailureWithoutThePictureUrlOrException() {
     URI pictureUrl = URI.create("https://moodle.example.test/image.png?token=secret-sentinel");
     UserPicture picture = UserPicture.builder().url(pictureUrl).build();
     User user = new User(13L, "User", "First", "Last", null, null, null, picture);
@@ -58,10 +58,20 @@ class MoodleCourseEnrollmentsAdapterTest {
     MoodleCourseEnrollmentsAdapter adapter =
         new MoodleCourseEnrollmentsAdapter(client, mapper, downloader, asyncExecution);
 
-    adapter.fetchCourseEnrollments(42L, "secret-sentinel");
+    Logger logger = (Logger) LoggerFactory.getLogger(MoodleCourseEnrollmentsAdapter.class);
+    ListAppender<ILoggingEvent> appender = new ListAppender<>();
+    appender.start();
+    logger.addAppender(appender);
+    try {
+      adapter.fetchCourseEnrollments(42L, "secret-sentinel");
+    } finally {
+      logger.detachAppender(appender);
+      appender.stop();
+    }
 
-    assertTrue(output.getAll().contains("type=ResourceAccessException"));
-    assertFalse(output.getAll().contains("secret-sentinel"));
-    assertFalse(output.getAll().contains("moodle.example.test"));
+    assertTrue(
+        appender.list.getFirst().getFormattedMessage().contains("type=ResourceAccessException"));
+    assertFalse(appender.list.getFirst().getFormattedMessage().contains("secret-sentinel"));
+    assertFalse(appender.list.getFirst().getFormattedMessage().contains("moodle.example.test"));
   }
 }
