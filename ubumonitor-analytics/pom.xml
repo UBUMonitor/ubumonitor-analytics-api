@@ -29,6 +29,7 @@
         <start-class>es.ubu.lsi.ubumonitoranalytics.Application</start-class>
         <flyway.version>12.6.1</flyway.version>
         <archunit.version>1.5.1</archunit.version>
+        <surefire.parallel>classes</surefire.parallel>
     </properties>
 
     <repositories>
@@ -268,7 +269,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <argLine>--enable-native-access=ALL-UNNAMED</argLine>
-                    <parallel>classes</parallel>
+                    <parallel>${surefire.parallel}</parallel>
                     <threadCount>4</threadCount>
                     <useUnlimitedThreads>false</useUnlimitedThreads>
                 </configuration>

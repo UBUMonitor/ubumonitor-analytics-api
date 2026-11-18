@@ -56,7 +56,7 @@ jobs:
           echo "version=$RELEASE_VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Build with Maven
-        run: mvn -B -ntp clean package
+        run: mvn -B -ntp -Dsurefire.parallel=none clean package
 
       - name: Commit release version and tag
         run: |
