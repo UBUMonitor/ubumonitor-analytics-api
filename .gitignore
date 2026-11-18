@@ -61,3 +61,4 @@ coverage/
 moodle_dbs/
 /data/
 *.log
+.env
