@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Response schema for core_group_get_group_members. Returns group members.",
+  "type": "array",
+  "items": {
+    "title": "GetGroupMembersResponse",
+    "type": "object",
+    "properties": {
+      "groupid": {
+        "description": "group record id",
+        "type": "integer",
+        "format": "int64"
+      },
+      "userids": {
+        "type": "array",
+        "items": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "required": [
+      "groupid",
+      "userids"
+    ]
+  }
+}

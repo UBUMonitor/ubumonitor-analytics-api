@@ -1,13 +1,12 @@
 package es.ubu.lsi.ubumonitoranalytics.shared.application.image;
 
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.util.HashUtil;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
-
-import java.io.IOException;
-import java.io.UncheckedIOException;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserPlaceholderImage {

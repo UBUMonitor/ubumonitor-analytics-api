@@ -1,10 +1,13 @@
+---
 post:
-  tags: [ Auth ]
-  operationId: logoutSession
-  summary: Logout session
-  description: Logout session. The token must be included in the Authorization header as a Bearer token.
+  tags:
+  - "Auth"
+  operationId: "logoutSession"
+  summary: "Logout session"
+  description: "Logout session. The token must be included in the Authorization header\
+    \ as a Bearer token."
   responses:
-    '204':
-      description: Logout successful. No content is returned.
-    '401':
-      $ref: '../../components/responses/unauthorized_401.yaml'
+    "204":
+      description: "Logout successful. No content is returned."
+    "401":
+      $ref: "../../components/responses/unauthorized_401.yaml"

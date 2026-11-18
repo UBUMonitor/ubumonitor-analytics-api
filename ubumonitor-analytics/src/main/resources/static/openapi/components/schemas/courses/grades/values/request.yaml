@@ -1,21 +1,22 @@
+---
 CourseGradesValuesRequest:
-  type: object
+  title: "CourseGradesValuesRequest"
+  type: "object"
   required:
-    - gradeItemIds
-    - userIds
+  - "gradeItemIds"
+  - "userIds"
   properties:
-
     gradeItemIds:
-      type: array
+      type: "array"
       minItems: 1
       items:
-        type: integer
-        format: int64
-      description: List of grade item identifiers to include in the grade value lookup.
+        type: "integer"
+        format: "int64"
+      description: "List of grade item identifiers to include in the grade value lookup."
     userIds:
-      type: array
+      type: "array"
       minItems: 1
       items:
-        type: integer
-        format: int64
-      description: List of user identifiers to include in the grade value lookup.
+        type: "integer"
+        format: "int64"
+      description: "List of user identifiers to include in the grade value lookup."

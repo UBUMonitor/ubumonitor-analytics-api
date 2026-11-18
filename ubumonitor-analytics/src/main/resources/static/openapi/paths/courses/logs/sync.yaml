@@ -1,20 +1,19 @@
+---
 post:
   tags:
-    - CourseLogs
-  operationId: syncCourseLogs
-  summary: Sync Moodle logs CSV
+  - "CourseLogs"
+  operationId: "syncCourseLogs"
+  summary: "Sync Moodle logs CSV"
   parameters:
-    - $ref: '../../../components/parameters/courseId.yaml'
+  - $ref: "../../../components/parameters/courseId.yaml"
   responses:
-    '200':
-      description: Sync completed
+    "200":
+      description: "Sync completed"
       content:
         application/json:
           schema:
-            $ref: '../../../components/schemas/courses/logs/info/response.yaml#/CourseLogsResponse'
-
-    '401':
-      $ref: '../../../components/responses/unauthorized_401.yaml'
-
-    '403':
-      $ref: '../../../components/responses/forbidden_403.yaml'
+            $ref: "../../../components/schemas/courses/logs/info/response.yaml#/CourseLogsResponse"
+    "401":
+      $ref: "../../../components/responses/unauthorized_401.yaml"
+    "403":
+      $ref: "../../../components/responses/forbidden_403.yaml"

@@ -1,146 +1,142 @@
-openapi: 3.0.3
+---
+openapi: "3.0.3"
 info:
-  title: UBU Monitor Analytics
+  title: "UBU Monitor Analytics"
   version: "1.0.0"
-  description: |
-    UBUMonitor Analytics API provides endpoints for authenticating users, synchronizing course and enrollment information, and retrieving details about courses and enrollments. It allows clients to interact with the UBUMonitor site to manage user sessions, access course data, and keep enrollment information up-to-date. The API is designed to facilitate integration with UBUMonitor and enable efficient management of user authentication and course-related data.
-
+  description: "UBUMonitor Analytics API provides endpoints for authenticating users,\
+    \ synchronizing course and enrollment information, and retrieving details about\
+    \ courses and enrollments. It allows clients to interact with the UBUMonitor site\
+    \ to manage user sessions, access course data, and keep enrollment information\
+    \ up-to-date. The API is designed to facilitate integration with UBUMonitor and\
+    \ enable efficient management of user authentication and course-related data.\n"
 servers:
-  - url: http://127.0.0.1:9090
-    description: Local development server
-
+- url: "http://127.0.0.1:9090"
+  description: "Local development server"
 security:
-  - bearerAuth: [ ]
-
+- bearerAuth: []
 tags:
-  - name: Auth
-    description: Authentication and session management.
-  - name: Sites
-    description: Site information and synchronization.
-  - name: Users
-    description: Current user information and user images.
-  - name: UserEnrollments
-    description: Enrollments of the current user.
-  - name: Calendars
-    description: Calendar events.
-  - name: CourseEnrollments
-    description: Enrollments of a specific course.
-  - name: CourseContent
-    description: Content (sections and modules) of a course.
-  - name: CourseGrades
-    description: Grade items and grade values of a course.
-  - name: CourseLogs
-    description: Activity logs of a course.
-  - name: CourseActivityCompletion
-    description: Activity completion information of a course.
-  - name: CourseForums
-    description: Forums, discussions and posts of a course.
-  - name: Databases
-    description: Database information.
-  - name: Health
-    description: Service health check.
-  - name: System
-    description: System administration operations.
-
+- name: "Auth"
+  description: "Authentication and session management."
+- name: "Sites"
+  description: "Site information and synchronization."
+- name: "Users"
+  description: "Current user information and user images."
+- name: "UserEnrollments"
+  description: "Enrollments of the current user."
+- name: "Calendars"
+  description: "Calendar events."
+- name: "CourseEnrollments"
+  description: "Enrollments of a specific course."
+- name: "CourseContent"
+  description: "Content (sections and modules) of a course."
+- name: "CourseGrades"
+  description: "Grade items and grade values of a course."
+- name: "CourseAssignments"
+  description: "Assignments of a course."
+- name: "CourseLogs"
+  description: "Activity logs of a course."
+- name: "CourseActivityCompletion"
+  description: "Activity completion information of a course."
+- name: "CourseForums"
+  description: "Forums, discussions and posts of a course."
+- name: "Databases"
+  description: "Database information."
+- name: "Health"
+  description: "Service health check."
+- name: "System"
+  description: "System administration operations."
 components:
   securitySchemes:
     bearerAuth:
-      $ref: './components/securitySchemes/bearerAuth.yaml'
+      $ref: "./components/securitySchemes/bearerAuth.yaml"
   parameters:
     courseId:
-      $ref: './components/parameters/courseId.yaml'
+      $ref: "./components/parameters/courseId.yaml"
     userId:
-      $ref: './components/parameters/userId.yaml'
+      $ref: "./components/parameters/userId.yaml"
+    userIds:
+      $ref: "./components/parameters/userIds.yaml"
   responses:
     bad_request_400:
-      $ref: './components/responses/bad_request_400.yaml'
+      $ref: "./components/responses/bad_request_400.yaml"
     unauthorized_401:
-      $ref: './components/responses/unauthorized_401.yaml'
+      $ref: "./components/responses/unauthorized_401.yaml"
     not_found_404:
-      $ref: './components/responses/not_found_404.yaml'
+      $ref: "./components/responses/not_found_404.yaml"
     conflict_409:
-      $ref: './components/responses/conflict_409.yaml'
-
+      $ref: "./components/responses/conflict_409.yaml"
 paths:
   /public/system/health:
-    $ref: './paths/system/health.yaml'
+    $ref: "./paths/system/health.yaml"
   /public/system/shutdown:
-    $ref: './paths/system/shutdown.yaml'
+    $ref: "./paths/system/shutdown.yaml"
   /public/system/databases/info:
-    $ref: './paths/system/databases.yaml'
-
+    $ref: "./paths/system/databases.yaml"
   /public/auth/credentials:
-    $ref: './paths/auth/credentials.yaml'
+    $ref: "./paths/auth/credentials.yaml"
   /public/auth/sso:
-    $ref: './paths/auth/sso.yaml'
+    $ref: "./paths/auth/sso.yaml"
   /public/auth/offline:
-    $ref: './paths/auth/offline.yaml'
-
+    $ref: "./paths/auth/offline.yaml"
   /public/sites/info:
-    $ref: './paths/sites/public-info.yaml'
-
+    $ref: "./paths/sites/public-info.yaml"
   /public/users/{userId}/images/profile:
-    $ref: './paths/users/images/profile.yaml'
-
+    $ref: "./paths/users/images/profile.yaml"
   /auth/logout:
-    $ref: './paths/auth/logout.yaml'
-
+    $ref: "./paths/auth/logout.yaml"
   /sites/sync:
-    $ref: './paths/sites/sync.yaml'
+    $ref: "./paths/sites/sync.yaml"
   /sites/info:
-    $ref: './paths/sites/info.yaml'
-
+    $ref: "./paths/sites/info.yaml"
   /enrollments/sync:
-    $ref: './paths/enrollments/sync.yaml'
+    $ref: "./paths/enrollments/sync.yaml"
   /enrollments/info:
-    $ref: './paths/enrollments/info.yaml'
-
+    $ref: "./paths/enrollments/info.yaml"
   /courses/{courseId}/enrollments/info:
-    $ref: './paths/courses/enrollments/info.yaml'
+    $ref: "./paths/courses/enrollments/info.yaml"
   /courses/{courseId}/enrollments/sync:
-    $ref: './paths/courses/enrollments/sync.yaml'
-
+    $ref: "./paths/courses/enrollments/sync.yaml"
   /courses/{courseId}/content/sync:
-    $ref: './paths/courses/content/sync.yaml'
+    $ref: "./paths/courses/content/sync.yaml"
   /courses/{courseId}/content/info:
-    $ref: './paths/courses/content/info.yaml'
-
+    $ref: "./paths/courses/content/info.yaml"
   /courses/{courseId}/grades/sync:
-    $ref: './paths/courses/grades/sync.yaml'
+    $ref: "./paths/courses/grades/sync.yaml"
   /courses/{courseId}/grades/info:
-    $ref: './paths/courses/grades/info.yaml'
+    $ref: "./paths/courses/grades/info.yaml"
   /courses/{courseId}/grades/values:
-    $ref: './paths/courses/grades/values.yaml'
-
+    $ref: "./paths/courses/grades/values.yaml"
+  /courses/{courseId}/assignments/submissions/sync:
+    $ref: "./paths/courses/assignments/submissions/sync.yaml"
+  /courses/{courseId}/assignments/submissions/info:
+    $ref: "./paths/courses/assignments/submissions/info.yaml"
+  /courses/{courseId}/assignments/submissions/values:
+    $ref: "./paths/courses/assignments/submissions/values.yaml"
   /courses/{courseId}/logs/sync:
-    $ref: './paths/courses/logs/sync.yaml'
+    $ref: "./paths/courses/logs/sync.yaml"
   /courses/{courseId}/logs/import:
-    $ref: './paths/courses/logs/import.yaml'
+    $ref: "./paths/courses/logs/import.yaml"
   /courses/{courseId}/logs/info:
-    $ref: './paths/courses/logs/info.yaml'
+    $ref: "./paths/courses/logs/info.yaml"
   /courses/{courseId}/logs/list:
-    $ref: './paths/courses/logs/list.yaml'
+    $ref: "./paths/courses/logs/list.yaml"
   /courses/{courseId}/logs/statistics:
-    $ref: './paths/courses/logs/statistics.yaml'
-
+    $ref: "./paths/courses/logs/statistics.yaml"
   /courses/{courseId}/activitycompletion/sync:
-    $ref: './paths/courses/activitycompletion/sync.yaml'
+    $ref: "./paths/courses/activitycompletion/sync.yaml"
   /courses/{courseId}/activitycompletion/info:
-    $ref: './paths/courses/activitycompletion/info.yaml'
+    $ref: "./paths/courses/activitycompletion/info.yaml"
   /courses/{courseId}/activitycompletion/values:
-    $ref: './paths/courses/activitycompletion/values.yaml'
-
+    $ref: "./paths/courses/activitycompletion/values.yaml"
   /courses/{courseId}/forums/sync:
-    $ref: './paths/courses/forums/sync.yaml'
+    $ref: "./paths/courses/forums/sync.yaml"
   /courses/{courseId}/forums/info:
-    $ref: './paths/courses/forums/info.yaml'
-
+    $ref: "./paths/courses/forums/info.yaml"
   /calendars/events/sync:
-    $ref: './paths/calendars/events/sync.yaml'
+    $ref: "./paths/calendars/events/sync.yaml"
   /calendars/events/info:
-    $ref: './paths/calendars/events/info.yaml'
-
+    $ref: "./paths/calendars/events/info.yaml"
   /users/me/info:
-    $ref: './paths/users/me/info.yaml'
+    $ref: "./paths/users/me/info.yaml"
   /users/images/document:
-    $ref: './paths/users/images/document.yaml'
+    $ref: "./paths/users/images/document.yaml"

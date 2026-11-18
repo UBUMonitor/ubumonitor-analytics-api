@@ -1,16 +1,18 @@
+---
 AuthResponse:
-  type: object
+  title: "AuthResponse"
+  type: "object"
   required:
-    - accessToken
-    - tokenType
-    - user
+  - "accessToken"
+  - "tokenType"
+  - "user"
   properties:
     accessToken:
-      type: string
-      description: Access token for authentication
+      type: "string"
+      description: "Access token for authentication"
     tokenType:
-      type: string
-      description: Type of the token, usually "Bearer"
-      example: Bearer
+      type: "string"
+      description: "Type of the token, usually \"Bearer\""
+      example: "Bearer"
     user:
-      $ref: '../users/me/info/response.yaml#/UserInfo'
+      $ref: "../users/me/info/response.yaml#/UserInfo"

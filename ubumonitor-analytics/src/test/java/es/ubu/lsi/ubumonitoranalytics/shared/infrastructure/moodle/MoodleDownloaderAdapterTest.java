@@ -1,22 +1,21 @@
 package es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.moodle;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withServerError;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
+
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.image.UserPlaceholderImage;
+import java.net.URI;
 import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClient;
-
-import java.net.URI;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withServerError;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 class MoodleDownloaderAdapterTest {
 
@@ -82,9 +81,10 @@ class MoodleDownloaderAdapterTest {
   void returnsPlaceholderForTimeout() {
     RestClient.Builder builder =
         RestClient.builder()
-            .requestFactory((_, _) -> {
-              throw new ResourceAccessException("Read timed out");
-            });
+            .requestFactory(
+                (_, _) -> {
+                  throw new ResourceAccessException("Read timed out");
+                });
     MoodleDownloaderAdapter adapter = new MoodleDownloaderAdapter(builder);
 
     var response = adapter.downloadUserImage(IMAGE_URI, "sentinel");

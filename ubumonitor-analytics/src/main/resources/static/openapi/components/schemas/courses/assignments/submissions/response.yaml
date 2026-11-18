@@ -1,0 +1,121 @@
+---
+CourseAssignmentsResponse:
+  title: "CourseAssignmentsResponse"
+  type: "object"
+  required:
+  - "assignments"
+  properties:
+    assignments:
+      type: "array"
+      description: "Assignment activities in the requested course."
+      items:
+        $ref: "#/CourseAssignment"
+CourseAssignment:
+  title: "CourseAssignment"
+  type: "object"
+  required:
+  - "id"
+  - "courseId"
+  - "moduleId"
+  - "name"
+  properties:
+    id:
+      type: "integer"
+      format: "int64"
+      description: "Moodle assignment ID."
+    courseId:
+      type: "integer"
+      format: "int64"
+      description: "Course ID."
+    moduleId:
+      type: "integer"
+      format: "int64"
+      description: "Course module ID."
+    name:
+      type: "string"
+      description: "Assignment name."
+    intro:
+      type: "string"
+      description: "Assignment description."
+    timeModified:
+      type: "integer"
+      format: "int64"
+      description: "Last modification time as a Unix timestamp."
+    dueDate:
+      type: "integer"
+      format: "int64"
+      description: "Submission due date as a Unix timestamp."
+    submissionsFromDate:
+      type: "integer"
+      format: "int64"
+      description: "Earliest submission time as a Unix timestamp."
+    cutoffDate:
+      type: "integer"
+      format: "int64"
+      description: "Submission cutoff time as a Unix timestamp."
+    gradingDueDate:
+      type: "integer"
+      format: "int64"
+      description: "Grading due date as a Unix timestamp."
+CourseAssignmentSubmissionsResponse:
+  title: "CourseAssignmentSubmissionsResponse"
+  type: "object"
+  required:
+  - "submissions"
+  properties:
+    submissions:
+      type: "array"
+      description: "Assignment submissions, associated with each submitting user."
+      items:
+        $ref: "#/CourseAssignmentSubmission"
+CourseAssignmentSubmission:
+  title: "CourseAssignmentSubmission"
+  type: "object"
+  required:
+  - "submissionId"
+  - "assignmentId"
+  - "courseId"
+  - "userId"
+  - "attemptNumber"
+  - "status"
+  properties:
+    submissionId:
+      type: "integer"
+      format: "int64"
+      description: "Moodle submission ID."
+    assignmentId:
+      type: "integer"
+      format: "int64"
+      description: "Moodle assignment ID."
+    courseId:
+      type: "integer"
+      format: "int64"
+      description: "Course ID."
+    userId:
+      type: "integer"
+      format: "int64"
+      description: "User associated with this submission."
+    attemptNumber:
+      type: "integer"
+      description: "Submission attempt number."
+    timeCreated:
+      type: "integer"
+      format: "int64"
+      description: "Submission creation time as a Unix timestamp."
+    timeModified:
+      type: "integer"
+      format: "int64"
+      description: "Submission modification time as a Unix timestamp."
+    timeStarted:
+      type: "integer"
+      format: "int64"
+      description: "Submission start time as a Unix timestamp."
+    status:
+      type: "string"
+      description: "Submission status."
+    latest:
+      type: "boolean"
+      description: "Whether this is the latest attempt."
+    gradingStatus:
+      type: "string"
+      description: "Grading status."

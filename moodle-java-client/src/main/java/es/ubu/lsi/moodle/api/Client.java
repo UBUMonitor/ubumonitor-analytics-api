@@ -4,9 +4,11 @@ import es.ubu.lsi.moodle.api.core.calendar.CoreCalendarApi;
 import es.ubu.lsi.moodle.api.core.completion.CoreCompletionApi;
 import es.ubu.lsi.moodle.api.core.course.CoreCourseApi;
 import es.ubu.lsi.moodle.api.core.enrol.CoreEnrolApi;
+import es.ubu.lsi.moodle.api.core.group.CoreGroupApi;
 import es.ubu.lsi.moodle.api.core.user.CoreUserApi;
 import es.ubu.lsi.moodle.api.core.webservice.CoreWebserviceApi;
 import es.ubu.lsi.moodle.api.gradereport.GradeReportUserApi;
+import es.ubu.lsi.moodle.api.mod.assign.ModAssignApi;
 import es.ubu.lsi.moodle.api.mod.forum.ModForumApi;
 import es.ubu.lsi.moodle.api.tool.mobile.ToolMobileApi;
 import es.ubu.lsi.moodle.model.ajax.AjaxRequest;
@@ -39,6 +41,11 @@ public interface Client {
   CoreEnrolApi coreEnrol();
 
   /**
+   * @return the Moodle group API
+   */
+  CoreGroupApi coreGroup();
+
+  /**
    * @return the Moodle activity completion API
    */
   CoreCompletionApi coreCompletion();
@@ -57,6 +64,11 @@ public interface Client {
    * @return the Moodle forum API
    */
   ModForumApi modForum();
+
+  /**
+   * @return the Moodle assignment API
+   */
+  ModAssignApi modAssign();
 
   /**
    * @return the Moodle mobile API

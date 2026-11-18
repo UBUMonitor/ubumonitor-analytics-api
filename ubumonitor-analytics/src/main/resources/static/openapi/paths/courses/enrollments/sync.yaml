@@ -1,19 +1,22 @@
+---
 post:
   tags:
-    - CourseEnrollments
-  summary: Synchronize course enrollments
-  operationId: syncCourseEnrollments
-  description: Retrieves the latest enrollment data for users in the specified course and updates the local tenant database.
+  - "CourseEnrollments"
+  summary: "Synchronize course enrollments"
+  operationId: "syncCourseEnrollments"
+  description: "Retrieves the latest enrollment data for users in the specified course\
+    \ and updates the local tenant database."
   parameters:
-    - $ref: '../../../components/parameters/courseId.yaml'
+  - $ref: "../../../components/parameters/courseId.yaml"
   responses:
-    '200':
-      description: Successful synchronization of enrollments. The response includes the updated enrollment information for the user's courses.
+    "200":
+      description: "Successful synchronization of enrollments. The response includes\
+        \ the updated enrollment information for the user's courses."
       content:
         application/json:
           schema:
-            $ref: '../../../components/schemas/courses/enrollments/info/response.yaml#/CourseEnrollmentsResponse'
-    '401':
-      $ref: '../../../components/responses/unauthorized_401.yaml'
-    '403':
-      $ref: '../../../components/responses/forbidden_403.yaml'
+            $ref: "../../../components/schemas/courses/enrollments/info/response.yaml#/CourseEnrollmentsResponse"
+    "401":
+      $ref: "../../../components/responses/unauthorized_401.yaml"
+    "403":
+      $ref: "../../../components/responses/forbidden_403.yaml"

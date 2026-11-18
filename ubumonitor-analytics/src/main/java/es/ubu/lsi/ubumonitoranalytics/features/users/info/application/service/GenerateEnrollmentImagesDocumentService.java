@@ -6,12 +6,11 @@ import es.ubu.lsi.ubumonitoranalytics.features.users.info.application.port.out.E
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.domain.model.document.EnrollmentImagesDocumentCommand;
 import es.ubu.lsi.ubumonitoranalytics.features.users.info.domain.model.image.EnrollmentUserImage;
 import es.ubu.lsi.ubumonitoranalytics.shared.application.image.UserPlaceholderImage;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

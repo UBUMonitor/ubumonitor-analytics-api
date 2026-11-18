@@ -9,12 +9,16 @@ import es.ubu.lsi.moodle.api.core.course.CoreCourseApi;
 import es.ubu.lsi.moodle.api.core.course.CoreCourseApiImpl;
 import es.ubu.lsi.moodle.api.core.enrol.CoreEnrolApi;
 import es.ubu.lsi.moodle.api.core.enrol.CoreEnrolApiImpl;
+import es.ubu.lsi.moodle.api.core.group.CoreGroupApi;
+import es.ubu.lsi.moodle.api.core.group.CoreGroupApiImpl;
 import es.ubu.lsi.moodle.api.core.user.CoreUserApi;
 import es.ubu.lsi.moodle.api.core.user.CoreUserApiImpl;
 import es.ubu.lsi.moodle.api.core.webservice.CoreWebserviceApi;
 import es.ubu.lsi.moodle.api.core.webservice.CoreWebserviceApiImpl;
 import es.ubu.lsi.moodle.api.gradereport.GradeReportUserApi;
 import es.ubu.lsi.moodle.api.gradereport.GradeReportUserApiImpl;
+import es.ubu.lsi.moodle.api.mod.assign.ModAssignApi;
+import es.ubu.lsi.moodle.api.mod.assign.ModAssignApiImpl;
 import es.ubu.lsi.moodle.api.mod.forum.ModForumApi;
 import es.ubu.lsi.moodle.api.mod.forum.ModForumApiImpl;
 import es.ubu.lsi.moodle.api.tool.mobile.ToolMobileApi;
@@ -42,10 +46,12 @@ public class DefaultClient implements Client {
   private final CoreCompletionApi coreCompletion;
   private final CoreCourseApi coreCourse;
   private final CoreEnrolApi coreEnrol;
+  private final CoreGroupApi coreGroup;
   private final CoreUserApi coreUser;
   private final CoreWebserviceApi coreWebservice;
 
   private final GradeReportUserApi gradeReportUser;
+  private final ModAssignApi modAssign;
   private final ModForumApi modForum;
   private final ToolMobileApi toolMobile;
 
@@ -58,9 +64,11 @@ public class DefaultClient implements Client {
     this.coreUser = new CoreUserApiImpl(this);
     this.coreCourse = new CoreCourseApiImpl(this);
     this.coreEnrol = new CoreEnrolApiImpl(this);
+    this.coreGroup = new CoreGroupApiImpl(this);
     this.coreCompletion = new CoreCompletionApiImpl(this);
     this.coreWebservice = new CoreWebserviceApiImpl(this);
     this.gradeReportUser = new GradeReportUserApiImpl(this);
+    this.modAssign = new ModAssignApiImpl(this);
     this.modForum = new ModForumApiImpl(this);
     this.toolMobile = new ToolMobileApiImpl(this);
   }
@@ -81,6 +89,12 @@ public class DefaultClient implements Client {
   @Override
   public CoreEnrolApi coreEnrol() {
     return coreEnrol;
+  }
+
+  /** Returns the typed Moodle group API. */
+  @Override
+  public CoreGroupApi coreGroup() {
+    return coreGroup;
   }
 
   /** Returns the typed Moodle calendar API. */
@@ -105,6 +119,12 @@ public class DefaultClient implements Client {
   @Override
   public GradeReportUserApi gradeReportUser() {
     return gradeReportUser;
+  }
+
+  /** Returns the typed Moodle assignment API. */
+  @Override
+  public ModAssignApi modAssign() {
+    return modAssign;
   }
 
   /** Returns the typed Moodle forum API. */

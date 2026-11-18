@@ -1,0 +1,4543 @@
+{
+  "openapi" : "3.0.3",
+  "info" : {
+    "description" : "UBUMonitor Analytics API provides endpoints for authenticating users, synchronizing course and enrollment information, and retrieving details about courses and enrollments. It allows clients to interact with the UBUMonitor site to manage user sessions, access course data, and keep enrollment information up-to-date. The API is designed to facilitate integration with UBUMonitor and enable efficient management of user authentication and course-related data.\n",
+    "title" : "UBU Monitor Analytics",
+    "version" : "1.0.0"
+  },
+  "servers" : [ {
+    "description" : "Local development server",
+    "url" : "http://127.0.0.1:9090"
+  } ],
+  "security" : [ {
+    "bearerAuth" : [ ]
+  } ],
+  "tags" : [ {
+    "description" : "Authentication and session management.",
+    "name" : "Auth"
+  }, {
+    "description" : "Site information and synchronization.",
+    "name" : "Sites"
+  }, {
+    "description" : "Current user information and user images.",
+    "name" : "Users"
+  }, {
+    "description" : "Enrollments of the current user.",
+    "name" : "UserEnrollments"
+  }, {
+    "description" : "Calendar events.",
+    "name" : "Calendars"
+  }, {
+    "description" : "Enrollments of a specific course.",
+    "name" : "CourseEnrollments"
+  }, {
+    "description" : "Content (sections and modules) of a course.",
+    "name" : "CourseContent"
+  }, {
+    "description" : "Grade items and grade values of a course.",
+    "name" : "CourseGrades"
+  }, {
+    "description" : "Assignments of a course.",
+    "name" : "CourseAssignments"
+  }, {
+    "description" : "Activity logs of a course.",
+    "name" : "CourseLogs"
+  }, {
+    "description" : "Activity completion information of a course.",
+    "name" : "CourseActivityCompletion"
+  }, {
+    "description" : "Forums, discussions and posts of a course.",
+    "name" : "CourseForums"
+  }, {
+    "description" : "Database information.",
+    "name" : "Databases"
+  }, {
+    "description" : "Service health check.",
+    "name" : "Health"
+  }, {
+    "description" : "System administration operations.",
+    "name" : "System"
+  } ],
+  "paths" : {
+    "/public/system/health" : {
+      "get" : {
+        "description" : "Checks the health status of the service.",
+        "operationId" : "checkServiceHealth",
+        "responses" : {
+          "204" : {
+            "description" : "The service is healthy and operational."
+          },
+          "503" : {
+            "description" : "The backend is not yet ready."
+          }
+        },
+        "security" : [ ],
+        "summary" : "Check service health",
+        "tags" : [ "Health" ]
+      }
+    },
+    "/public/system/shutdown" : {
+      "post" : {
+        "description" : "Shuts down the server gracefully.",
+        "operationId" : "shutdownServer",
+        "responses" : {
+          "202" : {
+            "description" : "The server is shutting down."
+          },
+          "503" : {
+            "description" : "The backend is not yet ready."
+          }
+        },
+        "security" : [ ],
+        "summary" : "Shutdown the server",
+        "tags" : [ "System" ]
+      }
+    },
+    "/public/system/databases/info" : {
+      "get" : {
+        "description" : "Retrieves a list of all available databases.",
+        "operationId" : "listDatabases",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DatabasesInfoResponse"
+                }
+              }
+            },
+            "description" : "All available databases."
+          }
+        },
+        "security" : [ ],
+        "summary" : "List all databases",
+        "tags" : [ "Databases" ]
+      }
+    },
+    "/public/auth/credentials" : {
+      "post" : {
+        "description" : "Receives a Moodle site URL, username, password, and database encryption key. Returns an opaque Bearer session token for subsequent authenticated requests.\n",
+        "operationId" : "loginWithCredentials",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AuthLoginRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthResponse"
+                }
+              }
+            },
+            "description" : "Session token retrieved successfully"
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "UNAUTHORIZED",
+                  "message" : "Invalid token - token not found",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "401 UNAUTHORIZED \"Invalid token - token not found\""
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Unauthorized - token missing or invalid"
+          }
+        },
+        "security" : [ ],
+        "summary" : "Authenticate with Moodle credentials",
+        "tags" : [ "Auth" ]
+      }
+    },
+    "/public/auth/sso" : {
+      "post" : {
+        "description" : "Receives a Moodle site URL, an SSO launch credential, and the database encryption key. Returns an opaque Bearer session token for subsequent authenticated requests.\n",
+        "operationId" : "loginWithSso",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AuthSSORequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthResponse"
+                }
+              }
+            },
+            "description" : "Session token retrieved successfully"
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "UNAUTHORIZED",
+                  "message" : "Invalid token - token not found",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "401 UNAUTHORIZED \"Invalid token - token not found\""
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Unauthorized - token missing or invalid"
+          }
+        },
+        "security" : [ ],
+        "summary" : "Authenticate with an SSO launch credential",
+        "tags" : [ "Auth" ]
+      }
+    },
+    "/public/auth/offline" : {
+      "post" : {
+        "description" : "Receives the Moodle site URL, username, and database encryption key. Returns an opaque Bearer session token for an offline session.\n",
+        "operationId" : "createOfflineSession",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AuthOfflineRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AuthResponse"
+                }
+              }
+            },
+            "description" : "Session token retrieved successfully"
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "UNAUTHORIZED",
+                  "message" : "Invalid token - token not found",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "401 UNAUTHORIZED \"Invalid token - token not found\""
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Unauthorized - token missing or invalid"
+          }
+        },
+        "security" : [ ],
+        "summary" : "Create an offline application session",
+        "tags" : [ "Auth" ]
+      }
+    },
+    "/public/sites/info" : {
+      "get" : {
+        "description" : "Retrieves public information from the Moodle site without authentication.",
+        "operationId" : "getPublicSiteInfo",
+        "parameters" : [ {
+          "description" : "Moodle site URL.",
+          "in" : "query",
+          "name" : "host",
+          "required" : true,
+          "schema" : {
+            "format" : "uri",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PublicSiteInfoResponse"
+                }
+              }
+            },
+            "description" : "Site information"
+          }
+        },
+        "security" : [ ],
+        "summary" : "Get public site information",
+        "tags" : [ "Sites" ]
+      }
+    },
+    "/public/users/{userId}/images/profile" : {
+      "get" : {
+        "description" : "Retrieves a user's Moodle profile image and supports conditional requests with an ETag.",
+        "operationId" : "getUserProfileImage",
+        "parameters" : [ {
+          "description" : "Entity tag used to check whether the image has changed.",
+          "in" : "header",
+          "name" : "If-None-Match",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Moodle user identifier",
+          "in" : "path",
+          "name" : "userId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        }, {
+          "description" : "Moodle site URL.",
+          "in" : "query",
+          "name" : "host",
+          "required" : true,
+          "schema" : {
+            "format" : "uri",
+            "type" : "string"
+          }
+        }, {
+          "description" : "Moodle username.",
+          "in" : "query",
+          "name" : "username",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "image/jpeg" : {
+                "schema" : {
+                  "format" : "binary",
+                  "type" : "string"
+                }
+              },
+              "image/png" : {
+                "schema" : {
+                  "format" : "binary",
+                  "type" : "string"
+                }
+              },
+              "image/gif" : {
+                "schema" : {
+                  "format" : "binary",
+                  "type" : "string"
+                }
+              },
+              "image/webp" : {
+                "schema" : {
+                  "format" : "binary",
+                  "type" : "string"
+                }
+              },
+              "image/bmp" : {
+                "schema" : {
+                  "format" : "binary",
+                  "type" : "string"
+                }
+              },
+              "image/tiff" : {
+                "schema" : {
+                  "format" : "binary",
+                  "type" : "string"
+                }
+              }
+            },
+            "description" : "Image of the user",
+            "headers" : {
+              "ETag" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              },
+              "Cache-Control" : {
+                "description" : "Cached images must be revalidated with their ETag before reuse.",
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          },
+          "304" : {
+            "description" : "Not Modified",
+            "headers" : {
+              "ETag" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              },
+              "Cache-Control" : {
+                "description" : "Cached images must be revalidated with their ETag before reuse.",
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ ],
+        "summary" : "Get user profile image",
+        "tags" : [ "Users" ]
+      }
+    },
+    "/auth/logout" : {
+      "post" : {
+        "description" : "Logout session. The token must be included in the Authorization header as a Bearer token.",
+        "operationId" : "logoutSession",
+        "responses" : {
+          "204" : {
+            "description" : "Logout successful. No content is returned."
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "UNAUTHORIZED",
+                  "message" : "Invalid token - token not found",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "401 UNAUTHORIZED \"Invalid token - token not found\""
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Unauthorized - token missing or invalid"
+          }
+        },
+        "summary" : "Logout session",
+        "tags" : [ "Auth" ]
+      }
+    },
+    "/sites/sync" : {
+      "post" : {
+        "description" : "Synchronize site information from the Moodle instance. This endpoint retrieves basic information about the Moodle site, such as the site name, version, and other relevant details. This information can be used to ensure that the integration is properly connected to the correct Moodle instance and to gather necessary metadata for further interactions with the Moodle API.",
+        "operationId" : "syncSiteInfo",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SiteInfoResponse"
+                }
+              }
+            },
+            "description" : "Site information"
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "UNAUTHORIZED",
+                  "message" : "Invalid token - token not found",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "401 UNAUTHORIZED \"Invalid token - token not found\""
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Unauthorized - token missing or invalid"
+          },
+          "403" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "FORBIDDEN",
+                  "message" : "An online Moodle session is required for this operation.",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "An online Moodle session is required for this operation."
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Forbidden - an online Moodle session is required"
+          }
+        },
+        "summary" : "Synchronize site information",
+        "tags" : [ "Sites" ]
+      }
+    },
+    "/sites/info" : {
+      "get" : {
+        "description" : "Retrieves the Moodle site information and the authenticated user's information.",
+        "operationId" : "getSiteInfo",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SiteInfoResponse"
+                }
+              }
+            },
+            "description" : "Site information"
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "UNAUTHORIZED",
+                  "message" : "Invalid token - token not found",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "401 UNAUTHORIZED \"Invalid token - token not found\""
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Unauthorized - token missing or invalid"
+          }
+        },
+        "summary" : "Get site and current-user information",
+        "tags" : [ "Sites" ]
+      }
+    },
+    "/enrollments/sync" : {
+      "post" : {
+        "description" : "Retrieves the current user's latest course enrollments from Moodle and updates the local tenant database.",
+        "operationId" : "syncCurrentUserEnrollments",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/EnrollmentsResponse"
+                }
+              }
+            },
+            "description" : "Successful synchronization of enrollments. The response includes the updated enrollment information for the user's courses."
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "UNAUTHORIZED",
+                  "message" : "Invalid token - token not found",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "401 UNAUTHORIZED \"Invalid token - token not found\""
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Unauthorized - token missing or invalid"
+          },
+          "403" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "FORBIDDEN",
+                  "message" : "An online Moodle session is required for this operation.",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "An online Moodle session is required for this operation."
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Forbidden - an online Moodle session is required"
+          }
+        },
+        "summary" : "Synchronize the current user's enrollments",
+        "tags" : [ "UserEnrollments" ]
+      }
+    },
+    "/enrollments/info" : {
+      "get" : {
+        "description" : "Retrieves the current user's course enrollments from the local tenant database.",
+        "operationId" : "getCurrentUserEnrollments",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/EnrollmentsResponse"
+                }
+              }
+            },
+            "description" : "Successful retrieval of enrollments. The response includes the updated enrollment information for the user's courses."
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "UNAUTHORIZED",
+                  "message" : "Invalid token - token not found",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "401 UNAUTHORIZED \"Invalid token - token not found\""
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Unauthorized - token missing or invalid"
+          }
+        },
+        "summary" : "Get the current user's enrollments",
+        "tags" : [ "UserEnrollments" ]
+      }
+    },
+    "/courses/{courseId}/enrollments/info" : {
+      "get" : {
+        "description" : "Retrieves the enrollment information for users enrolled in a specific course. This endpoint provides details about the users enrolled in the course, including their roles and enrollment status. It allows clients to access up-to-date enrollment information for a particular course on the Moodle site.",
+        "operationId" : "getCourseEnrollments",
+        "parameters" : [ {
+          "description" : "Course identifier",
+          "in" : "path",
+          "name" : "courseId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CourseEnrollmentsResponse"
+                }
+              }
+            },
+            "description" : "Successful retrieval of enrollments. The response includes the enrollment information for users enrolled in the specified course."
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "UNAUTHORIZED",
+                  "message" : "Invalid token - token not found",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "401 UNAUTHORIZED \"Invalid token - token not found\""
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Unauthorized - token missing or invalid"
+          }
+        },
+        "summary" : "Get course enrollments",
+        "tags" : [ "CourseEnrollments" ]
+      }
+    },
+    "/courses/{courseId}/enrollments/sync" : {
+      "post" : {
+        "description" : "Retrieves the latest enrollment data for users in the specified course and updates the local tenant database.",
+        "operationId" : "syncCourseEnrollments",
+        "parameters" : [ {
+          "description" : "Course identifier",
+          "in" : "path",
+          "name" : "courseId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CourseEnrollmentsResponse"
+                }
+              }
+            },
+            "description" : "Successful synchronization of enrollments. The response includes the updated enrollment information for the user's courses."
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "UNAUTHORIZED",
+                  "message" : "Invalid token - token not found",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "401 UNAUTHORIZED \"Invalid token - token not found\""
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Unauthorized - token missing or invalid"
+          },
+          "403" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "FORBIDDEN",
+                  "message" : "An online Moodle session is required for this operation.",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "An online Moodle session is required for this operation."
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Forbidden - an online Moodle session is required"
+          }
+        },
+        "summary" : "Synchronize course enrollments",
+        "tags" : [ "CourseEnrollments" ]
+      }
+    },
+    "/courses/{courseId}/content/sync" : {
+      "post" : {
+        "description" : "Retrieves the latest sections and modules for the specified course from Moodle and stores them in the local tenant database.",
+        "operationId" : "syncCourseContent",
+        "parameters" : [ {
+          "description" : "Course identifier",
+          "in" : "path",
+          "name" : "courseId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CourseContentResponse"
+                }
+              }
+            },
+            "description" : "Successful synchronization of enrollments. The response includes the updated enrollment information for the user's courses."
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "UNAUTHORIZED",
+                  "message" : "Invalid token - token not found",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "401 UNAUTHORIZED \"Invalid token - token not found\""
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Unauthorized - token missing or invalid"
+          },
+          "403" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "FORBIDDEN",
+                  "message" : "An online Moodle session is required for this operation.",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "An online Moodle session is required for this operation."
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Forbidden - an online Moodle session is required"
+          }
+        },
+        "summary" : "Synchronize course content",
+        "tags" : [ "CourseContent" ]
+      }
+    },
+    "/courses/{courseId}/content/info" : {
+      "get" : {
+        "description" : "Retrieves the sections and modules stored for a course.",
+        "operationId" : "getCourseContent",
+        "parameters" : [ {
+          "description" : "Course identifier",
+          "in" : "path",
+          "name" : "courseId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CourseContentResponse"
+                }
+              }
+            },
+            "description" : "Get course sections and modules"
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "UNAUTHORIZED",
+                  "message" : "Invalid token - token not found",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "401 UNAUTHORIZED \"Invalid token - token not found\""
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Unauthorized - token missing or invalid"
+          }
+        },
+        "summary" : "Get course content",
+        "tags" : [ "CourseContent" ]
+      }
+    },
+    "/courses/{courseId}/grades/sync" : {
+      "post" : {
+        "description" : "Retrieves the latest enrollment data for users in the specified course and updates the local tenant database.",
+        "operationId" : "syncCourseGrades",
+        "parameters" : [ {
+          "description" : "Course identifier",
+          "in" : "path",
+          "name" : "courseId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CourseGradeItemsResponse"
+                }
+              }
+            },
+            "description" : "Successful synchronization of grades. The response includes the updated enrollment information for the user's courses."
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "UNAUTHORIZED",
+                  "message" : "Invalid token - token not found",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "401 UNAUTHORIZED \"Invalid token - token not found\""
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Unauthorized - token missing or invalid"
+          },
+          "403" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "FORBIDDEN",
+                  "message" : "An online Moodle session is required for this operation.",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "An online Moodle session is required for this operation."
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Forbidden - an online Moodle session is required"
+          }
+        },
+        "summary" : "Synchronize course grades",
+        "tags" : [ "CourseGrades" ]
+      }
+    },
+    "/courses/{courseId}/grades/info" : {
+      "get" : {
+        "description" : "Retrieves the grade information for users enrolled in a specific course. This endpoint provides details about the users enrolled in the course, including their roles and grade status. It allows clients to access up-to-date grade information for a particular course on the Moodle site.",
+        "operationId" : "getCourseGrades",
+        "parameters" : [ {
+          "description" : "Course identifier",
+          "in" : "path",
+          "name" : "courseId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CourseGradeItemsResponse"
+                }
+              }
+            },
+            "description" : "Successful retrieval of grades. The response includes the grade information for users grades in the specified course."
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "UNAUTHORIZED",
+                  "message" : "Invalid token - token not found",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "401 UNAUTHORIZED \"Invalid token - token not found\""
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Unauthorized - token missing or invalid"
+          }
+        },
+        "summary" : "Get course grades",
+        "tags" : [ "CourseGrades" ]
+      }
+    },
+    "/courses/{courseId}/grades/values" : {
+      "get" : {
+        "description" : "Get course grade values",
+        "operationId" : "getCourseGradeValues",
+        "parameters" : [ {
+          "description" : "Course identifier",
+          "in" : "path",
+          "name" : "courseId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        }, {
+          "description" : "List of grade item identifiers to include in the grade value lookup.",
+          "explode" : false,
+          "in" : "query",
+          "name" : "gradeItemsIds",
+          "required" : true,
+          "schema" : {
+            "items" : {
+              "format" : "int64",
+              "type" : "integer"
+            },
+            "minItems" : 0,
+            "type" : "array"
+          }
+        }, {
+          "description" : "Moodle user IDs to include in the results.",
+          "explode" : true,
+          "in" : "query",
+          "name" : "userIds",
+          "required" : true,
+          "schema" : {
+            "items" : {
+              "format" : "int64",
+              "type" : "integer"
+            },
+            "minItems" : 0,
+            "type" : "array"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CourseGradesValuesResponse"
+                }
+              }
+            },
+            "description" : "Grades retrieved successfully"
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "UNAUTHORIZED",
+                  "message" : "Invalid token - token not found",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "401 UNAUTHORIZED \"Invalid token - token not found\""
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Unauthorized - token missing or invalid"
+          }
+        },
+        "summary" : "Get course grade values",
+        "tags" : [ "CourseGrades" ]
+      }
+    },
+    "/courses/{courseId}/assignments/submissions/sync" : {
+      "post" : {
+        "description" : "Synchronizes assignment tasks and submissions for the specified course. The response includes tasks only.",
+        "operationId" : "syncCourseAssignmentSubmissions",
+        "parameters" : [ {
+          "description" : "Course identifier",
+          "in" : "path",
+          "name" : "courseId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CourseAssignmentsResponse"
+                }
+              }
+            },
+            "description" : "Synchronized assignment tasks."
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "UNAUTHORIZED",
+                  "message" : "Invalid token - token not found",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "401 UNAUTHORIZED \"Invalid token - token not found\""
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Unauthorized - token missing or invalid"
+          },
+          "403" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "FORBIDDEN",
+                  "message" : "An online Moodle session is required for this operation.",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "An online Moodle session is required for this operation."
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Forbidden - an online Moodle session is required"
+          }
+        },
+        "summary" : "Synchronize course assignments and submissions",
+        "tags" : [ "CourseAssignments" ]
+      }
+    },
+    "/courses/{courseId}/assignments/submissions/info" : {
+      "get" : {
+        "description" : "Retrieves persisted assignment tasks for the specified course. Submissions are not included.",
+        "operationId" : "getCourseAssignmentSubmissions",
+        "parameters" : [ {
+          "description" : "Course identifier",
+          "in" : "path",
+          "name" : "courseId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CourseAssignmentsResponse"
+                }
+              }
+            },
+            "description" : "Assignment tasks for the course."
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "UNAUTHORIZED",
+                  "message" : "Invalid token - token not found",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "401 UNAUTHORIZED \"Invalid token - token not found\""
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Unauthorized - token missing or invalid"
+          }
+        },
+        "summary" : "Get course assignments",
+        "tags" : [ "CourseAssignments" ]
+      }
+    },
+    "/courses/{courseId}/assignments/submissions/values" : {
+      "get" : {
+        "description" : "Retrieves persisted assignment submissions for the specified course, filtered by assignment and user IDs.",
+        "operationId" : "getCourseAssignmentSubmissionValues",
+        "parameters" : [ {
+          "description" : "Course identifier",
+          "in" : "path",
+          "name" : "courseId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        }, {
+          "description" : "Assignment IDs to include. An empty list returns no submissions.",
+          "explode" : true,
+          "in" : "query",
+          "name" : "assignmentIds",
+          "required" : true,
+          "schema" : {
+            "items" : {
+              "format" : "int64",
+              "type" : "integer"
+            },
+            "type" : "array"
+          }
+        }, {
+          "description" : "Moodle user IDs to include in the results.",
+          "explode" : true,
+          "in" : "query",
+          "name" : "userIds",
+          "required" : true,
+          "schema" : {
+            "items" : {
+              "format" : "int64",
+              "type" : "integer"
+            },
+            "minItems" : 0,
+            "type" : "array"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CourseAssignmentSubmissionsResponse"
+                }
+              }
+            },
+            "description" : "Filtered assignment submissions for the course."
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "UNAUTHORIZED",
+                  "message" : "Invalid token - token not found",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "401 UNAUTHORIZED \"Invalid token - token not found\""
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Unauthorized - token missing or invalid"
+          }
+        },
+        "summary" : "Get filtered course assignment submissions",
+        "tags" : [ "CourseAssignments" ]
+      }
+    },
+    "/courses/{courseId}/logs/sync" : {
+      "post" : {
+        "operationId" : "syncCourseLogs",
+        "parameters" : [ {
+          "description" : "Course identifier",
+          "in" : "path",
+          "name" : "courseId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CourseLogsResponse"
+                }
+              }
+            },
+            "description" : "Sync completed"
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "UNAUTHORIZED",
+                  "message" : "Invalid token - token not found",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "401 UNAUTHORIZED \"Invalid token - token not found\""
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Unauthorized - token missing or invalid"
+          },
+          "403" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "FORBIDDEN",
+                  "message" : "An online Moodle session is required for this operation.",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "An online Moodle session is required for this operation."
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Forbidden - an online Moodle session is required"
+          }
+        },
+        "summary" : "Sync Moodle logs CSV",
+        "tags" : [ "CourseLogs" ]
+      }
+    },
+    "/courses/{courseId}/logs/import" : {
+      "post" : {
+        "operationId" : "importCourseLogs",
+        "parameters" : [ {
+          "description" : "Course identifier",
+          "in" : "path",
+          "name" : "courseId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ImportCourseLogsRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CourseLogsResponse"
+                }
+              }
+            },
+            "description" : "Import completed"
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "UNAUTHORIZED",
+                  "message" : "Invalid token - token not found",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "401 UNAUTHORIZED \"Invalid token - token not found\""
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Unauthorized - token missing or invalid"
+          }
+        },
+        "summary" : "Import Moodle logs CSV",
+        "tags" : [ "CourseLogs" ]
+      }
+    },
+    "/courses/{courseId}/logs/info" : {
+      "post" : {
+        "description" : "Retrieves logs for a specific course with optional filtering by date range\nand selectable log columns.\n",
+        "operationId" : "getCourseLogFilters",
+        "parameters" : [ {
+          "description" : "Course identifier",
+          "in" : "path",
+          "name" : "courseId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CourseLogsResponse"
+                }
+              }
+            },
+            "description" : "Logs retrieved successfully"
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "UNAUTHORIZED",
+                  "message" : "Invalid token - token not found",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "401 UNAUTHORIZED \"Invalid token - token not found\""
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Unauthorized - token missing or invalid"
+          }
+        },
+        "summary" : "Get course logs with filters",
+        "tags" : [ "CourseLogs" ]
+      }
+    },
+    "/courses/{courseId}/logs/list" : {
+      "post" : {
+        "description" : "Retrieves logs for a specific course with optional filtering by date range\nand selectable log columns.\n",
+        "operationId" : "searchCourseLogs",
+        "parameters" : [ {
+          "description" : "Course identifier",
+          "in" : "path",
+          "name" : "courseId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CourseLogsListRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CourseLogsListResponse"
+                }
+              }
+            },
+            "description" : "Logs retrieved successfully"
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "UNAUTHORIZED",
+                  "message" : "Invalid token - token not found",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "401 UNAUTHORIZED \"Invalid token - token not found\""
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Unauthorized - token missing or invalid"
+          }
+        },
+        "summary" : "Get course logs with filters",
+        "tags" : [ "CourseLogs" ]
+      }
+    },
+    "/courses/{courseId}/logs/statistics" : {
+      "post" : {
+        "description" : "Get aggregated course log statistics",
+        "operationId" : "getCourseLogStatistics",
+        "parameters" : [ {
+          "description" : "Course identifier",
+          "in" : "path",
+          "name" : "courseId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CourseLogsStatisticsRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CourseLogsStatisticsResponse"
+                }
+              }
+            },
+            "description" : "Logs retrieved successfully"
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "UNAUTHORIZED",
+                  "message" : "Invalid token - token not found",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "401 UNAUTHORIZED \"Invalid token - token not found\""
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Unauthorized - token missing or invalid"
+          }
+        },
+        "summary" : "Get course log statistics",
+        "tags" : [ "CourseLogs" ]
+      }
+    },
+    "/courses/{courseId}/activitycompletion/sync" : {
+      "post" : {
+        "description" : "Retrieves the latest activity completion information for the specified course from Moodle and stores it in the local tenant database.",
+        "operationId" : "syncCourseActivityCompletions",
+        "parameters" : [ {
+          "description" : "Course identifier",
+          "in" : "path",
+          "name" : "courseId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CourseActivityCompletionResponse"
+                }
+              }
+            },
+            "description" : "Successful synchronization of activity completion information. The response includes the updated activity completion information for the user's courses."
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "UNAUTHORIZED",
+                  "message" : "Invalid token - token not found",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "401 UNAUTHORIZED \"Invalid token - token not found\""
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Unauthorized - token missing or invalid"
+          },
+          "403" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "FORBIDDEN",
+                  "message" : "An online Moodle session is required for this operation.",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "An online Moodle session is required for this operation."
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Forbidden - an online Moodle session is required"
+          }
+        },
+        "summary" : "Synchronize course activity completion information",
+        "tags" : [ "CourseActivityCompletion" ]
+      }
+    },
+    "/courses/{courseId}/activitycompletion/info" : {
+      "get" : {
+        "description" : "Retrieves the activity completion information for a course.",
+        "operationId" : "getCourseActivityCompletions",
+        "parameters" : [ {
+          "description" : "Course identifier",
+          "in" : "path",
+          "name" : "courseId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CourseActivityCompletionResponse"
+                }
+              }
+            },
+            "description" : "Get course activity completion information"
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "UNAUTHORIZED",
+                  "message" : "Invalid token - token not found",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "401 UNAUTHORIZED \"Invalid token - token not found\""
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Unauthorized - token missing or invalid"
+          }
+        },
+        "summary" : "Get course activity completion information",
+        "tags" : [ "CourseActivityCompletion" ]
+      }
+    },
+    "/courses/{courseId}/activitycompletion/values" : {
+      "get" : {
+        "description" : "Retrieves the activity completion information for a course.",
+        "operationId" : "getCourseActivityCompletionValues",
+        "parameters" : [ {
+          "description" : "Course identifier",
+          "in" : "path",
+          "name" : "courseId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        }, {
+          "description" : "Course modules ids.",
+          "explode" : false,
+          "in" : "query",
+          "name" : "moduleIds",
+          "required" : true,
+          "schema" : {
+            "items" : {
+              "format" : "int64",
+              "type" : "integer"
+            },
+            "minItems" : 0,
+            "type" : "array"
+          }
+        }, {
+          "description" : "Moodle user IDs to include in the results.",
+          "explode" : true,
+          "in" : "query",
+          "name" : "userIds",
+          "required" : true,
+          "schema" : {
+            "items" : {
+              "format" : "int64",
+              "type" : "integer"
+            },
+            "minItems" : 0,
+            "type" : "array"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CourseActivityCompletionResponse"
+                }
+              }
+            },
+            "description" : "Get course activity completion information"
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "UNAUTHORIZED",
+                  "message" : "Invalid token - token not found",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "401 UNAUTHORIZED \"Invalid token - token not found\""
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Unauthorized - token missing or invalid"
+          }
+        },
+        "summary" : "Get course activity completion information with filter",
+        "tags" : [ "CourseActivityCompletion" ]
+      }
+    },
+    "/courses/{courseId}/forums/sync" : {
+      "post" : {
+        "description" : "Retrieves the latest forum, discussion, and post data for the specified course and updates the local tenant database.",
+        "operationId" : "syncCourseForums",
+        "parameters" : [ {
+          "description" : "Course identifier",
+          "in" : "path",
+          "name" : "courseId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CourseForumsResponse"
+                }
+              }
+            },
+            "description" : "Successful synchronization of course forums, discussions, and posts."
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "UNAUTHORIZED",
+                  "message" : "Invalid token - token not found",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "401 UNAUTHORIZED \"Invalid token - token not found\""
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Unauthorized - token missing or invalid"
+          },
+          "403" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "FORBIDDEN",
+                  "message" : "An online Moodle session is required for this operation.",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "An online Moodle session is required for this operation."
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Forbidden - an online Moodle session is required"
+          }
+        },
+        "summary" : "Synchronize course forums",
+        "tags" : [ "CourseForums" ]
+      }
+    },
+    "/courses/{courseId}/forums/info" : {
+      "get" : {
+        "description" : "Retrieves the persisted forums, discussions, and posts for the specified course.",
+        "operationId" : "getCourseForums",
+        "parameters" : [ {
+          "description" : "Course identifier",
+          "in" : "path",
+          "name" : "courseId",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CourseForumsResponse"
+                }
+              }
+            },
+            "description" : "Successful retrieval of forum information. The response includes the forum information for the specified course."
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "UNAUTHORIZED",
+                  "message" : "Invalid token - token not found",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "401 UNAUTHORIZED \"Invalid token - token not found\""
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Unauthorized - token missing or invalid"
+          }
+        },
+        "summary" : "Get course forums information",
+        "tags" : [ "CourseForums" ]
+      }
+    },
+    "/calendars/events/sync" : {
+      "post" : {
+        "description" : "Retrieves calendar events from Moodle and replaces the locally stored events. If courseIds is omitted, all events are synchronized.",
+        "operationId" : "syncCalendarEvents",
+        "parameters" : [ {
+          "description" : "Moodle course IDs whose calendar events should be synchronized. If omitted, Moodle returns all events.",
+          "in" : "query",
+          "name" : "courseIds",
+          "required" : false,
+          "schema" : {
+            "items" : {
+              "format" : "int64",
+              "type" : "integer"
+            },
+            "type" : "array"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CalendarEventsResponse"
+                }
+              }
+            },
+            "description" : "Calendar events synchronized successfully."
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "UNAUTHORIZED",
+                  "message" : "Invalid token - token not found",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "401 UNAUTHORIZED \"Invalid token - token not found\""
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Unauthorized - token missing or invalid"
+          },
+          "403" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "FORBIDDEN",
+                  "message" : "An online Moodle session is required for this operation.",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "An online Moodle session is required for this operation."
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Forbidden - an online Moodle session is required"
+          }
+        },
+        "summary" : "Synchronize calendar events",
+        "tags" : [ "Calendars" ]
+      }
+    },
+    "/calendars/events/info" : {
+      "get" : {
+        "description" : "Retrieves locally stored calendar events. If courseIds is omitted, all events are returned.",
+        "operationId" : "getCalendarEvents",
+        "parameters" : [ {
+          "description" : "Moodle course IDs used to filter calendar events. If omitted, all events are returned.",
+          "in" : "query",
+          "name" : "courseIds",
+          "required" : false,
+          "schema" : {
+            "items" : {
+              "format" : "int64",
+              "type" : "integer"
+            },
+            "type" : "array"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CalendarEventsResponse"
+                }
+              }
+            },
+            "description" : "Calendar events."
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "UNAUTHORIZED",
+                  "message" : "Invalid token - token not found",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "401 UNAUTHORIZED \"Invalid token - token not found\""
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Unauthorized - token missing or invalid"
+          }
+        },
+        "summary" : "Get calendar events",
+        "tags" : [ "Calendars" ]
+      }
+    },
+    "/users/me/info" : {
+      "get" : {
+        "description" : "Retrieves the authenticated user's information.",
+        "operationId" : "getCurrentUserInfo",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CurrentUserInfoResponse"
+                }
+              }
+            },
+            "description" : "User information"
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "UNAUTHORIZED",
+                  "message" : "Invalid token - token not found",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "401 UNAUTHORIZED \"Invalid token - token not found\""
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Unauthorized - token missing or invalid"
+          }
+        },
+        "summary" : "Get site and current-user information",
+        "tags" : [ "Users" ]
+      }
+    },
+    "/users/images/document" : {
+      "get" : {
+        "description" : "Retrieves the enrollment images for users",
+        "operationId" : "generateUserEnrollmentImagesDocument",
+        "parameters" : [ {
+          "description" : "Moodle user IDs to include in the results.",
+          "explode" : true,
+          "in" : "query",
+          "name" : "userIds",
+          "required" : true,
+          "schema" : {
+            "items" : {
+              "format" : "int64",
+              "type" : "integer"
+            },
+            "minItems" : 0,
+            "type" : "array"
+          }
+        }, {
+          "description" : "The path to the default image file to use.",
+          "in" : "query",
+          "name" : "defaultImageUri",
+          "required" : false,
+          "schema" : {
+            "format" : "uri",
+            "type" : "string"
+          }
+        }, {
+          "description" : "Whether to use the default photo.",
+          "in" : "query",
+          "name" : "useDefaultPhoto",
+          "required" : false,
+          "schema" : {
+            "type" : "boolean"
+          }
+        }, {
+          "description" : "The text to include in the header of the document.",
+          "in" : "query",
+          "name" : "headerText",
+          "required" : false,
+          "schema" : {
+            "default" : "UBUMonitor Analytics",
+            "type" : "string"
+          }
+        }, {
+          "description" : "The name of the file to be generated.",
+          "in" : "query",
+          "name" : "fileName",
+          "required" : false,
+          "schema" : {
+            "default" : "enrollment_images.docx",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.openxmlformats-officedocument.wordprocessingml.document" : {
+                "schema" : {
+                  "format" : "binary",
+                  "type" : "string"
+                }
+              }
+            },
+            "description" : "Word document containing the enrollment images for users enrolled in the specified course."
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "UNAUTHORIZED",
+                  "message" : "Invalid token - token not found",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "401 UNAUTHORIZED \"Invalid token - token not found\""
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Unauthorized - token missing or invalid"
+          }
+        },
+        "summary" : "Get users Word document with enrollment images",
+        "tags" : [ "Users" ]
+      }
+    }
+  },
+  "components" : {
+    "parameters" : {
+      "courseId" : {
+        "description" : "Course identifier",
+        "in" : "path",
+        "name" : "courseId",
+        "required" : true,
+        "schema" : {
+          "format" : "int64",
+          "type" : "integer"
+        }
+      },
+      "userId" : {
+        "description" : "Moodle user identifier",
+        "in" : "path",
+        "name" : "userId",
+        "required" : true,
+        "schema" : {
+          "format" : "int64",
+          "type" : "integer"
+        }
+      },
+      "userIds" : {
+        "description" : "Moodle user IDs to include in the results.",
+        "explode" : true,
+        "in" : "query",
+        "name" : "userIds",
+        "required" : true,
+        "schema" : {
+          "items" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "minItems" : 0,
+          "type" : "array"
+        }
+      }
+    },
+    "responses" : {
+      "bad_request_400" : {
+        "content" : {
+          "application/json" : {
+            "example" : {
+              "code" : "BAD_REQUEST",
+              "message" : "Missing required header: X-Moodle-Host",
+              "timestamp" : "2026-04-05T02:41:49.5759267+02:00",
+              "traceId" : "4a253e64-5203-477a-8f4c-db25fd11a067",
+              "errors" : [ {
+                "field" : "exception",
+                "message" : "400 BAD_REQUEST \"Missing required header: X-Moodle-Host\""
+              } ]
+            },
+            "schema" : {
+              "$ref" : "./components/schemas/common/error_response.yaml#/ErrorResponse"
+            }
+          }
+        },
+        "description" : "Bad Request - invalid field or missing data"
+      },
+      "unauthorized_401" : {
+        "content" : {
+          "application/json" : {
+            "example" : {
+              "code" : "UNAUTHORIZED",
+              "message" : "Invalid token - token not found",
+              "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+              "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+              "errors" : [ {
+                "field" : "exception",
+                "message" : "401 UNAUTHORIZED \"Invalid token - token not found\""
+              } ]
+            },
+            "schema" : {
+              "$ref" : "#/components/schemas/ErrorResponse"
+            }
+          }
+        },
+        "description" : "Unauthorized - token missing or invalid"
+      },
+      "not_found_404" : {
+        "content" : {
+          "application/json" : {
+            "example" : {
+              "code" : "NOT_FOUND",
+              "message" : "Resource not found",
+              "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+              "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+              "errors" : [ {
+                "field" : "exception",
+                "message" : "404 NOT_FOUND \"Resource not found\""
+              } ]
+            },
+            "schema" : {
+              "$ref" : "./components/schemas/common/error_response.yaml#/ErrorResponse"
+            }
+          }
+        },
+        "description" : "Not found"
+      },
+      "conflict_409" : {
+        "content" : {
+          "application/json" : {
+            "example" : {
+              "code" : "CONFLICT",
+              "message" : "Resource already exists or conflicts with current state",
+              "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+              "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+              "errors" : [ {
+                "field" : "exception",
+                "message" : "409 CONFLICT \"Resource already exists or conflicts with current state\""
+              } ]
+            },
+            "schema" : {
+              "$ref" : "./components/schemas/common/error_response.yaml#/ErrorResponse"
+            }
+          }
+        },
+        "description" : "Conflict - resource already exists or request conflicts with current state"
+      },
+      "forbidden_403" : {
+        "content" : {
+          "application/json" : {
+            "example" : {
+              "code" : "FORBIDDEN",
+              "message" : "An online Moodle session is required for this operation.",
+              "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+              "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+              "errors" : [ {
+                "field" : "exception",
+                "message" : "An online Moodle session is required for this operation."
+              } ]
+            },
+            "schema" : {
+              "$ref" : "#/components/schemas/ErrorResponse"
+            }
+          }
+        },
+        "description" : "Forbidden - an online Moodle session is required"
+      }
+    },
+    "schemas" : {
+      "DatabasesInfoResponse" : {
+        "properties" : {
+          "databases" : {
+            "description" : "Available Moodle hosts and their databases.",
+            "items" : {
+              "$ref" : "#/components/schemas/DatabaseHostInfo"
+            },
+            "type" : "array"
+          }
+        },
+        "required" : [ "databases" ],
+        "title" : "DatabasesInfoResponse",
+        "type" : "object"
+      },
+      "DatabaseHostInfo" : {
+        "additionalProperties" : false,
+        "properties" : {
+          "moodleUrl" : {
+            "description" : "URL of the Moodle site.",
+            "example" : "https://school.moodledemo.net",
+            "format" : "uri",
+            "type" : "string"
+          },
+          "users" : {
+            "description" : "Databases available for users on this Moodle site.",
+            "items" : {
+              "$ref" : "#/components/schemas/DatabaseUserInfo"
+            },
+            "type" : "array"
+          }
+        },
+        "required" : [ "moodleUrl", "users" ],
+        "title" : "DatabaseHostInfo",
+        "type" : "object"
+      },
+      "DatabaseUserInfo" : {
+        "additionalProperties" : false,
+        "properties" : {
+          "id" : {
+            "description" : "Unique identifier of the database.",
+            "example" : "https~school.moodledemo.net~student",
+            "type" : "string"
+          },
+          "userName" : {
+            "description" : "Moodle user the database belongs to.",
+            "example" : "student",
+            "type" : "string"
+          },
+          "location" : {
+            "description" : "Location of the database file, as a `file:` URI.",
+            "example" : "file:///data/databases/https~school.moodledemo.net~student.db",
+            "format" : "uri",
+            "type" : "string"
+          }
+        },
+        "required" : [ "id", "location", "userName" ],
+        "title" : "DatabaseUserInfo",
+        "type" : "object"
+      },
+      "AuthLoginRequest" : {
+        "properties" : {
+          "host" : {
+            "description" : "Moodle site URL",
+            "example" : "https://school.moodledemo.net",
+            "format" : "uri",
+            "type" : "string"
+          },
+          "username" : {
+            "description" : "Moodle username",
+            "example" : "teacher",
+            "type" : "string"
+          },
+          "password" : {
+            "description" : "Moodle password",
+            "example" : "moodle25",
+            "format" : "password",
+            "type" : "string"
+          },
+          "dbPassword" : {
+            "description" : "Secret key used to encrypt the database using AES-256. This value must be kept securely and must not be stored or exposed in plain text.",
+            "example" : "my-secure-encryption-key",
+            "format" : "password",
+            "type" : "string"
+          }
+        },
+        "required" : [ "dbPassword", "host", "password", "username" ],
+        "title" : "AuthLoginRequest",
+        "type" : "object"
+      },
+      "AuthResponse" : {
+        "properties" : {
+          "accessToken" : {
+            "description" : "Access token for authentication",
+            "type" : "string"
+          },
+          "tokenType" : {
+            "description" : "Type of the token, usually \"Bearer\"",
+            "example" : "Bearer",
+            "type" : "string"
+          },
+          "user" : {
+            "$ref" : "#/components/schemas/UserInfo"
+          }
+        },
+        "required" : [ "accessToken", "tokenType", "user" ],
+        "title" : "AuthResponse",
+        "type" : "object"
+      },
+      "ErrorResponse" : {
+        "description" : "Standard error response object for API failures.",
+        "properties" : {
+          "code" : {
+            "description" : "A short, uppercase code identifying the error type (e.g., 'BAD_REQUEST').",
+            "example" : "NOT_FOUND",
+            "type" : "string"
+          },
+          "message" : {
+            "description" : "A human-readable explanation specific to this occurrence of the problem.",
+            "example" : "The requested resource was not found on the server.",
+            "type" : "string"
+          },
+          "timestamp" : {
+            "description" : "The Unix timestamp in seconds when the error occurred.",
+            "example" : 1772744258,
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "traceId" : {
+            "description" : "A unique identifier for the request trace, useful for debugging.",
+            "example" : "550e8400-e29b-41d4-a716-446655440000",
+            "type" : "string"
+          },
+          "errors" : {
+            "description" : "List of specific validation errors, if applicable.",
+            "items" : {
+              "$ref" : "#/components/schemas/ErrorDetail"
+            },
+            "type" : "array"
+          }
+        },
+        "required" : [ "code", "message", "timestamp" ],
+        "title" : "ErrorResponse",
+        "type" : "object"
+      },
+      "ErrorDetail" : {
+        "description" : "Details about a specific field validation failure.",
+        "properties" : {
+          "field" : {
+            "description" : "The name of the field that failed validation.",
+            "example" : "email",
+            "type" : "string"
+          },
+          "message" : {
+            "description" : "The specific validation error message for this field.",
+            "example" : "must be a well-formed email address",
+            "type" : "string"
+          }
+        },
+        "required" : [ "field", "message" ],
+        "title" : "ErrorDetail",
+        "type" : "object"
+      },
+      "AuthSSORequest" : {
+        "properties" : {
+          "host" : {
+            "description" : "Moodle site URL",
+            "example" : "https://school.moodledemo.net",
+            "format" : "uri",
+            "type" : "string"
+          },
+          "moodleLaunchCredential" : {
+            "description" : "Moodle launch credential from SSO",
+            "example" : "moodlemobile://token=YTVkZDliM2I5MGZhMzllOGVhOWFkMzJiZTU4NjE5NzI6Ojo2MmNlMDg2ZmI2ZjE3YmZkODcwMDExZGFhN2Q3Nzc4Nw==",
+            "type" : "string"
+          },
+          "dbPassword" : {
+            "description" : "Secret key used to encrypt the database using AES-256. This value must be kept securely and must not be stored or exposed in plain text.",
+            "example" : "my-secure-encryption-key",
+            "format" : "password",
+            "type" : "string"
+          },
+          "cookies" : {
+            "description" : "Cookies from SSO request, if any.",
+            "example" : [ {
+              "name" : "MoodleSession",
+              "value" : "abc123...",
+              "domain" : "moodle.midominio.com",
+              "path" : "/",
+              "secure" : true,
+              "httpOnly" : true
+            } ],
+            "items" : {
+              "$ref" : "#/components/schemas/Cookie"
+            },
+            "type" : "array"
+          }
+        },
+        "required" : [ "cookies", "dbPassword", "host", "moodleLaunchCredential" ],
+        "title" : "AuthSSORequest",
+        "type" : "object"
+      },
+      "AuthOfflineRequest" : {
+        "properties" : {
+          "host" : {
+            "description" : "Moodle site URL",
+            "example" : "https://school.moodledemo.net",
+            "format" : "uri",
+            "type" : "string"
+          },
+          "username" : {
+            "description" : "Moodle username",
+            "example" : "teacher",
+            "type" : "string"
+          },
+          "dbPassword" : {
+            "description" : "Secret key used to encrypt the database using AES-256. This value must be kept securely and must not be stored or exposed in plain text.",
+            "example" : "my-secure-encryption-key",
+            "format" : "password",
+            "type" : "string"
+          }
+        },
+        "required" : [ "dbPassword", "host", "username" ],
+        "title" : "AuthOfflineRequest",
+        "type" : "object"
+      },
+      "PublicSiteInfoResponse" : {
+        "properties" : {
+          "siteConfig" : {
+            "$ref" : "#/components/schemas/MoodleSiteConfiguration"
+          }
+        },
+        "required" : [ "site" ],
+        "title" : "PublicSiteInfoResponse",
+        "type" : "object"
+      },
+      "SiteInfoResponse" : {
+        "properties" : {
+          "site" : {
+            "$ref" : "#/components/schemas/SiteInfo"
+          }
+        },
+        "required" : [ "site" ],
+        "title" : "SiteInfoResponse",
+        "type" : "object"
+      },
+      "SiteInfo" : {
+        "description" : "Basic information about the Moodle site.",
+        "properties" : {
+          "id" : {
+            "description" : "Site id",
+            "type" : "string"
+          },
+          "name" : {
+            "description" : "The name of the Moodle site.",
+            "type" : "string"
+          },
+          "number" : {
+            "description" : "The version of the Moodle site.",
+            "type" : "string"
+          },
+          "release" : {
+            "description" : "Moodle release number",
+            "type" : "string"
+          },
+          "version" : {
+            "description" : "Moodle version number",
+            "type" : "string"
+          },
+          "url" : {
+            "description" : "The URL of the Moodle site.",
+            "format" : "uri",
+            "type" : "string"
+          }
+        },
+        "required" : [ "name", "siteUrl", "siteVersion" ],
+        "title" : "Site Information",
+        "type" : "object"
+      },
+      "EnrollmentsResponse" : {
+        "properties" : {
+          "courses" : {
+            "description" : "List of courses the user is enrolled in, with updated enrollment information.",
+            "items" : {
+              "$ref" : "#/components/schemas/Course_Information"
+            },
+            "type" : "array"
+          }
+        },
+        "required" : [ "courses" ],
+        "title" : "EnrollmentsResponse",
+        "type" : "object"
+      },
+      "CourseEnrollmentsResponse" : {
+        "properties" : {
+          "users" : {
+            "description" : "Users enrolled in the requested course, with their enrollment details.",
+            "items" : {
+              "$ref" : "#/components/schemas/UserEnrollment"
+            },
+            "type" : "array"
+          },
+          "roles" : {
+            "description" : "Unique roles assigned to users enrolled in the requested course.",
+            "items" : {
+              "$ref" : "#/components/schemas/Role"
+            },
+            "type" : "array"
+          },
+          "groups" : {
+            "description" : "Unique groups that users belong to in the requested course.",
+            "items" : {
+              "$ref" : "#/components/schemas/Group"
+            },
+            "type" : "array"
+          },
+          "courses" : {
+            "description" : "Unique courses included in the returned users' enrollments.",
+            "items" : {
+              "$ref" : "#/components/schemas/Course"
+            },
+            "type" : "array"
+          }
+        },
+        "required" : [ "users" ],
+        "title" : "CourseEnrollmentsResponse",
+        "type" : "object"
+      },
+      "CourseContentResponse" : {
+        "properties" : {
+          "sections" : {
+            "items" : {
+              "$ref" : "#/components/schemas/CourseContentSection"
+            },
+            "type" : "array"
+          }
+        },
+        "required" : [ "sections" ],
+        "title" : "CourseContentResponse",
+        "type" : "object"
+      },
+      "CourseContentSection" : {
+        "properties" : {
+          "id" : {
+            "description" : "Section ID",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "name" : {
+            "description" : "Section name",
+            "type" : "string"
+          },
+          "visible" : {
+            "description" : "Is the section visible",
+            "type" : "boolean"
+          },
+          "summary" : {
+            "description" : "Section description",
+            "type" : "string"
+          },
+          "position" : {
+            "description" : "Section number inside the course",
+            "type" : "integer"
+          },
+          "modules" : {
+            "description" : "List of modules in the section",
+            "items" : {
+              "$ref" : "#/components/schemas/CourseContentModule"
+            },
+            "type" : "array"
+          }
+        },
+        "required" : [ "id", "modules", "name", "position", "summary", "visible" ],
+        "title" : "CourseContentSection",
+        "type" : "object"
+      },
+      "CourseContentModule" : {
+        "properties" : {
+          "id" : {
+            "description" : "Module ID",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "name" : {
+            "description" : "Module name",
+            "type" : "string"
+          },
+          "modName" : {
+            "description" : "Module technical name",
+            "type" : "string"
+          },
+          "url" : {
+            "description" : "Module URL",
+            "format" : "uri",
+            "type" : "string"
+          },
+          "description" : {
+            "description" : "Module description",
+            "type" : "string"
+          },
+          "visible" : {
+            "description" : "Is module visible",
+            "type" : "boolean"
+          },
+          "instance" : {
+            "description" : "Moodle activity instance ID",
+            "format" : "int64",
+            "type" : "integer"
+          }
+        },
+        "required" : [ "description", "id", "modName", "name", "url", "visible" ],
+        "title" : "CourseContentModule",
+        "type" : "object"
+      },
+      "CourseGradeItemsResponse" : {
+        "properties" : {
+          "gradeItems" : {
+            "items" : {
+              "$ref" : "#/components/schemas/Grade_Item"
+            },
+            "type" : "array"
+          }
+        },
+        "required" : [ "gradeItems" ],
+        "title" : "CourseGradeItemsResponse",
+        "type" : "object"
+      },
+      "CourseGradesValuesResponse" : {
+        "properties" : {
+          "grades" : {
+            "items" : {
+              "$ref" : "#/components/schemas/CourseGradesValuesResponseRow"
+            },
+            "type" : "array"
+          }
+        },
+        "title" : "CourseGradesValuesResponse",
+        "type" : "object"
+      },
+      "CourseAssignmentsResponse" : {
+        "properties" : {
+          "assignments" : {
+            "description" : "Assignment activities in the requested course.",
+            "items" : {
+              "$ref" : "#/components/schemas/CourseAssignment"
+            },
+            "type" : "array"
+          }
+        },
+        "required" : [ "assignments" ],
+        "title" : "CourseAssignmentsResponse",
+        "type" : "object"
+      },
+      "CourseAssignment" : {
+        "properties" : {
+          "id" : {
+            "description" : "Moodle assignment ID.",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "courseId" : {
+            "description" : "Course ID.",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "moduleId" : {
+            "description" : "Course module ID.",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "name" : {
+            "description" : "Assignment name.",
+            "type" : "string"
+          },
+          "intro" : {
+            "description" : "Assignment description.",
+            "type" : "string"
+          },
+          "timeModified" : {
+            "description" : "Last modification time as a Unix timestamp.",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "dueDate" : {
+            "description" : "Submission due date as a Unix timestamp.",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "submissionsFromDate" : {
+            "description" : "Earliest submission time as a Unix timestamp.",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "cutoffDate" : {
+            "description" : "Submission cutoff time as a Unix timestamp.",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "gradingDueDate" : {
+            "description" : "Grading due date as a Unix timestamp.",
+            "format" : "int64",
+            "type" : "integer"
+          }
+        },
+        "required" : [ "courseId", "id", "moduleId", "name" ],
+        "title" : "CourseAssignment",
+        "type" : "object"
+      },
+      "CourseAssignmentSubmissionsResponse" : {
+        "properties" : {
+          "submissions" : {
+            "description" : "Assignment submissions, associated with each submitting user.",
+            "items" : {
+              "$ref" : "#/components/schemas/CourseAssignmentSubmission"
+            },
+            "type" : "array"
+          }
+        },
+        "required" : [ "submissions" ],
+        "title" : "CourseAssignmentSubmissionsResponse",
+        "type" : "object"
+      },
+      "CourseAssignmentSubmission" : {
+        "properties" : {
+          "submissionId" : {
+            "description" : "Moodle submission ID.",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "assignmentId" : {
+            "description" : "Moodle assignment ID.",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "courseId" : {
+            "description" : "Course ID.",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "userId" : {
+            "description" : "User associated with this submission.",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "attemptNumber" : {
+            "description" : "Submission attempt number.",
+            "type" : "integer"
+          },
+          "timeCreated" : {
+            "description" : "Submission creation time as a Unix timestamp.",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "timeModified" : {
+            "description" : "Submission modification time as a Unix timestamp.",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "timeStarted" : {
+            "description" : "Submission start time as a Unix timestamp.",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "status" : {
+            "description" : "Submission status.",
+            "type" : "string"
+          },
+          "latest" : {
+            "description" : "Whether this is the latest attempt.",
+            "type" : "boolean"
+          },
+          "gradingStatus" : {
+            "description" : "Grading status.",
+            "type" : "string"
+          }
+        },
+        "required" : [ "assignmentId", "attemptNumber", "courseId", "status", "submissionId", "userId" ],
+        "title" : "CourseAssignmentSubmission",
+        "type" : "object"
+      },
+      "CourseLogsResponse" : {
+        "properties" : {
+          "stats" : {
+            "$ref" : "#/components/schemas/CourseLogsImportStats"
+          },
+          "column" : {
+            "$ref" : "#/components/schemas/LogColumn"
+          }
+        },
+        "required" : [ "column" ]
+      },
+      "LogColumn" : {
+        "description" : "Unique value columns",
+        "properties" : {
+          "components" : {
+            "items" : {
+              "$ref" : "#/components/schemas/LogComponent"
+            },
+            "type" : "array"
+          },
+          "events" : {
+            "items" : {
+              "$ref" : "#/components/schemas/LogEvent"
+            },
+            "type" : "array"
+          },
+          "componentsEvents" : {
+            "items" : {
+              "$ref" : "#/components/schemas/LogColumnComponentsEventsInner"
+            },
+            "type" : "array"
+          },
+          "origins" : {
+            "items" : {
+              "$ref" : "#/components/schemas/Origin"
+            },
+            "type" : "array"
+          }
+        },
+        "required" : [ "components", "componentsEvents", "events", "origins" ],
+        "title" : "LogColumn",
+        "type" : "object"
+      },
+      "LogComponent" : {
+        "properties" : {
+          "id" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "code" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "code", "id", "name" ],
+        "title" : "LogComponent",
+        "type" : "object"
+      },
+      "LogEvent" : {
+        "properties" : {
+          "id" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "code" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "code", "id", "name" ],
+        "title" : "LogEvent",
+        "type" : "object"
+      },
+      "Origin" : {
+        "properties" : {
+          "id" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "code" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "code", "id", "name" ],
+        "title" : "Origin",
+        "type" : "object"
+      },
+      "CourseLogsListRequest" : {
+        "properties" : {
+          "timeRange" : {
+            "$ref" : "#/components/schemas/CourseLogsInfoRequestTimeRange"
+          },
+          "filters" : {
+            "$ref" : "#/components/schemas/CourseLogsInfoRequestFilters"
+          },
+          "fields" : {
+            "description" : "Columns to include in response",
+            "example" : [ "TIMESTAMP", "USER_FULL_NAME", "EVENT_NAME", "IP_ADDRESS" ],
+            "items" : {
+              "enum" : [ "ID", "TIMESTAMP", "COURSE_ID", "USER_ID", "MODULE_ID", "COMPONENT_ID", "EVENT_ID", "ORIGIN_ID", "IP_ADDRESS", "USER_FULL_NAME", "MODULE_NAME", "COMPONENT_NAME", "EVENT_NAME", "ORIGIN_NAME", "ORIGIN_CODE", "SECTION_ID", "SECTION_NAME" ],
+              "type" : "string"
+            },
+            "title" : "CourseLogsInfoRequestFields",
+            "type" : "array"
+          },
+          "pagination" : {
+            "$ref" : "#/components/schemas/CourseLogsInfoRequestPagination"
+          },
+          "sort" : {
+            "items" : {
+              "$ref" : "#/components/schemas/CourseLogsInfoRequestSortItem"
+            },
+            "type" : "array"
+          },
+          "includeTotal" : {
+            "default" : false,
+            "example" : false,
+            "type" : "boolean"
+          }
+        },
+        "title" : "CourseLogsListRequest",
+        "type" : "object"
+      },
+      "CourseLogsListResponse" : {
+        "properties" : {
+          "page" : {
+            "$ref" : "#/components/schemas/PaginationInfo"
+          },
+          "content" : {
+            "description" : "List of log rows (dynamic fields based on columns)",
+            "items" : {
+              "$ref" : "#/components/schemas/LogEntry"
+            },
+            "type" : "array"
+          }
+        },
+        "required" : [ "content", "page" ],
+        "title" : "CourseLogsListResponse",
+        "type" : "object"
+      },
+      "CourseLogsStatisticsRequest" : {
+        "properties" : {
+          "fields" : {
+            "description" : "Columns to include in the response and use as grouping dimensions.",
+            "items" : {
+              "enum" : [ "USER_ID", "MODULE_ID", "COMPONENT_ID", "EVENT_ID", "ORIGIN_ID", "IP_ADDRESS", "USER_FULL_NAME", "MODULE_NAME", "COMPONENT_NAME", "EVENT_NAME", "ORIGIN_NAME", "SECTION_ID", "SECTION_NAME" ],
+              "type" : "string"
+            },
+            "title" : "CourseLogsInfoRequestFields",
+            "type" : "array"
+          },
+          "timeRange" : {
+            "$ref" : "#/components/schemas/CourseLogsStatisticsTimeRange"
+          },
+          "interval" : {
+            "description" : "Optional time aggregation interval for grouping logs by time buckets. If not provided, no time-based grouping is applied.\n",
+            "enum" : [ "HOURLY", "DAILY", "WEEKLY", "MONTHLY", "DAY_OF_WEEK" ],
+            "example" : "DAILY",
+            "type" : "string"
+          },
+          "timeZone" : {
+            "default" : "UTC",
+            "description" : "IANA time zone used to compute time buckets when `interval` is set (e.g. Europe/Madrid). Ignored if `interval` is not provided.\n",
+            "example" : "Europe/Madrid",
+            "type" : "string"
+          },
+          "filters" : {
+            "$ref" : "#/components/schemas/CourseLogsStatisticsFilters"
+          }
+        },
+        "title" : "CourseLogsStatisticsRequest",
+        "type" : "object"
+      },
+      "CourseLogsStatisticsResponse" : {
+        "properties" : {
+          "rows" : {
+            "items" : {
+              "$ref" : "#/components/schemas/CourseLogsStatisticsResponseRow"
+            },
+            "type" : "array"
+          }
+        },
+        "required" : [ "rows" ],
+        "title" : "CourseLogsStatisticsResponse",
+        "type" : "object"
+      },
+      "CourseActivityCompletionResponse" : {
+        "description" : "Completion status of a course, grouped by activity. Each activity lists the status of every enrolled user.",
+        "properties" : {
+          "activities" : {
+            "description" : "Course activities that have completion tracking enabled.",
+            "items" : {
+              "$ref" : "#/components/schemas/ActivityCompletion"
+            },
+            "type" : "array"
+          }
+        },
+        "required" : [ "activities" ],
+        "title" : "CourseActivityCompletionResponse",
+        "type" : "object"
+      },
+      "CourseForumsResponse" : {
+        "properties" : {
+          "forums" : {
+            "description" : "Forums, their discussions, and posts in the requested course.",
+            "items" : {
+              "$ref" : "#/components/schemas/Forum"
+            },
+            "type" : "array"
+          }
+        },
+        "required" : [ "forums" ],
+        "title" : "CourseForumsResponse",
+        "type" : "object"
+      },
+      "Forum" : {
+        "properties" : {
+          "id" : {
+            "description" : "Forum ID",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "courseId" : {
+            "description" : "ID of the course the forum belongs to",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "moduleId" : {
+            "description" : "Course module ID (cmid / coursemodule -> MODULES.ID, no FK)",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "name" : {
+            "description" : "Forum name",
+            "type" : "string"
+          },
+          "intro" : {
+            "description" : "Forum introduction text",
+            "type" : "string"
+          },
+          "type" : {
+            "description" : "Forum type",
+            "enum" : [ "GENERAL", "NEWS", "QANDA", "EACHUSER", "SINGLE", "BLOG" ],
+            "type" : "string"
+          },
+          "visible" : {
+            "default" : true,
+            "description" : "Whether the forum is visible to students",
+            "type" : "boolean"
+          },
+          "groupMode" : {
+            "description" : "Group mode",
+            "enum" : [ "NO_GROUPS", "SEPARATE_GROUPS", "VISIBLE_GROUPS" ],
+            "type" : "string"
+          },
+          "groupingId" : {
+            "description" : "Grouping ID used for the forum",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "dueDate" : {
+            "description" : "Due date as a Unix timestamp (null = no due date)",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "cutoffDate" : {
+            "description" : "Cut-off date as a Unix timestamp; no posts are accepted after it (null = no cut-off)",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "assessed" : {
+            "description" : "Aggregate type used to assess posts (null = no ratings)",
+            "enum" : [ "AVERAGE", "COUNT", "MAX", "MIN", "SUM" ],
+            "type" : "string"
+          },
+          "scale" : {
+            "description" : "Grade type or scale ID used for ratings (negative values refer to a scale ID)",
+            "type" : "integer"
+          },
+          "gradeForum" : {
+            "description" : "Maximum grade for the whole forum (null = forum is not graded)",
+            "type" : "integer"
+          },
+          "maxBytes" : {
+            "description" : "Maximum attachment size in bytes",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "maxAttachments" : {
+            "description" : "Maximum number of attachments per post",
+            "type" : "integer"
+          },
+          "forceSubscribe" : {
+            "description" : "Subscription mode",
+            "enum" : [ "OPTIONAL", "FORCED", "AUTO", "DISABLED" ],
+            "type" : "string"
+          },
+          "trackingType" : {
+            "description" : "Read tracking type",
+            "enum" : [ "OFF", "OPTIONAL", "FORCED" ],
+            "type" : "string"
+          },
+          "warnAfter" : {
+            "description" : "Number of posts in the blocking period after which the user is warned",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "blockAfter" : {
+            "description" : "Number of posts in the blocking period after which the user is blocked from posting",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "blockPeriod" : {
+            "description" : "Blocking period in seconds",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "lockDiscussionAfter" : {
+            "description" : "Seconds of inactivity after which discussions are automatically locked (null = never)",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "completionDiscussions" : {
+            "description" : "Number of discussions a student must create to complete the activity",
+            "type" : "integer"
+          },
+          "completionReplies" : {
+            "description" : "Number of replies a student must post to complete the activity",
+            "type" : "integer"
+          },
+          "completionPosts" : {
+            "description" : "Total number of posts a student must make to complete the activity",
+            "type" : "integer"
+          },
+          "timeModified" : {
+            "description" : "Last modification time as a Unix timestamp",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "discussions" : {
+            "description" : "Discussions of the forum",
+            "items" : {
+              "$ref" : "#/components/schemas/ForumDiscussion"
+            },
+            "type" : "array"
+          }
+        },
+        "required" : [ "courseId", "id", "moduleId", "visible" ],
+        "title" : "Forum",
+        "type" : "object"
+      },
+      "ForumDiscussion" : {
+        "properties" : {
+          "id" : {
+            "description" : "Discussion ID (Moodle \"discussion\" field, not \"id\", which is the first post id)",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "forumId" : {
+            "description" : "ID of the forum the discussion belongs to",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "name" : {
+            "description" : "Discussion name",
+            "type" : "string"
+          },
+          "groupId" : {
+            "description" : "Group ID",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "userId" : {
+            "description" : "ID of the user who started the discussion (author)",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "timeStart" : {
+            "description" : "Display start time as a Unix timestamp (null = always displayed)",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "timeEnd" : {
+            "description" : "Display end time as a Unix timestamp (null = never ends)",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "timeModified" : {
+            "description" : "Last modification time as a Unix timestamp",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "pinned" : {
+            "default" : false,
+            "description" : "Whether the discussion is pinned to the top of the list",
+            "type" : "boolean"
+          },
+          "locked" : {
+            "default" : false,
+            "description" : "Whether the discussion is locked (no more replies allowed)",
+            "type" : "boolean"
+          },
+          "posts" : {
+            "description" : "Posts of the discussion",
+            "items" : {
+              "$ref" : "#/components/schemas/ForumPost"
+            },
+            "type" : "array"
+          }
+        },
+        "required" : [ "forumId", "id", "locked", "pinned" ],
+        "title" : "ForumDiscussion",
+        "type" : "object"
+      },
+      "ForumPost" : {
+        "properties" : {
+          "id" : {
+            "description" : "Post ID",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "discussionId" : {
+            "description" : "ID of the discussion the post belongs to",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "parentId" : {
+            "description" : "ID of the parent post (null = first post of the discussion)",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "userId" : {
+            "description" : "ID of the post author",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "subject" : {
+            "description" : "Post subject",
+            "type" : "string"
+          },
+          "message" : {
+            "description" : "Post message body",
+            "type" : "string"
+          },
+          "hasAttachment" : {
+            "default" : false,
+            "description" : "Whether the post has attachments",
+            "type" : "boolean"
+          },
+          "isDeleted" : {
+            "default" : false,
+            "description" : "Whether the post has been deleted",
+            "type" : "boolean"
+          },
+          "isPrivateReply" : {
+            "default" : false,
+            "description" : "Whether the post is a private reply",
+            "type" : "boolean"
+          },
+          "timeCreated" : {
+            "description" : "Creation time as a Unix timestamp",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "timeModified" : {
+            "description" : "Last modification time as a Unix timestamp",
+            "format" : "int64",
+            "type" : "integer"
+          }
+        },
+        "required" : [ "discussionId", "hasAttachment", "id", "isDeleted", "isPrivateReply" ],
+        "title" : "ForumPost",
+        "type" : "object"
+      },
+      "CalendarEventsResponse" : {
+        "properties" : {
+          "events" : {
+            "description" : "Calendar events synchronized from Moodle.",
+            "items" : {
+              "$ref" : "#/components/schemas/CalendarEvent"
+            },
+            "type" : "array"
+          }
+        },
+        "required" : [ "events" ],
+        "title" : "CalendarEventsResponse",
+        "type" : "object"
+      },
+      "CalendarEvent" : {
+        "properties" : {
+          "id" : {
+            "description" : "Moodle event ID.",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "name" : {
+            "description" : "Event name.",
+            "type" : "string"
+          },
+          "description" : {
+            "description" : "Event description.",
+            "nullable" : true,
+            "type" : "string"
+          },
+          "courseId" : {
+            "description" : "Course ID associated with the event.",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "categoryId" : {
+            "description" : "Category ID, when the event belongs to a category.",
+            "format" : "int64",
+            "nullable" : true,
+            "type" : "integer"
+          },
+          "groupId" : {
+            "description" : "Group ID associated with the event.",
+            "format" : "int64",
+            "nullable" : true,
+            "type" : "integer"
+          },
+          "userId" : {
+            "description" : "User ID associated with the event.",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "repeatId" : {
+            "description" : "ID of the recurring event series.",
+            "format" : "int64",
+            "nullable" : true,
+            "type" : "integer"
+          },
+          "moduleName" : {
+            "description" : "Name of the Moodle module associated with the event.",
+            "nullable" : true,
+            "type" : "string"
+          },
+          "instance" : {
+            "description" : "Module instance ID.",
+            "format" : "int64",
+            "nullable" : true,
+            "type" : "integer"
+          },
+          "eventType" : {
+            "description" : "Moodle event type.",
+            "type" : "string"
+          },
+          "timeStart" : {
+            "description" : "Event start as a Unix timestamp in seconds.",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "timeDuration" : {
+            "description" : "Event duration in seconds.",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "visible" : {
+            "description" : "Whether the event is visible.",
+            "type" : "integer"
+          },
+          "sequence" : {
+            "description" : "Event sequence number.",
+            "type" : "integer"
+          },
+          "timeModified" : {
+            "description" : "Last modification time as a Unix timestamp in seconds.",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "subscriptionId" : {
+            "description" : "Calendar subscription ID.",
+            "format" : "int64",
+            "nullable" : true,
+            "type" : "integer"
+          },
+          "uuid" : {
+            "description" : "Unique identifier of an iCalendar event.",
+            "nullable" : true,
+            "type" : "string"
+          }
+        },
+        "required" : [ "courseId", "eventType", "id", "name", "sequence", "timeDuration", "timeModified", "timeStart", "userId", "visible" ],
+        "title" : "CalendarEvent",
+        "type" : "object"
+      },
+      "CurrentUserInfoResponse" : {
+        "properties" : {
+          "user" : {
+            "$ref" : "#/components/schemas/UserInfo"
+          }
+        },
+        "required" : [ "user" ],
+        "title" : "CurrentUserInfoResponse",
+        "type" : "object"
+      },
+      "UserInfo" : {
+        "description" : "Information about the authenticated user.",
+        "properties" : {
+          "id" : {
+            "description" : "The unique identifier of the user.",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "userName" : {
+            "description" : "The username of the user.",
+            "type" : "string"
+          },
+          "fullName" : {
+            "description" : "The full name of the user.",
+            "type" : "string"
+          },
+          "firstName" : {
+            "description" : "The first name of the user.",
+            "type" : "string"
+          },
+          "lastName" : {
+            "description" : "The last name of the user.",
+            "type" : "string"
+          },
+          "initials" : {
+            "description" : "Initials of the full name",
+            "type" : "string"
+          },
+          "email" : {
+            "format" : "email",
+            "type" : "string"
+          },
+          "timeZone" : {
+            "description" : "The timezone of the user.",
+            "type" : "string"
+          },
+          "userImageUrl" : {
+            "description" : "Image url of the user.",
+            "type" : "string"
+          },
+          "lang" : {
+            "description" : "The language of the user.",
+            "type" : "string"
+          }
+        },
+        "required" : [ "fullName", "id", "userImageUrl", "userName" ],
+        "title" : "User Information",
+        "type" : "object"
+      },
+      "ImportCourseLogsRequest" : {
+        "properties" : {
+          "logFile" : {
+            "format" : "binary",
+            "type" : "string"
+          }
+        },
+        "required" : [ "logFile" ],
+        "title" : "ImportCourseLogsRequest",
+        "type" : "object"
+      },
+      "Cookie" : {
+        "properties" : {
+          "name" : {
+            "description" : "Cookie name.",
+            "type" : "string"
+          },
+          "value" : {
+            "description" : "Cookie value.",
+            "type" : "string"
+          },
+          "domain" : {
+            "description" : "Cookie domain.",
+            "type" : "string"
+          },
+          "path" : {
+            "description" : "Cookie path.",
+            "type" : "string"
+          },
+          "secure" : {
+            "description" : "Whether the cookie is only sent over HTTPS.",
+            "type" : "boolean"
+          },
+          "httpOnly" : {
+            "description" : "Whether the cookie is inaccessible to client-side scripts.",
+            "type" : "boolean"
+          }
+        },
+        "required" : [ "name", "value" ],
+        "title" : "Cookie",
+        "type" : "object"
+      },
+      "MoodleSiteConfiguration" : {
+        "description" : "The configuration settings of the Moodle site.",
+        "properties" : {
+          "typeOfLogin" : {
+            "description" : "The type of login method used by the Moodle site.",
+            "enum" : [ "APP", "BROWSER", "EMBEDDED" ],
+            "type" : "string"
+          },
+          "launchUrl" : {
+            "description" : "The SSO login launch URL for the Moodle site, if applicable.",
+            "format" : "uri",
+            "type" : "string"
+          },
+          "enableMobileWebService" : {
+            "description" : "Indicates if the mobile web service is enabled for the Moodle site.",
+            "type" : "boolean"
+          },
+          "enableWebServices" : {
+            "description" : "Indicates if web services are enabled for the Moodle site.",
+            "type" : "boolean"
+          },
+          "maintenanceEnabled" : {
+            "description" : "Indicates if maintenance mode is enabled for the Moodle site.",
+            "type" : "boolean"
+          },
+          "maintenanceMessage" : {
+            "description" : "The maintenance message for the Moodle site, if applicable.",
+            "type" : "string"
+          }
+        },
+        "title" : "MoodleSiteConfiguration",
+        "type" : "object"
+      },
+      "Course_Information" : {
+        "properties" : {
+          "id" : {
+            "description" : "The unique identifier of the course.",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "fullName" : {
+            "description" : "The name of the course.",
+            "type" : "string"
+          },
+          "showGrades" : {
+            "description" : "Indicates whether the user can view grades for the course.",
+            "type" : "boolean"
+          },
+          "enableCompletion" : {
+            "description" : "Indicates whether course completion tracking is enabled for the user.",
+            "type" : "boolean"
+          },
+          "startDate" : {
+            "description" : "The Unix timestamp in seconds when the user's enrollment in the course starts.",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "endDate" : {
+            "description" : "The Unix timestamp in seconds when the user's enrollment in the course ends.",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "timeModified" : {
+            "description" : "The Unix timestamp in seconds when the enrollment information was last modified.",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "lastSync" : {
+            "description" : "The Unix timestamp in seconds when the enrollment information was last synchronized.",
+            "format" : "int64",
+            "type" : "integer"
+          }
+        },
+        "required" : [ "enableCompletion", "endDate", "fullName", "id", "showGrades", "startDate", "timeModified" ],
+        "title" : "Course Information",
+        "type" : "object"
+      },
+      "RoleRef" : {
+        "properties" : {
+          "id" : {
+            "description" : "The unique identifier of the role.",
+            "format" : "int64",
+            "type" : "integer"
+          }
+        },
+        "required" : [ "id" ],
+        "title" : "RoleRef",
+        "type" : "object"
+      },
+      "GroupRef" : {
+        "properties" : {
+          "id" : {
+            "description" : "The unique identifier of the group.",
+            "format" : "int64",
+            "type" : "integer"
+          }
+        },
+        "required" : [ "id" ],
+        "title" : "GroupRef",
+        "type" : "object"
+      },
+      "CourseRef" : {
+        "properties" : {
+          "id" : {
+            "description" : "The unique identifier of the course.",
+            "format" : "int64",
+            "type" : "integer"
+          }
+        },
+        "required" : [ "id" ],
+        "title" : "CourseRef",
+        "type" : "object"
+      },
+      "UserEnrollment" : {
+        "properties" : {
+          "id" : {
+            "description" : "The unique identifier of the user.",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "fullName" : {
+            "description" : "The full name of the user.",
+            "type" : "string"
+          },
+          "email" : {
+            "description" : "The email address of the user.",
+            "type" : "string"
+          },
+          "firstAccess" : {
+            "description" : "The Unix timestamp in seconds of the user's first access to the site.",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "lastAccess" : {
+            "description" : "The Unix timestamp in seconds of the user's last access to the site.",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "lastCourseAccess" : {
+            "description" : "Unix timestamp in seconds of the user's most recent access to the requested course.",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "imageUrl" : {
+            "description" : "The URL of the user's profile image.",
+            "format" : "uri",
+            "type" : "string"
+          },
+          "roles" : {
+            "description" : "IDs of the roles assigned to this user in the requested course.",
+            "items" : {
+              "$ref" : "#/components/schemas/RoleRef"
+            },
+            "type" : "array"
+          },
+          "groups" : {
+            "description" : "IDs of the groups this user belongs to in the requested course.",
+            "items" : {
+              "$ref" : "#/components/schemas/GroupRef"
+            },
+            "type" : "array"
+          },
+          "courses" : {
+            "description" : "IDs of the courses this user is enrolled in.",
+            "items" : {
+              "$ref" : "#/components/schemas/CourseRef"
+            },
+            "type" : "array"
+          }
+        },
+        "required" : [ "courses", "email", "fullName", "groups", "id", "imageUrl", "roles" ],
+        "title" : "UserEnrollment",
+        "type" : "object"
+      },
+      "Role" : {
+        "properties" : {
+          "id" : {
+            "description" : "The unique identifier of the role.",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "name" : {
+            "description" : "Display name of the role.",
+            "type" : "string"
+          }
+        },
+        "required" : [ "id", "name" ],
+        "title" : "Role",
+        "type" : "object"
+      },
+      "Group" : {
+        "properties" : {
+          "id" : {
+            "description" : "The unique identifier of the group.",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "name" : {
+            "description" : "Display name of the group.",
+            "type" : "string"
+          }
+        },
+        "required" : [ "id", "name" ],
+        "title" : "Group",
+        "type" : "object"
+      },
+      "Course" : {
+        "properties" : {
+          "id" : {
+            "description" : "The unique identifier of the course.",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "fullName" : {
+            "description" : "The course's full display name.",
+            "type" : "string"
+          }
+        },
+        "required" : [ "fullName", "id" ],
+        "title" : "Course",
+        "type" : "object"
+      },
+      "Grade_Item" : {
+        "properties" : {
+          "id" : {
+            "description" : "Unique identifier for the grade item",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "itemType" : {
+            "description" : "Type of the grade item in Moodle",
+            "enum" : [ "COURSE", "CATEGORY", "MOD", "MANUAL", "BLOCKS" ],
+            "type" : "string"
+          },
+          "parentId" : {
+            "description" : "Unique identifier for the parent grade item, if applicable",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "categoryId" : {
+            "description" : "Moodle category identifier containing this grade item, if applicable",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "parentCategoryId" : {
+            "description" : "Moodle parent category identifier for this category grade item, if applicable",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "moduleId" : {
+            "description" : "Moodle course module identifier for the grade item, if applicable",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "position" : {
+            "description" : "0-based position of the grade item in Moodle's gradeitems array",
+            "type" : "integer"
+          },
+          "name" : {
+            "description" : "Name of the grade item",
+            "type" : "string"
+          },
+          "gradeMin" : {
+            "description" : "Minimum grade value for the grade item",
+            "format" : "double",
+            "type" : "number"
+          },
+          "gradeMax" : {
+            "description" : "Maximum grade value for the grade item",
+            "format" : "double",
+            "type" : "number"
+          }
+        },
+        "required" : [ "id", "itemType", "position" ],
+        "title" : "Grade Item",
+        "type" : "object"
+      },
+      "CourseGradesValuesResponseRow" : {
+        "properties" : {
+          "id" : {
+            "description" : "Unique identifier for the grade item",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "userId" : {
+            "description" : "Unique identifier for the user",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "grade" : {
+            "description" : "The grade value for the user in the specified grade item",
+            "format" : "double",
+            "type" : "number"
+          },
+          "percentage" : {
+            "description" : "The percentage grade for the user in the specified grade item",
+            "format" : "double",
+            "maximum" : 100,
+            "minimum" : 0,
+            "type" : "number"
+          }
+        },
+        "required" : [ "id", "userId" ],
+        "title" : "CourseGradesValuesResponseRow",
+        "type" : "object"
+      },
+      "CourseLogsImportStats" : {
+        "properties" : {
+          "saved" : {
+            "description" : "Number of logs imported",
+            "type" : "integer"
+          },
+          "ignored" : {
+            "description" : "Number of logs ignored (e.g. duplicates or don't have a mapper for component, event or origin)",
+            "type" : "integer"
+          },
+          "failed" : {
+            "description" : "Number of logs that failed to import due to errors",
+            "type" : "integer"
+          }
+        },
+        "required" : [ "failed", "ignored", "saved" ],
+        "title" : "CourseLogsImportStats",
+        "type" : "object"
+      },
+      "LogColumnComponentsEventsInner" : {
+        "properties" : {
+          "component" : {
+            "$ref" : "#/components/schemas/LogComponent"
+          },
+          "event" : {
+            "$ref" : "#/components/schemas/LogEvent"
+          }
+        },
+        "required" : [ "component", "event" ],
+        "title" : "LogColumnComponentsEventsInner",
+        "type" : "object"
+      },
+      "CourseLogsInfoRequestTimeRange" : {
+        "properties" : {
+          "from" : {
+            "description" : "Inclusive start time as a Unix timestamp in seconds.",
+            "example" : 1777593600,
+            "format" : "int64",
+            "nullable" : true,
+            "type" : "integer",
+            "default" : null
+          },
+          "to" : {
+            "description" : "Inclusive end time as a Unix timestamp in seconds.",
+            "example" : 1780185599,
+            "format" : "int64",
+            "nullable" : true,
+            "type" : "integer",
+            "default" : null
+          }
+        },
+        "title" : "CourseLogsInfoRequestTimeRange",
+        "type" : "object"
+      },
+      "CourseLogsListRequestCompositeFilter" : {
+        "minProperties" : 2,
+        "properties" : {
+          "userId" : {
+            "format" : "int64",
+            "nullable" : true,
+            "type" : "integer"
+          },
+          "moduleId" : {
+            "format" : "int64",
+            "nullable" : true,
+            "type" : "integer"
+          },
+          "componentId" : {
+            "format" : "int32",
+            "nullable" : true,
+            "type" : "integer"
+          },
+          "eventId" : {
+            "format" : "int32",
+            "nullable" : true,
+            "type" : "integer"
+          },
+          "originId" : {
+            "format" : "int32",
+            "nullable" : true,
+            "type" : "integer"
+          },
+          "sectionId" : {
+            "format" : "int64",
+            "nullable" : true,
+            "type" : "integer"
+          },
+          "ipAddress" : {
+            "nullable" : true,
+            "type" : "string"
+          }
+        },
+        "title" : "CourseLogsListRequestCompositeFilter",
+        "type" : "object"
+      },
+      "CourseLogsInfoRequestFilters" : {
+        "properties" : {
+          "userIds" : {
+            "example" : [ 123, 456, 789 ],
+            "items" : {
+              "format" : "int64",
+              "type" : "integer"
+            },
+            "nullable" : true,
+            "type" : "array",
+            "default" : null
+          },
+          "moduleIds" : {
+            "example" : [ 10, 20 ],
+            "items" : {
+              "format" : "int64",
+              "type" : "integer"
+            },
+            "nullable" : true,
+            "type" : "array",
+            "default" : null
+          },
+          "componentIds" : {
+            "example" : [ 5, 6 ],
+            "items" : {
+              "format" : "int64",
+              "type" : "integer"
+            },
+            "nullable" : true,
+            "type" : "array",
+            "default" : null
+          },
+          "sectionIds" : {
+            "example" : [ 2, 4 ],
+            "items" : {
+              "format" : "int64",
+              "type" : "integer"
+            },
+            "nullable" : true,
+            "type" : "array",
+            "default" : null
+          },
+          "eventIds" : {
+            "example" : [ 1, 2 ],
+            "items" : {
+              "format" : "int64",
+              "type" : "integer"
+            },
+            "nullable" : true,
+            "type" : "array",
+            "default" : null
+          },
+          "originIds" : {
+            "example" : [ 3 ],
+            "items" : {
+              "format" : "int64",
+              "type" : "integer"
+            },
+            "nullable" : true,
+            "type" : "array",
+            "default" : null
+          },
+          "ipAddresses" : {
+            "example" : [ "192.168.1.1", "10.0.0.1" ],
+            "items" : {
+              "type" : "string"
+            },
+            "nullable" : true,
+            "type" : "array",
+            "default" : null
+          },
+          "compositeFilters" : {
+            "description" : "OR alternatives of compound filters. Populated dimensions within each entry are combined with AND; each entry must populate at least two dimensions. The compound expression is ANDed with the ordinary filters above.\n",
+            "items" : {
+              "$ref" : "#/components/schemas/CourseLogsListRequestCompositeFilter"
+            },
+            "type" : "array"
+          }
+        },
+        "title" : "CourseLogsInfoRequestFilters",
+        "type" : "object"
+      },
+      "CourseLogsInfoRequestPagination" : {
+        "description" : "When omitted, all matching logs are returned without pagination.",
+        "properties" : {
+          "page" : {
+            "default" : 0,
+            "example" : 0,
+            "type" : "integer"
+          },
+          "size" : {
+            "default" : 20,
+            "example" : 20,
+            "type" : "integer"
+          }
+        },
+        "title" : "CourseLogsInfoRequestPagination",
+        "type" : "object"
+      },
+      "CourseLogsInfoRequestSortItem" : {
+        "properties" : {
+          "field" : {
+            "example" : "TIMESTAMP",
+            "type" : "string"
+          },
+          "direction" : {
+            "enum" : [ "ASC", "DESC" ],
+            "example" : "DESC",
+            "type" : "string"
+          }
+        },
+        "title" : "CourseLogsInfoRequestSortItem",
+        "type" : "object"
+      },
+      "PaginationInfo" : {
+        "properties" : {
+          "page" : {
+            "description" : "Zero-based index of the current page",
+            "example" : 0,
+            "type" : "integer"
+          },
+          "size" : {
+            "description" : "Number of items per page",
+            "example" : 20,
+            "type" : "integer"
+          },
+          "totalElements" : {
+            "description" : "Total number of elements matching the filters",
+            "example" : 1200,
+            "type" : "integer"
+          },
+          "totalPages" : {
+            "description" : "Total number of pages",
+            "example" : 60,
+            "type" : "integer"
+          },
+          "first" : {
+            "description" : "Whether this is the first page",
+            "example" : true,
+            "type" : "boolean"
+          },
+          "last" : {
+            "description" : "Whether this is the last page",
+            "example" : false,
+            "type" : "boolean"
+          },
+          "empty" : {
+            "description" : "Whether the page has no content",
+            "example" : false,
+            "type" : "boolean"
+          }
+        },
+        "required" : [ "page", "size", "totalElements", "totalPages" ],
+        "title" : "PaginationInfo",
+        "type" : "object"
+      },
+      "LogEntry" : {
+        "properties" : {
+          "id" : {
+            "description" : "Log entry ID",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "timeCreated" : {
+            "description" : "Log creation time as a Unix timestamp in seconds.",
+            "example" : 1779444930,
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "courseId" : {
+            "description" : "ID of the course associated with the log",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "userId" : {
+            "description" : "ID of the user associated with the log",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "userFullName" : {
+            "description" : "Full name of the user associated with the log",
+            "type" : "string"
+          },
+          "moduleId" : {
+            "description" : "ID of the module associated with the log",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "moduleName" : {
+            "description" : "Name of the module associated with the log",
+            "type" : "string"
+          },
+          "sectionId" : {
+            "description" : "ID of the section associated with the log",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "sectionName" : {
+            "description" : "Name of the section associated with the log",
+            "type" : "string"
+          },
+          "component" : {
+            "description" : "Component associated with the log",
+            "type" : "string"
+          },
+          "componentId" : {
+            "description" : "ID of the component associated with the log",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "eventName" : {
+            "description" : "Name of the event associated with the log",
+            "type" : "string"
+          },
+          "eventId" : {
+            "description" : "ID of the event associated with the log",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "originName" : {
+            "description" : "Name of the origin associated with the log",
+            "type" : "string"
+          },
+          "originCode" : {
+            "description" : "Code of the origin associated with the log",
+            "type" : "string"
+          },
+          "originId" : {
+            "description" : "ID of the origin associated with the log",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "ip" : {
+            "description" : "IP address associated with the log",
+            "type" : "string"
+          }
+        },
+        "required" : [ "component", "componentId", "courseId", "eventId", "eventName", "id", "ip", "moduleId", "moduleName", "originCode", "originId", "originName", "timeCreated", "userFullName", "userId" ],
+        "title" : "LogEntry",
+        "type" : "object"
+      },
+      "CourseLogsStatisticsTimeRange" : {
+        "properties" : {
+          "from" : {
+            "description" : "Inclusive start time as a Unix timestamp in seconds.",
+            "example" : 1777593600,
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "to" : {
+            "description" : "Inclusive end time as a Unix timestamp in seconds.",
+            "example" : 1780185599,
+            "format" : "int64",
+            "type" : "integer"
+          }
+        },
+        "title" : "CourseLogsStatisticsTimeRange",
+        "type" : "object"
+      },
+      "CourseLogsStatisticsRequestCompositeFilter" : {
+        "minProperties" : 2,
+        "properties" : {
+          "userId" : {
+            "format" : "int64",
+            "nullable" : true,
+            "type" : "integer"
+          },
+          "moduleId" : {
+            "format" : "int64",
+            "nullable" : true,
+            "type" : "integer"
+          },
+          "componentId" : {
+            "format" : "int64",
+            "nullable" : true,
+            "type" : "integer"
+          },
+          "eventId" : {
+            "format" : "int64",
+            "nullable" : true,
+            "type" : "integer"
+          },
+          "originId" : {
+            "format" : "int64",
+            "nullable" : true,
+            "type" : "integer"
+          },
+          "sectionId" : {
+            "format" : "int64",
+            "nullable" : true,
+            "type" : "integer"
+          },
+          "ipAddress" : {
+            "nullable" : true,
+            "type" : "string"
+          }
+        },
+        "title" : "CourseLogsStatisticsRequestCompositeFilter",
+        "type" : "object"
+      },
+      "CourseLogsStatisticsFilters" : {
+        "properties" : {
+          "userIds" : {
+            "items" : {
+              "format" : "int64",
+              "type" : "integer"
+            },
+            "nullable" : true,
+            "type" : "array"
+          },
+          "moduleIds" : {
+            "items" : {
+              "format" : "int64",
+              "type" : "integer"
+            },
+            "nullable" : true,
+            "type" : "array"
+          },
+          "componentIds" : {
+            "items" : {
+              "format" : "int64",
+              "type" : "integer"
+            },
+            "nullable" : true,
+            "type" : "array"
+          },
+          "eventIds" : {
+            "items" : {
+              "format" : "int64",
+              "type" : "integer"
+            },
+            "nullable" : true,
+            "type" : "array"
+          },
+          "originIds" : {
+            "items" : {
+              "format" : "int64",
+              "type" : "integer"
+            },
+            "nullable" : true,
+            "type" : "array"
+          },
+          "ipAddresses" : {
+            "items" : {
+              "type" : "string"
+            },
+            "nullable" : true,
+            "type" : "array"
+          },
+          "sectionIds" : {
+            "items" : {
+              "format" : "int64",
+              "type" : "integer"
+            },
+            "nullable" : true,
+            "type" : "array"
+          },
+          "compositeFilters" : {
+            "description" : "OR alternatives of compound filters. Populated dimensions within each entry are combined with AND; each entry must populate at least two dimensions. The compound expression is ANDed with the ordinary filters above.\n",
+            "items" : {
+              "$ref" : "#/components/schemas/CourseLogsStatisticsRequestCompositeFilter"
+            },
+            "type" : "array"
+          }
+        },
+        "title" : "CourseLogsStatisticsFilters",
+        "type" : "object"
+      },
+      "CourseLogsStatisticsResponseRowUser" : {
+        "properties" : {
+          "id" : {
+            "example" : 4521,
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "fullName" : {
+            "example" : "María González",
+            "type" : "string"
+          }
+        },
+        "required" : [ "fullName", "id" ],
+        "title" : "CourseLogsStatisticsResponseRowUser",
+        "type" : "object"
+      },
+      "CourseLogsStatisticsResponseRowModule" : {
+        "properties" : {
+          "id" : {
+            "example" : 874,
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "name" : {
+            "example" : "Foro de dudas generales",
+            "type" : "string"
+          }
+        },
+        "title" : "CourseLogsStatisticsResponseRowModule",
+        "type" : "object"
+      },
+      "CourseLogsStatisticsResponseRowComponent" : {
+        "properties" : {
+          "id" : {
+            "example" : 2,
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "name" : {
+            "example" : "forum",
+            "type" : "string"
+          }
+        },
+        "title" : "CourseLogsStatisticsResponseRowComponent",
+        "type" : "object"
+      },
+      "CourseLogsStatisticsResponseRowEvent" : {
+        "properties" : {
+          "id" : {
+            "example" : 15,
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "name" : {
+            "example" : "discussion_created",
+            "type" : "string"
+          }
+        },
+        "title" : "CourseLogsStatisticsResponseRowEvent",
+        "type" : "object"
+      },
+      "CourseLogsStatisticsResponseRowOrigin" : {
+        "properties" : {
+          "id" : {
+            "example" : 1,
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "name" : {
+            "example" : "web",
+            "type" : "string"
+          }
+        },
+        "title" : "CourseLogsStatisticsResponseRowOrigin",
+        "type" : "object"
+      },
+      "CourseLogsStatisticsResponseRow" : {
+        "properties" : {
+          "timeBucket" : {
+            "example" : "2026-05-01",
+            "format" : "none",
+            "type" : "string"
+          },
+          "user" : {
+            "$ref" : "#/components/schemas/CourseLogsStatisticsResponseRowUser"
+          },
+          "module" : {
+            "$ref" : "#/components/schemas/CourseLogsStatisticsResponseRowModule"
+          },
+          "component" : {
+            "$ref" : "#/components/schemas/CourseLogsStatisticsResponseRowComponent"
+          },
+          "event" : {
+            "$ref" : "#/components/schemas/CourseLogsStatisticsResponseRowEvent"
+          },
+          "origin" : {
+            "$ref" : "#/components/schemas/CourseLogsStatisticsResponseRowOrigin"
+          },
+          "ipAddress" : {
+            "example" : "192.168.1.150",
+            "format" : "ipv4",
+            "type" : "string"
+          },
+          "courseId" : {
+            "example" : 105,
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "sectionId" : {
+            "example" : 3,
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "sectionName" : {
+            "example" : "Unidad 1: Introducción",
+            "type" : "string"
+          },
+          "value" : {
+            "example" : 42,
+            "type" : "integer"
+          }
+        },
+        "required" : [ "value" ],
+        "title" : "CourseLogsStatisticsResponseRow",
+        "type" : "object"
+      },
+      "UserActivityCompletion" : {
+        "description" : "Completion status of one user for one activity.",
+        "properties" : {
+          "userId" : {
+            "description" : "The unique identifier of the user.",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "state" : {
+            "description" : "Completion state of the activity for the user.\nPASS means completed with a passing grade; FAIL means completed with a failing grade.\n",
+            "enum" : [ "INCOMPLETE", "COMPLETE", "PASS", "FAIL" ],
+            "type" : "string"
+          },
+          "timeCompleted" : {
+            "description" : "Unix timestamp in seconds when the activity was completed. Null if it has not been completed.",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "tracking" : {
+            "description" : "How completion is tracked for this activity.\nNONE means completion is not tracked; MANUAL means the user marks the activity as done;\nAUTOMATIC means it is completed automatically when the configured conditions are met.\n",
+            "enum" : [ "NONE", "MANUAL", "AUTOMATIC" ],
+            "type" : "string"
+          },
+          "overrideBy" : {
+            "description" : "Identifier of the user who manually overrode the status.",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "valueUsed" : {
+            "default" : false,
+            "description" : "Whether the completion status of this activity is used by another activity, for example in an access restriction that requires it to be completed.",
+            "type" : "boolean"
+          },
+          "isTrackedUser" : {
+            "description" : "Whether the user is tracked for completion, meaning their progress counts towards the activity. Depends on the user's role in the course.",
+            "type" : "boolean"
+          },
+          "userVisible" : {
+            "description" : "Whether the activity is visible to this specific user, taking into account availability restrictions and group settings.",
+            "type" : "boolean"
+          }
+        },
+        "required" : [ "isTrackedUser", "state", "tracking", "userId", "userVisible", "valueUsed", "visible" ],
+        "title" : "UserActivityCompletion",
+        "type" : "object"
+      },
+      "ActivityCompletion" : {
+        "description" : "An activity of the course and the completion status of each user in it.",
+        "properties" : {
+          "moduleId" : {
+            "description" : "The unique identifier of the course module.",
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "users" : {
+            "description" : "Completion status of each enrolled user for this activity.",
+            "items" : {
+              "$ref" : "#/components/schemas/UserActivityCompletion"
+            },
+            "type" : "array"
+          }
+        },
+        "required" : [ "moduleId", "users" ],
+        "title" : "ActivityCompletion",
+        "type" : "object"
+      }
+    },
+    "securitySchemes" : {
+      "bearerAuth" : {
+        "bearerFormat" : "Opaque session token",
+        "scheme" : "bearer",
+        "type" : "http"
+      }
+    }
+  }
+}

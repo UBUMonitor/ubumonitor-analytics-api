@@ -11,9 +11,6 @@ import lombok.Data;
 /**
  * The enrollments of a single course. This is the only source of truth: the course, group and role
  * catalogs are derived from the enrollments and can never get out of sync with them.
- *
- * @param courseId Moodle identifier of the course the enrollments belong to
- * @param enrollments one entry per enrolled user
  */
 @Data
 public class CourseEnrollments {
