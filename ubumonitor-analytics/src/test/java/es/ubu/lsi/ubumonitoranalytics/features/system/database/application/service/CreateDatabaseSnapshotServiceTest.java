@@ -26,9 +26,9 @@ class CreateDatabaseSnapshotServiceTest {
     CreateDatabaseSnapshotService service =
         new CreateDatabaseSnapshotService(currentSessionPort, databaseSnapshotPort);
 
-    assertThrows(UnauthorizedException.class, service::createSnapshot);
+    assertThrows(UnauthorizedException.class, () -> service.createSnapshot(null));
 
-    verify(databaseSnapshotPort, never()).createSnapshot(Mockito.any());
+    verify(databaseSnapshotPort, never()).createSnapshot(Mockito.any(), Mockito.any());
   }
 
   @Test
@@ -41,20 +41,36 @@ class CreateDatabaseSnapshotServiceTest {
             .build();
     DatabaseSnapshot expected =
         DatabaseSnapshot.builder()
-            .id("https~school.moodledemo.net~teacher~20261121T131300000Z")
+            .id("https~school.moodledemo.net~teacher~20261121T131300000Z~abc")
             .databaseId("https~school.moodledemo.net~teacher")
+            .name("abc")
             .createdAt(Instant.parse("2026-11-21T13:13:00Z"))
             .snapshotFile(URI.create("file:///data/snapshots/snapshot.db"))
             .build();
     CurrentSessionPort currentSessionPort = Mockito.mock(CurrentSessionPort.class);
     DatabaseSnapshotPort databaseSnapshotPort = Mockito.mock(DatabaseSnapshotPort.class);
     when(currentSessionPort.getSessionData()).thenReturn(session);
-    when(databaseSnapshotPort.createSnapshot(session)).thenReturn(expected);
+    when(databaseSnapshotPort.createSnapshot(session, "abc")).thenReturn(expected);
     CreateDatabaseSnapshotService service =
         new CreateDatabaseSnapshotService(currentSessionPort, databaseSnapshotPort);
 
-    assertEquals(expected, service.createSnapshot());
+    assertEquals(expected, service.createSnapshot(" abc "));
 
-    verify(databaseSnapshotPort).createSnapshot(session);
+    verify(databaseSnapshotPort).createSnapshot(session, "abc");
+  }
+
+  @Test
+  void normalizesMissingAndBlankNamesToNull() {
+    SessionData session = SessionData.builder().build();
+    CurrentSessionPort currentSessionPort = Mockito.mock(CurrentSessionPort.class);
+    DatabaseSnapshotPort databaseSnapshotPort = Mockito.mock(DatabaseSnapshotPort.class);
+    when(currentSessionPort.getSessionData()).thenReturn(session);
+    CreateDatabaseSnapshotService service =
+        new CreateDatabaseSnapshotService(currentSessionPort, databaseSnapshotPort);
+
+    service.createSnapshot(null);
+    service.createSnapshot("  ");
+
+    verify(databaseSnapshotPort, Mockito.times(2)).createSnapshot(session, null);
   }
 }

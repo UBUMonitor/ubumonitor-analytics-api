@@ -38,11 +38,19 @@ public class DatabaseSnapshotAdapter implements DatabaseSnapshotPort {
   private final JooqProvider jooqProvider;
 
   @Override
-  public DatabaseSnapshot createSnapshot(SessionData session) {
-    return createSnapshot(session, Instant.now().truncatedTo(ChronoUnit.MILLIS));
+  public DatabaseSnapshot createSnapshot(SessionData session, String name) {
+    return createSnapshot(session, name, Instant.now().truncatedTo(ChronoUnit.MILLIS));
+  }
+
+  DatabaseSnapshot createSnapshot(SessionData session) {
+    return createSnapshot(session, null, Instant.now().truncatedTo(ChronoUnit.MILLIS));
   }
 
   DatabaseSnapshot createSnapshot(SessionData session, Instant createdAt) {
+    return createSnapshot(session, null, createdAt);
+  }
+
+  DatabaseSnapshot createSnapshot(SessionData session, String name, Instant createdAt) {
     if (session == null
         || session.getHost() == null
         || session.getUsername() == null
@@ -59,7 +67,7 @@ public class DatabaseSnapshotAdapter implements DatabaseSnapshotPort {
     }
 
     Path snapshotsDirectory = Path.of(basePath, SNAPSHOT_DIRECTORY);
-    String snapshotFileName = DatabaseSnapshotFileNaming.fileName(databaseId, createdAt);
+    String snapshotFileName = DatabaseSnapshotFileNaming.fileName(databaseId, createdAt, name);
     String snapshotId =
         snapshotFileName.substring(0, snapshotFileName.length() - DB_EXTENSION.length());
     Path destination = snapshotsDirectory.resolve(snapshotFileName);
@@ -91,6 +99,7 @@ public class DatabaseSnapshotAdapter implements DatabaseSnapshotPort {
       return DatabaseSnapshot.builder()
           .id(snapshotId)
           .databaseId(databaseId)
+          .name(name)
           .createdAt(createdAt)
           .snapshotFile(destination.toAbsolutePath().normalize().toUri())
           .build();

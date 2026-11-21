@@ -1,0 +1,17 @@
+{
+  "authFixture": "classpath:/integration/shared/teacher-sso-auth.json",
+  "request": {
+    "method": "POST",
+    "path": "/api/databases/snapshots",
+    "headers": {
+      "Authorization": "******",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "name": "snapshot 😀"
+    }
+  },
+  "expectedResponse": {
+    "status": 400
+  }
+}

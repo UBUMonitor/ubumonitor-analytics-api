@@ -10,6 +10,7 @@ import lombok.Data;
 public class DatabaseSnapshot {
   private String id;
   private String databaseId;
+  private String name;
   private Instant createdAt;
   private URI snapshotFile;
 }

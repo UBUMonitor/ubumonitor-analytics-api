@@ -2,6 +2,7 @@ package es.ubu.lsi.ubumonitoranalytics.features.system.database.infrastructure.i
 
 import es.ubu.lsi.ubumonitoranalytics.api.generated.api.DatabasesApiDelegate;
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.DatabaseSnapshotInfoDto;
+import es.ubu.lsi.ubumonitoranalytics.api.generated.model.DatabaseSnapshotRequestDto;
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.DatabasesInfoResponseDto;
 import es.ubu.lsi.ubumonitoranalytics.features.system.database.application.port.in.CreateDatabaseSnapshotUseCase;
 import es.ubu.lsi.ubumonitoranalytics.features.system.database.application.port.in.DatabaseInfoUseCase;
@@ -26,8 +27,10 @@ public class DatabasesApiDelegateImpl implements DatabasesApiDelegate {
   }
 
   @Override
-  public ResponseEntity<DatabaseSnapshotInfoDto> createDatabaseSnapshot() {
+  public ResponseEntity<DatabaseSnapshotInfoDto> createDatabaseSnapshot(
+      DatabaseSnapshotRequestDto request) {
+    String name = request == null ? null : request.getName();
     return ResponseEntity.status(HttpStatus.CREATED)
-        .body(mapper.toDatabaseSnapshotInfoDto(createDatabaseSnapshotUseCase.createSnapshot()));
+        .body(mapper.toDatabaseSnapshotInfoDto(createDatabaseSnapshotUseCase.createSnapshot(name)));
   }
 }

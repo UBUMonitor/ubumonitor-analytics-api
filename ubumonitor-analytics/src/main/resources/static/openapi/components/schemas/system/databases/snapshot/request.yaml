@@ -1,0 +1,13 @@
+---
+DatabaseSnapshotRequest:
+  title: "DatabaseSnapshotRequest"
+  type: "object"
+  additionalProperties: false
+  properties:
+    name:
+      type: "string"
+      minLength: 1
+      maxLength: 64
+      pattern: "^[\\p{L}\\p{N} _.-]+$"
+      description: "Optional name for the snapshot."
+      example: "antes de sincronizar"

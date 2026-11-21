@@ -1,6 +1,7 @@
 package es.ubu.lsi.ubumonitoranalytics.features.system.database.infrastructure.out;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
@@ -61,6 +62,7 @@ class DatabaseSnapshotAdapterTest {
     assertEquals(temporaryDirectory.resolve("snapshots"), snapshotFile.getParent());
     assertEquals("https~school.moodledemo.net~teacher", snapshot.getDatabaseId());
     assertEquals("https~school.moodledemo.net~teacher~20261121T131300123Z", snapshot.getId());
+    assertNull(snapshot.getName());
     assertEquals(createdAt, snapshot.getCreatedAt());
 
     DataSource snapshotDataSource =
@@ -87,6 +89,34 @@ class DatabaseSnapshotAdapterTest {
   }
 
   @Test
+  void createsAnEncryptedSnapshotWithTheRequestedName() throws Exception {
+    createDatabaseWithRow();
+    Instant createdAt = Instant.parse("2026-11-21T13:13:00.123Z");
+
+    DatabaseSnapshot snapshot =
+        snapshotAdapter.createSnapshot(sessionData, "Before upgrade", createdAt);
+
+    Path snapshotFile = Path.of(snapshot.getSnapshotFile());
+    assertTrue(Files.isRegularFile(snapshotFile));
+    assertEquals(
+        "https~school.moodledemo.net~teacher~20261121T131300123Z~Before+upgrade.db",
+        snapshotFile.getFileName().toString());
+    assertEquals("Before upgrade", snapshot.getName());
+    assertEquals(
+        "https~school.moodledemo.net~teacher~20261121T131300123Z~Before+upgrade", snapshot.getId());
+
+    DataSource snapshotDataSource =
+        DatabaseUtil.createDataSource(
+            "jdbc:sqlite:" + snapshotFile.toString().replace('\\', '/'), ENCRYPTION_KEY);
+    try (Connection connection = snapshotDataSource.getConnection();
+        Statement statement = connection.createStatement();
+        ResultSet rows = statement.executeQuery("SELECT VALUE FROM SNAPSHOT_TEST")) {
+      assertTrue(rows.next());
+      assertEquals("preserved", rows.getString(1));
+    }
+  }
+
+  @Test
   void failsWhenTheSourceDatabaseDoesNotExist() {
     assertThrows(EntityNotFoundException.class, () -> snapshotAdapter.createSnapshot(sessionData));
   }
@@ -100,7 +130,7 @@ class DatabaseSnapshotAdapterTest {
     Files.createFile(
         snapshotsDirectory.resolve(
             DatabaseSnapshotFileNaming.fileName(
-                DatabaseUtil.buildDbFileName(HOST, USERNAME), createdAt)));
+                DatabaseUtil.buildDbFileName(HOST, USERNAME), createdAt, null)));
 
     assertThrows(
         ConflictException.class, () -> snapshotAdapter.createSnapshot(sessionData, createdAt));

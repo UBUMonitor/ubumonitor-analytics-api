@@ -66,6 +66,9 @@ DatabaseSnapshotInfo:
   - "createdAt"
   - "location"
   properties:
+    name:
+      type: "string"
+      description: "Optional name given when the snapshot was created."
     id:
       type: "string"
       description: "Unique identifier of the snapshot."

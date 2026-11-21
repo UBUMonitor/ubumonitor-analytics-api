@@ -24,6 +24,9 @@ class DatabaseListAdapterSnapshotsTest {
     Files.createFile(
         snapshotsDirectory.resolve("https~school.moodledemo.net~student~20261121T131400000Z.db"));
     Files.createFile(
+        snapshotsDirectory.resolve(
+            "https~school.moodledemo.net~student~20261121T131450000Z~Before+upgrade.db"));
+    Files.createFile(
         snapshotsDirectory.resolve("https~school.moodledemo.net~teacher~20261121T131200000Z.db"));
     Files.createFile(snapshotsDirectory.resolve("orphan~20261121T131500000Z.db"));
     Files.createFile(snapshotsDirectory.resolve("invalid-snapshot.db"));
@@ -45,12 +48,14 @@ class DatabaseListAdapterSnapshotsTest {
             .orElseThrow();
     assertEquals(
         List.of(
+            "https~school.moodledemo.net~student~20261121T131450000Z~Before+upgrade",
             "https~school.moodledemo.net~student~20261121T131400000Z",
             "https~school.moodledemo.net~student~20261121T131300000Z"),
         student.getSnapshots().stream().map(snapshot -> snapshot.getId()).toList());
+    assertEquals("Before upgrade", student.getSnapshots().getFirst().getName());
     assertEquals(
         snapshotsDirectory
-            .resolve("https~school.moodledemo.net~student~20261121T131400000Z.db")
+            .resolve("https~school.moodledemo.net~student~20261121T131450000Z~Before+upgrade.db")
             .toUri(),
         student.getSnapshots().getFirst().getSnapshotFile());
     assertEquals(

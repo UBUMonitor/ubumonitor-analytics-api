@@ -116,8 +116,18 @@
     },
     "/databases/snapshots" : {
       "post" : {
-        "description" : "Creates an encrypted snapshot of the authenticated user's database.",
+        "description" : "Creates an encrypted snapshot of the authenticated user's database, optionally with a name.",
         "operationId" : "createDatabaseSnapshot",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/DatabaseSnapshotRequest"
+              }
+            }
+          },
+          "required" : false
+        },
         "responses" : {
           "201" : {
             "content" : {
@@ -128,6 +138,26 @@
               }
             },
             "description" : "The database snapshot was created."
+          },
+          "400" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "BAD_REQUEST",
+                  "message" : "Missing required header: X-Moodle-Host",
+                  "timestamp" : "2026-04-05T02:41:49.5759267+02:00",
+                  "traceId" : "4a253e64-5203-477a-8f4c-db25fd11a067",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "400 BAD_REQUEST \"Missing required header: X-Moodle-Host\""
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Bad Request - invalid field or missing data"
           },
           "401" : {
             "content" : {
@@ -190,7 +220,7 @@
             "description" : "Conflict - resource already exists or request conflicts with current state"
           }
         },
-        "summary" : "Create a snapshot of the current database",
+        "summary" : "Create a snapshot of the current database, optionally named",
         "tags" : [ "Databases" ]
       }
     },
@@ -2289,7 +2319,7 @@
               } ]
             },
             "schema" : {
-              "$ref" : "./components/schemas/common/error_response.yaml#/ErrorResponse"
+              "$ref" : "#/components/schemas/ErrorResponse"
             }
           }
         },
@@ -2446,6 +2476,10 @@
       "DatabaseSnapshotInfo" : {
         "additionalProperties" : false,
         "properties" : {
+          "name" : {
+            "description" : "Optional name given when the snapshot was created.",
+            "type" : "string"
+          },
           "id" : {
             "description" : "Unique identifier of the snapshot.",
             "example" : "https~school.moodledemo.net~student~20261121T131300000Z",
@@ -2471,6 +2505,21 @@
         },
         "required" : [ "createdAt", "databaseId", "id", "location" ],
         "title" : "DatabaseSnapshotInfo",
+        "type" : "object"
+      },
+      "DatabaseSnapshotRequest" : {
+        "additionalProperties" : false,
+        "properties" : {
+          "name" : {
+            "description" : "Optional name for the snapshot.",
+            "example" : "antes de sincronizar",
+            "maxLength" : 64,
+            "minLength" : 1,
+            "pattern" : "^[\\p{L}\\p{N} _.-]+$",
+            "type" : "string"
+          }
+        },
+        "title" : "DatabaseSnapshotRequest",
         "type" : "object"
       },
       "ErrorResponse" : {

@@ -3,8 +3,15 @@ post:
   tags:
   - "Databases"
   operationId: "createDatabaseSnapshot"
-  summary: "Create a snapshot of the current database"
-  description: "Creates an encrypted snapshot of the authenticated user's database."
+  summary: "Create a snapshot of the current database, optionally named"
+  description: "Creates an encrypted snapshot of the authenticated user's database,\
+    \ optionally with a name."
+  requestBody:
+    required: false
+    content:
+      application/json:
+        schema:
+          $ref: "../../components/schemas/system/databases/snapshot/request.yaml#/DatabaseSnapshotRequest"
   responses:
     "201":
       description: "The database snapshot was created."
@@ -12,6 +19,8 @@ post:
         application/json:
           schema:
             $ref: "../../components/schemas/system/databases/info/response.yaml#/DatabaseSnapshotInfo"
+    "400":
+      $ref: "../../components/responses/bad_request_400.yaml"
     "401":
       $ref: "../../components/responses/unauthorized_401.yaml"
     "404":

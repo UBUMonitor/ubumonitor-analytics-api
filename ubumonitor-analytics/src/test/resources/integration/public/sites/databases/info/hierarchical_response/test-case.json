@@ -18,12 +18,14 @@
             {
               "id": "https~school.moodledemo.net~student",
               "userName": "student",
-              "location": "${DATABASE_FILE:https~school.moodledemo.net~student.db}"
+              "location": "${DATABASE_FILE:https~school.moodledemo.net~student.db}",
+              "snapshots": []
             },
             {
               "id": "https~school.moodledemo.net~teacher",
               "userName": "teacher",
-              "location": "${DATABASE_FILE:https~school.moodledemo.net~teacher.db}"
+              "location": "${DATABASE_FILE:https~school.moodledemo.net~teacher.db}",
+              "snapshots": []
             }
           ]
         },
@@ -33,7 +35,8 @@
             {
               "id": "http~school.moodledemo.net~student",
               "userName": "student",
-              "location": "${DATABASE_FILE:http~school.moodledemo.net~student.db}"
+              "location": "${DATABASE_FILE:http~school.moodledemo.net~student.db}",
+              "snapshots": []
             }
           ]
         }

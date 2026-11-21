@@ -17,11 +17,15 @@ public class CreateDatabaseSnapshotService implements CreateDatabaseSnapshotUseC
   private final DatabaseSnapshotPort databaseSnapshotPort;
 
   @Override
-  public DatabaseSnapshot createSnapshot() {
+  public DatabaseSnapshot createSnapshot(String name) {
     SessionData session = currentSessionPort.getSessionData();
     if (session == null) {
       throw new UnauthorizedException("An authenticated session is required");
     }
-    return databaseSnapshotPort.createSnapshot(session);
+    String normalizedName = name == null ? null : name.trim();
+    if (normalizedName != null && normalizedName.isEmpty()) {
+      normalizedName = null;
+    }
+    return databaseSnapshotPort.createSnapshot(session, normalizedName);
   }
 }

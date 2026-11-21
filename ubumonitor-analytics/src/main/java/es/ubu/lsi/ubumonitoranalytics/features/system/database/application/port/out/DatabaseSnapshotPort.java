@@ -4,6 +4,5 @@ import es.ubu.lsi.ubumonitoranalytics.features.system.database.domain.model.Data
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
 
 public interface DatabaseSnapshotPort {
-
-  DatabaseSnapshot createSnapshot(SessionData session);
+  DatabaseSnapshot createSnapshot(SessionData session, String name);
 }
