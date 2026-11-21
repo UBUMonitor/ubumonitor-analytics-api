@@ -72,6 +72,8 @@ paths:
     $ref: "./paths/system/shutdown.yaml"
   /public/system/databases/info:
     $ref: "./paths/system/databases.yaml"
+  /databases/snapshots:
+    $ref: "./paths/system/database-snapshots.yaml"
   /public/auth/credentials:
     $ref: "./paths/auth/credentials.yaml"
   /public/auth/sso:

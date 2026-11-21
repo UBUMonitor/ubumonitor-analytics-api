@@ -1,0 +1,20 @@
+---
+post:
+  tags:
+  - "Databases"
+  operationId: "createDatabaseSnapshot"
+  summary: "Create a snapshot of the current database"
+  description: "Creates an encrypted snapshot of the authenticated user's database."
+  responses:
+    "201":
+      description: "The database snapshot was created."
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/system/databases/info/response.yaml#/DatabaseSnapshotInfo"
+    "401":
+      $ref: "../../components/responses/unauthorized_401.yaml"
+    "404":
+      $ref: "../../components/responses/not_found_404.yaml"
+    "409":
+      $ref: "../../components/responses/conflict_409.yaml"

@@ -114,6 +114,86 @@
         "tags" : [ "Databases" ]
       }
     },
+    "/databases/snapshots" : {
+      "post" : {
+        "description" : "Creates an encrypted snapshot of the authenticated user's database.",
+        "operationId" : "createDatabaseSnapshot",
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DatabaseSnapshotInfo"
+                }
+              }
+            },
+            "description" : "The database snapshot was created."
+          },
+          "401" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "UNAUTHORIZED",
+                  "message" : "Invalid token - token not found",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "401 UNAUTHORIZED \"Invalid token - token not found\""
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Unauthorized - token missing or invalid"
+          },
+          "404" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "NOT_FOUND",
+                  "message" : "Resource not found",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "404 NOT_FOUND \"Resource not found\""
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Not found"
+          },
+          "409" : {
+            "content" : {
+              "application/json" : {
+                "example" : {
+                  "code" : "CONFLICT",
+                  "message" : "Resource already exists or conflicts with current state",
+                  "timestamp" : "2026-03-19T01:05:54.8306311+01:00",
+                  "traceId" : "56e89575-dc49-4a83-b84c-0d5bff268ea7",
+                  "errors" : [ {
+                    "field" : "exception",
+                    "message" : "409 CONFLICT \"Resource already exists or conflicts with current state\""
+                  } ]
+                },
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description" : "Conflict - resource already exists or request conflicts with current state"
+          }
+        },
+        "summary" : "Create a snapshot of the current database",
+        "tags" : [ "Databases" ]
+      }
+    },
     "/public/auth/credentials" : {
       "post" : {
         "description" : "Receives a Moodle site URL, username, password, and database encryption key. Returns an opaque Bearer session token for subsequent authenticated requests.\n",
@@ -2249,7 +2329,7 @@
               } ]
             },
             "schema" : {
-              "$ref" : "./components/schemas/common/error_response.yaml#/ErrorResponse"
+              "$ref" : "#/components/schemas/ErrorResponse"
             }
           }
         },
@@ -2269,7 +2349,7 @@
               } ]
             },
             "schema" : {
-              "$ref" : "./components/schemas/common/error_response.yaml#/ErrorResponse"
+              "$ref" : "#/components/schemas/ErrorResponse"
             }
           }
         },
@@ -2350,59 +2430,47 @@
             "example" : "file:///data/databases/https~school.moodledemo.net~student.db",
             "format" : "uri",
             "type" : "string"
+          },
+          "snapshots" : {
+            "description" : "Snapshots taken from this database, newest first.",
+            "items" : {
+              "$ref" : "#/components/schemas/DatabaseSnapshotInfo"
+            },
+            "type" : "array"
           }
         },
-        "required" : [ "id", "location", "userName" ],
+        "required" : [ "id", "location", "snapshots", "userName" ],
         "title" : "DatabaseUserInfo",
         "type" : "object"
       },
-      "AuthLoginRequest" : {
+      "DatabaseSnapshotInfo" : {
+        "additionalProperties" : false,
         "properties" : {
-          "host" : {
-            "description" : "Moodle site URL",
-            "example" : "https://school.moodledemo.net",
+          "id" : {
+            "description" : "Unique identifier of the snapshot.",
+            "example" : "https~school.moodledemo.net~student~20261121T131300000Z",
+            "type" : "string"
+          },
+          "databaseId" : {
+            "description" : "Identifier of the source database.",
+            "example" : "https~school.moodledemo.net~student",
+            "type" : "string"
+          },
+          "createdAt" : {
+            "description" : "Time when the snapshot was created, in UTC.",
+            "example" : "2026-11-21T13:13:00Z",
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "location" : {
+            "description" : "Location of the snapshot file, as a `file:` URI.",
+            "example" : "file:///data/databases/snapshots/https~school.moodledemo.net~student~20261121T131300000Z.db",
             "format" : "uri",
             "type" : "string"
-          },
-          "username" : {
-            "description" : "Moodle username",
-            "example" : "teacher",
-            "type" : "string"
-          },
-          "password" : {
-            "description" : "Moodle password",
-            "example" : "moodle25",
-            "format" : "password",
-            "type" : "string"
-          },
-          "dbPassword" : {
-            "description" : "Secret key used to encrypt the database using AES-256. This value must be kept securely and must not be stored or exposed in plain text.",
-            "example" : "my-secure-encryption-key",
-            "format" : "password",
-            "type" : "string"
           }
         },
-        "required" : [ "dbPassword", "host", "password", "username" ],
-        "title" : "AuthLoginRequest",
-        "type" : "object"
-      },
-      "AuthResponse" : {
-        "properties" : {
-          "accessToken" : {
-            "description" : "Access token for authentication",
-            "type" : "string"
-          },
-          "tokenType" : {
-            "description" : "Type of the token, usually \"Bearer\"",
-            "example" : "Bearer",
-            "type" : "string"
-          },
-          "user" : {
-            "$ref" : "#/components/schemas/UserInfo"
-          }
-        },
-        "required" : [ "accessToken", "tokenType", "user" ],
-        "title" : "AuthResponse",
+        "required" : [ "createdAt", "databaseId", "id", "location" ],
+        "title" : "DatabaseSnapshotInfo",
         "type" : "object"
       },
       "ErrorResponse" : {
@@ -2457,6 +2525,55 @@
         },
         "required" : [ "field", "message" ],
         "title" : "ErrorDetail",
+        "type" : "object"
+      },
+      "AuthLoginRequest" : {
+        "properties" : {
+          "host" : {
+            "description" : "Moodle site URL",
+            "example" : "https://school.moodledemo.net",
+            "format" : "uri",
+            "type" : "string"
+          },
+          "username" : {
+            "description" : "Moodle username",
+            "example" : "teacher",
+            "type" : "string"
+          },
+          "password" : {
+            "description" : "Moodle password",
+            "example" : "moodle25",
+            "format" : "password",
+            "type" : "string"
+          },
+          "dbPassword" : {
+            "description" : "Secret key used to encrypt the database using AES-256. This value must be kept securely and must not be stored or exposed in plain text.",
+            "example" : "my-secure-encryption-key",
+            "format" : "password",
+            "type" : "string"
+          }
+        },
+        "required" : [ "dbPassword", "host", "password", "username" ],
+        "title" : "AuthLoginRequest",
+        "type" : "object"
+      },
+      "AuthResponse" : {
+        "properties" : {
+          "accessToken" : {
+            "description" : "Access token for authentication",
+            "type" : "string"
+          },
+          "tokenType" : {
+            "description" : "Type of the token, usually \"Bearer\"",
+            "example" : "Bearer",
+            "type" : "string"
+          },
+          "user" : {
+            "$ref" : "#/components/schemas/UserInfo"
+          }
+        },
+        "required" : [ "accessToken", "tokenType", "user" ],
+        "title" : "AuthResponse",
         "type" : "object"
       },
       "AuthSSORequest" : {

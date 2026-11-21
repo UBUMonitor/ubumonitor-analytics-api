@@ -1,9 +1,11 @@
 package es.ubu.lsi.ubumonitoranalytics.features.system.database.infrastructure.in.rest;
 
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.DatabaseHostInfoDto;
+import es.ubu.lsi.ubumonitoranalytics.api.generated.model.DatabaseSnapshotInfoDto;
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.DatabaseUserInfoDto;
 import es.ubu.lsi.ubumonitoranalytics.features.system.database.domain.model.DatabaseHostInfo;
 import es.ubu.lsi.ubumonitoranalytics.features.system.database.domain.model.DatabaseInfo;
+import es.ubu.lsi.ubumonitoranalytics.features.system.database.domain.model.DatabaseSnapshot;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.GlobalMapperConfig;
 import java.util.List;
 import org.mapstruct.Mapper;
@@ -20,4 +22,7 @@ public interface DatabasesApiDelegateImplMapper {
   @Mapping(target = "moodleUrl", source = "host")
   @Mapping(target = "users", source = "databases")
   DatabaseHostInfoDto toDatabaseHostInfoDto(DatabaseHostInfo databaseHostInfo);
+
+  @Mapping(target = "location", source = "snapshotFile")
+  DatabaseSnapshotInfoDto toDatabaseSnapshotInfoDto(DatabaseSnapshot snapshot);
 }
