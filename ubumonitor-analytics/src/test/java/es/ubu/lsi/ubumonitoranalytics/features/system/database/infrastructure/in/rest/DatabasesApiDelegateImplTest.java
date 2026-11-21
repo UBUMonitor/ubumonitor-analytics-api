@@ -27,7 +27,7 @@ class DatabasesApiDelegateImplTest {
     Instant createdAt = Instant.parse("2026-11-21T13:13:00.123Z");
     DatabaseSnapshot snapshot =
         DatabaseSnapshot.builder()
-            .id("https~school.moodledemo.net~teacher~20261121T131300123Z~before+sync")
+            .id("https~school.moodledemo.net~teacher~20261121T131300123Z~before sync")
             .databaseId("https~school.moodledemo.net~teacher")
             .name("before sync")
             .createdAt(createdAt)
@@ -56,7 +56,7 @@ class DatabasesApiDelegateImplTest {
     AtomicReference<String> requestedName = new AtomicReference<>();
     DatabaseSnapshot snapshot =
         DatabaseSnapshot.builder()
-            .id("https~school.moodledemo.net~teacher~20261121T131300123Z~Before+upgrade")
+            .id("https~school.moodledemo.net~teacher~20261121T131300123Z~Before upgrade")
             .databaseId("https~school.moodledemo.net~teacher")
             .name("Before upgrade")
             .createdAt(Instant.parse("2026-11-21T13:13:00.123Z"))

@@ -20,7 +20,9 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.Clock;
 import java.time.Instant;
+import java.time.ZoneOffset;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,6 +34,7 @@ class DatabaseSnapshotAdapterTest {
   private static final URI HOST = URI.create("https://school.moodledemo.net");
   private static final String USERNAME = "teacher";
   private static final String ENCRYPTION_KEY = "unit-test-encryption-key";
+  private static final Instant CREATED_AT = Instant.parse("2026-11-21T13:13:00.123Z");
 
   @TempDir Path temporaryDirectory;
 
@@ -47,15 +50,15 @@ class DatabaseSnapshotAdapterTest {
     sessionData =
         SessionData.builder().host(HOST).username(USERNAME).dbPassword(ENCRYPTION_KEY).build();
     jooqProvider = Mockito.mock(JooqProvider.class);
-    snapshotAdapter = new DatabaseSnapshotAdapter(moodleConfig, jooqProvider);
+    snapshotAdapter =
+        new DatabaseSnapshotAdapter(
+            moodleConfig, jooqProvider, Clock.fixed(CREATED_AT, ZoneOffset.UTC));
   }
 
   @Test
   void createsAnEncryptedSnapshotUsingTheSameKey() throws Exception {
     createDatabaseWithRow();
-    Instant createdAt = Instant.parse("2026-11-21T13:13:00.123Z");
-
-    DatabaseSnapshot snapshot = snapshotAdapter.createSnapshot(sessionData, createdAt);
+    DatabaseSnapshot snapshot = snapshotAdapter.createSnapshot(sessionData, null);
 
     Path snapshotFile = Path.of(snapshot.getSnapshotFile());
     assertTrue(Files.isRegularFile(snapshotFile));
@@ -63,7 +66,7 @@ class DatabaseSnapshotAdapterTest {
     assertEquals("https~school.moodledemo.net~teacher", snapshot.getDatabaseId());
     assertEquals("https~school.moodledemo.net~teacher~20261121T131300123Z", snapshot.getId());
     assertNull(snapshot.getName());
-    assertEquals(createdAt, snapshot.getCreatedAt());
+    assertEquals(CREATED_AT, snapshot.getCreatedAt());
 
     DataSource snapshotDataSource =
         DatabaseUtil.createDataSource(
@@ -91,19 +94,16 @@ class DatabaseSnapshotAdapterTest {
   @Test
   void createsAnEncryptedSnapshotWithTheRequestedName() throws Exception {
     createDatabaseWithRow();
-    Instant createdAt = Instant.parse("2026-11-21T13:13:00.123Z");
-
-    DatabaseSnapshot snapshot =
-        snapshotAdapter.createSnapshot(sessionData, "Before upgrade", createdAt);
+    DatabaseSnapshot snapshot = snapshotAdapter.createSnapshot(sessionData, "Before upgrade");
 
     Path snapshotFile = Path.of(snapshot.getSnapshotFile());
     assertTrue(Files.isRegularFile(snapshotFile));
     assertEquals(
-        "https~school.moodledemo.net~teacher~20261121T131300123Z~Before+upgrade.db",
+        "https~school.moodledemo.net~teacher~20261121T131300123Z~Before upgrade.db",
         snapshotFile.getFileName().toString());
     assertEquals("Before upgrade", snapshot.getName());
     assertEquals(
-        "https~school.moodledemo.net~teacher~20261121T131300123Z~Before+upgrade", snapshot.getId());
+        "https~school.moodledemo.net~teacher~20261121T131300123Z~Before upgrade", snapshot.getId());
 
     DataSource snapshotDataSource =
         DatabaseUtil.createDataSource(
@@ -118,22 +118,21 @@ class DatabaseSnapshotAdapterTest {
 
   @Test
   void failsWhenTheSourceDatabaseDoesNotExist() {
-    assertThrows(EntityNotFoundException.class, () -> snapshotAdapter.createSnapshot(sessionData));
+    assertThrows(
+        EntityNotFoundException.class, () -> snapshotAdapter.createSnapshot(sessionData, null));
   }
 
   @Test
   void failsWhenASnapshotWithTheSameTimestampAlreadyExists() throws Exception {
     createDatabaseWithRow();
-    Instant createdAt = Instant.parse("2026-11-21T13:13:00.123Z");
     Path snapshotsDirectory = temporaryDirectory.resolve("snapshots");
     Files.createDirectories(snapshotsDirectory);
     Files.createFile(
         snapshotsDirectory.resolve(
             DatabaseSnapshotFileNaming.fileName(
-                DatabaseUtil.buildDbFileName(HOST, USERNAME), createdAt, null)));
+                DatabaseUtil.buildDbFileName(HOST, USERNAME), CREATED_AT, null)));
 
-    assertThrows(
-        ConflictException.class, () -> snapshotAdapter.createSnapshot(sessionData, createdAt));
+    assertThrows(ConflictException.class, () -> snapshotAdapter.createSnapshot(sessionData, null));
   }
 
   private void createDatabaseWithRow() throws Exception {

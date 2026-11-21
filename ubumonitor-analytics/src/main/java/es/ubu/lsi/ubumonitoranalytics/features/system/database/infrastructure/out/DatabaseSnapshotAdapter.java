@@ -10,25 +10,21 @@ import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.DatabaseUti
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.JooqProvider;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.moodle.config.MoodleConfig;
 import java.io.IOException;
-import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.Clock;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import javax.sql.DataSource;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-@Slf4j
-@RequiredArgsConstructor
 public class DatabaseSnapshotAdapter implements DatabaseSnapshotPort {
 
   private static final String DB_EXTENSION = ".db";
@@ -36,21 +32,22 @@ public class DatabaseSnapshotAdapter implements DatabaseSnapshotPort {
 
   private final MoodleConfig moodleConfig;
   private final JooqProvider jooqProvider;
+  private Clock clock = Clock.systemUTC();
+
+  @Autowired
+  public DatabaseSnapshotAdapter(MoodleConfig moodleConfig, JooqProvider jooqProvider) {
+    this.moodleConfig = moodleConfig;
+    this.jooqProvider = jooqProvider;
+  }
+
+  DatabaseSnapshotAdapter(MoodleConfig moodleConfig, JooqProvider jooqProvider, Clock clock) {
+    this.moodleConfig = moodleConfig;
+    this.jooqProvider = jooqProvider;
+    this.clock = clock;
+  }
 
   @Override
   public DatabaseSnapshot createSnapshot(SessionData session, String name) {
-    return createSnapshot(session, name, Instant.now().truncatedTo(ChronoUnit.MILLIS));
-  }
-
-  DatabaseSnapshot createSnapshot(SessionData session) {
-    return createSnapshot(session, null, Instant.now().truncatedTo(ChronoUnit.MILLIS));
-  }
-
-  DatabaseSnapshot createSnapshot(SessionData session, Instant createdAt) {
-    return createSnapshot(session, null, createdAt);
-  }
-
-  DatabaseSnapshot createSnapshot(SessionData session, String name, Instant createdAt) {
     if (session == null
         || session.getHost() == null
         || session.getUsername() == null
@@ -67,33 +64,21 @@ public class DatabaseSnapshotAdapter implements DatabaseSnapshotPort {
     }
 
     Path snapshotsDirectory = Path.of(basePath, SNAPSHOT_DIRECTORY);
+    Instant createdAt = Instant.now(clock).truncatedTo(ChronoUnit.MILLIS);
     String snapshotFileName = DatabaseSnapshotFileNaming.fileName(databaseId, createdAt, name);
     String snapshotId =
         snapshotFileName.substring(0, snapshotFileName.length() - DB_EXTENSION.length());
     Path destination = snapshotsDirectory.resolve(snapshotFileName);
-    Path temporaryFile = null;
     try {
       Files.createDirectories(snapshotsDirectory);
       DataSource dataSource = jooqProvider.getDataSource(session);
       try (Connection connection = dataSource.getConnection()) {
         checkpointWal(connection);
-        if (Files.exists(destination)) {
-          throw new ConflictException("A snapshot with the same timestamp already exists");
-        }
-        temporaryFile = Files.createTempFile(snapshotsDirectory, ".snapshot-", ".tmp");
-        Files.copy(
-            databaseFile,
-            temporaryFile,
-            StandardCopyOption.REPLACE_EXISTING,
-            StandardCopyOption.COPY_ATTRIBUTES);
         try {
-          Files.move(temporaryFile, destination, StandardCopyOption.ATOMIC_MOVE);
+          Files.copy(databaseFile, destination);
         } catch (FileAlreadyExistsException exception) {
           throw new ConflictException("A snapshot with the same timestamp already exists");
-        } catch (AtomicMoveNotSupportedException exception) {
-          throw new IOException("Atomic snapshot move is not supported", exception);
         }
-        temporaryFile = null;
       }
 
       return DatabaseSnapshot.builder()
@@ -105,14 +90,6 @@ public class DatabaseSnapshotAdapter implements DatabaseSnapshotPort {
           .build();
     } catch (IOException | SQLException exception) {
       throw new DatabaseConnectionException("snapshot", exception);
-    } finally {
-      if (temporaryFile != null) {
-        try {
-          Files.deleteIfExists(temporaryFile);
-        } catch (IOException exception) {
-          log.warn("Failed to remove temporary database snapshot file");
-        }
-      }
     }
   }
 

@@ -1,10 +1,6 @@
 package es.ubu.lsi.ubumonitoranalytics.features.system.database.infrastructure.out;
 
 import es.ubu.lsi.ubumonitoranalytics.features.system.database.domain.model.DatabaseSnapshot;
-import es.ubu.lsi.ubumonitoranalytics.shared.application.exception.BadRequestException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -23,27 +19,16 @@ final class DatabaseSnapshotFileNaming {
           .withZone(ZoneOffset.UTC)
           .withResolverStyle(ResolverStyle.STRICT);
   private static final Pattern SNAPSHOT_FILE_PATTERN =
-      Pattern.compile("^(.+)~(\\d{8}T\\d{9}Z)(?:~([^~]+))?\\.db$");
+      Pattern.compile("^(.+)~(\\d{8}T\\d{9}Z)(?:~([A-Za-z0-9 _.-]+))?\\.db$");
 
   private DatabaseSnapshotFileNaming() {}
 
   static String fileName(String databaseId, Instant createdAt, String name) {
+    String snapshotFileName = databaseId + "~" + FILE_TIMESTAMP_FORMATTER.format(createdAt);
     if (name != null) {
-      String encodedName = URLEncoder.encode(name, StandardCharsets.UTF_8);
-      if (encodedName.length() > 100) {
-        throw new BadRequestException("The encoded snapshot name must not exceed 100 characters");
-      }
-      String baseFileName = fileName(databaseId, createdAt);
-      return baseFileName.substring(0, baseFileName.length() - ".db".length())
-          + "~"
-          + encodedName
-          + ".db";
+      snapshotFileName += "~" + name;
     }
-    return fileName(databaseId, createdAt);
-  }
-
-  private static String fileName(String databaseId, Instant createdAt) {
-    return databaseId + "~" + FILE_TIMESTAMP_FORMATTER.format(createdAt) + ".db";
+    return snapshotFileName + ".db";
   }
 
   static Optional<DatabaseSnapshot> fromPath(Path snapshotFile) {
@@ -59,14 +44,10 @@ final class DatabaseSnapshotFileNaming {
 
     String databaseId = matcher.group(1);
     String timestamp = matcher.group(2);
-    String encodedName = matcher.group(3);
+    String name = matcher.group(3);
     try {
       Instant createdAt = Instant.from(FILE_TIMESTAMP_FORMATTER.parse(timestamp));
       String snapshotId = fileName.substring(0, fileName.length() - ".db".length());
-      String name = null;
-      if (encodedName != null) {
-        name = URLDecoder.decode(encodedName, StandardCharsets.UTF_8);
-      }
       return Optional.of(
           DatabaseSnapshot.builder()
               .id(snapshotId)
@@ -75,7 +56,7 @@ final class DatabaseSnapshotFileNaming {
               .createdAt(createdAt)
               .snapshotFile(snapshotFile.toAbsolutePath().normalize().toUri())
               .build());
-    } catch (DateTimeParseException | IllegalArgumentException exception) {
+    } catch (DateTimeParseException exception) {
       return Optional.empty();
     }
   }
