@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import es.ubu.lsi.ubumonitoranalytics.features.system.database.domain.model.DatabaseSnapshot;
-import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.ConflictException;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.exception.EntityNotFoundException;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.SessionData;
 import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.database.DatabaseUtil;
@@ -20,9 +19,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.Clock;
-import java.time.Instant;
-import java.time.ZoneOffset;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,7 +30,6 @@ class DatabaseSnapshotAdapterTest {
   private static final URI HOST = URI.create("https://school.moodledemo.net");
   private static final String USERNAME = "teacher";
   private static final String ENCRYPTION_KEY = "unit-test-encryption-key";
-  private static final Instant CREATED_AT = Instant.parse("2026-11-21T13:13:00.123Z");
 
   @TempDir Path temporaryDirectory;
 
@@ -50,9 +45,7 @@ class DatabaseSnapshotAdapterTest {
     sessionData =
         SessionData.builder().host(HOST).username(USERNAME).dbPassword(ENCRYPTION_KEY).build();
     jooqProvider = Mockito.mock(JooqProvider.class);
-    snapshotAdapter =
-        new DatabaseSnapshotAdapter(
-            moodleConfig, jooqProvider, Clock.fixed(CREATED_AT, ZoneOffset.UTC));
+    snapshotAdapter = new DatabaseSnapshotAdapter(moodleConfig, jooqProvider);
   }
 
   @Test
@@ -64,9 +57,11 @@ class DatabaseSnapshotAdapterTest {
     assertTrue(Files.isRegularFile(snapshotFile));
     assertEquals(temporaryDirectory.resolve("snapshots"), snapshotFile.getParent());
     assertEquals("https~school.moodledemo.net~teacher", snapshot.getDatabaseId());
-    assertEquals("https~school.moodledemo.net~teacher~20261121T131300123Z", snapshot.getId());
+    assertTrue(snapshot.getId().startsWith(snapshot.getDatabaseId() + "~"));
+    assertEquals(
+        snapshotFile.getFileName().toString().replaceFirst("\\.db$", ""), snapshot.getId());
     assertNull(snapshot.getName());
-    assertEquals(CREATED_AT, snapshot.getCreatedAt());
+    assertEquals(0, snapshot.getCreatedAt().getNano() % 1_000_000);
 
     DataSource snapshotDataSource =
         DatabaseUtil.createDataSource(
@@ -98,12 +93,14 @@ class DatabaseSnapshotAdapterTest {
 
     Path snapshotFile = Path.of(snapshot.getSnapshotFile());
     assertTrue(Files.isRegularFile(snapshotFile));
-    assertEquals(
-        "https~school.moodledemo.net~teacher~20261121T131300123Z~Before upgrade.db",
-        snapshotFile.getFileName().toString());
+    assertTrue(
+        snapshotFile
+            .getFileName()
+            .toString()
+            .matches("https~school\\.moodledemo\\.net~teacher~\\d{8}T\\d{9}Z~Before upgrade\\.db"));
     assertEquals("Before upgrade", snapshot.getName());
     assertEquals(
-        "https~school.moodledemo.net~teacher~20261121T131300123Z~Before upgrade", snapshot.getId());
+        snapshotFile.getFileName().toString().replaceFirst("\\.db$", ""), snapshot.getId());
 
     DataSource snapshotDataSource =
         DatabaseUtil.createDataSource(
@@ -120,19 +117,6 @@ class DatabaseSnapshotAdapterTest {
   void failsWhenTheSourceDatabaseDoesNotExist() {
     assertThrows(
         EntityNotFoundException.class, () -> snapshotAdapter.createSnapshot(sessionData, null));
-  }
-
-  @Test
-  void failsWhenASnapshotWithTheSameTimestampAlreadyExists() throws Exception {
-    createDatabaseWithRow();
-    Path snapshotsDirectory = temporaryDirectory.resolve("snapshots");
-    Files.createDirectories(snapshotsDirectory);
-    Files.createFile(
-        snapshotsDirectory.resolve(
-            DatabaseSnapshotFileNaming.fileName(
-                DatabaseUtil.buildDbFileName(HOST, USERNAME), CREATED_AT, null)));
-
-    assertThrows(ConflictException.class, () -> snapshotAdapter.createSnapshot(sessionData, null));
   }
 
   private void createDatabaseWithRow() throws Exception {

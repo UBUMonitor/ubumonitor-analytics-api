@@ -17,14 +17,14 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.Clock;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import javax.sql.DataSource;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class DatabaseSnapshotAdapter implements DatabaseSnapshotPort {
 
   private static final String DB_EXTENSION = ".db";
@@ -32,19 +32,6 @@ public class DatabaseSnapshotAdapter implements DatabaseSnapshotPort {
 
   private final MoodleConfig moodleConfig;
   private final JooqProvider jooqProvider;
-  private Clock clock = Clock.systemUTC();
-
-  @Autowired
-  public DatabaseSnapshotAdapter(MoodleConfig moodleConfig, JooqProvider jooqProvider) {
-    this.moodleConfig = moodleConfig;
-    this.jooqProvider = jooqProvider;
-  }
-
-  DatabaseSnapshotAdapter(MoodleConfig moodleConfig, JooqProvider jooqProvider, Clock clock) {
-    this.moodleConfig = moodleConfig;
-    this.jooqProvider = jooqProvider;
-    this.clock = clock;
-  }
 
   @Override
   public DatabaseSnapshot createSnapshot(SessionData session, String name) {
@@ -64,7 +51,7 @@ public class DatabaseSnapshotAdapter implements DatabaseSnapshotPort {
     }
 
     Path snapshotsDirectory = Path.of(basePath, SNAPSHOT_DIRECTORY);
-    Instant createdAt = Instant.now(clock).truncatedTo(ChronoUnit.MILLIS);
+    Instant createdAt = Instant.now().truncatedTo(ChronoUnit.MILLIS);
     String snapshotFileName = DatabaseSnapshotFileNaming.fileName(databaseId, createdAt, name);
     String snapshotId =
         snapshotFileName.substring(0, snapshotFileName.length() - DB_EXTENSION.length());
