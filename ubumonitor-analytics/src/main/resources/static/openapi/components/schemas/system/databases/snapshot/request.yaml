@@ -8,6 +8,7 @@ DatabaseSnapshotRequest:
       type: "string"
       minLength: 1
       maxLength: 64
-      pattern: "^[\\p{L}\\p{N} _.-]+$"
-      description: "Optional name for the snapshot."
+      pattern: "^[A-Za-z0-9](?:[A-Za-z0-9 _.-]*[A-Za-z0-9])?$"
+      description: "Optional name. ASCII letters, digits, spaces, '_', '-' and '.';\
+        \ must start and end with a letter or digit."
       example: "antes de sincronizar"

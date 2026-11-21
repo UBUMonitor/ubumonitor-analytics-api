@@ -2511,11 +2511,11 @@
         "additionalProperties" : false,
         "properties" : {
           "name" : {
-            "description" : "Optional name for the snapshot.",
+            "description" : "Optional name. ASCII letters, digits, spaces, '_', '-' and '.'; must start and end with a letter or digit.",
             "example" : "antes de sincronizar",
             "maxLength" : 64,
             "minLength" : 1,
-            "pattern" : "^[\\p{L}\\p{N} _.-]+$",
+            "pattern" : "^[A-Za-z0-9](?:[A-Za-z0-9 _.-]*[A-Za-z0-9])?$",
             "type" : "string"
           }
         },
