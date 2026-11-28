@@ -6,12 +6,12 @@ import es.ubu.lsi.ubumonitoranalytics.api.generated.model.AuthLoginRequestDto;
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.AuthOfflineRequestDto;
 import es.ubu.lsi.ubumonitoranalytics.api.generated.model.AuthSSORequestDto;
 import es.ubu.lsi.ubumonitoranalytics.shared.domain.model.LoginMode;
+import es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper.MapperUtils;
 import org.junit.jupiter.api.Test;
-import org.mapstruct.factory.Mappers;
 
 class AuthMapperTest {
 
-  private final AuthMapper mapper = Mappers.getMapper(AuthMapper.class);
+  private final AuthMapper mapper = new AuthMapperImpl(new MapperUtils());
 
   @Test
   void mapsLoginCredentialsToCredentialsMode() {
