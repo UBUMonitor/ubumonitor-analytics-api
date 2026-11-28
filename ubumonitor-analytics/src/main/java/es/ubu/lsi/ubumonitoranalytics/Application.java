@@ -1,5 +1,6 @@
 package es.ubu.lsi.ubumonitoranalytics;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
@@ -10,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 @ConfigurationPropertiesScan
 @EnableWebSecurity
 @EnableAspectJAutoProxy(proxyTargetClass = true)
+@Slf4j
 public class Application {
 
   static {
@@ -28,6 +30,12 @@ public class Application {
    *     debug logging
    */
   static void main(String[] args) {
-    SpringApplication.run(Application.class, args);
+    try {
+      SpringApplication.run(Application.class, args);
+
+    } catch (Exception e) {
+      log.error("Error occurred while starting the application", e);
+      System.exit(1);
+    }
   }
 }
