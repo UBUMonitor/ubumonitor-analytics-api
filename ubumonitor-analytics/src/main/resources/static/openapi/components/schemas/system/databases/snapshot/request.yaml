@@ -1,0 +1,14 @@
+---
+DatabaseSnapshotRequest:
+  title: "DatabaseSnapshotRequest"
+  type: "object"
+  additionalProperties: false
+  properties:
+    name:
+      type: "string"
+      minLength: 1
+      maxLength: 64
+      pattern: "^[A-Za-z0-9](?:[A-Za-z0-9 _.-]*[A-Za-z0-9])?$"
+      description: "Optional name. ASCII letters, digits, spaces, '_', '-' and '.';\
+        \ must start and end with a letter or digit."
+      example: "antes de sincronizar"
