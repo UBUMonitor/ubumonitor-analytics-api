@@ -36,6 +36,7 @@ DatabaseUserInfo:
   - "id"
   - "userName"
   - "location"
+  - "snapshots"
   properties:
     id:
       type: "string"
@@ -50,3 +51,39 @@ DatabaseUserInfo:
       format: "uri"
       description: "Location of the database file, as a `file:` URI."
       example: "file:///data/databases/https~school.moodledemo.net~student.db"
+    snapshots:
+      type: "array"
+      description: "Snapshots taken from this database, newest first."
+      items:
+        $ref: "#/DatabaseSnapshotInfo"
+DatabaseSnapshotInfo:
+  title: "DatabaseSnapshotInfo"
+  type: "object"
+  additionalProperties: false
+  required:
+  - "id"
+  - "databaseId"
+  - "createdAt"
+  - "location"
+  properties:
+    name:
+      type: "string"
+      description: "Optional name given when the snapshot was created."
+    id:
+      type: "string"
+      description: "Unique identifier of the snapshot."
+      example: "https~school.moodledemo.net~student~20261121T131300000Z"
+    databaseId:
+      type: "string"
+      description: "Identifier of the source database."
+      example: "https~school.moodledemo.net~student"
+    createdAt:
+      type: "string"
+      format: "date-time"
+      description: "Time when the snapshot was created, in UTC."
+      example: "2026-11-21T13:13:00Z"
+    location:
+      type: "string"
+      format: "uri"
+      description: "Location of the snapshot file, as a `file:` URI."
+      example: "file:///data/databases/snapshots/https~school.moodledemo.net~student~20261121T131300000Z.db"

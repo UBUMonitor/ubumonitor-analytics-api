@@ -29,6 +29,10 @@ public class MapperUtils {
         : Instant.ofEpochSecond(timestamp).atOffset(ZoneOffset.UTC);
   }
 
+  public static OffsetDateTime toOffsetDateTime(Instant instant) {
+    return instant == null ? null : instant.atOffset(ZoneOffset.UTC);
+  }
+
   @Named("current")
   public LocalDateTime mapCurrent(Object ignored) {
     return LocalDateTime.now();

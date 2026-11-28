@@ -1,5 +1,6 @@
 package es.ubu.lsi.ubumonitoranalytics.shared.infrastructure.mapper;
 
+import org.mapstruct.InjectionStrategy;
 import org.mapstruct.MapperConfig;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
@@ -7,5 +8,6 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 @MapperConfig(
     componentModel = "spring",
     nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
-    uses = MapperUtils.class)
+    uses = MapperUtils.class,
+    injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface GlobalMapperConfig {}

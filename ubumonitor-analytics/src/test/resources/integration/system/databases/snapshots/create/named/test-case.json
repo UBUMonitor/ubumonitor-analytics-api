@@ -1,0 +1,33 @@
+{
+  "authFixture": "classpath:/integration/shared/teacher-sso-auth.json",
+  "endpoints": [
+    {
+      "request": {
+        "method": "POST",
+        "path": "/api/databases/snapshots",
+        "headers": {
+          "Authorization": "******",
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "name": "antes de sincronizar"
+        }
+      },
+      "expectedResponse": {
+        "status": 201
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "path": "/api/public/system/databases/info",
+        "headers": {
+          "Authorization": "******"
+        }
+      },
+      "expectedResponse": {
+        "status": 200
+      }
+    }
+  ]
+}
