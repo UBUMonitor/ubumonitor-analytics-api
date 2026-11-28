@@ -81,6 +81,9 @@
                                 <include>src/**/*.xml</include>
                                 <include>src/**/*.xsd</include>
                             </includes>
+                            <excludes>
+                                <exclude>src/main/resources/logback-spring.xml</exclude>
+                            </excludes>
                             <eclipseWtp>
                                 <type>XML</type>
                             </eclipseWtp>
